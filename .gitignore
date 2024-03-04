@@ -17,10 +17,11 @@
 mono_crash.*
 
 # Build results
-[Dd]ebug/
+#[Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
+#[Rr]elease/
 [Rr]eleases/
+[Gg]enerated/
 x64/
 x86/
 [Ww][Ii][Nn]32/
@@ -32,6 +33,8 @@ bld/
 [Oo]ut/
 [Ll]og/
 [Ll]ogs/
+
+Externals/DirectXTex/Shaders/Compiled/*.pdb
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -75,10 +78,8 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
-*.obj
 *.iobj
 *.pch
-*.pdb
 *.ipdb
 *.pgc
 *.pgd
@@ -97,6 +98,7 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+
 
 # Chutzpah Test files
 _Chutzpah*
