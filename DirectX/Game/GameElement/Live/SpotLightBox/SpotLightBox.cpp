@@ -59,7 +59,7 @@ void SpotLightBox::Draw(Camera* camera)
 void SpotLightBox::UpdatePositions()
 {
 	spots_[1]->light_->direction = spots_[0]->light_->direction;
-	box_->transform_.SetQuaRot(Quaternion::DirectionToDirection(Vector3{ 1.0f,0.0f,0.0f }, spots_[0]->light_->direction));
+	box_->transform_.SetQuaRot(Quaternion::DirectionToDirection(Vector3{ 0.0f,-1.0f,0.0f }, spots_[0]->light_->direction));
 	box_->Update();
 	point_->light_->position = box_->transform_.translate_;
 	point_->Update();

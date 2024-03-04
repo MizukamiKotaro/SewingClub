@@ -30,6 +30,9 @@ public:
 		this->y /= a;
 	}
 
+	float Length();
+	Vector2 Normalize();
+
 public:
 	float x;
 	float y;

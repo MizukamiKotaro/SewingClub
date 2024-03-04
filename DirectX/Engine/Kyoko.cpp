@@ -19,6 +19,7 @@
 #include "Drawers/IDrawer/IDrawer.h"
 #include "VolumeManager/VolumeManager.h"
 #include "Audio.h"
+#include "GlobalVariables/GlobalVariableUser.h"
 
 static ResourceLeackChecker leakCheck;
 
@@ -49,6 +50,8 @@ void Kyoko::Engine::Initialize(const char* windowName, int width, int height)
 
 	globalVariables = GlobalVariables::GetInstance();
 	globalVariables->LoadFiles();
+
+	GlobalVariableUser::StaticInitialize();
 
 	IDrawer::StaticInitialize();
 	Sprite::StaticInitialize();

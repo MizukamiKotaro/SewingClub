@@ -352,6 +352,9 @@
     <Filter Include="Game\GameElement\Live\SpotLightBox">
       <UniqueIdentifier>{2ee7dc59-8aa1-4600-aabf-6472a93e6894}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\Player">
+      <UniqueIdentifier>{cee6ae2d-2420-4a03-8555-9db648384d22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -650,6 +653,12 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Live\SpotLightBox\SpotLightBox.cpp">
       <Filter>Game\GameElement\Live\SpotLightBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Player\Player.cpp">
+      <Filter>Game\GameElement\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GlobalVariables\GlobalVariableUser.cpp">
+      <Filter>Engine\GlobalVariables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1000,6 +1009,12 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Live\SpotLightBox\SpotLightBox.h">
       <Filter>Game\GameElement\Live\SpotLightBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Player\Player.h">
+      <Filter>Game\GameElement\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GlobalVariables\GlobalVariableUser.h">
+      <Filter>Engine\GlobalVariables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
