@@ -1,0 +1,16 @@
+#pragma once
+enum class PipelineType {
+	SPRITE,
+	MODEL,
+	PARTICLE,
+	POINT_LIGHT,
+	SPOT_LIGHT,
+	CONTRAST,
+	HIGH_LUMI,
+	BLUR,
+	GAUSSIAN_BLUR,
+	SCAN_NOISE,
+	MOSAIC,
+	NEGA_POSI_INVERSE,
+	RGB_SHIFT,
+};
