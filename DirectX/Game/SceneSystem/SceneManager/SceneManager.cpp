@@ -11,7 +11,7 @@ SceneManager::SceneManager()
 {
 	ScoreManager::GetInstance()->Initialize();
 
-	IScene::sceneNo_ = TITLE;
+	IScene::sceneNo_ = STAGE;
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 

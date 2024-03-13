@@ -320,6 +320,20 @@ Matrix4x4 Matrix4x4::MakeAffinMatrix(const Vector3& scale, const Vector3& rotate
 	return result;
 }
 
+Matrix4x4 Matrix4x4::MakeAffinMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate)
+{
+	Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateMatrix(rotate);
+
+	Matrix4x4 result = {
+		scale.x * rotateMatrix.m[0][0],scale.x * rotateMatrix.m[0][1],scale.x * rotateMatrix.m[0][2],0,
+		scale.y * rotateMatrix.m[1][0],scale.y * rotateMatrix.m[1][1],scale.y * rotateMatrix.m[1][2],0,
+		scale.z * rotateMatrix.m[2][0],scale.z * rotateMatrix.m[2][1],scale.z * rotateMatrix.m[2][2],0,
+		translate.x,translate.y,translate.z,1
+	};
+
+	return result;
+}
+
 Matrix4x4 Matrix4x4::MakeAffinMatrix(const Transform& transform) {
 
 	return MakeAffinMatrix(transform.scale_, transform.rotate_, transform.translate_);

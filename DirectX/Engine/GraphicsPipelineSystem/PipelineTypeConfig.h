@@ -13,4 +13,5 @@ enum class PipelineType {
 	MOSAIC,
 	NEGA_POSI_INVERSE,
 	RGB_SHIFT,
+	INSTANCING_MODEL,
 };

@@ -12,6 +12,7 @@
 #include "GraphicsPipelineSystem/GraphicsPipelines/NegaPosiInverseGraphicsPipeline/NegaPosiInverseGraphicsPipeline.h"
 #include "GraphicsPipelineSystem/GraphicsPipelines/MosaicGraphicsPipeline/MosaicGraphicsPipeline.h"
 #include "GraphicsPipelineSystem/GraphicsPipelines/RGBShiftGraphicsPipeline/RGBShiftGraphicsPipeline.h"
+#include "GraphicsPipelineSystem/GraphicsPipelines/InstancingModelGraphicsPipline/InstancingModelGraphicsPipline.h"
 #include "GraphicsPipelineSystem/PipelineTypeConfig.h"
 
 GraphicsPipeline* GraphicsPipelineFactory::CreateGraphicsPipeline(PipelineType pipelineType)
@@ -58,6 +59,9 @@ GraphicsPipeline* GraphicsPipelineFactory::CreateGraphicsPipeline(PipelineType p
 		break;
 	case PipelineType::RGB_SHIFT:
 		graphicsPipeline = new RGBShiftGraphicsPipeline();
+		break;
+	case PipelineType::INSTANCING_MODEL:
+		graphicsPipeline = new InstancingModelGraphicsPipline();
 		break;
 	default:
 		break;

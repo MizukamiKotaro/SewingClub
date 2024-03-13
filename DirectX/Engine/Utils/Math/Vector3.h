@@ -10,6 +10,13 @@ public:
 		return false;
 	}
 
+	bool operator!=(const Vector3& obj) {
+		if (x != obj.x || y != obj.y || z != obj.z) {
+			return true;
+		}
+		return false;
+	}
+
 	//変換
 	Vector3& operator=(const Vector3& obj) {
 		x = obj.x;

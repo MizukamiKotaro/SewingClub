@@ -6,36 +6,42 @@ StageScene::StageScene()
 {
 	FirstInit();
 
-	game_ = std::make_unique<Game>(camera_.get());
+	Yarn::StaticInitialize();
+
+	instancingmodelManager_ = InstancingModelManager::GetInstance();
+
+	player_ = std::make_unique<Player>();
 }
 
 void StageScene::Initialize()
 {
-	game_->Initialize();
+	player_->Initialize();
 }
 
 void StageScene::Update()
 {
-	if (input_->PressedKey(DIK_RETURN) || game_->GetIsClear()) {
+	if (input_->PressedKey(DIK_RETURN)) {
 		// シーン切り替え
 		ChangeScene(CLEAR);
 	}
 
 #ifdef _DEBUG
-	
+	Yarn::StaticUpdate();
 
 #endif // _DEBUG
 
-	game_->Update();
+	player_->Update();
 }
 
 void StageScene::Draw()
 {
-
+	instancingmodelManager_->Clear();
 
 	Kyoko::Engine::PreDraw();
 
-	game_->Draw();
+	player_->Draw(camera_.get());
+
+	instancingmodelManager_->Draw(*camera_.get());
 
 	BlackDraw();
 

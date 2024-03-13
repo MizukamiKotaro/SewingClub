@@ -22,10 +22,13 @@ Player::Player()
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
 	SetGlobalVariable();
 	model_->Update();
+
+	yarn_ = std::make_unique<Yarn>(&model_->transform_.translate_, model_->transform_.translate_);
 }
 
 void Player::Initialize()
 {
+	yarn_.reset(new Yarn(&model_->transform_.translate_, model_->transform_.translate_));
 }
 
 void Player::Update()
@@ -37,11 +40,15 @@ void Player::Update()
 	Move();
 
 	model_->Update();
+
+	yarn_->Update();
 }
 
 void Player::Draw(const Camera* camera)
 {
 	model_->Draw(*camera);
+
+	yarn_->Draw();
 }
 
 void Player::Move()
@@ -52,14 +59,14 @@ void Player::Move()
 		vector = vector.Normalize();
 
 		if (vector_.x != -vector.x) {
-			vector_ = Calc::Lerp(vector_, vector, fParas_[InterpolationRate]).Normalize();
+			vector_ = Calc::Lerp(vector_, vector, fParas_[kInterpolationRate]).Normalize();
 		}
 		else {
 			// 真逆の時の細かい修正保留
-			vector_ = Calc::Lerp(vector_, vector, fParas_[InterpolationRate]).Normalize();
+			vector_ = Calc::Lerp(vector_, vector, fParas_[kInterpolationRate]).Normalize();
 		}
 
-		speed_ = std::clamp(speed_ + fParas_[Acceleration], fParas_[MinSpeed], fParas_[MaxSpeed]);
+		speed_ = std::clamp(speed_ + fParas_[kAcceleration], fParas_[kMinSpeed], fParas_[kMaxSpeed]);
 
 		velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
 
@@ -71,11 +78,11 @@ void Player::Move()
 		}
 	}
 	else {
-		if (fParas_[Attenuation] != 0.0f) {
-			speed_ = speed_ * fParas_[Attenuation];
+		if (fParas_[kAttenuation] != 0.0f) {
+			speed_ = speed_ * fParas_[kAttenuation];
 		}
 
-		if (speed_ >= fParas_[MinSpeed]) {
+		if (speed_ >= fParas_[kMinSpeed]) {
 			velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
 		}
 		else {

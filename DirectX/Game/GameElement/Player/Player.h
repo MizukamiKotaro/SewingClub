@@ -2,6 +2,7 @@
 #include "GameElement/Charactor/Charactor.h"
 #include "Vector2.h"
 #include "Vector3.h"
+#include "GameElement/Yarn/Yarn.h"
 
 class Input;
 
@@ -25,12 +26,12 @@ private:
 	void Move();
 
 private:
-	enum FloatPara {
-		Acceleration, // 加速度
-		Attenuation, // 減衰率
-		MaxSpeed, // 最大速度
-		MinSpeed, // 最低速度
-		InterpolationRate, // 補間の割合
+	enum FloatParamater {
+		kAcceleration, // 加速度
+		kAttenuation, // 減衰率
+		kMaxSpeed, // 最大速度
+		kMinSpeed, // 最低速度
+		kInterpolationRate, // 補間の割合
 		kFloatEnd,
 	};
 
@@ -47,6 +48,8 @@ private:
 	Vector3 velocity_; // 速度
 	Vector2 vector_; // 移動方向ベクトル
 	float speed_;
+
+	std::unique_ptr<Yarn> yarn_;
 
 private:
 	Input* input_ = nullptr;

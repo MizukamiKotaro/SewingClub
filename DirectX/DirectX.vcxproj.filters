@@ -355,6 +355,24 @@
     <Filter Include="Game\GameElement\Player">
       <UniqueIdentifier>{cee6ae2d-2420-4a03-8555-9db648384d22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\InstancingModelGraphicsPipline">
+      <UniqueIdentifier>{e94f18c3-71c0-464a-9684-5588496d38a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Drawer\InstancingModel">
+      <UniqueIdentifier>{068a5165-243b-43ff-b951-2c289cf3a5aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Shaders\InstancingModel">
+      <UniqueIdentifier>{dda43d26-1b21-4acb-8acf-47fd124cc6e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Drawer\InstancingModel\InstancingModels">
+      <UniqueIdentifier>{86f32023-3889-4371-b728-93ae897b9a7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Drawer\InstancingModel\InstancingModelList">
+      <UniqueIdentifier>{d472cde3-06a4-4093-894a-f1690c5231e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\Yarn">
+      <UniqueIdentifier>{79953c1a-4f77-466a-aa93-526f26e78e51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -659,6 +677,21 @@
     </ClCompile>
     <ClCompile Include="Engine\GlobalVariables\GlobalVariableUser.cpp">
       <Filter>Engine\GlobalVariables</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\InstancingModelGraphicsPipline\InstancingModelGraphicsPipline.cpp">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\InstancingModelGraphicsPipline</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\InstancingModel\InstancingModelManager.cpp">
+      <Filter>Engine\Drawer\InstancingModel</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\InstancingModel\InstancingModels\InstancingModels.cpp">
+      <Filter>Engine\Drawer\InstancingModel\InstancingModels</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\InstancingModel\InstancingModelList\InstancingModelList.cpp">
+      <Filter>Engine\Drawer\InstancingModel\InstancingModelList</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Yarn\Yarn.cpp">
+      <Filter>Game\GameElement\Yarn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1016,6 +1049,24 @@
     <ClInclude Include="Engine\GlobalVariables\GlobalVariableUser.h">
       <Filter>Engine\GlobalVariables</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\InstancingModelGraphicsPipline\InstancingModelGraphicsPipline.h">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\InstancingModelGraphicsPipline</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelManager.h">
+      <Filter>Engine\Drawer\InstancingModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModel.h">
+      <Filter>Engine\Drawer\InstancingModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModels\InstancingModels.h">
+      <Filter>Engine\Drawer\InstancingModel\InstancingModels</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelList\InstancingModelList.h">
+      <Filter>Engine\Drawer\InstancingModel\InstancingModelList</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Yarn\Yarn.h">
+      <Filter>Game\GameElement\Yarn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\Object3dShader\Object3d.PS.hlsl">
@@ -1075,6 +1126,12 @@
     <FxCompile Include="Resources\Shaders\RGBShiftShader\RGBShift.PS.hlsl">
       <Filter>Engine\Shaders\RGBShift</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\InstancingModelShader\InstancingModel.PS.hlsl">
+      <Filter>Engine\Shaders\InstancingModel</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\InstancingModelShader\InstancingModel.VS.hlsl">
+      <Filter>Engine\Shaders\InstancingModel</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3dShader\Object3d.hlsli">
@@ -1094,6 +1151,9 @@
     </None>
     <None Include="Resources\Shaders\ContrastShader\Contrast.hlsli">
       <Filter>Engine\Shaders\Contrast</Filter>
+    </None>
+    <None Include="Resources\Shaders\InstancingModelShader\InstancingModel.hlsli">
+      <Filter>Engine\Shaders\InstancingModel</Filter>
     </None>
   </ItemGroup>
 </Project>

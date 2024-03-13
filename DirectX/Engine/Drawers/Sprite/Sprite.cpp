@@ -28,7 +28,7 @@ Sprite::Sprite(const Vector2& pos, const Vector2& texLeftTop, const Vector2& tex
 	rotate_ = 0.0f;
 	pos_ = pos;
 
-	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, { 0.0f,0.0f,rotate_ }, { pos_.x,pos_.y,0.0f });
+	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, Vector3{ 0.0f,0.0f,rotate_ }, Vector3{ pos_.x,pos_.y,0.0f });
 
 	anchorPoint_ = anchorPoint;
 	textureLeftTop_ = texLeftTop;
@@ -64,7 +64,7 @@ Sprite::Sprite(const std::string& filePath, const Vector2& pos, const Vector2& t
 	rotate_ = 0.0f;
 	pos_ = pos;
 
-	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, { 0.0f,0.0f,rotate_ }, { pos_.x,pos_.y,0.0f });
+	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, Vector3{ 0.0f,0.0f,rotate_ }, { pos_.x,pos_.y,0.0f });
 
 	anchorPoint_ = anchorPoint;
 	textureLeftTop_ = texLeftTop;
@@ -100,7 +100,7 @@ Sprite::Sprite(const Texture* texture, const Vector2& pos, const Vector2& texLef
 	rotate_ = 0.0f;
 	pos_ = pos;
 
-	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, { 0.0f,0.0f,rotate_ }, { pos_.x,pos_.y,0.0f });
+	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, Vector3{ 0.0f,0.0f,rotate_ }, { pos_.x,pos_.y,0.0f });
 
 	anchorPoint_ = anchorPoint;
 	textureLeftTop_ = texLeftTop;
@@ -140,7 +140,7 @@ void Sprite::Initialize()
 
 void Sprite::Update()
 {
-	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, { 0.0f,0.0f,rotate_ }, { pos_.x,pos_.y,0.0f });
+	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, Vector3{ 0.0f,0.0f,rotate_ }, { pos_.x,pos_.y,0.0f });
 	TransferSize();
 }
 
@@ -154,7 +154,7 @@ void Sprite::Draw(const Camera& camera, BlendMode blendMode)
 	PreDraw();
 
 	transformData_->WVP = worldMat_ * camera.GetOrthographicMat();
-	materialData_->uvTransform = Matrix4x4::MakeAffinMatrix({ uvScale_.x,uvScale_.y,0.0f }, { 0.0f,0.0f,uvRotate_ }, { uvTranslate_.x,uvTranslate_.y,0.0f });
+	materialData_->uvTransform = Matrix4x4::MakeAffinMatrix({ uvScale_.x,uvScale_.y,0.0f }, Vector3{ 0.0f,0.0f,uvRotate_ }, { uvTranslate_.x,uvTranslate_.y,0.0f });
 
 	psoManager_->SetBlendMode(pipelineType_, blendMode);
 
@@ -180,7 +180,7 @@ void Sprite::Draw(BlendMode blendMode)
 	PreDraw();
 
 	transformData_->WVP = worldMat_ * Camera::GetOrthographicMat();
-	materialData_->uvTransform = Matrix4x4::MakeAffinMatrix({ uvScale_.x,uvScale_.y,0.0f }, { 0.0f,0.0f,uvRotate_ }, { uvTranslate_.x,uvTranslate_.y,0.0f });
+	materialData_->uvTransform = Matrix4x4::MakeAffinMatrix({ uvScale_.x,uvScale_.y,0.0f }, Vector3{ 0.0f,0.0f,uvRotate_ }, { uvTranslate_.x,uvTranslate_.y,0.0f });
 
 	psoManager_->SetBlendMode(pipelineType_, blendMode);
 

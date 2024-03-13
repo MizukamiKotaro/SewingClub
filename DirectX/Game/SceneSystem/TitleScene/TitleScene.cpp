@@ -6,7 +6,7 @@ TitleScene::TitleScene()
 {
 	FirstInit();
 
-	player_ = std::make_unique<Player>();
+
 }
 
 void TitleScene::Initialize()
@@ -16,7 +16,7 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
-	player_->Update();
+	
 }
 
 void TitleScene::Draw()
@@ -25,7 +25,7 @@ void TitleScene::Draw()
 
 	Kyoko::Engine::PreDraw();
 
-	player_->Draw(camera_.get());
+	
 
 	BlackDraw();
 

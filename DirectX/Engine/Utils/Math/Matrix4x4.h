@@ -55,6 +55,8 @@ public:
 
 	static Matrix4x4 MakeAffinMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate, RotateType rotateOrder);
 
+	static Matrix4x4 MakeAffinMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);
+
 	static Matrix4x4 MakeAffinMatrix(const Transform& transform);
 	//透視投影行列
 	static Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
