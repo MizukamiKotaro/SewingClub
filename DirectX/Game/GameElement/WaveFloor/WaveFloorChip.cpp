@@ -50,46 +50,32 @@ void WaveFloorChip::Update()
 {
 	float y = 0.0f;
 
-	for (WavePower& wavePower : wavePowers_) {
-		wavePower.time += frameInfo_->GetDeltaTime();
-		if ((wavePower.time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] / 2 &&
-			wavePower.time > fParas_[kLoopTime] / 2) ||
-			(wavePower.time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] &&
-				wavePower.time > fParas_[kLoopTime])) {
-			wavePower.radius *= fParas_[kAttenuation];
-			if (wavePower.radius <= fParas_[kMinSpeed]) {
-				wavePower.time = 0.0f;
-				wavePower.radius = 0.0f;
+	for (std::list<WavePower>::iterator it = wavePowers_.begin(); it != wavePowers_.end();) {
+		(*it).time += frameInfo_->GetDeltaTime();
+		if (((*it).time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] / 2 &&
+			(*it).time > fParas_[kLoopTime] / 2) ||
+			((*it).time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] &&
+				(*it).time > fParas_[kLoopTime])) {
+			(*it).radius *= fParas_[kAttenuation];
+			if ((*it).radius <= fParas_[kMinSpeed]) {
+				(*it).time = 0.0f;
+				(*it).radius = 0.0f;
 			}
-			if (wavePower.time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] &&
-				wavePower.time > fParas_[kLoopTime]) {
-				wavePower.time -= fParas_[kLoopTime];
-			}
-		}
-		float theta = 6.28f * wavePower.time / fParas_[kLoopTime] + 4.71f;
-
-		y += wavePower.radius * std::sinf(theta);
-	}
-
-	for (WavePower& wavePower : wavePowers_) {
-		wavePower.time += frameInfo_->GetDeltaTime();
-		if ((wavePower.time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] / 2 &&
-			wavePower.time > fParas_[kLoopTime] / 2) ||
-			(wavePower.time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] &&
-				wavePower.time > fParas_[kLoopTime])) {
-			wavePower.radius *= fParas_[kAttenuation];
-			if (wavePower.radius <= fParas_[kMinSpeed]) {
-				wavePower.time = 0.0f;
-				wavePower.radius = 0.0f;
-			}
-			if (wavePower.time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] &&
-				wavePower.time > fParas_[kLoopTime]) {
-				wavePower.time -= fParas_[kLoopTime];
+			if ((*it).time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] &&
+				(*it).time > fParas_[kLoopTime]) {
+				(*it).time -= fParas_[kLoopTime];
 			}
 		}
-		float theta = 6.28f * wavePower.time / fParas_[kLoopTime] + 4.71f;
+		float theta = 6.28f * (*it).time / fParas_[kLoopTime] + 4.71f;
 
-		y += wavePower.radius * std::sinf(theta);
+		y += (*it).radius * std::sinf(theta);
+
+		if ((*it).radius == 0.0f) {
+			it = wavePowers_.erase(it);
+		}
+		else {
+			it++;
+		}
 	}
 	
 	position_ = ganeratePosition_;
