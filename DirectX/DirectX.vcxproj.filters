@@ -373,6 +373,12 @@
     <Filter Include="Game\GameElement\Yarn">
       <UniqueIdentifier>{79953c1a-4f77-466a-aa93-526f26e78e51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\WaveFloor">
+      <UniqueIdentifier>{408fe270-7917-493c-89fc-018b4083acf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\Wave">
+      <UniqueIdentifier>{052e44a7-a418-4e0c-a6ce-dde821b5c99d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -692,6 +698,15 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Yarn\Yarn.cpp">
       <Filter>Game\GameElement\Yarn</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\WaveFloor\WaveFloor.cpp">
+      <Filter>Game\GameElement\WaveFloor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\WaveFloor\WaveFloorChip.cpp">
+      <Filter>Game\GameElement\WaveFloor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Wave\Wave.cpp">
+      <Filter>Game\GameElement\Wave</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1066,6 +1081,15 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Yarn\Yarn.h">
       <Filter>Game\GameElement\Yarn</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\WaveFloor\WaveFloor.h">
+      <Filter>Game\GameElement\WaveFloor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\WaveFloor\WaveFloorChip.h">
+      <Filter>Game\GameElement\WaveFloor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Wave\Wave.h">
+      <Filter>Game\GameElement\Wave</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

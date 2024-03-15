@@ -25,13 +25,21 @@ private:
 
 	void Move();
 
+	void InitializeFloating();
+
+	void UpdateFloating();
+
 private:
+
+	Input* input_ = nullptr;
+
 	enum FloatParamater {
 		kAcceleration, // 加速度
 		kAttenuation, // 減衰率
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
 		kInterpolationRate, // 補間の割合
+		kFloatingTime, // 上下挙動の1往復の時間
 		kFloatEnd,
 	};
 
@@ -40,7 +48,8 @@ private:
 		"減速率",
 		"最大速度",
 		"最低速度",
-		"補間の割合"
+		"補間の割合",
+		"上下挙動の1往復の時間"
 	};
 
 	float fParas_[kFloatEnd];
@@ -49,9 +58,8 @@ private:
 	Vector2 vector_; // 移動方向ベクトル
 	float speed_;
 
+	float floatingParameter_;
+
 	std::unique_ptr<Yarn> yarn_;
 
-private:
-	Input* input_ = nullptr;
-	
 };

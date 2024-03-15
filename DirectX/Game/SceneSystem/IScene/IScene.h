@@ -9,6 +9,7 @@
 #include <optional>
 #include "Sprite.h"
 #include <memory>
+#include "FrameInfo/FrameInfo.h"
 
 enum SCENE { TITLE, SELECT, STAGE, CLEAR };
 
@@ -59,6 +60,7 @@ protected:
 	TextureManager* textureManager_ = nullptr;
 	ModelDataManager* modelDataManager_ = nullptr;
 	Input* input_ = nullptr;
+	FrameInfo* frameInfo_ = nullptr;
 
 protected:
 

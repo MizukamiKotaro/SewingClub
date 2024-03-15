@@ -23,6 +23,8 @@ Player::Player()
 	SetGlobalVariable();
 	model_->Update();
 
+	floatingParameter_ = 0.0f;
+
 	yarn_ = std::make_unique<Yarn>(&model_->transform_.translate_, model_->transform_.translate_);
 }
 
@@ -92,6 +94,16 @@ void Player::Move()
 	}
 
 	model_->transform_.translate_ += velocity_;
+}
+
+void Player::InitializeFloating()
+{
+	floatingParameter_ = 0.0f;
+}
+
+void Player::UpdateFloating()
+{
+
 }
 
 void Player::SetGlobalVariable()

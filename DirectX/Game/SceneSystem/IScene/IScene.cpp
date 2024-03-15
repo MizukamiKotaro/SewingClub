@@ -14,6 +14,7 @@ void IScene::FirstInit()
 	textureManager_ = TextureManager::GetInstance();
 	modelDataManager_ = ModelDataManager::GetInstance();
 	input_ = Input::GetInstance();
+	frameInfo_ = FrameInfo::GetInstance();
 
 	camera_ = std::make_unique<Camera>();
 	camera_->Initialize();

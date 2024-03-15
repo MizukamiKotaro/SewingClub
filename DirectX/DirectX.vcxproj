@@ -193,6 +193,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\ScoreManager\ScoreManager.cpp" />
     <ClCompile Include="Game\GameElement\Score\Score.cpp" />
     <ClCompile Include="Game\GameElement\StageUI\StageUI.cpp" />
+    <ClCompile Include="Game\GameElement\WaveFloor\WaveFloor.cpp" />
+    <ClCompile Include="Game\GameElement\WaveFloor\WaveFloorChip.cpp" />
+    <ClCompile Include="Game\GameElement\Wave\Wave.cpp" />
     <ClCompile Include="Game\GameElement\Yarn\Yarn.cpp" />
     <ClCompile Include="Game\SceneSystem\ClearScene\ClearScene.cpp" />
     <ClCompile Include="Game\SceneSystem\ISceneFactory\ISceneFactory.cpp" />
@@ -336,6 +339,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\ScoreManager\ScoreManager.h" />
     <ClInclude Include="Game\GameElement\Score\Score.h" />
     <ClInclude Include="Game\GameElement\StageUI\StageUI.h" />
+    <ClInclude Include="Game\GameElement\WaveFloor\WaveFloor.h" />
+    <ClInclude Include="Game\GameElement\WaveFloor\WaveFloorChip.h" />
+    <ClInclude Include="Game\GameElement\Wave\Wave.h" />
     <ClInclude Include="Game\GameElement\Yarn\Yarn.h" />
     <ClInclude Include="Game\SceneSystem\ClearScene\ClearScene.h" />
     <ClInclude Include="Game\SceneSystem\ISceneFactory\ISceneFactory.h" />
