@@ -11,12 +11,17 @@ StageScene::StageScene()
 	WaveFloorChip::StaticInitialize();
 	WaveFloor::StaticInitialize();
 	Wave::StaticInitialize();
+	WaterChunk::StaticInitialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 
 	player_ = std::make_unique<Player>();
 
 	waveFloor_ = std::make_unique<WaveFloor>();
+
+	for (int i = 0; i < 3; i++) {
+		water_[i] = std::make_unique<WaterChunk>();
+	}
 }
 
 void StageScene::Initialize()
@@ -37,14 +42,64 @@ void StageScene::Update()
 	WaveFloorChip::StaticUpdate();
 	WaveFloor::StaticUpdate();
 	Wave::StaticUpdate();
+	WaterChunk::StaticUpdate();
 
 	ImGui::Begin("Camera");
 	ImGui::DragFloat3("ポジション", &camera_->transform_.translate_.x, 0.01f);
 	ImGui::DragFloat3("角度", &camera_->transform_.rotate_.x, 0.01f);
 	ImGui::End();
 	camera_->Update();
+
+	ImGui::Begin("水");
+	for (int i = 0; i < 3; i++) {
+		std::string name = std::to_string(i);
+		if (ImGui::TreeNode(name.c_str())) {
+			ImGui::DragFloat3("ポジション", &water_[i]->position_.x, 0.01f);
+			ImGui::DragFloat("サイズ", &water_[i]->scale_, 0.01f);
+			ImGui::TreePop();
+		}
+	}
+	ImGui::End();
 #endif // _DEBUG
 
+	WaveUpdate();
+
+	player_->SetIsInWater(false);
+	for (const std::unique_ptr<WaterChunk>& water : water_) {
+		if (WaterChunk::IsHitCircle(player_->GetPosition(), water->position_, water->scale_)) {
+			player_->SetIsInWater(true);
+		}
+	}
+
+	player_->Update(frameInfo_->GetDeltaTime());
+
+	waveFloor_->Update();
+}
+
+void StageScene::Draw()
+{
+	instancingmodelManager_->Clear();
+
+	Kyoko::Engine::PreDraw();
+
+	player_->Draw(camera_.get());
+
+	//waveFloor_->Draw();
+
+	for (const std::unique_ptr<WaterChunk>& water : water_) {
+		water->Draw();
+	}
+
+	instancingmodelManager_->Draw(*camera_.get());
+
+	BlackDraw();
+
+	// フレームの終了
+	Kyoko::Engine::PostDraw();
+}
+
+void StageScene::WaveUpdate()
+{
 	RandomGenerator* rand = RandomGenerator::GetInstance();
 
 	time_ += frameInfo_->GetDeltaTime();
@@ -74,27 +129,5 @@ void StageScene::Update()
 			it++;
 		}
 	}
-
-	player_->Update();
-
-	waveFloor_->Update();
-}
-
-void StageScene::Draw()
-{
-	instancingmodelManager_->Clear();
-
-	Kyoko::Engine::PreDraw();
-
-	player_->Draw(camera_.get());
-
-	waveFloor_->Draw();
-
-	instancingmodelManager_->Draw(*camera_.get());
-
-	BlackDraw();
-
-	// フレームの終了
-	Kyoko::Engine::PostDraw();
 }
 

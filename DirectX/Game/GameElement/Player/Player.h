@@ -14,16 +14,29 @@ public:
 
 	void Initialize() override;
 
-	void Update() override;
+	void Update(float deltaTime) override;
 
 	void Draw(const Camera* camera) override;
+
+public:
+	const Vector3& GetPosition() const;
+
+	void SetIsInWater(bool is) { isInWater_ = is; }
 
 private:
 	void SetGlobalVariable() override;
 
 	void ApplyGlobalVariable() override;
 
-	void Move();
+	void Move(float deltaTime);
+
+	void PopUpFromWater();
+
+	void ComeToWater();
+
+	void OutWater(float deltaTime);
+
+	void Reset();
 
 	void InitializeFloating();
 
@@ -40,6 +53,11 @@ private:
 		kMinSpeed, // 最低速度
 		kInterpolationRate, // 補間の割合
 		kFloatingTime, // 上下挙動の1往復の時間
+		kGravity, // 重力
+		kOutWaterAcceleration, // 水から飛び出したときの加速度
+		kOutWaterTime, // 水から飛び出したときに加速させる時間
+		kMinPositionY, // プレイヤーの最低の高さ
+		kGravityDown, // 降下中の重力
 		kFloatEnd,
 	};
 
@@ -49,7 +67,12 @@ private:
 		"最大速度",
 		"最低速度",
 		"補間の割合",
-		"上下挙動の1往復の時間"
+		"上下挙動の1往復の時間",
+		"重力加速度",
+		"水から飛び出したときの加速度",
+		"水から飛び出したときに加速させる時間",
+		"プレイヤーの最低の高さ",
+		"降下中の重力",
 	};
 
 	float fParas_[kFloatEnd];
@@ -57,6 +80,12 @@ private:
 	Vector3 velocity_; // 速度
 	Vector2 vector_; // 移動方向ベクトル
 	float speed_;
+	float addAcceleration_;
+
+	float timeCount_;
+
+	bool preIsInWater_;
+	bool isInWater_;
 
 	float floatingParameter_;
 

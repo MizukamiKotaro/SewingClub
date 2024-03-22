@@ -5,6 +5,7 @@
 #include "SceneSystem/ISceneFactory/ISceneFactory.h"
 
 class Input;
+class FrameInfo;
 
 class SceneManager
 {
@@ -18,6 +19,7 @@ private:
 	std::unique_ptr<ISceneFactory> sceneFactory_;
 
 	Input* inputManager_;
+	FrameInfo* frameInfo_;
 public:
 	SceneManager();
 	int Run();

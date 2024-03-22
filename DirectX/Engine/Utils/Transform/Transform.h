@@ -12,7 +12,7 @@ public:
 
 	void UpdateMatrix();
 
-	Vector3 GetWorldPosition();
+	const Vector3& GetWorldPosition() const;
 
 	bool IsCollisionXZ(const Transform& transform);
 

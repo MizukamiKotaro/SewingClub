@@ -22,6 +22,7 @@ SceneManager::SceneManager()
 	IScene::stageNo_ = 0;
 
 	inputManager_ = Input::GetInstance();
+	frameInfo_ = FrameInfo::GetInstance();
 }
 
 int SceneManager::Run()
@@ -68,11 +69,15 @@ int SceneManager::Run()
 			break;
 		}
 		ImGui::End();
+
+		ImGui::Begin("フレームレート");
+		ImGui::Text("フレーム : %4.1f", frameInfo_->GetFramerate());
+		ImGui::End();
 #endif // _DEBUG
 		
 		scene_->Draw();
 
-		FrameInfo::GetInstance()->End();
+		frameInfo_->End();
 	}
 
 	scene_.reset();

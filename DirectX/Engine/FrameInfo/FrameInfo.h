@@ -12,6 +12,8 @@ public:
 
 	float GetDeltaTime() const { return deltaTime_; }
 
+	float GetFramerate() const { return 1.0f / deltaTime_; }
+
 private:
 	FrameInfo() = default;
 	~FrameInfo() = default;

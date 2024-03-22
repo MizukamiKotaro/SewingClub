@@ -46,7 +46,7 @@ void Transform::UpdateMatrix()
 	worldPos_.z = worldMat_.m[3][2];
 }
 
-Vector3 Transform::GetWorldPosition()
+const Vector3& Transform::GetWorldPosition() const
 {
 	return worldPos_;
 }

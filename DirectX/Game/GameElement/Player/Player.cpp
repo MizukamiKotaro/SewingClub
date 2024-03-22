@@ -17,6 +17,8 @@ Player::Player()
 	velocity_ = {};
 	vector_ = { 1.0f,0.0f };
 	speed_ = 0.0f;
+	addAcceleration_ = 0.0f;
+	timeCount_ = 0.0f;
 
 	model_ = std::make_unique<Model>("Cube");
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
@@ -24,22 +26,41 @@ Player::Player()
 	model_->Update();
 
 	floatingParameter_ = 0.0f;
+	isInWater_ = true;
+	preIsInWater_ = true;
 
 	yarn_ = std::make_unique<Yarn>(&model_->transform_.translate_, model_->transform_.translate_);
 }
 
 void Player::Initialize()
 {
-	yarn_.reset(new Yarn(&model_->transform_.translate_, model_->transform_.translate_));
+	Reset();
 }
 
-void Player::Update()
+void Player::Update(float deltaTime)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
 
-	Move();
+	preIsInWater_ = isInWater_;
+
+	if (isInWater_ && preIsInWater_) {
+		Move(deltaTime);
+	}
+	else if (!isInWater_ && preIsInWater_) {
+		PopUpFromWater();
+	}
+	else if (isInWater_ && !preIsInWater_) {
+		ComeToWater();
+	}
+	else {
+		OutWater(deltaTime);
+	}
+
+	if (model_->transform_.GetWorldPosition().y <= fParas_[kMinPositionY]) {
+		Reset();
+	}
 
 	model_->Update();
 
@@ -50,11 +71,18 @@ void Player::Draw(const Camera* camera)
 {
 	model_->Draw(*camera);
 
-	yarn_->Draw();
+	//yarn_->Draw();
 }
 
-void Player::Move()
+const Vector3& Player::GetPosition() const
 {
+	return model_->transform_.GetWorldPosition();
+}
+
+void Player::Move(float deltaTime)
+{
+	timeCount_ += deltaTime;
+
 	Vector2 vector = input_->GetGamePadLStick();
 
 	if (vector.x != 0.0f || vector.y != 0.0f) {
@@ -68,7 +96,7 @@ void Player::Move()
 			vector_ = Calc::Lerp(vector_, vector, fParas_[kInterpolationRate]).Normalize();
 		}
 
-		speed_ = std::clamp(speed_ + fParas_[kAcceleration], fParas_[kMinSpeed], fParas_[kMaxSpeed]);
+		speed_ = std::clamp(speed_ + fParas_[kAcceleration] * deltaTime, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_);
 
 		velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
 
@@ -84,7 +112,7 @@ void Player::Move()
 			speed_ = speed_ * fParas_[kAttenuation];
 		}
 
-		if (speed_ >= fParas_[kMinSpeed]) {
+		if (speed_ >= fParas_[kMinSpeed] * deltaTime) {
 			velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
 		}
 		else {
@@ -93,7 +121,80 @@ void Player::Move()
 		}
 	}
 
+	if (timeCount_ >= 0.1f) {
+		addAcceleration_ *= 0.90f;
+		if (addAcceleration_ <= 0.3f) {
+			addAcceleration_ = 0.0f;
+		}
+	}
+
 	model_->transform_.translate_ += velocity_;
+}
+
+void Player::PopUpFromWater()
+{
+	timeCount_ = 0.0f;
+	model_->transform_.translate_ += velocity_;
+}
+
+void Player::ComeToWater()
+{
+	timeCount_ = 0.0f;
+	model_->transform_.translate_ += velocity_;
+}
+
+void Player::OutWater(float deltaTime)
+{
+	timeCount_ += deltaTime;
+
+	if (timeCount_ <= fParas_[kOutWaterTime]) {
+		float addSpeed = fParas_[kOutWaterAcceleration] * deltaTime;
+		speed_ += addSpeed;
+		addAcceleration_ += addSpeed;
+	}
+	velocity_ = { vector_.x * speed_,vector_.y * speed_ ,0.0f };
+	if (velocity_.y <= 0.0f) {
+		velocity_.y -= fParas_[kGravityDown] * deltaTime;
+	}
+	else {
+		velocity_.y -= fParas_[kGravity] * deltaTime;
+	}
+
+	Vector3 normal = velocity_.Normalize();
+	vector_ = { normal.x,normal.y };
+
+	if (std::abs(normal.x) > std::abs(normal.y)) {
+		speed_ = velocity_.x / normal.x;
+	}
+	else {
+		speed_ = velocity_.y / normal.y;
+	}
+	if (vector_.y >= 0.0f) {
+		model_->transform_.rotate_.z = std::acosf(vector_.x);
+	}
+	else {
+		model_->transform_.rotate_.z = -std::acosf(vector_.x);
+	}
+
+	model_->transform_.translate_ += velocity_;
+}
+
+void Player::Reset()
+{
+	velocity_ = { 0.0f };
+	vector_ = { 1.0f,0.0f };
+	speed_ = 0.0f;
+	addAcceleration_ = 0.0f;
+	timeCount_ = 0.0f;
+
+	model_->transform_.rotate_ = { 0.0f };
+	model_->transform_.translate_ = { 0.0f };
+
+	floatingParameter_ = 0.0f;
+	isInWater_ = true;
+	preIsInWater_ = true;
+
+	yarn_.reset(new Yarn(&model_->transform_.translate_, model_->transform_.translate_));
 }
 
 void Player::InitializeFloating()
