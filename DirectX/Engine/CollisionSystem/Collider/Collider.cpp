@@ -1,54 +1,45 @@
 #include "Collider.h"
+#include <algorithm>
+#include "CollisionSystem/CollisionManager/CollisionManager.h"
 
-Collider::Collider()
+void Collider::CreateCollider(ColliderShape shape, ColliderType type, ColliderMask mask, bool isBeDrived)
 {
-	collisionAttribute_ = 0x00000000;
+	collisionManager_ = CollisionManager::GetInstance();
 
-	collisionMask_ = 0x00000000;
+	shape_ = shape;
+	type_ = type;
+	mask_ = mask;
+	isBeDrived_ = isBeDrived;
 
-	for (int i = 0; i < EditInfo::EditEnumV2::V2COUNT; i++) {
-		editInfo_.v2Paras_.push_back(Vector2());
+	switch (shape)
+	{
+	case ColliderShape::UNKNOWN:
+		break;
+	case ColliderShape::CIRCLE:
+		shapeCircle_ = std::make_unique<ShapeCircle>();
+		break;
+	case ColliderShape::BOX2D:
+		break;
+	case ColliderShape::MAPCHIP2D:
+		break;
+	default:
+		break;
 	}
 }
 
-uint32_t Collider::GetCollisionAttribute() const
+void Collider::AddTargetMask(ColliderMask mask)
 {
-	return collisionAttribute_;
-}
-
-void Collider::SetCollisionAttribute(uint32_t attribute)
-{
-	collisionAttribute_ = collisionAttribute_ | attribute;
-}
-
-uint32_t Collider::GetCollisionMask() const
-{
-	return collisionMask_;
-}
-
-void Collider::SetCollisionMask(uint32_t mask)
-{
-	collisionMask_ = collisionMask_ | mask;
-}
-
-void Collider::EditInfo::SetI32Info(uint32_t info)
-{
-	for (uint32_t num : i32Info_) {
-		if (num == info) {
-			return;
-		}
+	if (std::find(targetMasks_.begin(), targetMasks_.end(), mask) == targetMasks_.end()) {
+		targetMasks_.push_back(mask);
 	}
-
-	i32Info_.push_back(info);
 }
 
-void Collider::EditInfo::SetPairIInfo(std::pair<int, int> info)
+void Collider::SetCircle(const Vector2& position, const Vector2& radius, const float& rotate, const Vector2& velocity)
 {
-	for (std::pair<int, int> num : pairIInfo_) {
-		if (num == info) {
-			return;
-		}
-	}
+	shapeCircle_->SetParameter(position, radius, rotate, velocity);
+}
 
-	pairIInfo_.push_back(info);
+void Collider::SetCircle(const Vector2& position, const float& radius, const float& rotate, const Vector2& velocity)
+{
+	shapeCircle_->SetParameter(position, radius, rotate, velocity);
 }

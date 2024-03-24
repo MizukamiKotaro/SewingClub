@@ -14,6 +14,7 @@ StageScene::StageScene()
 	WaterChunk::StaticInitialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
+	collisionManager_ = CollisionManager::GetInstance();
 
 	player_ = std::make_unique<Player>();
 
@@ -36,6 +37,8 @@ void StageScene::Update()
 		// シーン切り替え
 		ChangeScene(CLEAR);
 	}
+
+	collisionManager_->Clear();
 
 #ifdef _DEBUG
 	Yarn::StaticUpdate();
@@ -64,16 +67,15 @@ void StageScene::Update()
 
 	WaveUpdate();
 
-	player_->SetIsInWater(false);
-	for (const std::unique_ptr<WaterChunk>& water : water_) {
-		if (WaterChunk::IsHitCircle(player_->GetPosition(), water->position_, water->scale_)) {
-			player_->SetIsInWater(true);
-		}
+	for (int i = 0; i < 3; i++) {
+		water_[i]->Update();
 	}
 
 	player_->Update(frameInfo_->GetDeltaTime());
 
 	waveFloor_->Update();
+
+	collisionManager_->CheckCollision();
 }
 
 void StageScene::Draw()

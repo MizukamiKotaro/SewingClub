@@ -1,55 +1,40 @@
 #pragma once
-#include "CollisionSystem/BaseColliderShapeType/BaseColliderShapeType.h"
-#include <vector>
+#include "CollisionSystem/CollisionConfig.h"
+#include "CollisionSystem/ColliderShapes/ShapeCircle/ShapeCircle.h"
+#include <list>
 #include <memory>
+
+class CollisionManager;
 
 class Collider {
 public:
+	virtual ~Collider() = default;
 
-	Collider();
+	virtual void OnCollision(const Collider& collider) = 0;
 
-	struct EditInfo
-	{
-		enum EditEnumV2 {
-			V2POS,
-			V2VELOCITY,
-			V2MASKPOS,
-			V2COUNT,
-		};
+	void CreateCollider(ColliderShape shape, ColliderType type, ColliderMask mask, bool isBeDrived = false);
 
-		BaseColliderShapeType::ColliderType colliderTypeMask_;
+	void AddTargetMask(ColliderMask mask);
 
-		void SetI32Info(uint32_t info);
-		void SetPairIInfo(std::pair<int, int> info);
+	const ColliderType GetType() const { return type_; }
+	const ColliderShape GetShape() const { return shape_; }
+	const ColliderMask GetMask() const { return mask_; }
+	const std::list<ColliderMask>& GetTargetMasks() const { return targetMasks_; }
+	const bool GetIsBeDrived() const { return isBeDrived_; }
 
-		uint32_t collisionMask_;
-		std::vector<uint32_t> i32Info_;
-		std::vector<std::pair<int, int>> pairIInfo_;
+	ShapeCircle* GetCircle() const { return shapeCircle_.get(); }
 
-		std::vector<int> iParas_;
-		std::vector<float> fParas_;
-		std::vector<Vector2> v2Paras_;
-		std::vector<Vector3> v3Paras_;
-	};
+	void SetCircle(const Vector2& position, const Vector2& radius, const float& rotate = 0.0f, const Vector2& velocity = {});
+	void SetCircle(const Vector2& position, const float& radius, const float& rotate = 0.0f, const Vector2& velocity = {});
 
-	virtual void OnCollision() = 0;
+protected:
+	CollisionManager* collisionManager_;
 
-	uint32_t GetCollisionAttribute() const;
+	std::unique_ptr<ShapeCircle> shapeCircle_;
 
-	void SetCollisionAttribute(uint32_t attribute);
-
-	uint32_t GetCollisionMask() const;
-
-	void SetCollisionMask(uint32_t mask);
-
-	std::unique_ptr<BaseColliderShapeType> shapeType_;
-
-	EditInfo editInfo_;
-
-public:
-
-	uint32_t collisionAttribute_ = 0x00000000;
-
-	uint32_t collisionMask_ = 0x00000000;
-
+	ColliderType type_;
+	bool isBeDrived_; // めり込み処理をするとき動くか
+	ColliderShape shape_;
+	ColliderMask mask_;
+	std::list<ColliderMask> targetMasks_;
 };

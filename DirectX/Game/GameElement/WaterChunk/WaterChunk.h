@@ -6,13 +6,13 @@
 #include <memory>
 #include "InstancingModelManager.h"
 #include "GlobalVariables/GlobalVariableUser.h"
-
+#include "CollisionSystem/Collider/Collider.h"
 #include "WaterChunkChip.h"
 
 class Camera;
 class Wave;
 
-class WaterChunk
+class WaterChunk : public Collider
 {
 public:
 
@@ -35,7 +35,9 @@ public:
 
 	static void ApplyGlobalVariable();*/
 
-	static bool IsHitCircle(const Vector3& pos0, const Vector3& pos1, float radius);
+private:
+	void OnCollision(const Collider& collider) override;
+	void SetCollider();
 
 private:
 	//enum FloatParamater {

@@ -9,6 +9,7 @@
 #include "InstancingModelManager.h"
 #include "GameElement/Wave/Wave.h"
 #include "GameElement/WaterChunk/WaterChunk.h"
+#include "CollisionSystem/CollisionManager/CollisionManager.h"
 
 class StageScene : public IScene
 {
@@ -34,4 +35,5 @@ private:
 	float time_ = 0.0f;
 
 	InstancingModelManager* instancingmodelManager_;
+	CollisionManager* collisionManager_;
 };

@@ -3,11 +3,16 @@
 #include <string>
 #include "GlobalVariables/GlobalVariableUser.h"
 #include "Model.h"
+#include "CollisionSystem/Collider/Collider.h"
 
 class Camera;
 
-class Charactor {
+class Charactor : public Collider
+{
 public:
+	virtual ~Charactor() override = default;
+
+	virtual void OnCollision(const Collider& collider) override = 0;
 
 	virtual void Initialize() = 0;
 

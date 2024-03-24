@@ -3,12 +3,16 @@
 #include "ModelDataManager.h"
 #include <algorithm>
 #include "GameElement/Wave/Wave.h"
+#include "CollisionSystem/CollisionManager/CollisionManager.h"
 
 InstancingModelManager* WaterChunk::instancingManager_ = nullptr;
 const ModelData* WaterChunk::modelData_ = nullptr;
 
 WaterChunk::WaterChunk()
 {
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
+	Collider::AddTargetMask(ColliderMask::PLAYER);
+
 	/*float scale = WaterChunkChip::GetScale();
 	int map = 100;
 	for (int i = 0; i < map; i++) {
@@ -44,6 +48,7 @@ void WaterChunk::Update()
 	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
 		chip->Update();
 	}*/
+	SetCollider();
 }
 
 void WaterChunk::Draw() const
@@ -60,6 +65,19 @@ void WaterChunk::StaticUpdate()
 #ifdef _DEBUG
 	//ApplyGlobalVariable();
 #endif // _DEBUG
+}
+
+void WaterChunk::OnCollision(const Collider& collider)
+{
+	if (collider.GetMask() == ColliderMask::PLAYER) {
+		
+	}
+}
+
+void WaterChunk::SetCollider()
+{
+	Collider::SetCircle({ position_.x,position_.y }, scale_);
+	collisionManager_->SetCollider(this);
 }
 
 //void WaterChunk::HitTest(const Wave& wave)
@@ -99,11 +117,3 @@ void WaterChunk::StaticUpdate()
 //
 //	scale_ = { fParas_[kScale],fParas_[kScale] ,fParas_[kScale] };
 //}
-
-bool WaterChunk::IsHitCircle(const Vector3& pos0, const Vector3& pos1, float radius)
-{
-	if ((pos0 - pos1).Length() <= radius) {
-		return true;
-	}
-	return false;
-}

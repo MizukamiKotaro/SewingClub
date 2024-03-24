@@ -1,15 +1,13 @@
 #pragma once
-
 #include "CollisionSystem/Collider/Collider.h"
 #include <list>
 
 class CollisionManager
 {
 public:
-
 	static CollisionManager* GetInstance();
 	
-	void Init();
+	void Initialize();
 
 	void Clear();
 
@@ -24,17 +22,10 @@ private:
 	const CollisionManager& operator=(const CollisionManager&) = delete;
 
 	bool IsNeedCollision(Collider* a, Collider* b)const;
-
-	bool IsMatchedConfig(Collider* a, Collider* b) const;
-
-	bool IsCollision(Collider* a, Collider* b) const;
-
-	bool IsCollisionBox2DBox2D(Collider* a, Collider* b) const;
-
-	bool IsCollisionBox2DMapChip2D(Collider* a, Collider* b) const;
+	bool IsMatchedMask(Collider* a, Collider* b) const;
+	bool IsCollision(Collider* a, Collider* b);
 
 private:
-	
 	std::list<Collider*> colliders_;
 
 };

@@ -3,9 +3,13 @@
 #include "Input.h"
 #include "calc.h"
 #include <algorithm>
+#include "CollisionSystem/CollisionManager/CollisionManager.h"
 
 Player::Player()
-{;
+{
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::RIGID_BODY, ColliderMask::PLAYER);
+	Collider::AddTargetMask(ColliderMask::WATER);
+
 	CreateGlobalVariable("Player");
 
 	input_ = Input::GetInstance();
@@ -43,8 +47,6 @@ void Player::Update(float deltaTime)
 	ApplyGlobalVariable();
 #endif // _DEBUG
 
-	preIsInWater_ = isInWater_;
-
 	if (isInWater_ && preIsInWater_) {
 		Move(deltaTime);
 	}
@@ -57,6 +59,7 @@ void Player::Update(float deltaTime)
 	else {
 		OutWater(deltaTime);
 	}
+	preIsInWater_ = isInWater_;
 
 	if (model_->transform_.GetWorldPosition().y <= fParas_[kMinPositionY]) {
 		Reset();
@@ -65,6 +68,9 @@ void Player::Update(float deltaTime)
 	model_->Update();
 
 	yarn_->Update();
+
+	isInWater_ = false;
+	SetCollider();
 }
 
 void Player::Draw(const Camera* camera)
@@ -205,6 +211,20 @@ void Player::InitializeFloating()
 void Player::UpdateFloating()
 {
 
+}
+
+void Player::OnCollision(const Collider& collider)
+{
+	if (collider.GetMask() == ColliderMask::WATER) {
+		isInWater_ = true;
+	}
+}
+
+void Player::SetCollider()
+{
+	Collider::SetCircle({ model_->transform_.translate_.x,model_->transform_.translate_.y },
+		0.0f, 0.0f, { velocity_.x,velocity_.y });
+	collisionManager_->SetCollider(this);
 }
 
 void Player::SetGlobalVariable()

@@ -21,9 +21,13 @@ public:
 public:
 	const Vector3& GetPosition() const;
 
-	void SetIsInWater(bool is) { isInWater_ = is; }
+	//void SetIsInWater(bool is) { isInWater_ = is; }
 
 private:
+	void OnCollision(const Collider& collider) override;
+
+	void SetCollider();
+
 	void SetGlobalVariable() override;
 
 	void ApplyGlobalVariable() override;
