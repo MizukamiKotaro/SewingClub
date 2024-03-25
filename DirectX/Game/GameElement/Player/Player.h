@@ -62,7 +62,8 @@ private:
 		kOutWaterTime, // 水から飛び出したときに加速させる時間
 		kMinPositionY, // プレイヤーの最低の高さ
 		kGravityDown, // 降下中の重力
-		kGravityWater,
+		kGravityWater, // 水の塊の重力
+		kKeepSpeedTime, // 加速を維持する時間
 		kFloatEnd,
 	};
 
@@ -79,6 +80,7 @@ private:
 		"プレイヤーの最低の高さ",
 		"降下中の重力",
 		"水の塊の重力",
+		"加速を維持する時間",
 	};
 
 	float fParas_[kFloatEnd];

@@ -136,8 +136,8 @@ void Player::Move(float deltaTime)
 		}
 	}
 
-	if (timeCount_ >= 0.1f) {
-		addAcceleration_ *= 0.90f;
+	if (timeCount_ >= fParas_[kKeepSpeedTime]) {
+		addAcceleration_ *= 0.92f;
 		if (addAcceleration_ <= 0.3f) {
 			addAcceleration_ = 0.0f;
 		}
