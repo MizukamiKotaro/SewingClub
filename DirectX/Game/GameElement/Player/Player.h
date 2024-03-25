@@ -5,6 +5,7 @@
 #include "GameElement/Yarn/Yarn.h"
 
 class Input;
+class WaterManager;
 
 class Player : public Charactor
 {
@@ -49,6 +50,7 @@ private:
 private:
 
 	Input* input_ = nullptr;
+	WaterManager* waterManager_ = nullptr;
 
 	enum FloatParamater {
 		kAcceleration, // 加速度
@@ -64,6 +66,7 @@ private:
 		kGravityDown, // 降下中の重力
 		kGravityWater, // 水の塊の重力
 		kKeepSpeedTime, // 加速を維持する時間
+		kWaterSize, // プレイヤーが生成する水のサイズ
 		kFloatEnd,
 	};
 
@@ -81,17 +84,20 @@ private:
 		"降下中の重力",
 		"水の塊の重力",
 		"加速を維持する時間",
+		"プレイヤーが生成する水のサイズ"
 	};
 
 	float fParas_[kFloatEnd];
 
 	enum BoolParamater {
 		kGravityArea,
+		kAddWaterTriger,
 		kBoolEnd,
 	};
 
 	std::string bNames[kBoolEnd] = {
 		"水ごとに重力がありか",
+		"ボタンを押したときに水を生成するか"
 	};
 
 	bool bParas_[kBoolEnd];

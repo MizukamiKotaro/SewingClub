@@ -37,4 +37,5 @@ private:
 
 	InstancingModelManager* instancingmodelManager_;
 	CollisionManager* collisionManager_;
+	WaterManager* waterManager_;
 };

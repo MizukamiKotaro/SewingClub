@@ -4,6 +4,7 @@
 #include "calc.h"
 #include <algorithm>
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
+#include "GameElement/WaterManager/WaterManager.h"
 
 Player::Player()
 {
@@ -14,6 +15,7 @@ Player::Player()
 	CreateGlobalVariable("Player");
 
 	input_ = Input::GetInstance();
+	waterManager_ = WaterManager::GetInstance();
 
 	for (int i = 0; i < kFloatEnd; i++) {
 		fParas_[i] = 0.5f;
@@ -206,6 +208,13 @@ void Player::OutWater(float deltaTime)
 	}
 
 	model_->transform_.translate_ += velocity_;
+
+	if (bParas_[BoolParamater::kAddWaterTriger]) {
+		if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
+			waterManager_->CreateWater({ model_->transform_.translate_.x,model_->transform_.translate_.y },
+				{ fParas_[FloatParamater::kWaterSize],fParas_[FloatParamater::kWaterSize] }, false, 0.0f);
+		}
+	}
 }
 
 void Player::Reset()

@@ -18,6 +18,7 @@ public:
 
 	WaterChunk();
 	WaterChunk(int no);
+	WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate);
 
 	static void StaticInitialize();
 
@@ -66,6 +67,7 @@ private:
 	Vector3 position_;
 	float scale_;
 	float rotate_;
+	bool isSmaeGravitySize_;
 
 	std::unique_ptr<GravityArea> gravityArea_;
 	std::string groupName_ = "_";

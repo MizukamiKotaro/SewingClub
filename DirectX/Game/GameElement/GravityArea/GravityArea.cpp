@@ -35,9 +35,14 @@ void GravityArea::StaticUpdate()
 	ApplyGlobalVariable();
 }
 
-void GravityArea::Update(const Vector2& pos, const Vector2& radius, const float& rotate, const Vector2& velcity)
+void GravityArea::Update(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, const Vector2& velcity)
 {
-	Collider::SetCircle(pos, radius * scale_, rotate, velcity);
+	if (isSame) {
+		Collider::SetCircle(pos, radius, rotate, velcity);
+	}
+	else {
+		Collider::SetCircle(pos, radius * scale_, rotate, velcity);
+	}
 	collisionManager_->SetCollider(this);
 }
 
@@ -49,7 +54,6 @@ void GravityArea::Draw(const Vector2& pos, const Vector2& radius, const float& r
 	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,{1.0f,1.0f,1.0f,0.1f} });
 }
 #endif // _DEBUG
-
 
 void GravityArea::SetGlobalVariable()
 {

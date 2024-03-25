@@ -2,6 +2,7 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include "Kyoko.h"
 #include "RandomGenerator/RandomGenerator.h"
+#include "GameElement/WaterManager/WaterManager.h"
 
 StageScene::StageScene()
 {
@@ -16,6 +17,7 @@ StageScene::StageScene()
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
+	waterManager_ = WaterManager::GetInstance();
 
 	player_ = std::make_unique<Player>();
 
@@ -30,6 +32,7 @@ void StageScene::Initialize()
 {
 	player_->Initialize();
 	waves_.clear();
+	waterManager_->Clear();
 }
 
 void StageScene::Update()
@@ -71,6 +74,8 @@ void StageScene::Update()
 
 	player_->Update(frameInfo_->GetDeltaTime());
 
+	waterManager_->Update();
+
 	camera_->transform_.translate_.x = player_->GetPosition().x;
 	camera_->transform_.translate_.y = player_->GetPosition().y;
 	camera_->Update();
@@ -93,6 +98,7 @@ void StageScene::Draw()
 	for (int i = 0; i < waterNum_; i++) {
 		fullWater_[i]->Draw();
 	}
+	waterManager_->Draw();
 
 	instancingmodelManager_->Draw(*camera_.get());
 

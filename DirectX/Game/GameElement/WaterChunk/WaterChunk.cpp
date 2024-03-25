@@ -27,6 +27,7 @@ WaterChunk::WaterChunk()
 	position_ = {};
 	scale_ = 1.0f;
 	rotate_ = 0.0f;
+	isSmaeGravitySize_ = false;
 }
 
 WaterChunk::WaterChunk(int no)
@@ -43,6 +44,21 @@ WaterChunk::WaterChunk(int no)
 	groupName_ = "Water" + std::to_string(no);
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", groupName_);
 	SetGlobalVariable();
+	isSmaeGravitySize_ = false;
+}
+
+WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate)
+{
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
+	Collider::AddTargetMask(ColliderMask::PLAYER);
+
+	gravityArea_ = std::make_unique<GravityArea>();
+
+	position_ = { pos.x,pos.y,0.0f };
+	scale_ = radius.x;
+	rotate_ = rotate;
+
+	isSmaeGravitySize_ = isSame;
 }
 
 void WaterChunk::StaticInitialize()
