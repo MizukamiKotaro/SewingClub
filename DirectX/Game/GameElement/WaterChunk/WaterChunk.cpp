@@ -13,6 +13,8 @@ WaterChunk::WaterChunk()
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::PLAYER);
 
+	gravityArea_ = std::make_unique<GravityArea>();
+
 	/*float scale = WaterChunkChip::GetScale();
 	int map = 100;
 	for (int i = 0; i < map; i++) {
@@ -25,6 +27,22 @@ WaterChunk::WaterChunk()
 	position_ = {};
 	scale_ = 1.0f;
 	rotate_ = 0.0f;
+}
+
+WaterChunk::WaterChunk(int no)
+{
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
+	Collider::AddTargetMask(ColliderMask::PLAYER);
+
+	gravityArea_ = std::make_unique<GravityArea>();
+
+	position_ = {};
+	scale_ = 1.0f;
+	rotate_ = 0.0f;
+
+	groupName_ = "Water" + std::to_string(no);
+	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", groupName_);
+	SetGlobalVariable();
 }
 
 void WaterChunk::StaticInitialize()
@@ -45,9 +63,14 @@ void WaterChunk::Initialize()
 
 void WaterChunk::Update()
 {
+#ifdef _DEBUG
+	ApplyGlobalVariable();
+#endif // _DEBUG
+
 	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
 		chip->Update();
 	}*/
+	gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ }, rotate_);
 	SetCollider();
 }
 
@@ -56,6 +79,10 @@ void WaterChunk::Draw() const
 	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
 		chip->Draw();
 	}*/
+#ifdef _DEBUG
+	gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, rotate_);
+#endif // _DEBUG
+
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
 	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,{0.3f,1.0f,0.8f,1.0f} });
 }
@@ -65,6 +92,23 @@ void WaterChunk::StaticUpdate()
 #ifdef _DEBUG
 	//ApplyGlobalVariable();
 #endif // _DEBUG
+}
+
+void WaterChunk::SetGlobalVariable()
+{
+	if (globalVariable_) {
+		globalVariable_->AddItem("ポジション", position_);
+		globalVariable_->AddItem("スケール", scale_);
+	}
+	ApplyGlobalVariable();
+}
+
+void WaterChunk::ApplyGlobalVariable()
+{
+	if (globalVariable_) {
+		position_ = globalVariable_->GetVector3Value("ポジション");
+		scale_ = globalVariable_->GetFloatValue("スケール");
+	}
 }
 
 void WaterChunk::OnCollision(const Collider& collider)

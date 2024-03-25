@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <array>
+#include <unordered_map>
 #include "SceneSystem/IScene/IScene.h"
 
 #include "GameElement/Player/Player.h"
@@ -30,7 +30,8 @@ private:
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<WaveFloor> waveFloor_;
 	std::list<std::unique_ptr<Wave>> waves_;
-	std::array<std::unique_ptr<WaterChunk>,3> water_;
+	std::unordered_map<int, std::unique_ptr<WaterChunk>> fullWater_;
+	int waterNum_ = 3;
 
 	float time_ = 0.0f;
 

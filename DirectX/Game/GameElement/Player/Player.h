@@ -62,6 +62,7 @@ private:
 		kOutWaterTime, // 水から飛び出したときに加速させる時間
 		kMinPositionY, // プレイヤーの最低の高さ
 		kGravityDown, // 降下中の重力
+		kGravityWater,
 		kFloatEnd,
 	};
 
@@ -77,14 +78,29 @@ private:
 		"水から飛び出したときに加速させる時間",
 		"プレイヤーの最低の高さ",
 		"降下中の重力",
+		"水の塊の重力",
 	};
 
 	float fParas_[kFloatEnd];
+
+	enum BoolParamater {
+		kGravityArea,
+		kBoolEnd,
+	};
+
+	std::string bNames[kBoolEnd] = {
+		"水ごとに重力がありか",
+	};
+
+	bool bParas_[kBoolEnd];
 
 	Vector3 velocity_; // 速度
 	Vector2 vector_; // 移動方向ベクトル
 	float speed_;
 	float addAcceleration_;
+	Vector2 gravityVelocity_;
+	Vector2 gravityPos_;
+	bool isGravity_;
 
 	float timeCount_;
 

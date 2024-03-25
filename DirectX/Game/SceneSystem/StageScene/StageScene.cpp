@@ -12,6 +12,7 @@ StageScene::StageScene()
 	WaveFloor::StaticInitialize();
 	Wave::StaticInitialize();
 	WaterChunk::StaticInitialize();
+	GravityArea::StaticInitialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
@@ -21,7 +22,7 @@ StageScene::StageScene()
 	waveFloor_ = std::make_unique<WaveFloor>();
 
 	for (int i = 0; i < 3; i++) {
-		water_[i] = std::make_unique<WaterChunk>();
+		fullWater_[i] = std::make_unique<WaterChunk>(i);
 	}
 }
 
@@ -46,6 +47,7 @@ void StageScene::Update()
 	WaveFloor::StaticUpdate();
 	Wave::StaticUpdate();
 	WaterChunk::StaticUpdate();
+	GravityArea::StaticUpdate();
 
 	ImGui::Begin("Camera");
 	ImGui::DragFloat3("ポジション", &camera_->transform_.translate_.x, 0.01f);
@@ -54,24 +56,24 @@ void StageScene::Update()
 	camera_->Update();
 
 	ImGui::Begin("水");
-	for (int i = 0; i < 3; i++) {
-		std::string name = std::to_string(i);
-		if (ImGui::TreeNode(name.c_str())) {
-			ImGui::DragFloat3("ポジション", &water_[i]->position_.x, 0.01f);
-			ImGui::DragFloat("サイズ", &water_[i]->scale_, 0.01f);
-			ImGui::TreePop();
-		}
-	}
+	ImGui::SliderInt("水の数", &waterNum_, 3, 15);
 	ImGui::End();
 #endif // _DEBUG
 
 	WaveUpdate();
 
-	for (int i = 0; i < 3; i++) {
-		water_[i]->Update();
+	for (int i = 0; i < waterNum_; i++) {
+		if (fullWater_.find(i) == fullWater_.end()) {
+			fullWater_[i] = std::make_unique<WaterChunk>(i);
+		}
+		fullWater_[i]->Update();
 	}
 
 	player_->Update(frameInfo_->GetDeltaTime());
+
+	camera_->transform_.translate_.x = player_->GetPosition().x;
+	camera_->transform_.translate_.y = player_->GetPosition().y;
+	camera_->Update();
 
 	waveFloor_->Update();
 
@@ -88,8 +90,8 @@ void StageScene::Draw()
 
 	//waveFloor_->Draw();
 
-	for (const std::unique_ptr<WaterChunk>& water : water_) {
-		water->Draw();
+	for (int i = 0; i < waterNum_; i++) {
+		fullWater_[i]->Draw();
 	}
 
 	instancingmodelManager_->Draw(*camera_.get());

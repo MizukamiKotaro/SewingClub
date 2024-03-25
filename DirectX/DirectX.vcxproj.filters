@@ -400,6 +400,9 @@
     <Filter Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleCircle">
       <UniqueIdentifier>{ce3f2ebb-ffc5-47ab-b42a-ba018dbb94c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\GravityArea">
+      <UniqueIdentifier>{bb78d199-fe23-4d4d-9d99-8567fec4b21f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -731,6 +734,9 @@
     </ClCompile>
     <ClCompile Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleCircle\CollisionCircleCircle.cpp">
       <Filter>Engine\CollisionSystem\CollisionProcesses\CollisionCircleCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\GravityArea\GravityArea.cpp">
+      <Filter>Game\GameElement\GravityArea</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1117,6 +1123,9 @@
     </ClInclude>
     <ClInclude Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleCircle\CollisionCircleCircle.h">
       <Filter>Engine\CollisionSystem\CollisionProcesses\CollisionCircleCircle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\GravityArea\GravityArea.h">
+      <Filter>Game\GameElement\GravityArea</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,7 @@ Player::Player()
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::RIGID_BODY, ColliderMask::PLAYER);
 	Collider::AddTargetMask(ColliderMask::WATER);
+	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
 
 	CreateGlobalVariable("Player");
 
@@ -17,12 +18,18 @@ Player::Player()
 	for (int i = 0; i < kFloatEnd; i++) {
 		fParas_[i] = 0.5f;
 	}
+	for (int i = 0; i < kBoolEnd; i++) {
+		bParas_[i] = false;
+	}
 
 	velocity_ = {};
 	vector_ = { 1.0f,0.0f };
 	speed_ = 0.0f;
 	addAcceleration_ = 0.0f;
 	timeCount_ = 0.0f;
+	gravityVelocity_ = {};
+	gravityPos_ = {};
+	isGravity_ = false;
 
 	model_ = std::make_unique<Model>("Cube");
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
@@ -70,6 +77,8 @@ void Player::Update(float deltaTime)
 	yarn_->Update();
 
 	isInWater_ = false;
+	isGravity_ = false;
+	gravityVelocity_ = {};
 	SetCollider();
 }
 
@@ -159,11 +168,25 @@ void Player::OutWater(float deltaTime)
 		addAcceleration_ += addSpeed;
 	}
 	velocity_ = { vector_.x * speed_,vector_.y * speed_ ,0.0f };
-	if (velocity_.y <= 0.0f) {
-		velocity_.y -= fParas_[kGravityDown] * deltaTime;
+	if (bParas_[BoolParamater::kGravityArea]) {
+		if (isGravity_) {
+			velocity_.x += gravityVelocity_.x * deltaTime;
+			velocity_.y += gravityVelocity_.y * deltaTime;
+		}
+		else {
+			Vector2 vector = gravityPos_ - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
+			gravityVelocity_ = vector.Normalize() * fParas_[kGravityWater];
+			velocity_.x += gravityVelocity_.x * deltaTime;
+			velocity_.y += gravityVelocity_.y * deltaTime;
+		}
 	}
 	else {
-		velocity_.y -= fParas_[kGravity] * deltaTime;
+		if (velocity_.y <= 0.0f) {
+			velocity_.y -= fParas_[kGravityDown] * deltaTime;
+		}
+		else {
+			velocity_.y -= fParas_[kGravity] * deltaTime;
+		}
 	}
 
 	Vector3 normal = velocity_.Normalize();
@@ -192,6 +215,9 @@ void Player::Reset()
 	speed_ = 0.0f;
 	addAcceleration_ = 0.0f;
 	timeCount_ = 0.0f;
+	gravityVelocity_ = {};
+	gravityPos_ = {};
+	isGravity_ = false;
 
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
@@ -218,6 +244,21 @@ void Player::OnCollision(const Collider& collider)
 	if (collider.GetMask() == ColliderMask::WATER) {
 		isInWater_ = true;
 	}
+	else if (collider.GetMask() == ColliderMask::GRAVITY_AREA) {
+
+		ShapeCircle* circle = collider.GetCircle();
+		Vector2 pos = { model_->transform_.translate_.x,model_->transform_.translate_.y };
+		if (!isGravity_) {
+			gravityPos_ = circle->position_;
+			isGravity_ = true;
+		}
+		if ((gravityPos_ - pos).Length() > (circle->position_ - pos).Length()) {
+			gravityPos_ = circle->position_;
+		}
+		
+		Vector2 vector = circle->position_ - pos;
+		gravityVelocity_ += vector.Normalize() * fParas_[kGravityWater];
+	}
 }
 
 void Player::SetCollider()
@@ -234,6 +275,9 @@ void Player::SetGlobalVariable()
 	for (int i = 0; i < kFloatEnd; i++) {
 		globalVariable_->AddItem(fNames[i], fParas_[i]);
 	}
+	for (int i = 0; i < kBoolEnd; i++) {
+		globalVariable_->AddItem(bNames[i], bParas_[i]);
+	}
 
 	ApplyGlobalVariable();
 }
@@ -244,5 +288,8 @@ void Player::ApplyGlobalVariable()
 
 	for (int i = 0; i < kFloatEnd; i++) {
 		fParas_[i] = globalVariable_->GetFloatValue(fNames[i]);
+	}
+	for (int i = 0; i < kBoolEnd; i++) {
+		bParas_[i] = globalVariable_->GetBoolValue(bNames[i]);
 	}
 }

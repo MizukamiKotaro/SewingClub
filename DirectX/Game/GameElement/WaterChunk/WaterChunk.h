@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Vector2.h"
 #include "Vector3.h"
 #include <string>
@@ -8,6 +7,7 @@
 #include "GlobalVariables/GlobalVariableUser.h"
 #include "CollisionSystem/Collider/Collider.h"
 #include "WaterChunkChip.h"
+#include "GameElement/GravityArea/GravityArea.h"
 
 class Camera;
 class Wave;
@@ -17,6 +17,7 @@ class WaterChunk : public Collider
 public:
 
 	WaterChunk();
+	WaterChunk(int no);
 
 	static void StaticInitialize();
 
@@ -30,10 +31,10 @@ public:
 
 	void HitTest(const Wave& wave);
 
-public:
-	/*static void SetGlobalVariable();
+private:
+	void SetGlobalVariable();
 
-	static void ApplyGlobalVariable();*/
+	void ApplyGlobalVariable();
 
 private:
 	void OnCollision(const Collider& collider) override;
@@ -47,22 +48,26 @@ private:
 	//	kScale, // スケール
 	//	kFloatEnd,
 	//};
-	//static const std::string fNames[kFloatEnd];
-	//static float fParas_[kFloatEnd];
+	//const std::string fNames[kFloatEnd];
+	//float fParas_[kFloatEnd];
 
 	static InstancingModelManager* instancingManager_;
 	static const ModelData* modelData_;
 
 	//static Vector3 scale_;
 
-	static std::unique_ptr<GlobalVariableUser> globalVariable_;
+	std::unique_ptr<GlobalVariableUser> globalVariable_;
 
 public:
 	
 	//std::list<std::unique_ptr<WaterChunkChip>> chips_;
 
+private:
 	Vector3 position_;
 	float scale_;
 	float rotate_;
+
+	std::unique_ptr<GravityArea> gravityArea_;
+	std::string groupName_ = "_";
 
 };
