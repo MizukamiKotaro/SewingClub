@@ -86,7 +86,7 @@ void WaterChunk::Update()
 	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
 		chip->Update();
 	}*/
-	gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ }, rotate_);
+	gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 	SetCollider();
 }
 
@@ -96,7 +96,7 @@ void WaterChunk::Draw() const
 		chip->Draw();
 	}*/
 #ifdef _DEBUG
-	gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, rotate_);
+	gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 #endif // _DEBUG
 
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);

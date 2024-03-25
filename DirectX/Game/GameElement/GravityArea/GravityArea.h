@@ -18,7 +18,7 @@ public:
 	void Update(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate = 0.0f, const Vector2& velcity = {});
 
 #ifdef _DEBUG
-	void Draw(const Vector2& pos, const Vector2& radius, const float& rotate = 0.0f);
+	void Draw(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate = 0.0f);
 #endif // _DEBUG
 
 private:

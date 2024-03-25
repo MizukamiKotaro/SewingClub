@@ -37,9 +37,13 @@ void StageScene::Initialize()
 
 void StageScene::Update()
 {
-	if (input_->PressedKey(DIK_RETURN)) {
+	if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
 		// シーン切り替え
 		ChangeScene(CLEAR);
+	}
+	if (input_->PressedKey(DIK_R)) {
+		player_->Initialize();
+		waterManager_->Clear();
 	}
 
 	collisionManager_->Clear();

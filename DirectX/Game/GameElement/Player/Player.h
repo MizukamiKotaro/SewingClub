@@ -3,6 +3,7 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "GameElement/Yarn/Yarn.h"
+#include <list>
 
 class Input;
 class WaterManager;
@@ -41,6 +42,8 @@ private:
 
 	void OutWater(float deltaTime);
 
+	void UpdateDelayProcess(float deltaTime);
+
 	void Reset();
 
 	void InitializeFloating();
@@ -67,6 +70,8 @@ private:
 		kGravityWater, // 水の塊の重力
 		kKeepSpeedTime, // 加速を維持する時間
 		kWaterSize, // プレイヤーが生成する水のサイズ
+		kWaterSizeMove, // ジャンプで生成する水のサイズ
+		kDelayTime,
 		kFloatEnd,
 	};
 
@@ -84,7 +89,10 @@ private:
 		"降下中の重力",
 		"水の塊の重力",
 		"加速を維持する時間",
-		"プレイヤーが生成する水のサイズ"
+		"プレイヤーが生成する水のサイズ",
+		"ジャンプで生成する水のサイズ",
+		"水の生成に遅延させる時間"
+
 	};
 
 	float fParas_[kFloatEnd];
@@ -92,12 +100,14 @@ private:
 	enum BoolParamater {
 		kGravityArea,
 		kAddWaterTriger,
+		kAddWaterMove,
 		kBoolEnd,
 	};
 
 	std::string bNames[kBoolEnd] = {
 		"水ごとに重力がありか",
-		"ボタンを押したときに水を生成するか"
+		"ボタンを押したときに水を生成するか",
+		"ジャンプしたときに水を生成するか"
 	};
 
 	bool bParas_[kBoolEnd];
@@ -119,4 +129,12 @@ private:
 
 	std::unique_ptr<Yarn> yarn_;
 
+	struct DelayProcess
+	{
+		Vector2 position_;
+		float count_;
+	};
+
+	std::list<DelayProcess> delayProcess_;
+	bool isMemoryPos_;
 };

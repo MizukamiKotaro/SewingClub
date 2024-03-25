@@ -41,6 +41,7 @@ Player::Player()
 	floatingParameter_ = 0.0f;
 	isInWater_ = true;
 	preIsInWater_ = true;
+	isMemoryPos_ = false;
 
 	yarn_ = std::make_unique<Yarn>(&model_->transform_.translate_, model_->transform_.translate_);
 }
@@ -77,6 +78,8 @@ void Player::Update(float deltaTime)
 	model_->Update();
 
 	yarn_->Update();
+
+	UpdateDelayProcess(deltaTime);
 
 	isInWater_ = false;
 	isGravity_ = false;
@@ -152,6 +155,10 @@ void Player::PopUpFromWater()
 {
 	timeCount_ = 0.0f;
 	model_->transform_.translate_ += velocity_;
+	isMemoryPos_ = false;
+	if (bParas_[BoolParamater::kAddWaterMove]) {
+		delayProcess_.push_back({ { model_->transform_.translate_.x,model_->transform_.translate_.y },0.0f });
+	}
 }
 
 void Player::ComeToWater()
@@ -215,6 +222,37 @@ void Player::OutWater(float deltaTime)
 				{ fParas_[FloatParamater::kWaterSize],fParas_[FloatParamater::kWaterSize] }, false, 0.0f);
 		}
 	}
+
+	if (bParas_[BoolParamater::kAddWaterMove]) {
+		if (!isMemoryPos_) {
+			isMemoryPos_ = true;
+			delayProcess_.push_back({ { model_->transform_.translate_.x,model_->transform_.translate_.y },0.0f });
+		}
+		else {
+			isMemoryPos_ = false;
+		}
+	}
+
+}
+
+void Player::UpdateDelayProcess(float deltaTime)
+{
+	if (bParas_[BoolParamater::kAddWaterMove]) {
+		for (std::list<DelayProcess>::iterator it = delayProcess_.begin(); it != delayProcess_.end(); ) {
+			(*it).count_ += deltaTime;
+
+			if ((*it).count_ >= fParas_[FloatParamater::kDelayTime]) {
+
+				waterManager_->CreateWater((*it).position_,
+					{ fParas_[FloatParamater::kWaterSizeMove],fParas_[FloatParamater::kWaterSizeMove] },
+					true, 0.0f);
+				it = delayProcess_.erase(it);
+			}
+			else {
+				it++;
+			}
+		}
+	}
 }
 
 void Player::Reset()
@@ -234,6 +272,7 @@ void Player::Reset()
 	floatingParameter_ = 0.0f;
 	isInWater_ = true;
 	preIsInWater_ = true;
+	isMemoryPos_ = false;
 
 	yarn_.reset(new Yarn(&model_->transform_.translate_, model_->transform_.translate_));
 }
