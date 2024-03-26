@@ -44,6 +44,8 @@ private:
 
 	void UpdateDelayProcess(float deltaTime);
 
+	void UpdateInputAcceleration(float deltaTime);
+
 	void Reset();
 
 	void InitializeFloating();
@@ -73,6 +75,9 @@ private:
 		kWaterSizeMove, // ジャンプで生成する水のサイズ
 		kDelayTime, // 水の生成に遅延させる時間
 		kJumpInputAcceleration, // ジャンプ中の入力の加速度
+		kInputAcceleration, // ボタン入力による加速度
+		kRecoveryInputTime, // ボタン加速のクールタイム
+		kInputAccelerationTime, // ボタン入力による加速させる時間
 		kFloatEnd,
 	};
 
@@ -93,16 +98,22 @@ private:
 		"プレイヤーが生成する水のサイズ",
 		"ジャンプで生成する水のサイズ",
 		"水の生成に遅延させる時間",
-		"ジャンプ中の入力の加速度"
+		"ジャンプ中の入力の加速度",
+		"ボタン入力による加速度",
+		"ボタン加速のクールタイム",
+		"ボタン入力による加速させる時間"
 	};
 
 	float fParas_[kFloatEnd];
 
 	enum BoolParamater {
-		kGravityArea,
-		kAddWaterTriger,
-		kAddWaterMove,
-		kJumpInput,
+		kGravityArea, // 水ごとに重力がありか
+		kAddWaterTriger, // ボタンを押したときに水を生成するか
+		kAddWaterMove, // ジャンプしたときに水を生成するか
+		kJumpInput, // ジャンプ中に入力を受け付けるか
+		kAccelerationInput, // ボタン入力で加速できるか
+		kAccelerationInJump, // ボタン入力でジャンプ中に加速できるか
+		kRecoveryInJump, // ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか
 		kBoolEnd,
 	};
 
@@ -110,7 +121,10 @@ private:
 		"水ごとに重力がありか",
 		"ボタンを押したときに水を生成するか",
 		"ジャンプしたときに水を生成するか",
-		"ジャンプ中に入力を受け付けるか"
+		"ジャンプ中に入力を受け付けるか",
+		"ボタン入力で水中で加速できるか",
+		"ボタン入力でジャンプ中に加速できるか",
+		"ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか"
 	};
 
 	bool bParas_[kBoolEnd];
@@ -124,6 +138,10 @@ private:
 	bool isGravity_;
 
 	float timeCount_;
+	float coolTimeCount_;
+	float accelerationTimeCount_;
+	bool isUseInputAcceleration_;
+	bool isInputAcceleration_;
 
 	bool preIsInWater_;
 	bool isInWater_;

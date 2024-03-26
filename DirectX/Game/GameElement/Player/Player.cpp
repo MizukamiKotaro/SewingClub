@@ -32,6 +32,10 @@ Player::Player()
 	gravityVelocity_ = {};
 	gravityPos_ = {};
 	isGravity_ = false;
+	coolTimeCount_ = 0.0f;
+	isUseInputAcceleration_ = true;
+	accelerationTimeCount_ = 0.0f;
+	isInputAcceleration_ = false;
 
 	model_ = std::make_unique<Model>("subPlayer");
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
@@ -69,6 +73,9 @@ void Player::Update(float deltaTime)
 	else {
 		OutWater(deltaTime);
 	}
+
+	UpdateInputAcceleration(deltaTime);
+
 	preIsInWater_ = isInWater_;
 
 	if (model_->transform_.GetWorldPosition().y <= fParas_[kMinPositionY]) {
@@ -249,7 +256,6 @@ void Player::OutWater(float deltaTime)
 			isMemoryPos_ = false;
 		}
 	}
-
 }
 
 void Player::UpdateDelayProcess(float deltaTime)
@@ -272,6 +278,58 @@ void Player::UpdateDelayProcess(float deltaTime)
 	}
 }
 
+void Player::UpdateInputAcceleration(float deltaTime)
+{
+	if (bParas_[BoolParamater::kAccelerationInput] || bParas_[BoolParamater::kAccelerationInJump]) {
+		coolTimeCount_ += deltaTime;
+		if (isInputAcceleration_) {
+			accelerationTimeCount_ += deltaTime;
+			if (accelerationTimeCount_ <= fParas_[FloatParamater::kInputAccelerationTime]) {
+				float addSpeed = fParas_[FloatParamater::kInputAcceleration] * deltaTime;
+				speed_ += addSpeed;
+				addAcceleration_ += addSpeed;
+				Vector2 vector = vector_.Normalize();
+				velocity_.x += vector.x * addSpeed;
+				velocity_.y += vector.y * addSpeed;
+				model_->transform_.translate_.x += vector.x * addSpeed;
+				model_->transform_.translate_.y += vector.y * addSpeed;
+			}
+			else {
+				accelerationTimeCount_ = 0.0f;
+				isInputAcceleration_ = false;
+			}
+		}
+
+		if (isUseInputAcceleration_ && input_->PressedGamePadButton(Input::GamePadButton::B)) {
+			if ((isInWater_ && bParas_[BoolParamater::kAccelerationInput]) || (!isInWater_ && bParas_[BoolParamater::kAccelerationInJump])) {
+				isUseInputAcceleration_ = false;
+				isInputAcceleration_ = true;
+				accelerationTimeCount_ = 0.0f;
+			}
+		}
+
+		if (coolTimeCount_ >= fParas_[FloatParamater::kRecoveryInputTime]) {
+			if (bParas_[BoolParamater::kRecoveryInJump]) {
+				coolTimeCount_ = 0.0f;
+				isUseInputAcceleration_ = true;
+			}
+			else {
+				if (isInWater_) {
+					coolTimeCount_ = 0.0f;
+					isUseInputAcceleration_ = true;
+				}
+			}
+		}
+
+		if (isInputAcceleration_) {
+			model_->color_ = { 0.9f,0.1f,0.1f,1.0f };
+		}
+		else {
+			model_->color_ = { 1.0f,1.0f,1.0f,1.0f };
+		}
+	}
+}
+
 void Player::Reset()
 {
 	velocity_ = { 0.0f };
@@ -282,6 +340,10 @@ void Player::Reset()
 	gravityVelocity_ = {};
 	gravityPos_ = {};
 	isGravity_ = false;
+	coolTimeCount_ = 0.0f;
+	isUseInputAcceleration_ = true;
+	accelerationTimeCount_ = 0.0f;
+	isInputAcceleration_ = false;
 
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
