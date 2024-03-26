@@ -25,7 +25,7 @@ Player::Player()
 	}
 
 	velocity_ = {};
-	vector_ = { 1.0f,0.0f };
+	vector_ = { 0.0f,1.0f };
 	speed_ = 0.0f;
 	addAcceleration_ = 0.0f;
 	timeCount_ = 0.0f;
@@ -33,7 +33,7 @@ Player::Player()
 	gravityPos_ = {};
 	isGravity_ = false;
 
-	model_ = std::make_unique<Model>("Cube");
+	model_ = std::make_unique<Model>("subPlayer");
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
 	SetGlobalVariable();
 	model_->Update();
@@ -121,10 +121,10 @@ void Player::Move(float deltaTime)
 		velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
 
 		if (vector_.y >= 0.0f) {
-			model_->transform_.rotate_.z = std::acosf(vector_.x);
+			model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f;
 		}
 		else {
-			model_->transform_.rotate_.z = -std::acosf(vector_.x);
+			model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f;
 		}
 	}
 	else {
@@ -225,10 +225,10 @@ void Player::OutWater(float deltaTime)
 		speed_ = velocity_.y / normal.y;
 	}
 	if (vector_.y >= 0.0f) {
-		model_->transform_.rotate_.z = std::acosf(vector_.x);
+		model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f;
 	}
 	else {
-		model_->transform_.rotate_.z = -std::acosf(vector_.x);
+		model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f;
 	}
 
 	model_->transform_.translate_ += velocity_;
@@ -275,7 +275,7 @@ void Player::UpdateDelayProcess(float deltaTime)
 void Player::Reset()
 {
 	velocity_ = { 0.0f };
-	vector_ = { 1.0f,0.0f };
+	vector_ = { 0.0f,1.0f };
 	speed_ = 0.0f;
 	addAcceleration_ = 0.0f;
 	timeCount_ = 0.0f;
