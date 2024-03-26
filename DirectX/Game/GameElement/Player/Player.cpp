@@ -198,6 +198,23 @@ void Player::OutWater(float deltaTime)
 		}
 	}
 
+	if (bParas_[BoolParamater::kJumpInput]) {
+		Vector2 vector = input_->GetGamePadLStick();
+
+		if (bParas_[BoolParamater::kGravityArea]) {
+			if (vector.x > 0.0f) {
+				velocity_.x += fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
+			}
+			else if (vector.x < 0.0f) {
+				velocity_.x -= fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
+			}
+		}
+		else {
+			velocity_.x += vector.x * fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
+			velocity_.y += vector.y * fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
+		}
+	}
+
 	Vector3 normal = velocity_.Normalize();
 	vector_ = { normal.x,normal.y };
 

@@ -71,7 +71,8 @@ private:
 		kKeepSpeedTime, // 加速を維持する時間
 		kWaterSize, // プレイヤーが生成する水のサイズ
 		kWaterSizeMove, // ジャンプで生成する水のサイズ
-		kDelayTime,
+		kDelayTime, // 水の生成に遅延させる時間
+		kJumpInputAcceleration, // ジャンプ中の入力の加速度
 		kFloatEnd,
 	};
 
@@ -91,8 +92,8 @@ private:
 		"加速を維持する時間",
 		"プレイヤーが生成する水のサイズ",
 		"ジャンプで生成する水のサイズ",
-		"水の生成に遅延させる時間"
-
+		"水の生成に遅延させる時間",
+		"ジャンプ中の入力の加速度"
 	};
 
 	float fParas_[kFloatEnd];
@@ -101,13 +102,15 @@ private:
 		kGravityArea,
 		kAddWaterTriger,
 		kAddWaterMove,
+		kJumpInput,
 		kBoolEnd,
 	};
 
 	std::string bNames[kBoolEnd] = {
 		"水ごとに重力がありか",
 		"ボタンを押したときに水を生成するか",
-		"ジャンプしたときに水を生成するか"
+		"ジャンプしたときに水を生成するか",
+		"ジャンプ中に入力を受け付けるか"
 	};
 
 	bool bParas_[kBoolEnd];
