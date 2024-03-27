@@ -64,13 +64,13 @@ private:
 		kMinSpeed, // 最低速度
 		kInterpolationRate, // 補間の割合
 		kFloatingTime, // 上下挙動の1往復の時間
-		kGravity, // 重力
 		kOutWaterAcceleration, // 水から飛び出したときの加速度
 		kOutWaterTime, // 水から飛び出したときに加速させる時間
 		kMinPositionY, // プレイヤーの最低の高さ
+		kKeepSpeedTime, // 加速を維持する時間
+		kGravity, // 重力
 		kGravityDown, // 降下中の重力
 		kGravityWater, // 水の塊の重力
-		kKeepSpeedTime, // 加速を維持する時間
 		kWaterSize, // プレイヤーが生成する水のサイズ
 		kWaterSizeMove, // ジャンプで生成する水のサイズ
 		kDelayTime, // 水の生成に遅延させる時間
@@ -88,13 +88,13 @@ private:
 		"最低速度",
 		"補間の割合",
 		"上下挙動の1往復の時間",
-		"重力加速度",
 		"水から飛び出したときの加速度",
 		"水から飛び出したときに加速させる時間",
 		"プレイヤーの最低の高さ",
+		"加速を維持する時間",
+		"重力加速度",
 		"降下中の重力",
 		"水の塊の重力",
-		"加速を維持する時間",
 		"プレイヤーが生成する水のサイズ",
 		"ジャンプで生成する水のサイズ",
 		"水の生成に遅延させる時間",
@@ -128,6 +128,35 @@ private:
 	};
 
 	bool bParas_[kBoolEnd];
+
+	enum Tree1 {
+		kTree1Status,
+		kTree1Gravity,
+		kTree1GenerationWater,
+		kTree1InputAcceleration,
+		kTree1End,
+	};
+
+	std::string tree1Name_[kTree1End] = {
+		"プレイヤーのステータス関係",
+		"重力関係",
+		"水の生成関係",
+		"入力による移動関係",
+	};
+
+	std::pair<int, int> fTree1[kTree1End] = {
+		{kAcceleration,kGravity},
+		{kGravity,kWaterSize},
+		{kWaterSize,kJumpInputAcceleration},
+		{kJumpInputAcceleration,kFloatEnd}
+	};
+
+	std::pair<int, int> bTree1[kTree1End] = {
+		{0,0},
+		{kGravityArea,kAddWaterTriger},
+		{kAddWaterTriger,kJumpInput},
+		{kJumpInput,kBoolEnd}
+	};
 
 	Vector3 velocity_; // 速度
 	Vector2 vector_; // 移動方向ベクトル

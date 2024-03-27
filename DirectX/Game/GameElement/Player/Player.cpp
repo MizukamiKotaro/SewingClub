@@ -397,13 +397,36 @@ void Player::SetCollider()
 
 void Player::SetGlobalVariable()
 {
-	globalVariable_->AddItem("スケール", model_->transform_.scale_);
-
+	globalVariable_->AddItem("スケール", model_->transform_.scale_, tree1Name_[kTree1Status]);
+	bool isAddF[kFloatEnd] = { false };
 	for (int i = 0; i < kFloatEnd; i++) {
-		globalVariable_->AddItem(fNames[i], fParas_[i]);
+		for (int j = 0; j < Tree1::kTree1End; j++) {
+			if (i >= fTree1[j].first && i < fTree1[j].second) {
+				if (!isAddF[i]) {
+					globalVariable_->AddItem(fNames[i], fParas_[i], tree1Name_[j]);
+					isAddF[i] = true;
+				}
+			}
+		}
+		if (!isAddF[i]) {
+			globalVariable_->AddItem(fNames[i], fParas_[i]);
+			isAddF[i] = true;
+		}
 	}
+	bool isAddB[kBoolEnd] = { false };
 	for (int i = 0; i < kBoolEnd; i++) {
-		globalVariable_->AddItem(bNames[i], bParas_[i]);
+		for (int j = 0; j < Tree1::kTree1End; j++) {
+			if (i >= bTree1[j].first && i < bTree1[j].second) {
+				if (!isAddB[i]) {
+					globalVariable_->AddItem(bNames[i], bParas_[i], tree1Name_[j]);
+					isAddB[i] = true;
+				}
+			}
+		}
+		if (!isAddB[i]) {
+			globalVariable_->AddItem(bNames[i], bParas_[i]);
+			isAddB[i] = true;
+		}
 	}
 
 	ApplyGlobalVariable();
@@ -411,12 +434,36 @@ void Player::SetGlobalVariable()
 
 void Player::ApplyGlobalVariable()
 {
-	model_->transform_.scale_ = globalVariable_->GetVector3Value("スケール");
+	model_->transform_.scale_ = globalVariable_->GetVector3Value("スケール", tree1Name_[kTree1Status]);
 
+	bool isAddF[kFloatEnd] = { false };
 	for (int i = 0; i < kFloatEnd; i++) {
-		fParas_[i] = globalVariable_->GetFloatValue(fNames[i]);
+		for (int j = 0; j < Tree1::kTree1End; j++) {
+			if (i >= fTree1[j].first && i < fTree1[j].second) {
+				if (!isAddF[i]) {
+					fParas_[i] = globalVariable_->GetFloatValue(fNames[i], tree1Name_[j]);
+					isAddF[i] = true;
+				}
+			}
+		}
+		if (!isAddF[i]) {
+			fParas_[i] = globalVariable_->GetFloatValue(fNames[i]);
+			isAddF[i] = true;
+		}
 	}
+	bool isAddB[kBoolEnd] = { false };
 	for (int i = 0; i < kBoolEnd; i++) {
-		bParas_[i] = globalVariable_->GetBoolValue(bNames[i]);
+		for (int j = 0; j < Tree1::kTree1End; j++) {
+			if (i >= bTree1[j].first && i < bTree1[j].second) {
+				if (!isAddB[i]) {
+					bParas_[i] = globalVariable_->GetBoolValue(bNames[i], tree1Name_[j]);
+					isAddB[i] = true;
+				}
+			}
+		}
+		if (!isAddB[i]) {
+			bParas_[i] = globalVariable_->GetBoolValue(bNames[i]);
+			isAddB[i] = true;
+		}
 	}
 }
