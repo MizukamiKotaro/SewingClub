@@ -396,6 +396,7 @@ void Player::Reset()
 	isUseInputAcceleration_ = true;
 	accelerationTimeCount_ = 0.0f;
 	isInputAcceleration_ = false;
+	putWaterNum_ = kMaxPutWaterNum_;
 
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
