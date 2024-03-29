@@ -1,5 +1,4 @@
 #include "WaterChunk.h"
-#include "Camera.h"
 #include "ModelDataManager.h"
 #include <algorithm>
 #include "GameElement/Wave/Wave.h"
@@ -28,6 +27,7 @@ WaterChunk::WaterChunk()
 	scale_ = 1.0f;
 	rotate_ = 0.0f;
 	isSmaeGravitySize_ = false;
+	no_ = 0;
 }
 
 WaterChunk::WaterChunk(int no)
@@ -41,8 +41,8 @@ WaterChunk::WaterChunk(int no)
 	scale_ = 1.0f;
 	rotate_ = 0.0f;
 
-	groupName_ = "Water" + std::to_string(no);
-	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", groupName_);
+	no_ = no;
+	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", "Water");
 	SetGlobalVariable();
 	isSmaeGravitySize_ = false;
 }
@@ -113,8 +113,9 @@ void WaterChunk::StaticUpdate()
 void WaterChunk::SetGlobalVariable()
 {
 	if (globalVariable_) {
-		globalVariable_->AddItem("ポジション", position_);
-		globalVariable_->AddItem("スケール", scale_);
+		std::string tree = "水の惑星" + std::to_string(no_);
+		globalVariable_->AddItem("ポジション", position_, tree);
+		globalVariable_->AddItem("スケール", scale_, tree);
 	}
 	ApplyGlobalVariable();
 }
@@ -122,8 +123,9 @@ void WaterChunk::SetGlobalVariable()
 void WaterChunk::ApplyGlobalVariable()
 {
 	if (globalVariable_) {
-		position_ = globalVariable_->GetVector3Value("ポジション");
-		scale_ = globalVariable_->GetFloatValue("スケール");
+		std::string tree = "水の惑星" + std::to_string(no_);
+		position_ = globalVariable_->GetVector3Value("ポジション", tree);
+		scale_ = globalVariable_->GetFloatValue("スケール", tree);
 	}
 }
 

@@ -11,6 +11,7 @@ Player::Player()
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::RIGID_BODY, ColliderMask::PLAYER);
 	Collider::AddTargetMask(ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
+	Collider::AddTargetMask(ColliderMask::PLANET);
 
 	CreateGlobalVariable("Player");
 
@@ -99,6 +100,32 @@ void Player::Draw(const Camera* camera)
 	model_->Draw(*camera);
 
 	//yarn_->Draw();
+}
+
+void Player::DrawClient()
+{
+	Vector2 pos = { 40.0f,40.0f };
+	for (std::unique_ptr<Client>& client : clients_) {
+		client->Draw(pos);
+		pos.x += 50.0f;
+	}
+}
+
+void Player::OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<Client>>& clients)
+{
+	for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {
+		if ((*it)->GetType() == type) {
+			it = clients_.erase(it);
+		}
+		else {
+			it++;
+		}
+	}
+
+	for (std::list<std::unique_ptr<Client>>::iterator it = clients.begin(); it != clients.end();) {
+		clients_.push_back(std::make_unique<Client>((*it)->GetType(), Vector3{}, 0.2f));
+		it = clients.erase(it);
+	}
 }
 
 const Vector3& Player::GetPosition() const
@@ -368,7 +395,7 @@ void Player::UpdateFloating()
 
 void Player::OnCollision(const Collider& collider)
 {
-	if (collider.GetMask() == ColliderMask::WATER) {
+	if (collider.GetMask() == ColliderMask::WATER || collider.GetMask() == ColliderMask::PLANET) {
 		isInWater_ = true;
 	}
 	else if (collider.GetMask() == ColliderMask::GRAVITY_AREA) {

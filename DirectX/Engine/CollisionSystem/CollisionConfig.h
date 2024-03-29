@@ -18,4 +18,5 @@ enum class ColliderMask {
     PLAYER,
     WATER,
     GRAVITY_AREA,
+    PLANET,
 };

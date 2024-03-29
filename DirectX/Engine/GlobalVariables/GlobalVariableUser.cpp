@@ -14,12 +14,14 @@ GlobalVariableUser::GlobalVariableUser(const std::string& chunkName, const std::
 {
 	chunkName_ = chunkName;
 	groupName_ = groupName;
+	CreateGroup();
 }
 
 GlobalVariableUser::GlobalVariableUser(const std::string& name)
 {
 	chunkName_ = name;
 	groupName_ = name;
+	CreateGroup();
 }
 
 void GlobalVariableUser::ResetGroupName(const std::string& groupName)

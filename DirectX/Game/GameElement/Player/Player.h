@@ -4,6 +4,7 @@
 #include "Vector3.h"
 #include "GameElement/Yarn/Yarn.h"
 #include <list>
+#include "GameElement/Client/Client.h"
 
 class Input;
 class WaterManager;
@@ -20,7 +21,10 @@ public:
 
 	void Draw(const Camera* camera) override;
 
+	void DrawClient();
+
 public:
+	void OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<Client>>& clients);
 	const Vector3& GetPosition() const;
 
 	//void SetIsInWater(bool is) { isInWater_ = is; }
@@ -178,6 +182,7 @@ private:
 	float floatingParameter_;
 
 	std::unique_ptr<Yarn> yarn_;
+	std::list<std::unique_ptr<Client>> clients_;
 
 	struct DelayProcess
 	{

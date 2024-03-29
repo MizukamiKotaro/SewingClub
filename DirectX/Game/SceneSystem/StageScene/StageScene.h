@@ -10,6 +10,7 @@
 #include "GameElement/Wave/Wave.h"
 #include "GameElement/WaterChunk/WaterChunk.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
+#include "GameElement/Planet/PlanetManager.h"
 
 class StageScene : public IScene
 {
@@ -38,4 +39,5 @@ private:
 	InstancingModelManager* instancingmodelManager_;
 	CollisionManager* collisionManager_;
 	WaterManager* waterManager_;
+	PlanetManager* planetManager_;
 };

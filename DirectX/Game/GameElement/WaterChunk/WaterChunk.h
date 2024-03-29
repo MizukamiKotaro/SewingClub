@@ -1,11 +1,6 @@
 #pragma once
-#include "Vector2.h"
-#include "Vector3.h"
 #include <string>
 #include <memory>
-#include "InstancingModelManager.h"
-#include "GlobalVariables/GlobalVariableUser.h"
-#include "CollisionSystem/Collider/Collider.h"
 #include "WaterChunkChip.h"
 #include "GameElement/GravityArea/GravityArea.h"
 
@@ -71,5 +66,5 @@ private:
 
 	std::unique_ptr<GravityArea> gravityArea_;
 	std::string groupName_ = "_";
-
+	int no_;
 };

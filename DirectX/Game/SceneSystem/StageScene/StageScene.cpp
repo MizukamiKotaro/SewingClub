@@ -14,12 +14,20 @@ StageScene::StageScene()
 	Wave::StaticInitialize();
 	WaterChunk::StaticInitialize();
 	GravityArea::StaticInitialize();
+	Client::StaticInitialize();
+	Planet::StaticInitialize();
+	
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
 	waterManager_ = WaterManager::GetInstance();
+	planetManager_ = PlanetManager::GetInstance();
 
 	player_ = std::make_unique<Player>();
+	camera_->transform_.translate_.z = -50.0f;
+	camera_->Update();
+
+	planetManager_->SetPlayer(player_.get());
 
 	waveFloor_ = std::make_unique<WaveFloor>();
 
@@ -33,6 +41,7 @@ void StageScene::Initialize()
 	player_->Initialize();
 	waves_.clear();
 	waterManager_->Clear();
+	planetManager_->Initialize();
 }
 
 void StageScene::Update()
@@ -55,6 +64,7 @@ void StageScene::Update()
 	Wave::StaticUpdate();
 	WaterChunk::StaticUpdate();
 	GravityArea::StaticUpdate();
+	Client::StaticUpdate();
 
 	ImGui::Begin("Camera");
 	ImGui::DragFloat3("ポジション", &camera_->transform_.translate_.x, 0.01f);
@@ -75,6 +85,7 @@ void StageScene::Update()
 		}
 		fullWater_[i]->Update();
 	}
+	planetManager_->Update(frameInfo_->GetDeltaTime());
 
 	player_->Update(frameInfo_->GetDeltaTime());
 
@@ -104,7 +115,11 @@ void StageScene::Draw()
 	}
 	waterManager_->Draw();
 
+	planetManager_->Draw();
+
 	instancingmodelManager_->Draw(*camera_.get());
+
+	player_->DrawClient();
 
 	BlackDraw();
 
