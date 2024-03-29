@@ -66,6 +66,7 @@ private:
 		kAttenuation, // 減衰率
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
+		kMaxAddAcceleration, // 加算される加速度の最大値
 		kInterpolationRate, // 補間の割合
 		kFloatingTime, // 上下挙動の1往復の時間
 		kOutWaterAcceleration, // 水から飛び出したときの加速度
@@ -90,6 +91,7 @@ private:
 		"減速率",
 		"最大速度",
 		"最低速度",
+		"加算される加速度の最大値",
 		"補間の割合",
 		"上下挙動の1往復の時間",
 		"水から飛び出したときの加速度",
@@ -138,6 +140,7 @@ private:
 		kTree1Gravity,
 		kTree1GenerationWater,
 		kTree1InputAcceleration,
+		kTree1Client,
 		kTree1End,
 	};
 
@@ -146,20 +149,23 @@ private:
 		"重力関係",
 		"水の生成関係",
 		"入力による移動関係",
+		"乗客関係",
 	};
 
 	std::pair<int, int> fTree1[kTree1End] = {
 		{kAcceleration,kGravity},
 		{kGravity,kWaterSize},
 		{kWaterSize,kJumpInputAcceleration},
-		{kJumpInputAcceleration,kFloatEnd}
+		{kJumpInputAcceleration,kFloatEnd},
+		{}
 	};
 
 	std::pair<int, int> bTree1[kTree1End] = {
 		{0,0},
 		{kGravityArea,kAddWaterTriger},
 		{kAddWaterTriger,kJumpInput},
-		{kJumpInput,kBoolEnd}
+		{kJumpInput,kBoolEnd},
+		{}
 	};
 
 	Vector3 velocity_; // 速度
@@ -169,6 +175,10 @@ private:
 	Vector2 gravityVelocity_;
 	Vector2 gravityPos_;
 	bool isGravity_;
+
+	int kMaxPutClient_;
+	int kMaxPutWaterNum_;
+	int putWaterNum_;
 
 	float timeCount_;
 	float coolTimeCount_;

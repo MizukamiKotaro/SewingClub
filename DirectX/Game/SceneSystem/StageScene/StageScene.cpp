@@ -65,6 +65,7 @@ void StageScene::Update()
 	WaterChunk::StaticUpdate();
 	GravityArea::StaticUpdate();
 	Client::StaticUpdate();
+	Planet::StaticUpdate();
 
 	ImGui::Begin("Camera");
 	ImGui::DragFloat3("ポジション", &camera_->transform_.translate_.x, 0.01f);

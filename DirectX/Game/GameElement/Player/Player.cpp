@@ -38,9 +38,13 @@ Player::Player()
 	accelerationTimeCount_ = 0.0f;
 	isInputAcceleration_ = false;
 
+	kMaxPutClient_ = 5;
+	kMaxPutWaterNum_ = 5;
+
 	model_ = std::make_unique<Model>("subPlayer");
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
 	SetGlobalVariable();
+	putWaterNum_ = kMaxPutWaterNum_;
 	model_->Update();
 
 	floatingParameter_ = 0.0f;
@@ -116,6 +120,9 @@ void Player::OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<
 	for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {
 		if ((*it)->GetType() == type) {
 			it = clients_.erase(it);
+			if (kMaxPutWaterNum_ > putWaterNum_) {
+				putWaterNum_++;
+			}
 		}
 		else {
 			it++;
@@ -123,6 +130,9 @@ void Player::OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<
 	}
 
 	for (std::list<std::unique_ptr<Client>>::iterator it = clients.begin(); it != clients.end();) {
+		if (kMaxPutClient_ <= int(clients_.size())) {
+			break;
+		}
 		clients_.push_back(std::make_unique<Client>((*it)->GetType(), Vector3{}, 0.2f));
 		it = clients.erase(it);
 	}
@@ -206,9 +216,14 @@ void Player::OutWater(float deltaTime)
 	timeCount_ += deltaTime;
 
 	if (timeCount_ <= fParas_[kOutWaterTime]) {
-		float addSpeed = fParas_[kOutWaterAcceleration] * deltaTime;
-		speed_ += addSpeed;
-		addAcceleration_ += addSpeed;
+		if (addAcceleration_ >= fParas_[FloatParamater::kMaxAddAcceleration]) {
+			addAcceleration_ = fParas_[FloatParamater::kMaxAddAcceleration];
+		}
+		else {
+			float addSpeed = fParas_[kOutWaterAcceleration] * deltaTime;
+			speed_ += addSpeed;
+			addAcceleration_ += addSpeed;
+		}
 	}
 	velocity_ = { vector_.x * speed_,vector_.y * speed_ ,0.0f };
 	if (bParas_[BoolParamater::kGravityArea]) {
@@ -269,8 +284,11 @@ void Player::OutWater(float deltaTime)
 
 	if (bParas_[BoolParamater::kAddWaterTriger]) {
 		if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
-			waterManager_->CreateWater({ model_->transform_.translate_.x,model_->transform_.translate_.y },
-				{ fParas_[FloatParamater::kWaterSize],fParas_[FloatParamater::kWaterSize] }, false, 0.0f);
+			if (putWaterNum_ != 0) {
+				waterManager_->CreateWater({ model_->transform_.translate_.x,model_->transform_.translate_.y },
+					{ fParas_[FloatParamater::kWaterSize],fParas_[FloatParamater::kWaterSize] }, false, 0.0f);
+				putWaterNum_--;
+			}
 		}
 	}
 
@@ -312,9 +330,15 @@ void Player::UpdateInputAcceleration(float deltaTime)
 		if (isInputAcceleration_) {
 			accelerationTimeCount_ += deltaTime;
 			if (accelerationTimeCount_ <= fParas_[FloatParamater::kInputAccelerationTime]) {
-				float addSpeed = fParas_[FloatParamater::kInputAcceleration] * deltaTime;
-				speed_ += addSpeed;
-				addAcceleration_ += addSpeed;
+				float addSpeed = 0.0f;
+				if (addAcceleration_ >= fParas_[FloatParamater::kMaxAddAcceleration]) {
+					addAcceleration_ = fParas_[FloatParamater::kMaxAddAcceleration];
+				}
+				else {
+					addSpeed = fParas_[FloatParamater::kInputAcceleration] * deltaTime;
+					speed_ += addSpeed;
+					addAcceleration_ += addSpeed;
+				}
 				Vector2 vector = vector_.Normalize();
 				velocity_.x += vector.x * addSpeed;
 				velocity_.y += vector.y * addSpeed;
@@ -425,6 +449,9 @@ void Player::SetCollider()
 void Player::SetGlobalVariable()
 {
 	globalVariable_->AddItem("スケール", model_->transform_.scale_, tree1Name_[kTree1Status]);
+	globalVariable_->AddItem("乗せれる客の上限", kMaxPutClient_, tree1Name_[kTree1Client]);
+	globalVariable_->AddItem("生成できる水のストック上限", kMaxPutWaterNum_, tree1Name_[kTree1GenerationWater]);
+
 	bool isAddF[kFloatEnd] = { false };
 	for (int i = 0; i < kFloatEnd; i++) {
 		for (int j = 0; j < Tree1::kTree1End; j++) {
@@ -462,6 +489,8 @@ void Player::SetGlobalVariable()
 void Player::ApplyGlobalVariable()
 {
 	model_->transform_.scale_ = globalVariable_->GetVector3Value("スケール", tree1Name_[kTree1Status]);
+	kMaxPutClient_ = globalVariable_->GetIntValue("乗せれる客の上限", tree1Name_[kTree1Client]);
+	kMaxPutWaterNum_ = globalVariable_->GetIntValue("生成できる水のストック上限", tree1Name_[kTree1GenerationWater]);
 
 	bool isAddF[kFloatEnd] = { false };
 	for (int i = 0; i < kFloatEnd; i++) {

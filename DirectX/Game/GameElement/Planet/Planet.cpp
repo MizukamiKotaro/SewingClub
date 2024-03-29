@@ -9,6 +9,10 @@ InstancingModelManager* Planet::instancingManager_ = nullptr;
 const ModelData* Planet::modelData_ = nullptr;
 RandomGenerator* Planet::rand_ = nullptr;
 
+std::unique_ptr<GlobalVariableUser> Planet::staticGlobalVariable_ = nullptr;
+Vector2 Planet::minmax_ = { 2.0f,4.0f };
+int Planet::MaxClientNum = 6;
+
 Planet::Planet(PlanetType type, const Vector3& pos, Player* player, int no)
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::PLANET);
@@ -23,9 +27,10 @@ Planet::Planet(PlanetType type, const Vector3& pos, Player* player, int no)
 	scale_ = 2.0f;
 	rotate_ = 0.0f;
 
-	gamerateTime_ = rand_->RandFloat(0.5f, 1.5f);
+	ganerateTime_ = rand_->RandFloat(0.5f, 1.5f);
 	time_ = 0.0f;
 	
+	isPos.resize(MaxClientNum);
 	for (int i = 0; i < MaxClientNum; i++) {
 		isPos[i] = false;
 	}
@@ -41,6 +46,9 @@ void Planet::StaticInitialize()
 	instancingManager_ = InstancingModelManager::GetInstance();
 	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
 	rand_ = RandomGenerator::GetInstance();
+
+	staticGlobalVariable_ = std::make_unique<GlobalVariableUser>("Planet", "StaticPlanet");
+	StaticSetGlobalVariable();
 }
 
 void Planet::Initialize()
@@ -61,6 +69,7 @@ void Planet::Update(float deltaTime)
 
 void Planet::StaticUpdate()
 {
+	StaticApplyGlobalVariable();
 }
 
 void Planet::Draw() const
@@ -110,17 +119,40 @@ void Planet::ApplyGlobalVariable()
 
 void Planet::StaticSetGlobalVariable()
 {
+	staticGlobalVariable_->AddItem("客の生成時間の最小と最大", minmax_);
+	staticGlobalVariable_->AddItem("惑星に生成される客の最大数", MaxClientNum);
+	StaticApplyGlobalVariable();
 }
 
 void Planet::StaticApplyGlobalVariable()
 {
+	minmax_ = staticGlobalVariable_->GetVector2Value("客の生成時間の最小と最大");
+	MaxClientNum = staticGlobalVariable_->GetIntValue("惑星に生成される客の最大数");
+	if (MaxClientNum <= 0) {
+		MaxClientNum = 1;
+	}
 }
 
 void Planet::CreateClient()
 {
-	if (time_ >= gamerateTime_) {
+	if (time_ >= ganerateTime_) {
 		time_ = 0.0f;
-		gamerateTime_ = rand_->RandFloat(2.0f, 4.0f);
+		if (minmax_.x < minmax_.y) {
+			ganerateTime_ = rand_->RandFloat(minmax_.x, minmax_.y);
+		}
+		else if (minmax_.x > minmax_.y) {
+			ganerateTime_ = rand_->RandFloat(minmax_.y, minmax_.x);
+		}
+		else {
+			ganerateTime_ = minmax_.x;
+		}
+
+		if (MaxClientNum != static_cast<int>(isPos.size())) {
+			isPos.resize(MaxClientNum);
+			for (int i = 0; i < MaxClientNum; i++) {
+				isPos[i] = false;
+			}
+		}
 
 		while (true)
 		{

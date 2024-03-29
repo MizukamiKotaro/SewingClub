@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <vector>
 #include "GameElement/GravityArea/GravityArea.h"
 #include "PlanetType.h"
 #include "GameElement/Client/Client.h"
@@ -19,7 +20,7 @@ public:
 
 	void Update(float deltaTime);
 
-	void StaticUpdate();
+	static void StaticUpdate();
 
 	void Draw() const;
 
@@ -30,8 +31,8 @@ private:
 	void SetGlobalVariable();
 	void ApplyGlobalVariable();
 
-	void StaticSetGlobalVariable();
-	void StaticApplyGlobalVariable();
+	static void StaticSetGlobalVariable();
+	static void StaticApplyGlobalVariable();
 
 	void CreateClient();
 
@@ -44,13 +45,15 @@ private:
 	static const ModelData* modelData_;
 	static RandomGenerator* rand_;
 
+	static Vector2 minmax_;
+	static int MaxClientNum;
+
 	PlanetType type_;
 	Player* player_;
 
-	float gamerateTime_;
+	float ganerateTime_;
 	float time_;
-	static const int MaxClientNum = 6;
-	bool isPos[MaxClientNum];
+	std::vector<bool> isPos;
 	std::list<std::unique_ptr<Client>> clients_;
 	float clientScale_ = 0.5f;
 
