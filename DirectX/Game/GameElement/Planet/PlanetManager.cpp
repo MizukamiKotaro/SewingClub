@@ -36,7 +36,7 @@ void PlanetManager::Update(float deltaTime)
 
 	for (int i = 0; i < num_; i++) {
 		if (!planets_[i]) {
-			PlanetType type = static_cast<PlanetType>(RandomGenerator::GetInstance()->RandInt(0, static_cast<int>(PlanetType::kEnd)));
+			PlanetType type = static_cast<PlanetType>(i % static_cast<int>(PlanetType::kEnd));
 			planets_[i] = std::make_unique<Planet>(type, Vector3{}, player_, i);
 		}
 		planets_[i]->Update(deltaTime);
