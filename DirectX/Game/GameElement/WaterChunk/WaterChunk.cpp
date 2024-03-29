@@ -7,6 +7,9 @@
 InstancingModelManager* WaterChunk::instancingManager_ = nullptr;
 const ModelData* WaterChunk::modelData_ = nullptr;
 
+std::unique_ptr<GlobalVariableUser> WaterChunk::staticGlobalVariable_ = nullptr;
+float WaterChunk::deleteTime_ = 2.0f;
+
 WaterChunk::WaterChunk()
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
@@ -25,9 +28,11 @@ WaterChunk::WaterChunk()
 	}*/
 	position_ = {};
 	scale_ = 1.0f;
+	maxScale_ = scale_;
 	rotate_ = 0.0f;
 	isSmaeGravitySize_ = false;
 	no_ = 0;
+	isSmall_ = false;
 }
 
 WaterChunk::WaterChunk(int no)
@@ -39,15 +44,18 @@ WaterChunk::WaterChunk(int no)
 
 	position_ = {};
 	scale_ = 1.0f;
+	maxScale_ = scale_;
 	rotate_ = 0.0f;
 
 	no_ = no;
+	isSmall_ = false;
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", "Water");
 	SetGlobalVariable();
+	scale_ = maxScale_;
 	isSmaeGravitySize_ = false;
 }
 
-WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate)
+WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::PLAYER);
@@ -56,7 +64,10 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 
 	position_ = { pos.x,pos.y,0.0f };
 	scale_ = radius.x;
+	maxScale_ = scale_;
 	rotate_ = rotate;
+	isSmall_ = isSmall;
+	time_ = 0.0f;
 
 	isSmaeGravitySize_ = isSame;
 }
@@ -66,10 +77,7 @@ void WaterChunk::StaticInitialize()
 	instancingManager_ = InstancingModelManager::GetInstance();
 	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
 
-	/*globalVariable_ = std::make_unique<GlobalVariableUser>("WaterChunk", "Chip");
-	globalVariable_->CreateGroup();
-
-	SetGlobalVariable();*/
+	StaticSetGlobalVariable();
 }
 
 void WaterChunk::Initialize()
@@ -77,12 +85,18 @@ void WaterChunk::Initialize()
 
 }
 
-void WaterChunk::Update()
+void WaterChunk::Update(float deltaTime)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
 
+	if (isSmall_) {
+		time_ += deltaTime;
+
+		time_ = std::clamp(time_, 0.0f, deleteTime_);
+		scale_ = (1.0f - time_ / deleteTime_) * maxScale_;
+	}
 	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
 		chip->Update();
 	}*/
@@ -106,7 +120,7 @@ void WaterChunk::Draw() const
 void WaterChunk::StaticUpdate()
 {
 #ifdef _DEBUG
-	//ApplyGlobalVariable();
+	StaticApplyGlobalVariable();
 #endif // _DEBUG
 }
 
@@ -115,7 +129,7 @@ void WaterChunk::SetGlobalVariable()
 	if (globalVariable_) {
 		std::string tree = "水の惑星" + std::to_string(no_);
 		globalVariable_->AddItem("ポジション", position_, tree);
-		globalVariable_->AddItem("スケール", scale_, tree);
+		globalVariable_->AddItem("スケール", maxScale_, tree);
 	}
 	ApplyGlobalVariable();
 }
@@ -125,7 +139,23 @@ void WaterChunk::ApplyGlobalVariable()
 	if (globalVariable_) {
 		std::string tree = "水の惑星" + std::to_string(no_);
 		position_ = globalVariable_->GetVector3Value("ポジション", tree);
-		scale_ = globalVariable_->GetFloatValue("スケール", tree);
+		maxScale_ = globalVariable_->GetFloatValue("スケール", tree);
+	}
+}
+
+void WaterChunk::StaticSetGlobalVariable()
+{
+	staticGlobalVariable_ = std::make_unique<GlobalVariableUser>("Charactor", "Player");
+	staticGlobalVariable_->AddItem("水が消えるまでの時間", deleteTime_, "水の生成関係");
+	StaticApplyGlobalVariable();
+}
+
+void WaterChunk::StaticApplyGlobalVariable()
+{
+	deleteTime_ = staticGlobalVariable_->GetFloatValue("水が消えるまでの時間", "水の生成関係");
+
+	if (deleteTime_ <= 0.0f) {
+		0.1f;
 	}
 }
 

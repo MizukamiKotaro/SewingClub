@@ -80,17 +80,19 @@ void StageScene::Update()
 
 	WaveUpdate();
 
+	float deltaTime = frameInfo_->GetDeltaTime();
+
 	for (int i = 0; i < waterNum_; i++) {
 		if (fullWater_.find(i) == fullWater_.end()) {
 			fullWater_[i] = std::make_unique<WaterChunk>(i);
 		}
-		fullWater_[i]->Update();
+		fullWater_[i]->Update(deltaTime);
 	}
-	planetManager_->Update(frameInfo_->GetDeltaTime());
+	planetManager_->Update(deltaTime);
 
-	player_->Update(frameInfo_->GetDeltaTime());
+	player_->Update(deltaTime);
 
-	waterManager_->Update();
+	waterManager_->Update(deltaTime);
 
 	camera_->transform_.translate_.x = player_->GetPosition().x;
 	camera_->transform_.translate_.y = player_->GetPosition().y;

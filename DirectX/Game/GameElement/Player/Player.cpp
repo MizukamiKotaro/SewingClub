@@ -216,8 +216,8 @@ void Player::OutWater(float deltaTime)
 	timeCount_ += deltaTime;
 
 	if (timeCount_ <= fParas_[kOutWaterTime]) {
-		if (addAcceleration_ >= fParas_[FloatParamater::kMaxAddAcceleration]) {
-			addAcceleration_ = fParas_[FloatParamater::kMaxAddAcceleration];
+		if (addAcceleration_ >= fParas_[FloatParamater::kMaxAddAcceleration] * deltaTime) {
+			addAcceleration_ = fParas_[FloatParamater::kMaxAddAcceleration] * deltaTime;
 		}
 		else {
 			float addSpeed = fParas_[kOutWaterAcceleration] * deltaTime;
@@ -225,6 +225,7 @@ void Player::OutWater(float deltaTime)
 			addAcceleration_ += addSpeed;
 		}
 	}
+	speed_ = std::clamp(speed_, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_);
 	velocity_ = { vector_.x * speed_,vector_.y * speed_ ,0.0f };
 	if (bParas_[BoolParamater::kGravityArea]) {
 		if (isGravity_) {
@@ -331,8 +332,8 @@ void Player::UpdateInputAcceleration(float deltaTime)
 			accelerationTimeCount_ += deltaTime;
 			if (accelerationTimeCount_ <= fParas_[FloatParamater::kInputAccelerationTime]) {
 				float addSpeed = 0.0f;
-				if (addAcceleration_ >= fParas_[FloatParamater::kMaxAddAcceleration]) {
-					addAcceleration_ = fParas_[FloatParamater::kMaxAddAcceleration];
+				if (addAcceleration_ >= fParas_[FloatParamater::kMaxAddAcceleration] * deltaTime) {
+					addAcceleration_ = fParas_[FloatParamater::kMaxAddAcceleration] * deltaTime;
 				}
 				else {
 					addSpeed = fParas_[FloatParamater::kInputAcceleration] * deltaTime;

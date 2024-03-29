@@ -9,11 +9,11 @@ public:
 
 	void Clear();
 
-	void Update();
+	void Update(float deltaTime);
 
 	void Draw();
 
-	void CreateWater(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate);
+	void CreateWater(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall = true);
 
 private:
 	WaterManager() = default;
