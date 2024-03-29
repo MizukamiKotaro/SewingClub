@@ -10,7 +10,6 @@ const ModelData* Planet::modelData_ = nullptr;
 RandomGenerator* Planet::rand_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> Planet::staticGlobalVariable_ = nullptr;
-Vector2 Planet::minmax_ = { 2.0f,4.0f };
 int Planet::MaxClientNum = 6;
 
 Planet::Planet(PlanetType type, const Vector3& pos, Player* player, int no)
@@ -26,9 +25,6 @@ Planet::Planet(PlanetType type, const Vector3& pos, Player* player, int no)
 	position_ = pos;
 	scale_ = 2.0f;
 	rotate_ = 0.0f;
-
-	ganerateTime_ = rand_->RandFloat(0.5f, 1.5f);
-	time_ = 0.0f;
 	
 	isPos.resize(MaxClientNum);
 	for (int i = 0; i < MaxClientNum; i++) {
@@ -60,9 +56,7 @@ void Planet::Update(float deltaTime)
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
-
-	time_ += deltaTime;
-	CreateClient();
+	deltaTime = deltaTime;
 	gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ });
 	SetCollider();
 }
@@ -119,14 +113,12 @@ void Planet::ApplyGlobalVariable()
 
 void Planet::StaticSetGlobalVariable()
 {
-	staticGlobalVariable_->AddItem("客の生成時間の最小と最大", minmax_);
 	staticGlobalVariable_->AddItem("惑星に生成される客の最大数", MaxClientNum);
 	StaticApplyGlobalVariable();
 }
 
 void Planet::StaticApplyGlobalVariable()
 {
-	minmax_ = staticGlobalVariable_->GetVector2Value("客の生成時間の最小と最大");
 	MaxClientNum = staticGlobalVariable_->GetIntValue("惑星に生成される客の最大数");
 	if (MaxClientNum <= 0) {
 		MaxClientNum = 1;
@@ -135,44 +127,31 @@ void Planet::StaticApplyGlobalVariable()
 
 void Planet::CreateClient()
 {
-	if (time_ >= ganerateTime_) {
-		time_ = 0.0f;
-		if (minmax_.x < minmax_.y) {
-			ganerateTime_ = rand_->RandFloat(minmax_.x, minmax_.y);
+	if (MaxClientNum != static_cast<int>(isPos.size())) {
+		isPos.resize(MaxClientNum);
+		for (int i = 0; i < MaxClientNum; i++) {
+			isPos[i] = false;
 		}
-		else if (minmax_.x > minmax_.y) {
-			ganerateTime_ = rand_->RandFloat(minmax_.y, minmax_.x);
-		}
-		else {
-			ganerateTime_ = minmax_.x;
-		}
+	}
 
-		if (MaxClientNum != static_cast<int>(isPos.size())) {
-			isPos.resize(MaxClientNum);
+	while (true)
+	{
+		PlanetType type = static_cast<PlanetType>(rand_->RandInt(0, static_cast<int>(PlanetType::kEnd)));
+
+		if (type != type_) {
 			for (int i = 0; i < MaxClientNum; i++) {
-				isPos[i] = false;
-			}
-		}
-
-		while (true)
-		{
-			PlanetType type = static_cast<PlanetType>(rand_->RandInt(0, static_cast<int>(PlanetType::kEnd)));
-
-			if (type != type_) {
-				for (int i = 0; i < MaxClientNum; i++) {
-					if (!isPos[i]) {
-						float theta = 1.57f - float(i) / MaxClientNum * 6.28f;
-						Vector3 pos{};
-						pos.x = (scale_ + clientScale_) * std::cosf(theta);
-						pos.y = (scale_ + clientScale_) * std::sinf(theta);
-						pos += position_;
-						clients_.push_back(std::make_unique<Client>(type, pos, clientScale_));
-						isPos[i] = true;
-						break;
-					}
+				if (!isPos[i]) {
+					float theta = 1.57f - float(i) / MaxClientNum * 6.28f;
+					Vector3 pos{};
+					pos.x = (scale_ + clientScale_) * std::cosf(theta);
+					pos.y = (scale_ + clientScale_) * std::sinf(theta);
+					pos += position_;
+					clients_.push_back(std::make_unique<Client>(type, pos, clientScale_));
+					isPos[i] = true;
+					break;
 				}
-				break;
 			}
+			break;
 		}
 	}
 }

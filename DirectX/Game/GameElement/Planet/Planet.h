@@ -24,6 +24,8 @@ public:
 
 	void Draw() const;
 
+	void CreateClient();
+
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
@@ -34,7 +36,6 @@ private:
 	static void StaticSetGlobalVariable();
 	static void StaticApplyGlobalVariable();
 
-	void CreateClient();
 
 private:
 	
@@ -45,14 +46,11 @@ private:
 	static const ModelData* modelData_;
 	static RandomGenerator* rand_;
 
-	static Vector2 minmax_;
 	static int MaxClientNum;
 
 	PlanetType type_;
 	Player* player_;
 
-	float ganerateTime_;
-	float time_;
 	std::vector<bool> isPos;
 	std::list<std::unique_ptr<Client>> clients_;
 	float clientScale_ = 0.5f;
