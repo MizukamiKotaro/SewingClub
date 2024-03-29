@@ -3,7 +3,6 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
-#include "GlobalVariables/GlobalVariableUser.h"
 #include "Planet.h"
 
 class Player;
@@ -31,7 +30,7 @@ private:
 	PlanetManager& operator=(const PlanetManager&) = delete;
 
 private:
-	int num_;
+	int num_ = 0;
 	std::unordered_map<int, std::unique_ptr<Planet>> planets_;
-	Player* player_;
+	Player* player_ = nullptr;
 };

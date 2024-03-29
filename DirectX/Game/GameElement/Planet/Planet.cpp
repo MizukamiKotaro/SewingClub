@@ -59,6 +59,10 @@ void Planet::Update(float deltaTime)
 	SetCollider();
 }
 
+void Planet::StaticUpdate()
+{
+}
+
 void Planet::Draw() const
 {
 #ifdef _DEBUG
@@ -94,12 +98,22 @@ void Planet::SetCollider()
 void Planet::SetGlobalVariable()
 {
 	globalVariable_->AddItem("ポジション", position_, "Planet" + std::to_string(no_));
+	globalVariable_->AddItem("スケール", scale_, "Planet" + std::to_string(no_));
 	ApplyGlobalVariable();
 }
 
 void Planet::ApplyGlobalVariable()
 {
 	position_ = globalVariable_->GetVector3Value("ポジション", "Planet" + std::to_string(no_));
+	scale_ = globalVariable_->GetFloatValue("スケール", "Planet" + std::to_string(no_));
+}
+
+void Planet::StaticSetGlobalVariable()
+{
+}
+
+void Planet::StaticApplyGlobalVariable()
+{
 }
 
 void Planet::CreateClient()

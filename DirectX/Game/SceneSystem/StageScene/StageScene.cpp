@@ -31,7 +31,7 @@ StageScene::StageScene()
 
 	waveFloor_ = std::make_unique<WaveFloor>();
 
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < waterNum_; i++) {
 		fullWater_[i] = std::make_unique<WaterChunk>(i);
 	}
 }

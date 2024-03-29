@@ -19,6 +19,8 @@ public:
 
 	void Update(float deltaTime);
 
+	void StaticUpdate();
+
 	void Draw() const;
 
 private:
@@ -28,10 +30,15 @@ private:
 	void SetGlobalVariable();
 	void ApplyGlobalVariable();
 
+	void StaticSetGlobalVariable();
+	void StaticApplyGlobalVariable();
+
 	void CreateClient();
 
 private:
+	
 	std::unique_ptr<GlobalVariableUser> globalVariable_;
+	static std::unique_ptr<GlobalVariableUser> staticGlobalVariable_;
 
 	static InstancingModelManager* instancingManager_;
 	static const ModelData* modelData_;
