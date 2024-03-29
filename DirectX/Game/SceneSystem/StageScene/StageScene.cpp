@@ -31,7 +31,7 @@ StageScene::StageScene()
 
 	waveFloor_ = std::make_unique<WaveFloor>();
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 1; i++) {
 		fullWater_[i] = std::make_unique<WaterChunk>(i);
 	}
 }
@@ -73,7 +73,7 @@ void StageScene::Update()
 	camera_->Update();
 
 	ImGui::Begin("水");
-	ImGui::SliderInt("水の数", &waterNum_, 3, 15);
+	ImGui::SliderInt("水の数", &waterNum_, 1, 15);
 	ImGui::End();
 #endif // _DEBUG
 
