@@ -37,6 +37,7 @@ Player::Player()
 	isUseInputAcceleration_ = true;
 	accelerationTimeCount_ = 0.0f;
 	isInputAcceleration_ = false;
+	waterRecoveryTimeCount_ = 0.0f;
 
 	kMaxPutClient_ = 5;
 	kMaxPutWaterNum_ = 5;
@@ -92,6 +93,16 @@ void Player::Update(float deltaTime)
 	yarn_->Update();
 
 	UpdateDelayProcess(deltaTime);
+
+	if (bParas_[BoolParamater::kAddWaterTriger]) {
+		if (putWaterNum_ != kMaxPutWaterNum_) {
+			waterRecoveryTimeCount_ += deltaTime;
+			if (waterRecoveryTimeCount_ >= fParas_[kWaterRecovery]) {
+				waterRecoveryTimeCount_ = 0.0f;
+				putWaterNum_++;
+			}
+		}
+	}
 
 	isInWater_ = false;
 	isGravity_ = false;
@@ -288,6 +299,9 @@ void Player::OutWater(float deltaTime)
 			if (putWaterNum_ != 0) {
 				waterManager_->CreateWater({ model_->transform_.translate_.x,model_->transform_.translate_.y },
 					{ fParas_[FloatParamater::kWaterSize],fParas_[FloatParamater::kWaterSize] }, false, 0.0f);
+				if (putWaterNum_ == kMaxPutWaterNum_) {
+					waterRecoveryTimeCount_ = 0.0f;
+				}
 				putWaterNum_--;
 			}
 		}
@@ -397,6 +411,7 @@ void Player::Reset()
 	accelerationTimeCount_ = 0.0f;
 	isInputAcceleration_ = false;
 	putWaterNum_ = kMaxPutWaterNum_;
+	waterRecoveryTimeCount_ = 0.0f;
 
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
@@ -407,6 +422,7 @@ void Player::Reset()
 	isMemoryPos_ = false;
 
 	yarn_.reset(new Yarn(&model_->transform_.translate_, model_->transform_.translate_));
+	clients_.clear();
 }
 
 void Player::InitializeFloating()
@@ -492,7 +508,11 @@ void Player::ApplyGlobalVariable()
 {
 	model_->transform_.scale_ = globalVariable_->GetVector3Value("スケール", tree1Name_[kTree1Status]);
 	kMaxPutClient_ = globalVariable_->GetIntValue("乗せれる客の上限", tree1Name_[kTree1Client]);
+	int num = kMaxPutWaterNum_;
 	kMaxPutWaterNum_ = globalVariable_->GetIntValue("生成できる水のストック上限", tree1Name_[kTree1GenerationWater]);
+	if (num != kMaxPutWaterNum_) {
+		putWaterNum_ = kMaxPutWaterNum_;
+	}
 
 	bool isAddF[kFloatEnd] = { false };
 	for (int i = 0; i < kFloatEnd; i++) {

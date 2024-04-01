@@ -176,6 +176,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Kyoko.cpp" />
     <ClCompile Include="Engine\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Engine\TextureManager\Texture\Texture.cpp" />
+    <ClCompile Include="Engine\Utils\Camera\DebugCamera\DebugCamera.cpp" />
     <ClCompile Include="Game\GameElement\Charactor\Charactor.cpp" />
     <ClCompile Include="Game\GameElement\ClearUI\ClearUI.cpp" />
     <ClCompile Include="Game\GameElement\Client\Client.cpp" />
@@ -311,6 +312,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\TextureManager\TextureManager.h" />
     <ClInclude Include="Engine\TextureManager\Texture\Texture.h" />
     <ClInclude Include="Engine\Utils\Camera\Camera.h" />
+    <ClInclude Include="Engine\Utils\Camera\DebugCamera\DebugCamera.h" />
     <ClInclude Include="Engine\Utils\Collision\Collision.h" />
     <ClInclude Include="Engine\Utils\Ease\Ease.h" />
     <ClInclude Include="Engine\Utils\Math\calc.h" />

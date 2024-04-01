@@ -18,6 +18,7 @@ void IScene::FirstInit()
 
 	camera_ = std::make_unique<Camera>();
 	camera_->Initialize();
+	debugCamera_ = std::make_unique<DebugCamera>(camera_.get(), input_);
 
 	black_ = std::make_unique<Sprite>("white.png");
 	black_->size_ = { 1280.0f,720.0f };

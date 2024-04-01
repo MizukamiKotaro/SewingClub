@@ -28,7 +28,6 @@ public:
 	const D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const { return cameraForGPUResource_->GetGPUVirtualAddress(); }
 
 private:
-
 	Microsoft::WRL::ComPtr<ID3D12Resource> cameraForGPUResource_;
 	CameraForGPU* cameraForGPUData_;
 

@@ -77,6 +77,7 @@ private:
 		kGravityDown, // 降下中の重力
 		kGravityWater, // 水の塊の重力
 		kWaterSize, // プレイヤーが生成する水のサイズ
+		kWaterRecovery, // 水の回復時間
 		kWaterSizeMove, // ジャンプで生成する水のサイズ
 		kDelayTime, // 水の生成に遅延させる時間
 		kJumpInputAcceleration, // ジャンプ中の入力の加速度
@@ -102,6 +103,7 @@ private:
 		"降下中の重力",
 		"水の塊の重力",
 		"プレイヤーが生成する水のサイズ",
+		"水の回復時間",
 		"ジャンプで生成する水のサイズ",
 		"水の生成に遅延させる時間",
 		"ジャンプ中の入力の加速度",
@@ -185,6 +187,7 @@ private:
 	float accelerationTimeCount_;
 	bool isUseInputAcceleration_;
 	bool isInputAcceleration_;
+	float waterRecoveryTimeCount_;
 
 	bool preIsInWater_;
 	bool isInWater_;
