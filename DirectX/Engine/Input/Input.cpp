@@ -38,22 +38,16 @@ void Input::Initialize() {
 }
 
 void Input::Update() {
-
 	devKeyboard_->Acquire();
-
 	memcpy(keyPre_, key_, sizeof(key_));
-
 	devKeyboard_->GetDeviceState(sizeof(key_), key_);
 
 	devMouse_->Acquire();
-
 	mousePre_ = mouse_;
-
 	devMouse_->GetDeviceState(sizeof(DIMOUSESTATE), &mouse_);
 
 	preXInputState_ = xInputState_;
 	XInputGetState(0, &xInputState_);
-
 }
 
 bool Input::PressingKey(BYTE keyNumber) const {
@@ -148,7 +142,6 @@ bool Input::PressingMouse(MouseButton button)
 	if (GetMouseButton(button) && GetPreMouseButton(button)) {
 		return true;
 	}
-
 	return false;
 }
 
@@ -157,7 +150,6 @@ bool Input::ReleasedMouse(MouseButton button)
 	if (!GetMouseButton(button) && GetPreMouseButton(button)) {
 		return true;
 	}
-
 	return false;
 }
 
@@ -347,42 +339,12 @@ const bool Input::GetMouseButton(MouseButton button) const
 {
 	uint32_t key = static_cast<uint32_t>(button);
 
-	switch (button)
-	{
-	case Input::MouseButton::LEFT:
-		return mouse_.rgbButtons[key];
-		break;
-	case Input::MouseButton::RIGHT:
-		return mouse_.rgbButtons[key];
-		break;
-	case Input::MouseButton::CENTER:
-		return mouse_.rgbButtons[key];
-		break;
-	default:
-		break;
-	}
-
-	return false;
+	return mouse_.rgbButtons[key];
 }
 
 const bool Input::GetPreMouseButton(MouseButton button) const
 {
 	uint32_t key = static_cast<uint32_t>(button);
 
-	switch (button)
-	{
-	case Input::MouseButton::LEFT:
-		return mousePre_.rgbButtons[key];
-		break;
-	case Input::MouseButton::RIGHT:
-		return mousePre_.rgbButtons[key];
-		break;
-	case Input::MouseButton::CENTER:
-		return mousePre_.rgbButtons[key];
-		break;
-	default:
-		break;
-	}
-
-	return false;
+	return mousePre_.rgbButtons[key];
 }

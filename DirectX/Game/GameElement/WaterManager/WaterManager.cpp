@@ -13,8 +13,15 @@ void WaterManager::Clear()
 
 void WaterManager::Update(float deltaTime)
 {
-	for (std::unique_ptr<WaterChunk>& water : fullWater_) {
-		water->Update(deltaTime);
+	for (std::list<std::unique_ptr<WaterChunk>>::iterator it = fullWater_.begin(); it != fullWater_.end();) {
+		if ((*it)->IsDelete()) {
+			(*it).reset(nullptr);
+			it = fullWater_.erase(it);
+		}
+		else {
+			(*it)->Update(deltaTime);
+			it++;
+		}
 	}
 }
 

@@ -50,14 +50,13 @@ void StageScene::Update()
 		// シーン切り替え
 		ChangeScene(CLEAR);
 	}
-	if (input_->PressedKey(DIK_R)) {
-		player_->Initialize();
-		waterManager_->Clear();
-	}
 
 	collisionManager_->Clear();
 
 #ifdef _DEBUG
+	if (input_->PressedKey(DIK_R)) {
+		Initialize();
+	}
 	Yarn::StaticUpdate();
 	WaveFloorChip::StaticUpdate();
 	WaveFloor::StaticUpdate();
@@ -67,11 +66,15 @@ void StageScene::Update()
 	Client::StaticUpdate();
 	Planet::StaticUpdate();
 
-	ImGui::Begin("Camera");
-	ImGui::DragFloat3("ポジション", &camera_->transform_.translate_.x, 0.01f);
-	ImGui::DragFloat3("角度", &camera_->transform_.rotate_.x, 0.01f);
-	ImGui::End();
-	camera_->Update();
+	if (!ImGui::Begin("Camera", nullptr, ImGuiWindowFlags_MenuBar)) {
+		ImGui::End();
+	}
+	else {
+		ImGui::DragFloat3("ポジション", &camera_->transform_.translate_.x, 0.01f);
+		ImGui::DragFloat3("角度", &camera_->transform_.rotate_.x, 0.01f);
+		camera_->Update();
+		ImGui::End();
+	}
 
 	ImGui::Begin("水");
 	ImGui::SliderInt("水の数", &waterNum_, 1, 15);
@@ -94,9 +97,16 @@ void StageScene::Update()
 
 	waterManager_->Update(deltaTime);
 
-	camera_->transform_.translate_.x = player_->GetPosition().x;
-	camera_->transform_.translate_.y = player_->GetPosition().y;
-	camera_->Update();
+	debugCamera_->Update();
+	if (debugCamera_->IsDebug()) {
+		debugCamera_->DebugUpdate();
+	}
+	else {
+		// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
+		camera_->transform_.translate_.x = player_->GetPosition().x;
+		camera_->transform_.translate_.y = player_->GetPosition().y;
+		camera_->Update();
+	}
 
 	waveFloor_->Update();
 
