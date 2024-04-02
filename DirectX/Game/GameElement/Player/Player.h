@@ -5,9 +5,11 @@
 #include "GameElement/Yarn/Yarn.h"
 #include <list>
 #include "GameElement/Client/Client.h"
+#include "GravityAreaSearch.h"
 
 class Input;
 class WaterManager;
+class ClientManager;
 
 class Player : public Charactor
 {
@@ -60,6 +62,9 @@ private:
 
 	Input* input_ = nullptr;
 	WaterManager* waterManager_ = nullptr;
+	ClientManager* clientManager_ = nullptr;
+
+	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 
 	enum FloatParamater {
 		kAcceleration, // 加速度
@@ -84,6 +89,9 @@ private:
 		kInputAcceleration, // ボタン入力による加速度
 		kRecoveryInputTime, // ボタン加速のクールタイム
 		kInputAccelerationTime, // ボタン入力による加速させる時間
+		kClientFirstSpeed, // 客を飛ばしたときの客の初速
+		kClientMinSpeed, // 客を飛ばすために必要な速度
+		kClientAbsoluteSpeed, // 客を飛ばすタイミングの速さの絶対値
 		kFloatEnd,
 	};
 
@@ -109,13 +117,17 @@ private:
 		"ジャンプ中の入力の加速度",
 		"ボタン入力による加速度",
 		"ボタン加速のクールタイム",
-		"ボタン入力による加速させる時間"
+		"ボタン入力による加速させる時間",
+		"客を飛ばしたときの客の初速",
+		"客を飛ばすために必要な速度",
+		"客を飛ばすタイミングの速さ",
 	};
 
 	float fParas_[kFloatEnd];
 
 	enum BoolParamater {
 		kGravityArea, // 水ごとに重力がありか
+		kGravityAreaSearch, // 一番近くの重力場に引き寄せられるか
 		kAddWaterTriger, // ボタンを押したときに水を生成するか
 		kAddWaterMove, // ジャンプしたときに水を生成するか
 		kJumpInput, // ジャンプ中に入力を受け付けるか
@@ -127,6 +139,7 @@ private:
 
 	std::string bNames[kBoolEnd] = {
 		"水ごとに重力がありか",
+		"一番近くの重力場に引き寄せられるか",
 		"ボタンを押したときに水を生成するか",
 		"ジャンプしたときに水を生成するか",
 		"ジャンプ中に入力を受け付けるか",
@@ -158,8 +171,8 @@ private:
 		{kAcceleration,kGravity},
 		{kGravity,kWaterSize},
 		{kWaterSize,kJumpInputAcceleration},
-		{kJumpInputAcceleration,kFloatEnd},
-		{}
+		{kJumpInputAcceleration,kClientFirstSpeed},
+		{kClientFirstSpeed,kFloatEnd}
 	};
 
 	std::pair<int, int> bTree1[kTree1End] = {
@@ -181,6 +194,9 @@ private:
 	int kMaxPutClient_;
 	int kMaxPutWaterNum_;
 	int putWaterNum_;
+
+	float memoOutWaterSpeed_;
+	bool isFireClients_;
 
 	float timeCount_;
 	float coolTimeCount_;

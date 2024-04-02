@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "GameElement/WaterManager/WaterManager.h"
+#include "GameElement/Client/ClientManager.h"
 
 Player::Player()
 {
@@ -17,6 +18,7 @@ Player::Player()
 
 	input_ = Input::GetInstance();
 	waterManager_ = WaterManager::GetInstance();
+	clientManager_ = ClientManager::GetInstance();
 
 	for (int i = 0; i < kFloatEnd; i++) {
 		fParas_[i] = 0.5f;
@@ -39,6 +41,9 @@ Player::Player()
 	isInputAcceleration_ = false;
 	waterRecoveryTimeCount_ = 0.0f;
 
+	memoOutWaterSpeed_ = 0.0f;
+	isFireClients_ = false;
+
 	kMaxPutClient_ = 5;
 	kMaxPutWaterNum_ = 5;
 
@@ -54,6 +59,7 @@ Player::Player()
 	isMemoryPos_ = false;
 
 	yarn_ = std::make_unique<Yarn>(&model_->transform_.translate_, model_->transform_.translate_);
+	gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
 }
 
 void Player::Initialize()
@@ -144,7 +150,7 @@ void Player::OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<
 		if (kMaxPutClient_ <= int(clients_.size())) {
 			break;
 		}
-		clients_.push_back(std::make_unique<Client>((*it)->GetType(), Vector3{}, 0.2f));
+		clients_.push_back(std::make_unique<Client>((*it)->GetType(), Vector3{}));
 		it = clients.erase(it);
 	}
 }
@@ -209,6 +215,8 @@ void Player::Move(float deltaTime)
 void Player::PopUpFromWater()
 {
 	timeCount_ = 0.0f;
+	memoOutWaterSpeed_ = speed_;
+	isFireClients_ = false;
 	model_->transform_.translate_ += velocity_;
 	isMemoryPos_ = false;
 	if (bParas_[BoolParamater::kAddWaterMove]) {
@@ -239,15 +247,24 @@ void Player::OutWater(float deltaTime)
 	speed_ = std::clamp(speed_, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_);
 	velocity_ = { vector_.x * speed_,vector_.y * speed_ ,0.0f };
 	if (bParas_[BoolParamater::kGravityArea]) {
+
 		if (isGravity_) {
 			velocity_.x += gravityVelocity_.x * deltaTime;
 			velocity_.y += gravityVelocity_.y * deltaTime;
 		}
 		else {
-			Vector2 vector = gravityPos_ - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
-			gravityVelocity_ = vector.Normalize() * fParas_[kGravityWater];
-			velocity_.x += gravityVelocity_.x * deltaTime;
-			velocity_.y += gravityVelocity_.y * deltaTime;
+			if (bParas_[BoolParamater::kGravityAreaSearch]) {
+				Vector2 vector = gravityAreaSearch_->GetNearPos() - Vector2{model_->transform_.translate_.x,model_->transform_.translate_.y};
+				gravityVelocity_ = vector.Normalize() * fParas_[kGravityWater];
+				velocity_.x += gravityVelocity_.x * deltaTime;
+				velocity_.y += gravityVelocity_.y * deltaTime;
+			}
+			else {
+				Vector2 vector = gravityPos_ - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
+				gravityVelocity_ = vector.Normalize() * fParas_[kGravityWater];
+				velocity_.x += gravityVelocity_.x * deltaTime;
+				velocity_.y += gravityVelocity_.y * deltaTime;
+			}
 		}
 	}
 	else {
@@ -314,6 +331,32 @@ void Player::OutWater(float deltaTime)
 		}
 		else {
 			isMemoryPos_ = false;
+		}
+	}
+
+	if (!isFireClients_ && memoOutWaterSpeed_ >= fParas_[kClientMinSpeed] * deltaTime && speed_ <= fParas_[kClientAbsoluteSpeed] * deltaTime) {
+		isFireClients_ = true;
+
+		int i = 0;
+		for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {
+			if (i == 3) {
+				break;
+			}
+			Vector3 velocity = velocity_.Normalize();
+			if (i == 1) {
+				velocity *= fParas_[kClientFirstSpeed] * deltaTime;
+			}
+			else {
+				float theta = 3.14f / 10;
+				theta -= theta * i;
+				Vector3 vec = velocity;
+				velocity.x = vec.x * std::cosf(theta) - vec.y * std::sinf(theta);
+				velocity.y = vec.y * std::cosf(theta) + vec.x * std::sinf(theta);
+				velocity *= fParas_[kClientFirstSpeed] * deltaTime;
+			}
+			clientManager_->SetClient((*it)->GetType(), model_->transform_.translate_, velocity);
+			it = clients_.erase(it);
+			i++;
 		}
 	}
 }
@@ -413,6 +456,9 @@ void Player::Reset()
 	putWaterNum_ = kMaxPutWaterNum_;
 	waterRecoveryTimeCount_ = 0.0f;
 
+	memoOutWaterSpeed_ = 0.0f;
+	isFireClients_ = false;
+
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
 
@@ -462,6 +508,9 @@ void Player::SetCollider()
 	Collider::SetCircle({ model_->transform_.translate_.x,model_->transform_.translate_.y },
 		0.0f, 0.0f, { velocity_.x,velocity_.y });
 	collisionManager_->SetCollider(this);
+	if (bParas_[BoolParamater::kGravityAreaSearch]) {
+		gravityAreaSearch_->Update(model_->transform_.translate_);
+	}
 }
 
 void Player::SetGlobalVariable()

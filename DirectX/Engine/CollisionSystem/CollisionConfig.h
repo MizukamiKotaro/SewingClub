@@ -19,4 +19,6 @@ enum class ColliderMask {
     WATER,
     GRAVITY_AREA,
     PLANET,
+    GRAVITY_AREA_SEARCH,
+    CLIENT,
 };

@@ -11,6 +11,7 @@
 #include "GameElement/WaterChunk/WaterChunk.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "GameElement/Planet/PlanetManager.h"
+#include "GameElement/Client/ClientManager.h"
 
 class StageScene : public IScene
 {
@@ -40,4 +41,5 @@ private:
 	CollisionManager* collisionManager_;
 	WaterManager* waterManager_;
 	PlanetManager* planetManager_;
+	ClientManager* clientManager_;
 };

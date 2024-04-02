@@ -415,6 +415,9 @@
     <Filter Include="Engine\Utils\Camera\DebugCamera">
       <UniqueIdentifier>{ef32961d-2a90-4097-92c5-b8a68ced86a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\Player\GravityAreaSearch">
+      <UniqueIdentifier>{51780411-b181-44de-82a1-51951aca82d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -767,6 +770,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Utils\Camera\DebugCamera\DebugCamera.cpp">
       <Filter>Engine\Utils\Camera\DebugCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Player\GravityAreaSearch.cpp">
+      <Filter>Game\GameElement\Player\GravityAreaSearch</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Client\ClientManager.cpp">
+      <Filter>Game\GameElement\Planet\Client</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1177,6 +1186,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Utils\Camera\DebugCamera\DebugCamera.h">
       <Filter>Engine\Utils\Camera\DebugCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Player\GravityAreaSearch.h">
+      <Filter>Game\GameElement\Player\GravityAreaSearch</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Client\ClientManager.h">
+      <Filter>Game\GameElement\Planet\Client</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

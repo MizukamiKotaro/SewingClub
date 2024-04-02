@@ -21,6 +21,8 @@ public:
 	const ColliderMask GetMask() const { return mask_; }
 	const std::list<ColliderMask>& GetTargetMasks() const { return targetMasks_; }
 	const bool GetIsBeDrived() const { return isBeDrived_; }
+	const bool GetIsHit() const { return isHit_; }
+	void SetIsHit(bool isHit) { isHit_ = isHit; }
 
 	ShapeCircle* GetCircle() const { return shapeCircle_.get(); }
 
@@ -37,4 +39,6 @@ protected:
 	ColliderShape shape_;
 	ColliderMask mask_;
 	std::list<ColliderMask> targetMasks_;
+
+	bool isHit_;
 };

@@ -12,6 +12,6 @@ public:
 	Vector2 position_;
 	Vector2 radius_;
 	float rotate_;
-	Vector2 velcity_;
+	Vector2 velocity_;
 	bool isCircle_;
 };

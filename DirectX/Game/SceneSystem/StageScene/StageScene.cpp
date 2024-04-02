@@ -22,6 +22,7 @@ StageScene::StageScene()
 	collisionManager_ = CollisionManager::GetInstance();
 	waterManager_ = WaterManager::GetInstance();
 	planetManager_ = PlanetManager::GetInstance();
+	clientManager_ = ClientManager::GetInstance();
 
 	player_ = std::make_unique<Player>();
 	camera_->transform_.translate_.z = -50.0f;
@@ -42,6 +43,7 @@ void StageScene::Initialize()
 	waves_.clear();
 	waterManager_->Clear();
 	planetManager_->Initialize();
+	clientManager_->Clear();
 }
 
 void StageScene::Update()
@@ -95,6 +97,8 @@ void StageScene::Update()
 
 	player_->Update(deltaTime);
 
+	clientManager_->Update(deltaTime);
+
 	waterManager_->Update(deltaTime);
 
 	debugCamera_->Update();
@@ -129,6 +133,8 @@ void StageScene::Draw()
 	waterManager_->Draw();
 
 	planetManager_->Draw();
+
+	clientManager_->Draw();
 
 	instancingmodelManager_->Draw(*camera_.get());
 

@@ -5,7 +5,7 @@ ShapeCircle::ShapeCircle()
 	position_ = {};
 	radius_ = {};
 	rotate_ = 0.0f;
-	velcity_ = {};
+	velocity_ = {};
 	isCircle_ = true;
 }
 
@@ -14,7 +14,7 @@ void ShapeCircle::SetParameter(const Vector2& position, const Vector2& radius, c
 	position_ = position;
 	radius_ = radius;
 	rotate_ = rotate;
-	velcity_ = velocity;
+	velocity_ = velocity;
 	if (radius_.x == radius_.y) {
 		isCircle_ = true;
 	}
@@ -28,6 +28,6 @@ void ShapeCircle::SetParameter(const Vector2& position, const float& radius, con
 	position_ = position;
 	radius_ = { radius,radius };
 	rotate_ = rotate;
-	velcity_ = velocity;
+	velocity_ = velocity;
 	isCircle_ = true;
 }
