@@ -43,6 +43,7 @@ Player::Player()
 	accelerationTimeCount_ = 0.0f;
 	isInputAcceleration_ = false;
 	waterRecoveryTimeCount_ = 0.0f;
+	addAutoAcceleration_ = 0.0f;
 
 	memoOutWaterSpeed_ = 0.0f;
 	isFireClients_ = false;
@@ -181,7 +182,7 @@ void Player::Move(float deltaTime)
 			vector_ = Calc::Lerp(vector_, vector, fParas_[kInterpolationRate]).Normalize();
 		}
 
-		speed_ = std::clamp(speed_ + fParas_[kAcceleration] * deltaTime, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_);
+		speed_ = std::clamp(speed_ + fParas_[kAcceleration] * deltaTime, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_ + addAutoAcceleration_);
 
 		velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
 
@@ -211,6 +212,10 @@ void Player::Move(float deltaTime)
 		addAcceleration_ *= 0.92f;
 		if (addAcceleration_ <= 0.3f) {
 			addAcceleration_ = 0.0f;
+		}
+		addAutoAcceleration_ *= 0.92f;
+		if (addAutoAcceleration_ <= 0.3f) {
+			addAutoAcceleration_ = 0.0f;
 		}
 	}
 
@@ -258,7 +263,7 @@ void Player::OutWater(float deltaTime)
 				addAcceleration_ += addSpeed;
 			}
 		}
-		speed_ = std::clamp(speed_, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_);
+		speed_ = std::clamp(speed_, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_ + addAutoAcceleration_);
 		velocity_ = { vector_.x * speed_,vector_.y * speed_ ,0.0f };
 		if (bParas_[BoolParamater::kGravityArea]) {
 
@@ -448,6 +453,7 @@ void Player::Reset()
 	isInputAcceleration_ = false;
 	putWaterNum_ = kMaxPutWaterNum_;
 	waterRecoveryTimeCount_ = 0.0f;
+	addAutoAcceleration_ = 0.0f;
 
 	memoOutWaterSpeed_ = 0.0f;
 	isFireClients_ = false;
@@ -534,10 +540,13 @@ void Player::AutoMove(float deltaTime)
 {
 	Vector2 vector = (dotTargetPos_ - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }).Normalize();
 
-	vector_ = Calc::Lerp(vector_, vector, 0.08f).Normalize();
+	vector_ = Calc::Lerp(vector_, vector, fParas_[kAutoLerp]).Normalize();
 
-	speed_ = std::clamp(speed_ + fParas_[kAcceleration] * deltaTime, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_);
-
+	if (speed_ < fParas_[kAutoMaxSpeed] * deltaTime) {
+		speed_ += fParas_[kAutoAcceleration] * deltaTime;
+		addAutoAcceleration_ += fParas_[kAutoAcceleration] * deltaTime;
+	}
+	
 	velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
 
 	if (vector_.y >= 0.0f) {
@@ -582,6 +591,9 @@ void Player::InitializeGlobalVariable()
 		"客を飛ばすために必要な速度",
 		"客を飛ばす角度",
 		"客を飛ばすタイミングの速さ",
+		"自動の時の加速度",
+		"自動の時の最大速度",
+		"自動の時の補間",
 	};
 
 	bNames.resize(kBoolEnd);
@@ -604,6 +616,7 @@ void Player::InitializeGlobalVariable()
 		"水の生成関係",
 		"入力による移動関係",
 		"乗客関係",
+		"自動移動関係",
 	};
 	fTree1.resize(kTree1End);
 	fTree1 = {
@@ -611,7 +624,8 @@ void Player::InitializeGlobalVariable()
 		{kGravity,kWaterSize},
 		{kWaterSize,kJumpInputAcceleration},
 		{kJumpInputAcceleration,kClientFirstSpeed},
-		{kClientFirstSpeed,kFloatEnd}
+		{kClientFirstSpeed,kAutoAcceleration},
+		{kAutoAcceleration,kFloatEnd},
 	};
 	bTree1.resize(kTree1End);
 	bTree1 = {
@@ -619,7 +633,8 @@ void Player::InitializeGlobalVariable()
 		{kGravityArea,kAddWaterTriger},
 		{kAddWaterTriger,kJumpInput},
 		{kJumpInput,kInputFireClient},
-		{kInputFireClient,kBoolEnd}
+		{kInputFireClient,kBoolEnd},
+		{},
 	};
 }
 
