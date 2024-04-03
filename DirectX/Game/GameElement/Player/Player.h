@@ -103,7 +103,11 @@ private:
 		kInputAccelerationTime, // ボタン入力による加速させる時間
 		kClientFirstSpeed, // 客を飛ばしたときの客の初速
 		kClientMinSpeed, // 客を飛ばすために必要な速度
+		kClientFireAngle, // 客を飛ばす角度
 		kClientAbsoluteSpeed, // 客を飛ばすタイミングの速さの絶対値
+		kAutoAcceleration, // 自動の時の加速度
+		kAutoMaxSpeed, // 自動の時の最大速度
+		kAutoLerp, // 自動の時の補間
 		kFloatEnd,
 	};
 	std::vector<const char*> fNames;
@@ -130,6 +134,7 @@ private:
 		kTree1GenerationWater,
 		kTree1InputAcceleration,
 		kTree1Client,
+		kTree1AutoMove,
 		kTree1End,
 	};
 	std::vector<const char*> tree1Name_;
@@ -145,7 +150,9 @@ private:
 	bool isGravity_;
 	Vector2 dotTargetPos_;
 	bool isDotTarget_;
+	float addAutoAcceleration_;
 
+	int kFireClientNum_;
 	int kMaxPutClient_;
 	int kMaxPutWaterNum_;
 	int putWaterNum_;
