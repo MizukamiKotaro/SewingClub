@@ -338,8 +338,9 @@ void Player::OutWater(float deltaTime)
 		}
 	}
 
-	if (!isFireClients_ && memoOutWaterSpeed_ >= fParas_[kClientMinSpeed] * deltaTime && speed_ <= fParas_[kClientAbsoluteSpeed] * deltaTime) {
-		// 客を飛ばす処理
+	//if (!isFireClients_ && memoOutWaterSpeed_ >= fParas_[kClientMinSpeed] * deltaTime && speed_ <= fParas_[kClientAbsoluteSpeed] * deltaTime) {
+		if(!isFireClients_&&input_->PressedGamePadButton(Input::GamePadButton::B)){
+	// 客を飛ばす処理
 		isFireClients_ = true;
 
 		int i = 0;
