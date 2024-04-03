@@ -8,6 +8,7 @@
 
 class Player;
 class RandomGenerator;
+class ClientManager;
 
 class Planet : public Collider
 {
@@ -36,7 +37,6 @@ private:
 	static void StaticSetGlobalVariable();
 	static void StaticApplyGlobalVariable();
 
-
 private:
 	
 	std::unique_ptr<GlobalVariableUser> globalVariable_;
@@ -45,6 +45,7 @@ private:
 	static InstancingModelManager* instancingManager_;
 	static const ModelData* modelData_;
 	static RandomGenerator* rand_;
+	static ClientManager* clientManager_;
 
 	static int MaxClientNum;
 
@@ -53,7 +54,6 @@ private:
 
 	std::vector<bool> isPos;
 	std::list<std::unique_ptr<Client>> clients_;
-	float clientScale_ = 0.5f;
 
 	std::unique_ptr<GravityArea> gravityArea_;
 	Vector3 position_;

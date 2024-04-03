@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "GameElement/WaterManager/WaterManager.h"
+#include "GameElement/Client/ClientManager.h"
 
 Player::Player()
 {
@@ -12,11 +13,15 @@ Player::Player()
 	Collider::AddTargetMask(ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
 	Collider::AddTargetMask(ColliderMask::PLANET);
+	Collider::AddTargetMask(ColliderMask::CLIENT);
 
 	CreateGlobalVariable("Player");
 
 	input_ = Input::GetInstance();
 	waterManager_ = WaterManager::GetInstance();
+	clientManager_ = ClientManager::GetInstance();
+
+	InitializeGlobalVariable();
 
 	for (int i = 0; i < kFloatEnd; i++) {
 		fParas_[i] = 0.5f;
@@ -39,6 +44,9 @@ Player::Player()
 	isInputAcceleration_ = false;
 	waterRecoveryTimeCount_ = 0.0f;
 
+	memoOutWaterSpeed_ = 0.0f;
+	isFireClients_ = false;
+
 	kMaxPutClient_ = 5;
 	kMaxPutWaterNum_ = 5;
 
@@ -54,6 +62,7 @@ Player::Player()
 	isMemoryPos_ = false;
 
 	yarn_ = std::make_unique<Yarn>(&model_->transform_.translate_, model_->transform_.translate_);
+	gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
 }
 
 void Player::Initialize()
@@ -66,32 +75,32 @@ void Player::Update(float deltaTime)
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
-
 	if (isInWater_ && preIsInWater_) {
+		// 水や惑星内での更新処理
 		Move(deltaTime);
 	}
 	else if (!isInWater_ && preIsInWater_) {
+		// 水や惑星から飛び出たときの処理
 		PopUpFromWater();
 	}
 	else if (isInWater_ && !preIsInWater_) {
+		// 水や惑星に入ったときの処理
 		ComeToWater();
 	}
 	else {
+		// 水や惑星の外での処理
 		OutWater(deltaTime);
 	}
-
+	// 入力による加速の更新処理
 	UpdateInputAcceleration(deltaTime);
 
 	preIsInWater_ = isInWater_;
-
 	if (model_->transform_.GetWorldPosition().y <= fParas_[kMinPositionY]) {
 		Reset();
 	}
-
 	model_->Update();
-
-	yarn_->Update();
-
+	//yarn_->Update();
+	// プレイヤーの軌跡に水を発生させる処理(気にしなくていい)
 	UpdateDelayProcess(deltaTime);
 
 	if (bParas_[BoolParamater::kAddWaterTriger]) {
@@ -144,7 +153,7 @@ void Player::OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<
 		if (kMaxPutClient_ <= int(clients_.size())) {
 			break;
 		}
-		clients_.push_back(std::make_unique<Client>((*it)->GetType(), Vector3{}, 0.2f));
+		clients_.push_back(std::make_unique<Client>((*it)->GetType(), Vector3{}));
 		it = clients.erase(it);
 	}
 }
@@ -161,6 +170,7 @@ void Player::Move(float deltaTime)
 	Vector2 vector = input_->GetGamePadLStick();
 
 	if (vector.x != 0.0f || vector.y != 0.0f) {
+		// 入力があったときの処理
 		vector = vector.Normalize();
 
 		if (vector_.x != -vector.x) {
@@ -183,6 +193,7 @@ void Player::Move(float deltaTime)
 		}
 	}
 	else {
+		// 入力がなかった時の処理
 		if (fParas_[kAttenuation] != 0.0f) {
 			speed_ = speed_ * fParas_[kAttenuation];
 		}
@@ -209,8 +220,15 @@ void Player::Move(float deltaTime)
 void Player::PopUpFromWater()
 {
 	timeCount_ = 0.0f;
+	memoOutWaterSpeed_ = speed_;
+	isFireClients_ = false;
 	model_->transform_.translate_ += velocity_;
 	isMemoryPos_ = false;
+	dotTargetPos_ = gravityAreaSearch_->GetNearDotPos();
+	isDotTarget_ = false;
+	if (input_->PressingGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
+		isDotTarget_ = true;
+	}
 	if (bParas_[BoolParamater::kAddWaterMove]) {
 		delayProcess_.push_back({ { model_->transform_.translate_.x,model_->transform_.translate_.y },0.0f });
 	}
@@ -226,96 +244,114 @@ void Player::OutWater(float deltaTime)
 {
 	timeCount_ += deltaTime;
 
-	if (timeCount_ <= fParas_[kOutWaterTime]) {
-		if (addAcceleration_ >= fParas_[FloatParamater::kMaxAddAcceleration] * deltaTime) {
-			addAcceleration_ = fParas_[FloatParamater::kMaxAddAcceleration] * deltaTime;
-		}
-		else {
-			float addSpeed = fParas_[kOutWaterAcceleration] * deltaTime;
-			speed_ += addSpeed;
-			addAcceleration_ += addSpeed;
-		}
-	}
-	speed_ = std::clamp(speed_, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_);
-	velocity_ = { vector_.x * speed_,vector_.y * speed_ ,0.0f };
-	if (bParas_[BoolParamater::kGravityArea]) {
-		if (isGravity_) {
-			velocity_.x += gravityVelocity_.x * deltaTime;
-			velocity_.y += gravityVelocity_.y * deltaTime;
-		}
-		else {
-			Vector2 vector = gravityPos_ - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
-			gravityVelocity_ = vector.Normalize() * fParas_[kGravityWater];
-			velocity_.x += gravityVelocity_.x * deltaTime;
-			velocity_.y += gravityVelocity_.y * deltaTime;
-		}
+	if (isDotTarget_) {
+		AutoMove(deltaTime);
 	}
 	else {
-		if (velocity_.y <= 0.0f) {
-			velocity_.y -= fParas_[kGravityDown] * deltaTime;
+		if (timeCount_ <= fParas_[kOutWaterTime]) {
+			if (addAcceleration_ >= fParas_[FloatParamater::kMaxAddAcceleration] * deltaTime) {
+				addAcceleration_ = fParas_[FloatParamater::kMaxAddAcceleration] * deltaTime;
+			}
+			else {
+				float addSpeed = fParas_[kOutWaterAcceleration] * deltaTime;
+				speed_ += addSpeed;
+				addAcceleration_ += addSpeed;
+			}
 		}
-		else {
-			velocity_.y -= fParas_[kGravity] * deltaTime;
-		}
-	}
-
-	if (bParas_[BoolParamater::kJumpInput]) {
-		Vector2 vector = input_->GetGamePadLStick();
-
+		speed_ = std::clamp(speed_, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_);
+		velocity_ = { vector_.x * speed_,vector_.y * speed_ ,0.0f };
 		if (bParas_[BoolParamater::kGravityArea]) {
-			if (vector.x > 0.0f) {
-				velocity_.x += fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
+
+			if (isGravity_) {
+				velocity_.x += gravityVelocity_.x * deltaTime;
+				velocity_.y += gravityVelocity_.y * deltaTime;
 			}
-			else if (vector.x < 0.0f) {
-				velocity_.x -= fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
-			}
-		}
-		else {
-			velocity_.x += vector.x * fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
-			velocity_.y += vector.y * fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
-		}
-	}
-
-	Vector3 normal = velocity_.Normalize();
-	vector_ = { normal.x,normal.y };
-
-	if (std::abs(normal.x) > std::abs(normal.y)) {
-		speed_ = velocity_.x / normal.x;
-	}
-	else {
-		speed_ = velocity_.y / normal.y;
-	}
-	if (vector_.y >= 0.0f) {
-		model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f;
-	}
-	else {
-		model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f;
-	}
-
-	model_->transform_.translate_ += velocity_;
-
-	if (bParas_[BoolParamater::kAddWaterTriger]) {
-		if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
-			if (putWaterNum_ != 0) {
-				waterManager_->CreateWater({ model_->transform_.translate_.x,model_->transform_.translate_.y },
-					{ fParas_[FloatParamater::kWaterSize],fParas_[FloatParamater::kWaterSize] }, false, 0.0f);
-				if (putWaterNum_ == kMaxPutWaterNum_) {
-					waterRecoveryTimeCount_ = 0.0f;
+			else {
+				if (bParas_[BoolParamater::kGravityAreaSearch]) {
+					Vector2 vector = gravityAreaSearch_->GetNearPos() - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
+					gravityVelocity_ = vector.Normalize() * fParas_[kGravityWater];
+					velocity_.x += gravityVelocity_.x * deltaTime;
+					velocity_.y += gravityVelocity_.y * deltaTime;
 				}
-				putWaterNum_--;
+				else {
+					Vector2 vector = gravityPos_ - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
+					gravityVelocity_ = vector.Normalize() * fParas_[kGravityWater];
+					velocity_.x += gravityVelocity_.x * deltaTime;
+					velocity_.y += gravityVelocity_.y * deltaTime;
+				}
 			}
 		}
-	}
+		else {
+			if (velocity_.y <= 0.0f) {
+				velocity_.y -= fParas_[kGravityDown] * deltaTime;
+			}
+			else {
+				velocity_.y -= fParas_[kGravity] * deltaTime;
+			}
+		}
 
-	if (bParas_[BoolParamater::kAddWaterMove]) {
-		if (!isMemoryPos_) {
-			isMemoryPos_ = true;
-			delayProcess_.push_back({ { model_->transform_.translate_.x,model_->transform_.translate_.y },0.0f });
+		if (bParas_[BoolParamater::kJumpInput]) {
+			Vector2 vector = input_->GetGamePadLStick();
+
+			if (bParas_[BoolParamater::kGravityArea]) {
+				if (vector.x > 0.0f) {
+					velocity_.x += fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
+				}
+				else if (vector.x < 0.0f) {
+					velocity_.x -= fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
+				}
+			}
+			else {
+				velocity_.x += vector.x * fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
+				velocity_.y += vector.y * fParas_[FloatParamater::kJumpInputAcceleration] * deltaTime;
+			}
+		}
+
+		Vector3 normal = velocity_.Normalize();
+		vector_ = { normal.x,normal.y };
+
+		if (std::abs(normal.x) > std::abs(normal.y)) {
+			speed_ = velocity_.x / normal.x;
 		}
 		else {
-			isMemoryPos_ = false;
+			speed_ = velocity_.y / normal.y;
 		}
+		if (vector_.y >= 0.0f) {
+			model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f;
+		}
+		else {
+			model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f;
+		}
+
+		model_->transform_.translate_ += velocity_;
+
+		if (bParas_[BoolParamater::kAddWaterTriger]) {
+			if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
+				if (putWaterNum_ != 0) {
+					waterManager_->CreateWater({ model_->transform_.translate_.x,model_->transform_.translate_.y },
+						{ fParas_[FloatParamater::kWaterSize],fParas_[FloatParamater::kWaterSize] }, false, 0.0f);
+					if (putWaterNum_ == kMaxPutWaterNum_) {
+						waterRecoveryTimeCount_ = 0.0f;
+					}
+					putWaterNum_--;
+				}
+			}
+		}
+
+		if (bParas_[BoolParamater::kAddWaterMove]) {
+			if (!isMemoryPos_) {
+				isMemoryPos_ = true;
+				delayProcess_.push_back({ { model_->transform_.translate_.x,model_->transform_.translate_.y },0.0f });
+			}
+			else {
+				isMemoryPos_ = false;
+			}
+		}
+
+		// 客を飛ばす処理
+		FireClient(deltaTime);
 	}
+	
 }
 
 void Player::UpdateDelayProcess(float deltaTime)
@@ -413,6 +449,9 @@ void Player::Reset()
 	putWaterNum_ = kMaxPutWaterNum_;
 	waterRecoveryTimeCount_ = 0.0f;
 
+	memoOutWaterSpeed_ = 0.0f;
+	isFireClients_ = false;
+
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
 
@@ -435,6 +474,140 @@ void Player::UpdateFloating()
 
 }
 
+void Player::FireClient(float deltaTime)
+{
+	if (bParas_[kInputFireClient]) {
+		if (!isFireClients_ && input_->PressedGamePadButton(Input::GamePadButton::RIGHT_SHOULDER)) {
+			FireClientProcess(deltaTime);
+		}
+	}
+	else {
+		if (!isFireClients_ && memoOutWaterSpeed_ >= fParas_[kClientMinSpeed] * deltaTime && speed_ <= fParas_[kClientAbsoluteSpeed] * deltaTime) {
+			// 客を飛ばす処理
+			FireClientProcess(deltaTime);
+		}
+	}
+}
+
+void Player::FireClientProcess(float deltaTime)
+{
+	isFireClients_ = true;
+
+	int i = 0;
+	for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {
+		if (i == 3) {
+			break;
+		}
+		Vector3 velocity = velocity_.Normalize();
+		if (i == 1) {
+			velocity *= fParas_[kClientFirstSpeed] * deltaTime;
+		}
+		else {
+			float theta = 3.14f / 10;
+			theta -= theta * i;
+			Vector3 vec = velocity;
+			velocity.x = vec.x * std::cosf(theta) - vec.y * std::sinf(theta);
+			velocity.y = vec.y * std::cosf(theta) + vec.x * std::sinf(theta);
+			velocity *= fParas_[kClientFirstSpeed] * deltaTime;
+		}
+		clientManager_->SetClient((*it)->GetType(), model_->transform_.translate_, velocity);
+		it = clients_.erase(it);
+		i++;
+	}
+}
+
+void Player::AutoMove(float deltaTime)
+{
+	Vector2 vector = (dotTargetPos_ - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }).Normalize();
+
+	vector_ = Calc::Lerp(vector_, vector, 0.08f).Normalize();
+
+	speed_ = std::clamp(speed_ + fParas_[kAcceleration] * deltaTime, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_);
+
+	velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
+
+	if (vector_.y >= 0.0f) {
+		model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f;
+	}
+	else {
+		model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f;
+	}
+	model_->transform_.translate_ += velocity_;
+}
+
+void Player::InitializeGlobalVariable()
+{
+	fParas_.resize(kFloatEnd);
+	bParas_.resize(kBoolEnd);
+
+	fNames.resize(kFloatEnd);
+	fNames = {
+		"加速度",
+		"減速率",
+		"最大速度",
+		"最低速度",
+		"加算される加速度の最大値",
+		"補間の割合",
+		"上下挙動の1往復の時間",
+		"水から飛び出したときの加速度",
+		"水から飛び出したときに加速させる時間",
+		"プレイヤーの最低の高さ",
+		"加速を維持する時間",
+		"重力加速度",
+		"降下中の重力",
+		"水の塊の重力",
+		"プレイヤーが生成する水のサイズ",
+		"水の回復時間",
+		"ジャンプで生成する水のサイズ",
+		"水の生成に遅延させる時間",
+		"ジャンプ中の入力の加速度",
+		"ボタン入力による加速度",
+		"ボタン加速のクールタイム",
+		"ボタン入力による加速させる時間",
+		"客を飛ばしたときの客の初速",
+		"客を飛ばすために必要な速度",
+		"客を飛ばすタイミングの速さ",
+	};
+
+	bNames.resize(kBoolEnd);
+	bNames = {
+		"水ごとに重力がありか",
+		"一番近くの重力場に引き寄せられるか",
+		"ボタンを押したときに水を生成するか",
+		"ジャンプしたときに水を生成するか",
+		"ジャンプ中に入力を受け付けるか",
+		"ボタン入力で水中で加速できるか",
+		"ボタン入力でジャンプ中に加速できるか",
+		"ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか",
+		"入力で客を飛ばすか",
+	};
+
+	tree1Name_.resize(kTree1End);
+	tree1Name_ = {
+		"プレイヤーのステータス関係",
+		"重力関係",
+		"水の生成関係",
+		"入力による移動関係",
+		"乗客関係",
+	};
+	fTree1.resize(kTree1End);
+	fTree1 = {
+		{kAcceleration,kGravity},
+		{kGravity,kWaterSize},
+		{kWaterSize,kJumpInputAcceleration},
+		{kJumpInputAcceleration,kClientFirstSpeed},
+		{kClientFirstSpeed,kFloatEnd}
+	};
+	bTree1.resize(kTree1End);
+	bTree1 = {
+		{0,0},
+		{kGravityArea,kAddWaterTriger},
+		{kAddWaterTriger,kJumpInput},
+		{kJumpInput,kInputFireClient},
+		{kInputFireClient,kBoolEnd}
+	};
+}
+
 void Player::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER || collider.GetMask() == ColliderMask::PLANET) {
@@ -455,6 +628,12 @@ void Player::OnCollision(const Collider& collider)
 		Vector2 vector = circle->position_ - pos;
 		gravityVelocity_ += vector.Normalize() * fParas_[kGravityWater];
 	}
+	else if (collider.GetMask() == ColliderMask::CLIENT) {
+		if (kMaxPutClient_ > int(clients_.size())) {
+			clients_.push_back(std::make_unique<Client>(clientManager_->GetHitClientType(), Vector3{}));
+			clientManager_->DeleteHitClient();
+		}
+	}
 }
 
 void Player::SetCollider()
@@ -462,6 +641,9 @@ void Player::SetCollider()
 	Collider::SetCircle({ model_->transform_.translate_.x,model_->transform_.translate_.y },
 		0.0f, 0.0f, { velocity_.x,velocity_.y });
 	collisionManager_->SetCollider(this);
+	if (bParas_[BoolParamater::kGravityAreaSearch]) {
+		gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
+	}
 }
 
 void Player::SetGlobalVariable()

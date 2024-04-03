@@ -15,6 +15,7 @@ GravityArea::GravityArea()
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::GRAVITY_AREA);
 	Collider::AddTargetMask(ColliderMask::PLAYER);
+	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA_SEARCH);
 }
 
 void GravityArea::StaticInitialize()

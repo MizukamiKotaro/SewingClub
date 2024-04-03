@@ -14,6 +14,7 @@ WaterChunk::WaterChunk()
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::PLAYER);
+	Collider::AddTargetMask(ColliderMask::CLIENT);
 
 	gravityArea_ = std::make_unique<GravityArea>();
 

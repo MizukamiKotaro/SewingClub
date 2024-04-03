@@ -4,10 +4,12 @@
 #include "PlanetTypeColor.h"
 #include "GameElement/Player/Player.h"
 #include "RandomGenerator/RandomGenerator.h"
+#include "GameElement/Client/ClientManager.h"
 
 InstancingModelManager* Planet::instancingManager_ = nullptr;
 const ModelData* Planet::modelData_ = nullptr;
 RandomGenerator* Planet::rand_ = nullptr;
+ClientManager* Planet::clientManager_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> Planet::staticGlobalVariable_ = nullptr;
 int Planet::MaxClientNum = 6;
@@ -17,6 +19,7 @@ Planet::Planet(PlanetType type, const Vector3& pos, Player* player, int no)
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::PLANET);
 	Collider::AddTargetMask(ColliderMask::PLAYER);
 	Collider::AddTargetMask(ColliderMask::WATER);
+	Collider::AddTargetMask(ColliderMask::CLIENT);
 
 	gravityArea_ = std::make_unique<GravityArea>();
 
@@ -42,6 +45,7 @@ void Planet::StaticInitialize()
 	instancingManager_ = InstancingModelManager::GetInstance();
 	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
 	rand_ = RandomGenerator::GetInstance();
+	clientManager_ = ClientManager::GetInstance();
 
 	staticGlobalVariable_ = std::make_unique<GlobalVariableUser>("Planet", "StaticPlanet");
 	StaticSetGlobalVariable();
@@ -89,6 +93,14 @@ void Planet::OnCollision(const Collider& collider)
 	}
 	else if (collider.GetMask() == ColliderMask::WATER) {
 
+	}
+	else if (collider.GetMask() == ColliderMask::CLIENT) {
+
+		PlanetType type = clientManager_->GetHitClientType();
+		if (type_ != type) {
+			Vector2 pos = collider.GetCircle()->position_;
+			clients_.push_back(std::make_unique<Client>(type, Vector3{ pos.x,pos.y,0.0f }));
+		}
 	}
 }
 
@@ -143,10 +155,11 @@ void Planet::CreateClient()
 				if (!isPos[i]) {
 					float theta = 1.57f - float(i) / MaxClientNum * 6.28f;
 					Vector3 pos{};
-					pos.x = (scale_ + clientScale_) * std::cosf(theta);
-					pos.y = (scale_ + clientScale_) * std::sinf(theta);
+					float scale = Client::GetScale();
+					pos.x = (scale_ + scale) * std::cosf(theta);
+					pos.y = (scale_ + scale) * std::sinf(theta);
 					pos += position_;
-					clients_.push_back(std::make_unique<Client>(type, pos, clientScale_));
+					clients_.push_back(std::make_unique<Client>(type, pos));
 					isPos[i] = true;
 					break;
 				}

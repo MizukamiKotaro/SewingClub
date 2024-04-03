@@ -31,8 +31,12 @@ void CollisionManager::CheckCollision()
 		itrB++;
 		for (; itrB != colliders_.end(); itrB++) {
 			Collider* colliderB = *itrB;
+			colliderA->SetIsHit(false);
+			colliderB->SetIsHit(false);
 			if (IsNeedCollision(colliderA, colliderB) && IsMatchedMask(colliderA, colliderB)) {
 				if (IsCollision(colliderA, colliderB)) {
+					colliderA->SetIsHit(true);
+					colliderB->SetIsHit(true);
 					colliderA->OnCollision(*colliderB);
 					colliderB->OnCollision(*colliderA);
 				}
