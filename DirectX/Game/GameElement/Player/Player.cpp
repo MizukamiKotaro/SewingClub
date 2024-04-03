@@ -467,7 +467,7 @@ void Player::UpdateFloating()
 void Player::FireClient(float deltaTime)
 {
 	if (bParas_[kInputFireClient]) {
-		if (!isFireClients_ && input_->PressedGamePadButton(Input::GamePadButton::RIGHT_SHOULDER)) {
+		if (/*!isFireClients_ &&*/ input_->PressedGamePadButton(Input::GamePadButton::RIGHT_SHOULDER)) {
 			FireClientProcess(deltaTime);
 		}
 	}
@@ -481,9 +481,15 @@ void Player::FireClient(float deltaTime)
 
 void Player::FireClientProcess(float deltaTime)
 {
-	isFireClients_ = true;
 
-	int i = 0;
+	if (clients_.size() == 0) {
+		return;
+	}
+
+
+	isFireClients_ = true;
+	deltaTime;
+	/*int i = 0;
 	for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {
 		if (i == 3) {
 			break;
@@ -503,7 +509,19 @@ void Player::FireClientProcess(float deltaTime)
 		clientManager_->SetClient((*it)->GetType(), model_->transform_.translate_, velocity);
 		it = clients_.erase(it);
 		i++;
-	}
+	}*/
+	std::list<std::unique_ptr<Client>>::iterator it = clients_.begin();
+
+	Vector2 velocity = input_->GetGamePadLStick();
+
+	velocity = velocity.Normalize() * fParas_[kClientFirstSpeed];
+
+	Vector3 velocity3 = { velocity.x,velocity.y,0 };
+
+	clientManager_->SetClient((*it)->GetType(), model_->transform_.translate_, -velocity3);
+
+	velocity_ =  velocity3*velocity.Length()*3;
+	vector_ = velocity.Normalize() * velocity.Length();
 }
 
 void Player::InitializeGlobalVariable()
