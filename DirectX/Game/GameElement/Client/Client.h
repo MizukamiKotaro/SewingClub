@@ -46,6 +46,7 @@ private:
 	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 	static float scale_;
 	static float gravitySpeed_;
+	static float planetGravitySpeed_;
 
 	PlanetType type_;
 	std::unique_ptr<Sprite> sprite_;
