@@ -10,9 +10,11 @@ float Client::scale_ = 0.5f;
 
 Client::Client(PlanetType type, const Vector3& pos, const Vector3& velocity)
 {
-	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::RIGID_BODY, ColliderMask::CLIENT);
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::CLIENT);
 	Collider::AddTargetMask(ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::PLANET);
+	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
+	Collider::AddTargetMask(ColliderMask::PLAYER);
 
 	type_ = type;
 	position_ = pos;
@@ -24,6 +26,7 @@ Client::Client(PlanetType type, const Vector3& pos, const Vector3& velocity)
 	gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
 	isInWater_ = false;
 	isInPlanet_ = false;
+	isInGravity_ = false;
 }
 
 void Client::StaticInitialize()
@@ -38,6 +41,7 @@ void Client::StaticInitialize()
 
 void Client::Initialize()
 {
+
 }
 
 void Client::Update(float deltaTime)
@@ -50,6 +54,7 @@ void Client::Update(float deltaTime)
 		position_ += velocity_;
 	}
 
+	isInGravity_ = false;
 	isInWater_ = false;
 	SetCollider();
 }
@@ -77,15 +82,33 @@ void Client::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER) {
 		isInWater_ = true;
+		velocity_ = {};
 	}
 	else if (collider.GetMask() == ColliderMask::PLANET) {
 		isInPlanet_ = true;
+	}
+	else if (collider.GetMask() == ColliderMask::GRAVITY_AREA) {
+		/*ShapeCircle* circle = collider.GetCircle();
+		Vector2 pos = { model_->transform_.translate_.x,model_->transform_.translate_.y };
+		if (!isGravity_) {
+			gravityPos_ = circle->position_;
+			isGravity_ = true;
+		}
+		if ((gravityPos_ - pos).Length() > (circle->position_ - pos).Length()) {
+			gravityPos_ = circle->position_;
+		}
+
+		Vector2 vector = circle->position_ - pos;
+		velocity_ += vector.Normalize() * fParas_[kGravityWater];*/
+	}
+	else if (collider.GetMask() == ColliderMask::PLAYER) {
+
 	}
 }
 
 void Client::SetCollider()
 {
-	Collider::SetCircle({ position_.x,position_.y },0.0f);
+	Collider::SetCircle({ position_.x,position_.y }, scale_);
 	collisionManager_->SetCollider(this);
 	gravityAreaSearch_->Update(position_);
 }

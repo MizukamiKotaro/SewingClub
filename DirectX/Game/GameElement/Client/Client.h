@@ -53,4 +53,5 @@ private:
 	float rotate_;
 	bool isInWater_;
 	bool isInPlanet_;
+	bool isInGravity_;
 };

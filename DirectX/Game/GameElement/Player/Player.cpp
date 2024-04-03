@@ -20,6 +20,8 @@ Player::Player()
 	waterManager_ = WaterManager::GetInstance();
 	clientManager_ = ClientManager::GetInstance();
 
+	InitializeGlobalVariable();
+
 	for (int i = 0; i < kFloatEnd; i++) {
 		fParas_[i] = 0.5f;
 	}
@@ -72,32 +74,32 @@ void Player::Update(float deltaTime)
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
-
 	if (isInWater_ && preIsInWater_) {
+		// 水や惑星内での更新処理
 		Move(deltaTime);
 	}
 	else if (!isInWater_ && preIsInWater_) {
+		// 水や惑星から飛び出たときの処理
 		PopUpFromWater();
 	}
 	else if (isInWater_ && !preIsInWater_) {
+		// 水や惑星に入ったときの処理
 		ComeToWater();
 	}
 	else {
+		// 水や惑星の外での処理
 		OutWater(deltaTime);
 	}
-
+	// 入力による加速の更新処理
 	UpdateInputAcceleration(deltaTime);
 
 	preIsInWater_ = isInWater_;
-
 	if (model_->transform_.GetWorldPosition().y <= fParas_[kMinPositionY]) {
 		Reset();
 	}
-
 	model_->Update();
-
 	yarn_->Update();
-
+	// プレイヤーの軌跡に水を発生させる処理(気にしなくていい)
 	UpdateDelayProcess(deltaTime);
 
 	if (bParas_[BoolParamater::kAddWaterTriger]) {
@@ -167,6 +169,7 @@ void Player::Move(float deltaTime)
 	Vector2 vector = input_->GetGamePadLStick();
 
 	if (vector.x != 0.0f || vector.y != 0.0f) {
+		// 入力があったときの処理
 		vector = vector.Normalize();
 
 		if (vector_.x != -vector.x) {
@@ -189,6 +192,7 @@ void Player::Move(float deltaTime)
 		}
 	}
 	else {
+		// 入力がなかった時の処理
 		if (fParas_[kAttenuation] != 0.0f) {
 			speed_ = speed_ * fParas_[kAttenuation];
 		}
@@ -335,6 +339,7 @@ void Player::OutWater(float deltaTime)
 	}
 
 	if (!isFireClients_ && memoOutWaterSpeed_ >= fParas_[kClientMinSpeed] * deltaTime && speed_ <= fParas_[kClientAbsoluteSpeed] * deltaTime) {
+		// 客を飛ばす処理
 		isFireClients_ = true;
 
 		int i = 0;
@@ -479,6 +484,78 @@ void Player::InitializeFloating()
 void Player::UpdateFloating()
 {
 
+}
+
+void Player::InitializeGlobalVariable()
+{
+	fParas_.resize(kFloatEnd);
+	bParas_.resize(kBoolEnd);
+
+	fNames.resize(kFloatEnd);
+	fNames = {
+		"加速度",
+		"減速率",
+		"最大速度",
+		"最低速度",
+		"加算される加速度の最大値",
+		"補間の割合",
+		"上下挙動の1往復の時間",
+		"水から飛び出したときの加速度",
+		"水から飛び出したときに加速させる時間",
+		"プレイヤーの最低の高さ",
+		"加速を維持する時間",
+		"重力加速度",
+		"降下中の重力",
+		"水の塊の重力",
+		"プレイヤーが生成する水のサイズ",
+		"水の回復時間",
+		"ジャンプで生成する水のサイズ",
+		"水の生成に遅延させる時間",
+		"ジャンプ中の入力の加速度",
+		"ボタン入力による加速度",
+		"ボタン加速のクールタイム",
+		"ボタン入力による加速させる時間",
+		"客を飛ばしたときの客の初速",
+		"客を飛ばすために必要な速度",
+		"客を飛ばすタイミングの速さ",
+	};
+
+	bNames.resize(kBoolEnd);
+	bNames = {
+		"水ごとに重力がありか",
+		"一番近くの重力場に引き寄せられるか",
+		"ボタンを押したときに水を生成するか",
+		"ジャンプしたときに水を生成するか",
+		"ジャンプ中に入力を受け付けるか",
+		"ボタン入力で水中で加速できるか",
+		"ボタン入力でジャンプ中に加速できるか",
+		"ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか"
+	};
+
+	tree1Name_.resize(kTree1End);
+	tree1Name_ = {
+		"プレイヤーのステータス関係",
+		"重力関係",
+		"水の生成関係",
+		"入力による移動関係",
+		"乗客関係",
+	};
+	fTree1.resize(kTree1End);
+	fTree1 = {
+		{kAcceleration,kGravity},
+		{kGravity,kWaterSize},
+		{kWaterSize,kJumpInputAcceleration},
+		{kJumpInputAcceleration,kClientFirstSpeed},
+		{kClientFirstSpeed,kFloatEnd}
+	};
+	bTree1.resize(kTree1End);
+	bTree1 = {
+		{0,0},
+		{kGravityArea,kAddWaterTriger},
+		{kAddWaterTriger,kJumpInput},
+		{kJumpInput,kBoolEnd},
+		{}
+	};
 }
 
 void Player::OnCollision(const Collider& collider)

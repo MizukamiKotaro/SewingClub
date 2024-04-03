@@ -6,6 +6,7 @@
 #include <list>
 #include "GameElement/Client/Client.h"
 #include "GravityAreaSearch.h"
+#include <vector>
 
 class Input;
 class WaterManager;
@@ -16,50 +17,55 @@ class Player : public Charactor
 public:
 
 	Player();
-
+	// 初期化
 	void Initialize() override;
-
+	// 更新処理
 	void Update(float deltaTime) override;
-
+	// 描画、model描画
 	void Draw(const Camera* camera) override;
-
+	// 左上の客の描画、Sprite描画
 	void DrawClient();
 
 public:
+	// 惑星と衝突したときの処理、惑星にPlayerのポインタを持たせて呼び出している
 	void OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<Client>>& clients);
+	// ポジションの取得
 	const Vector3& GetPosition() const;
 
 	//void SetIsInWater(bool is) { isInWater_ = is; }
 
 private:
+	// グローバル変数の初期化、std::vectorに変更したためここで定義している
+	void InitializeGlobalVariable();
+	// 衝突したときの処理
 	void OnCollision(const Collider& collider) override;
-
+	// コライダーのセット
 	void SetCollider();
-
+	// グローバル変数のセット
 	void SetGlobalVariable() override;
-
+	// グローバル変数の更新
 	void ApplyGlobalVariable() override;
 
+	// 水や惑星内での更新処理
 	void Move(float deltaTime);
-
+	// 水や惑星から飛び出たときの処理
 	void PopUpFromWater();
-
+	// 水や惑星に入ったときの処理
 	void ComeToWater();
-
+	// 水や惑星の外での処理
 	void OutWater(float deltaTime);
-
+	// プレイヤーの軌跡に水を発生させる処理(気にしなくていい)
 	void UpdateDelayProcess(float deltaTime);
-
+	// 入力による加速の更新処理
 	void UpdateInputAcceleration(float deltaTime);
-
+	// リセット
 	void Reset();
-
+	// プレイヤーのアニメーションの初期化(気にしなくていい)
 	void InitializeFloating();
-
+	// プレイヤーのアニメーションの更新処理(気にしなくていい)
 	void UpdateFloating();
 
 private:
-
 	Input* input_ = nullptr;
 	WaterManager* waterManager_ = nullptr;
 	ClientManager* clientManager_ = nullptr;
@@ -94,36 +100,8 @@ private:
 		kClientAbsoluteSpeed, // 客を飛ばすタイミングの速さの絶対値
 		kFloatEnd,
 	};
-
-	std::string fNames[kFloatEnd] = {
-		"加速度",
-		"減速率",
-		"最大速度",
-		"最低速度",
-		"加算される加速度の最大値",
-		"補間の割合",
-		"上下挙動の1往復の時間",
-		"水から飛び出したときの加速度",
-		"水から飛び出したときに加速させる時間",
-		"プレイヤーの最低の高さ",
-		"加速を維持する時間",
-		"重力加速度",
-		"降下中の重力",
-		"水の塊の重力",
-		"プレイヤーが生成する水のサイズ",
-		"水の回復時間",
-		"ジャンプで生成する水のサイズ",
-		"水の生成に遅延させる時間",
-		"ジャンプ中の入力の加速度",
-		"ボタン入力による加速度",
-		"ボタン加速のクールタイム",
-		"ボタン入力による加速させる時間",
-		"客を飛ばしたときの客の初速",
-		"客を飛ばすために必要な速度",
-		"客を飛ばすタイミングの速さ",
-	};
-
-	float fParas_[kFloatEnd];
+	std::vector<const char*> fNames;
+	std::vector<float> fParas_;
 
 	enum BoolParamater {
 		kGravityArea, // 水ごとに重力がありか
@@ -136,19 +114,8 @@ private:
 		kRecoveryInJump, // ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか
 		kBoolEnd,
 	};
-
-	std::string bNames[kBoolEnd] = {
-		"水ごとに重力がありか",
-		"一番近くの重力場に引き寄せられるか",
-		"ボタンを押したときに水を生成するか",
-		"ジャンプしたときに水を生成するか",
-		"ジャンプ中に入力を受け付けるか",
-		"ボタン入力で水中で加速できるか",
-		"ボタン入力でジャンプ中に加速できるか",
-		"ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか"
-	};
-
-	bool bParas_[kBoolEnd];
+	std::vector<const char*> bNames;
+	std::vector<bool> bParas_;
 
 	enum Tree1 {
 		kTree1Status,
@@ -158,30 +125,9 @@ private:
 		kTree1Client,
 		kTree1End,
 	};
-
-	std::string tree1Name_[kTree1End] = {
-		"プレイヤーのステータス関係",
-		"重力関係",
-		"水の生成関係",
-		"入力による移動関係",
-		"乗客関係",
-	};
-
-	std::pair<int, int> fTree1[kTree1End] = {
-		{kAcceleration,kGravity},
-		{kGravity,kWaterSize},
-		{kWaterSize,kJumpInputAcceleration},
-		{kJumpInputAcceleration,kClientFirstSpeed},
-		{kClientFirstSpeed,kFloatEnd}
-	};
-
-	std::pair<int, int> bTree1[kTree1End] = {
-		{0,0},
-		{kGravityArea,kAddWaterTriger},
-		{kAddWaterTriger,kJumpInput},
-		{kJumpInput,kBoolEnd},
-		{}
-	};
+	std::vector<const char*> tree1Name_;
+	std::vector<std::pair<int, int>> fTree1;
+	std::vector<std::pair<int, int>> bTree1;
 
 	Vector3 velocity_; // 速度
 	Vector2 vector_; // 移動方向ベクトル
