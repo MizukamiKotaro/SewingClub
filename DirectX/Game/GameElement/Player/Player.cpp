@@ -13,6 +13,7 @@ Player::Player()
 	Collider::AddTargetMask(ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
 	Collider::AddTargetMask(ColliderMask::PLANET);
+	Collider::AddTargetMask(ColliderMask::CLIENT);
 
 	CreateGlobalVariable("Player");
 
@@ -98,7 +99,7 @@ void Player::Update(float deltaTime)
 		Reset();
 	}
 	model_->Update();
-	yarn_->Update();
+	//yarn_->Update();
 	// プレイヤーの軌跡に水を発生させる処理(気にしなくていい)
 	UpdateDelayProcess(deltaTime);
 
@@ -596,6 +597,12 @@ void Player::OnCollision(const Collider& collider)
 		
 		Vector2 vector = circle->position_ - pos;
 		gravityVelocity_ += vector.Normalize() * fParas_[kGravityWater];
+	}
+	else if (collider.GetMask() == ColliderMask::CLIENT) {
+		if (kMaxPutClient_ > int(clients_.size())) {
+			clients_.push_back(std::make_unique<Client>(clientManager_->GetHitClientType(), Vector3{}));
+			clientManager_->DeleteHitClient();
+		}
 	}
 }
 

@@ -38,6 +38,19 @@ PlanetType ClientManager::GetHitClientType()
 	return PlanetType::kEnd;
 }
 
+void ClientManager::DeleteHitClient()
+{
+	for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {
+		if ((*it)->GetIsHit()) {
+			(*it)->SetIsInPlanet(true);
+			break;
+		}
+		else {
+			it++;
+		}
+	}
+}
+
 void ClientManager::Draw()
 {
 	for (std::unique_ptr<Client>& client : clients_) {

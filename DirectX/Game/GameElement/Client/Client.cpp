@@ -11,7 +11,7 @@ float Client::gravitySpeed_ = 0.5f;
 
 Client::Client(PlanetType type, const Vector3& pos, const Vector3& velocity)
 {
-	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::CLIENT);
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::UNKNOWN, ColliderMask::CLIENT);
 	Collider::AddTargetMask(ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::PLANET);
 	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
@@ -30,6 +30,7 @@ Client::Client(PlanetType type, const Vector3& pos, const Vector3& velocity)
 	isInGravity_ = false;
 	gravityPos_ = {};
 	gravityVelocity_ = {};
+	timeCount_ = 0.0f;
 }
 
 void Client::StaticInitialize()
@@ -64,10 +65,16 @@ void Client::Update(float deltaTime)
 		}
 	}
 
+
 	isInGravity_ = false;
 	isInWater_ = false;
 	gravityVelocity_ = {};
-	SetCollider();
+
+	timeCount_ += deltaTime;
+	if (timeCount_ >= 0.4f) {
+		Collider::type_ = ColliderType::COLLIDER;
+		SetCollider();
+	}
 }
 
 void Client::Draw() const

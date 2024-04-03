@@ -45,7 +45,7 @@ private:
 	static InstancingModelManager* instancingManager_;
 	static const ModelData* modelData_;
 	static RandomGenerator* rand_;
-	static ClientManager* clientMnager_;
+	static ClientManager* clientManager_;
 
 	static int MaxClientNum;
 

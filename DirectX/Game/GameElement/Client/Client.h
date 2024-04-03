@@ -23,6 +23,7 @@ public:
 	void Draw(const Vector2& pos) const;
 
 	const bool IsInPlanet() const { return isInPlanet_; }
+	void SetIsInPlanet(bool is) { isInPlanet_ = is; }
 
 	static void StaticUpdate();
 	static float GetScale() { return scale_; }
@@ -48,6 +49,7 @@ private:
 
 	PlanetType type_;
 	std::unique_ptr<Sprite> sprite_;
+	float timeCount_;
 
 	Vector3 position_;
 	Vector3 velocity_;
