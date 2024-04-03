@@ -338,32 +338,8 @@ void Player::OutWater(float deltaTime)
 		}
 	}
 
-	if (!isFireClients_ && memoOutWaterSpeed_ >= fParas_[kClientMinSpeed] * deltaTime && speed_ <= fParas_[kClientAbsoluteSpeed] * deltaTime) {
-		// 客を飛ばす処理
-		isFireClients_ = true;
-
-		int i = 0;
-		for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {
-			if (i == 3) {
-				break;
-			}
-			Vector3 velocity = velocity_.Normalize();
-			if (i == 1) {
-				velocity *= fParas_[kClientFirstSpeed] * deltaTime;
-			}
-			else {
-				float theta = 3.14f / 10;
-				theta -= theta * i;
-				Vector3 vec = velocity;
-				velocity.x = vec.x * std::cosf(theta) - vec.y * std::sinf(theta);
-				velocity.y = vec.y * std::cosf(theta) + vec.x * std::sinf(theta);
-				velocity *= fParas_[kClientFirstSpeed] * deltaTime;
-			}
-			clientManager_->SetClient((*it)->GetType(), model_->transform_.translate_, velocity);
-			it = clients_.erase(it);
-			i++;
-		}
-	}
+	// 客を飛ばす処理
+	FireClient(deltaTime);
 }
 
 void Player::UpdateDelayProcess(float deltaTime)
@@ -486,6 +462,48 @@ void Player::UpdateFloating()
 
 }
 
+void Player::FireClient(float deltaTime)
+{
+	if (bParas_[kInputFireClient]) {
+		if (!isFireClients_ && input_->PressedGamePadButton(Input::GamePadButton::RIGHT_SHOULDER)) {
+			FireClientProcess(deltaTime);
+		}
+	}
+	else {
+		if (!isFireClients_ && memoOutWaterSpeed_ >= fParas_[kClientMinSpeed] * deltaTime && speed_ <= fParas_[kClientAbsoluteSpeed] * deltaTime) {
+			// 客を飛ばす処理
+			FireClientProcess(deltaTime);
+		}
+	}
+}
+
+void Player::FireClientProcess(float deltaTime)
+{
+	isFireClients_ = true;
+
+	int i = 0;
+	for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {
+		if (i == 3) {
+			break;
+		}
+		Vector3 velocity = velocity_.Normalize();
+		if (i == 1) {
+			velocity *= fParas_[kClientFirstSpeed] * deltaTime;
+		}
+		else {
+			float theta = 3.14f / 10;
+			theta -= theta * i;
+			Vector3 vec = velocity;
+			velocity.x = vec.x * std::cosf(theta) - vec.y * std::sinf(theta);
+			velocity.y = vec.y * std::cosf(theta) + vec.x * std::sinf(theta);
+			velocity *= fParas_[kClientFirstSpeed] * deltaTime;
+		}
+		clientManager_->SetClient((*it)->GetType(), model_->transform_.translate_, velocity);
+		it = clients_.erase(it);
+		i++;
+	}
+}
+
 void Player::InitializeGlobalVariable()
 {
 	fParas_.resize(kFloatEnd);
@@ -529,7 +547,8 @@ void Player::InitializeGlobalVariable()
 		"ジャンプ中に入力を受け付けるか",
 		"ボタン入力で水中で加速できるか",
 		"ボタン入力でジャンプ中に加速できるか",
-		"ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか"
+		"ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか",
+		"入力で客を飛ばすか",
 	};
 
 	tree1Name_.resize(kTree1End);
@@ -553,8 +572,8 @@ void Player::InitializeGlobalVariable()
 		{0,0},
 		{kGravityArea,kAddWaterTriger},
 		{kAddWaterTriger,kJumpInput},
-		{kJumpInput,kBoolEnd},
-		{}
+		{kJumpInput,kInputFireClient},
+		{kInputFireClient,kBoolEnd}
 	};
 }
 

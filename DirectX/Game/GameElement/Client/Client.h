@@ -43,13 +43,16 @@ private:
 
 	static std::unique_ptr<GlobalVariableUser> globalVariable_;
 	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
+	static float scale_;
+	static float gravitySpeed_;
 
 	PlanetType type_;
 	std::unique_ptr<Sprite> sprite_;
 
 	Vector3 position_;
 	Vector3 velocity_;
-	static float scale_;
+	Vector2 gravityPos_;
+	Vector2 gravityVelocity_;
 	float rotate_;
 	bool isInWater_;
 	bool isInPlanet_;
