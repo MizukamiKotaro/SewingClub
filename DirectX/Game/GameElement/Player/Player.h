@@ -68,6 +68,8 @@ private:
 	void FireClient(float deltaTime);
 	// 客を飛ばす内部的な処理
 	void FireClientProcess(float deltaTime);
+	// 自動で水や惑星に向かう挙動
+	void AutoMove(float deltaTime);
 
 private:
 	Input* input_ = nullptr;
@@ -141,6 +143,8 @@ private:
 	Vector2 gravityVelocity_;
 	Vector2 gravityPos_;
 	bool isGravity_;
+	Vector2 dotTargetPos_;
+	bool isDotTarget_;
 
 	int kMaxPutClient_;
 	int kMaxPutWaterNum_;
