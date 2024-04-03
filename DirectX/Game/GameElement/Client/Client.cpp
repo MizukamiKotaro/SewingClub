@@ -8,6 +8,7 @@ const ModelData* Client::modelData_ = nullptr;
 std::unique_ptr<GlobalVariableUser> Client::globalVariable_ = nullptr;
 float Client::scale_ = 0.5f;
 float Client::gravitySpeed_ = 0.5f;
+float Client::planetGravitySpeed_ = 0.1f;
 
 Client::Client(PlanetType type, const Vector3& pos, const Vector3& velocity)
 {
@@ -117,7 +118,7 @@ void Client::OnCollision(const Collider& collider)
 		}
 
 		Vector2 vector = circle->position_ - pos;
-		gravityVelocity_ += vector.Normalize() * gravitySpeed_;
+		gravityVelocity_ += vector.Normalize() * planetGravitySpeed_;
 	}
 	else if (collider.GetMask() == ColliderMask::PLAYER) {
 
@@ -135,6 +136,7 @@ void Client::SetGlobalVariable()
 {
 	globalVariable_->AddItem("重力加速度", gravitySpeed_);
 	globalVariable_->AddItem("スケール", scale_);
+	globalVariable_->AddItem("水や惑星内の重力加速度", planetGravitySpeed_);
 	ApplyGlobalVariable();
 }
 
@@ -142,4 +144,5 @@ void Client::ApplyGlobalVariable()
 {
 	gravitySpeed_ = globalVariable_->GetFloatValue("重力加速度");
 	scale_ = globalVariable_->GetFloatValue("スケール");
+	planetGravitySpeed_ = globalVariable_->GetFloatValue("水や惑星内の重力加速度");
 }
