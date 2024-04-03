@@ -338,8 +338,10 @@ void Player::OutWater(float deltaTime)
 		}
 	}
 
+
 	// 客を飛ばす処理
 	FireClient(deltaTime);
+
 }
 
 void Player::UpdateDelayProcess(float deltaTime)
