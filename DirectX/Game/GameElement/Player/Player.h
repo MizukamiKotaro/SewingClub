@@ -103,6 +103,7 @@ private:
 		kInputAccelerationTime, // ボタン入力による加速させる時間
 		kClientFirstSpeed, // 客を飛ばしたときの客の初速
 		kClientMinSpeed, // 客を飛ばすために必要な速度
+		kClientFireAngle, // 客を飛ばす角度
 		kClientAbsoluteSpeed, // 客を飛ばすタイミングの速さの絶対値
 		kFloatEnd,
 	};
@@ -146,6 +147,7 @@ private:
 	Vector2 dotTargetPos_;
 	bool isDotTarget_;
 
+	int kFireClientNum_;
 	int kMaxPutClient_;
 	int kMaxPutWaterNum_;
 	int putWaterNum_;

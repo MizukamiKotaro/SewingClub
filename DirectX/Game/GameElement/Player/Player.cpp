@@ -494,17 +494,31 @@ void Player::FireClientProcess(float deltaTime)
 	isFireClients_ = true;
 
 	int i = 0;
+	int num = kFireClientNum_ / 2;
+	float kTheta = fParas_[kClientFireAngle] / 180 * 3.14f;
+	int clientNum = kFireClientNum_;
+	if (kFireClientNum_ > clients_.size()) {
+		num = int(clients_.size()) / 2;
+		clientNum = int(clients_.size());
+	}
 	for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {
-		if (i == 3) {
+		if (i == clientNum) {
 			break;
 		}
 		Vector3 velocity = velocity_.Normalize();
-		if (i == 1) {
+		if (clientNum == 1) {
+			velocity *= fParas_[kClientFirstSpeed] * deltaTime;
+		}
+		else if (clientNum % 2 == 0) {
+			float angle = -float(num) + 0.5f;
+			float theta = kTheta * (angle + i);
+			Vector3 vec = velocity;
+			velocity.x = vec.x * std::cosf(theta) - vec.y * std::sinf(theta);
+			velocity.y = vec.y * std::cosf(theta) + vec.x * std::sinf(theta);
 			velocity *= fParas_[kClientFirstSpeed] * deltaTime;
 		}
 		else {
-			float theta = 3.14f / 10;
-			theta -= theta * i;
+			float theta = kTheta * (i - num);
 			Vector3 vec = velocity;
 			velocity.x = vec.x * std::cosf(theta) - vec.y * std::sinf(theta);
 			velocity.y = vec.y * std::cosf(theta) + vec.x * std::sinf(theta);
@@ -566,6 +580,7 @@ void Player::InitializeGlobalVariable()
 		"ボタン入力による加速させる時間",
 		"客を飛ばしたときの客の初速",
 		"客を飛ばすために必要な速度",
+		"客を飛ばす角度",
 		"客を飛ばすタイミングの速さ",
 	};
 
@@ -650,6 +665,7 @@ void Player::SetGlobalVariable()
 {
 	globalVariable_->AddItem("スケール", model_->transform_.scale_, tree1Name_[kTree1Status]);
 	globalVariable_->AddItem("乗せれる客の上限", kMaxPutClient_, tree1Name_[kTree1Client]);
+	globalVariable_->AddItem("一気に飛ばす客の数", kFireClientNum_, tree1Name_[kTree1Client]);
 	globalVariable_->AddItem("生成できる水のストック上限", kMaxPutWaterNum_, tree1Name_[kTree1GenerationWater]);
 
 	bool isAddF[kFloatEnd] = { false };
@@ -694,6 +710,10 @@ void Player::ApplyGlobalVariable()
 	kMaxPutWaterNum_ = globalVariable_->GetIntValue("生成できる水のストック上限", tree1Name_[kTree1GenerationWater]);
 	if (num != kMaxPutWaterNum_) {
 		putWaterNum_ = kMaxPutWaterNum_;
+	}
+	kFireClientNum_ = globalVariable_->GetIntValue("一気に飛ばす客の数", tree1Name_[kTree1Client]);
+	if (kFireClientNum_ <= 0) {
+		kFireClientNum_ = 1;
 	}
 
 	bool isAddF[kFloatEnd] = { false };
