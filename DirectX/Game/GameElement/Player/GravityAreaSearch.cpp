@@ -20,7 +20,7 @@ void GravityAreaSearch::Update(const Vector3& pos, const Vector3& velocity)
 	dot_ = -1.0f;
 	Vector2 vect = { velocity.x,velocity.y };
 	vect = vect.Normalize();
-	Collider::SetCircle({ pos.x,pos.y }, 100.0f, 0.0f, vect);
+	Collider::SetCircle({ pos.x,pos.y }, 10000.0f, 0.0f, vect);
 	collisionManager_->SetCollider(this);
 }
 
