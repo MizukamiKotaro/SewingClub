@@ -14,6 +14,7 @@ public:
 	void SetClient(PlanetType type, const Vector3& pos, const Vector3& velocity = {});
 
 	PlanetType GetHitClientType();
+	void DeleteHitClient();
 
 	void Draw();
 

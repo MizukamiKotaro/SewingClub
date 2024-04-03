@@ -9,7 +9,7 @@
 InstancingModelManager* Planet::instancingManager_ = nullptr;
 const ModelData* Planet::modelData_ = nullptr;
 RandomGenerator* Planet::rand_ = nullptr;
-ClientManager* Planet::clientMnager_ = nullptr;
+ClientManager* Planet::clientManager_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> Planet::staticGlobalVariable_ = nullptr;
 int Planet::MaxClientNum = 6;
@@ -45,7 +45,7 @@ void Planet::StaticInitialize()
 	instancingManager_ = InstancingModelManager::GetInstance();
 	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
 	rand_ = RandomGenerator::GetInstance();
-	clientMnager_ = ClientManager::GetInstance();
+	clientManager_ = ClientManager::GetInstance();
 
 	staticGlobalVariable_ = std::make_unique<GlobalVariableUser>("Planet", "StaticPlanet");
 	StaticSetGlobalVariable();
@@ -95,7 +95,8 @@ void Planet::OnCollision(const Collider& collider)
 
 	}
 	else if (collider.GetMask() == ColliderMask::CLIENT) {
-		PlanetType type = clientMnager_->GetHitClientType();
+
+		PlanetType type = clientManager_->GetHitClientType();
 		if (type_ != type) {
 			Vector2 pos = collider.GetCircle()->position_;
 			clients_.push_back(std::make_unique<Client>(type, Vector3{ pos.x,pos.y,0.0f }));
