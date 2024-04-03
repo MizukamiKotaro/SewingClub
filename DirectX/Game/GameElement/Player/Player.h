@@ -64,6 +64,10 @@ private:
 	void InitializeFloating();
 	// プレイヤーのアニメーションの更新処理(気にしなくていい)
 	void UpdateFloating();
+	// 客を飛ばす処理
+	void FireClient(float deltaTime);
+	// 客を飛ばす内部的な処理
+	void FireClientProcess(float deltaTime);
 
 private:
 	Input* input_ = nullptr;
@@ -112,6 +116,7 @@ private:
 		kAccelerationInput, // ボタン入力で加速できるか
 		kAccelerationInJump, // ボタン入力でジャンプ中に加速できるか
 		kRecoveryInJump, // ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか
+		kInputFireClient, // 入力で客を飛ばすか
 		kBoolEnd,
 	};
 	std::vector<const char*> bNames;

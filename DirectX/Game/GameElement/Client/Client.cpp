@@ -7,6 +7,7 @@ InstancingModelManager* Client::instancingManager_ = nullptr;
 const ModelData* Client::modelData_ = nullptr;
 std::unique_ptr<GlobalVariableUser> Client::globalVariable_ = nullptr;
 float Client::scale_ = 0.5f;
+float Client::gravitySpeed_ = 0.5f;
 
 Client::Client(PlanetType type, const Vector3& pos, const Vector3& velocity)
 {
@@ -27,6 +28,8 @@ Client::Client(PlanetType type, const Vector3& pos, const Vector3& velocity)
 	isInWater_ = false;
 	isInPlanet_ = false;
 	isInGravity_ = false;
+	gravityPos_ = {};
+	gravityVelocity_ = {};
 }
 
 void Client::StaticInitialize()
@@ -47,15 +50,23 @@ void Client::Initialize()
 void Client::Update(float deltaTime)
 {
 	if (!isInWater_) {
-		Vector2 vector = gravityAreaSearch_->GetNearPos() - Vector2{ position_.x,position_.y };
-		Vector2 gravityVelocity_ = vector.Normalize() * 0.1f * deltaTime;
-		velocity_.x += gravityVelocity_.x;
-		velocity_.y += gravityVelocity_.y;
-		position_ += velocity_;
+		if (isInGravity_) {
+			velocity_.x += gravityVelocity_.x * deltaTime;
+			velocity_.y += gravityVelocity_.y * deltaTime;
+			position_ += velocity_;
+		}
+		else {
+			Vector2 vector = gravityAreaSearch_->GetNearPos() - Vector2{ position_.x,position_.y };
+			Vector2 gravityVelocity = vector.Normalize() * gravitySpeed_ * deltaTime;
+			velocity_.x += gravityVelocity.x;
+			velocity_.y += gravityVelocity.y;
+			position_ += velocity_;
+		}
 	}
 
 	isInGravity_ = false;
 	isInWater_ = false;
+	gravityVelocity_ = {};
 	SetCollider();
 }
 
@@ -88,18 +99,18 @@ void Client::OnCollision(const Collider& collider)
 		isInPlanet_ = true;
 	}
 	else if (collider.GetMask() == ColliderMask::GRAVITY_AREA) {
-		/*ShapeCircle* circle = collider.GetCircle();
-		Vector2 pos = { model_->transform_.translate_.x,model_->transform_.translate_.y };
-		if (!isGravity_) {
+		ShapeCircle* circle = collider.GetCircle();
+		Vector2 pos = { position_.x,position_.y };
+		if (!isInGravity_) {
 			gravityPos_ = circle->position_;
-			isGravity_ = true;
+			isInGravity_ = true;
 		}
 		if ((gravityPos_ - pos).Length() > (circle->position_ - pos).Length()) {
 			gravityPos_ = circle->position_;
 		}
 
 		Vector2 vector = circle->position_ - pos;
-		velocity_ += vector.Normalize() * fParas_[kGravityWater];*/
+		gravityVelocity_ += vector.Normalize() * gravitySpeed_;
 	}
 	else if (collider.GetMask() == ColliderMask::PLAYER) {
 
@@ -115,8 +126,13 @@ void Client::SetCollider()
 
 void Client::SetGlobalVariable()
 {
+	globalVariable_->AddItem("重力加速度", gravitySpeed_);
+	globalVariable_->AddItem("スケール", scale_);
+	ApplyGlobalVariable();
 }
 
 void Client::ApplyGlobalVariable()
 {
+	gravitySpeed_ = globalVariable_->GetFloatValue("重力加速度");
+	scale_ = globalVariable_->GetFloatValue("スケール");
 }
