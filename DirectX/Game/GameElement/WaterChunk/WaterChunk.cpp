@@ -90,6 +90,9 @@ void WaterChunk::Update(float deltaTime)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
+	if (globalVariable_) {
+		scale_ = maxScale_;
+	}
 #endif // _DEBUG
 
 	if (isSmall_) {
@@ -129,8 +132,11 @@ void WaterChunk::SetGlobalVariable()
 {
 	if (globalVariable_) {
 		std::string tree = "水の惑星" + std::to_string(no_);
-		globalVariable_->AddItem("ポジション", position_, tree);
-		globalVariable_->AddItem("スケール", maxScale_, tree);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = std::to_string(no) + "～" + std::to_string(no + 9);
+		globalVariable_->AddItem("ポジション", position_, tree1, tree);
+		globalVariable_->AddItem("スケール", maxScale_, tree1, tree);
 	}
 	ApplyGlobalVariable();
 }
@@ -139,8 +145,11 @@ void WaterChunk::ApplyGlobalVariable()
 {
 	if (globalVariable_) {
 		std::string tree = "水の惑星" + std::to_string(no_);
-		position_ = globalVariable_->GetVector3Value("ポジション", tree);
-		maxScale_ = globalVariable_->GetFloatValue("スケール", tree);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = std::to_string(no) + "～" + std::to_string(no + 9);
+		position_ = globalVariable_->GetVector3Value("ポジション", tree1, tree);
+		maxScale_ = globalVariable_->GetFloatValue("スケール", tree1, tree);
 	}
 }
 
