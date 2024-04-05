@@ -268,6 +268,7 @@ void Player::OutWater(float deltaTime)
 		if (bParas_[BoolParamater::kGravityArea]) {
 
 			if (isGravity_) {
+				gravityVelocity_ = gravityVelocity_.Normalize();
 				velocity_.x += gravityVelocity_.x * deltaTime;
 				velocity_.y += gravityVelocity_.y * deltaTime;
 			}

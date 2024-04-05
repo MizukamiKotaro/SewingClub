@@ -32,8 +32,6 @@ private:
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<WaveFloor> waveFloor_;
 	std::list<std::unique_ptr<Wave>> waves_;
-	std::unordered_map<int, std::unique_ptr<WaterChunk>> fullWater_;
-	int waterNum_ = 1;
 
 	float time_ = 0.0f;
 
