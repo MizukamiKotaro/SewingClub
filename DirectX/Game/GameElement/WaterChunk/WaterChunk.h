@@ -73,6 +73,8 @@ private:
 	bool isSmaeGravitySize_;
 	bool isSmall_;
 	float time_;
+	bool isTree_;
+	Vector4 color_;
 
 	std::unique_ptr<GravityArea> gravityArea_;
 	std::string groupName_ = "_";

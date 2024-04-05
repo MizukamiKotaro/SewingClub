@@ -3,6 +3,8 @@
 #include <algorithm>
 #include "GameElement/Wave/Wave.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
+#include "ImGuiManager/ImGuiManager.h"
+#include "SceneSystem/IScene/IScene.h"
 
 InstancingModelManager* WaterChunk::instancingManager_ = nullptr;
 const ModelData* WaterChunk::modelData_ = nullptr;
@@ -34,6 +36,8 @@ WaterChunk::WaterChunk()
 	isSmaeGravitySize_ = false;
 	no_ = 0;
 	isSmall_ = false;
+	isTree_ = false;
+	color_ = { 0.3f,1.0f,0.8f,1.0f };
 }
 
 WaterChunk::WaterChunk(int no)
@@ -50,10 +54,12 @@ WaterChunk::WaterChunk(int no)
 
 	no_ = no;
 	isSmall_ = false;
-	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", "Water");
+	globalVariable_ = std::make_unique<GlobalVariableUser>("StageEditor", "Stage" + std::to_string(IScene::stageNo_));
 	SetGlobalVariable();
 	scale_ = maxScale_;
 	isSmaeGravitySize_ = false;
+	isTree_ = false;
+	color_ = { 0.3f,1.0f,0.8f,1.0f };
 }
 
 WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
@@ -71,6 +77,8 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 	time_ = 0.0f;
 
 	isSmaeGravitySize_ = isSame;
+	isTree_ = false;
+	color_ = { 0.3f,1.0f,0.8f,1.0f };
 }
 
 void WaterChunk::StaticInitialize()
@@ -90,6 +98,23 @@ void WaterChunk::Update(float deltaTime)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
+	isTree_ = false;
+	if (globalVariable_) {
+		scale_ = maxScale_;
+		std::string tree = "水" + std::to_string(no_);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
+		if (globalVariable_->IsTreeOpen("水の配置", tree1, tree)) {
+			color_ = { 1.0f,0.3f,0.3f,1.0f };
+		}
+		else if (globalVariable_->IsTreeOpen("水の配置", tree1)) {
+			color_ = { 0.8f,0.7f,0.1f,1.0f };
+		}
+		else {
+			color_ = { 0.3f,1.0f,0.8f,1.0f };
+		}
+	}
 #endif // _DEBUG
 
 	if (isSmall_) {
@@ -115,7 +140,7 @@ void WaterChunk::Draw() const
 #endif // _DEBUG
 
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,{0.3f,1.0f,0.8f,1.0f} });
+	instancingManager_->AddBox(modelData_, InstancingModel{ matrix, color_});
 }
 
 void WaterChunk::StaticUpdate()
@@ -128,9 +153,12 @@ void WaterChunk::StaticUpdate()
 void WaterChunk::SetGlobalVariable()
 {
 	if (globalVariable_) {
-		std::string tree = "水の惑星" + std::to_string(no_);
-		globalVariable_->AddItem("ポジション", position_, tree);
-		globalVariable_->AddItem("スケール", maxScale_, tree);
+		std::string tree = "水" + std::to_string(no_);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
+		globalVariable_->AddItem("ポジション", position_, "水の配置", tree1, tree);
+		globalVariable_->AddItem("スケール", maxScale_, "水の配置", tree1, tree);
 	}
 	ApplyGlobalVariable();
 }
@@ -138,9 +166,12 @@ void WaterChunk::SetGlobalVariable()
 void WaterChunk::ApplyGlobalVariable()
 {
 	if (globalVariable_) {
-		std::string tree = "水の惑星" + std::to_string(no_);
-		position_ = globalVariable_->GetVector3Value("ポジション", tree);
-		maxScale_ = globalVariable_->GetFloatValue("スケール", tree);
+		std::string tree = "水" + std::to_string(no_);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
+		position_ = globalVariable_->GetVector3Value("ポジション", "水の配置", tree1, tree);
+		maxScale_ = globalVariable_->GetFloatValue("スケール", "水の配置", tree1, tree);
 	}
 }
 

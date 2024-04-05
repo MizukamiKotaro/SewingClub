@@ -71,6 +71,49 @@ bool CollisionCircleCircle::IsCollision(Collider* a, Collider* b)
 
 	//// 楕円と楕円前提 線は考慮してない
 
+	//// STEP1 : E2を単位円にする変換をE1に施す
+	//float DefAng = aCircle->rotate_ - bCircle->rotate_;
+	//float Cos = std::cosf(DefAng);
+	//float Sin = std::sinf(DefAng);
+	//float nx = bCircle->radius_.x * Cos;
+	//float ny = -bCircle->radius_.x * Sin;
+	//float px = bCircle->radius_.y * Sin;
+	//float py = bCircle->radius_.y * Cos;
+	//float ox = std::cosf(aCircle->rotate_) * (bCircle->position_.x - aCircle->position_.x) + std::sinf(aCircle->rotate_) * (bCircle->position_.y - aCircle->position_.y);
+	//float oy = -std::sinf(aCircle->rotate_) * (bCircle->position_.x - aCircle->position_.x) + std::cosf(aCircle->rotate_) * (bCircle->position_.y - aCircle->position_.y);
+
+	//// STEP2 : 一般式A～Gの算出
+	//float rx_pow2 = 1 / (aCircle->radius_.x * aCircle->radius_.x);
+	//float ry_pow2 = 1 / (aCircle->radius_.y * aCircle->radius_.y);
+	//float A = rx_pow2 * nx * nx + ry_pow2 * ny * ny;
+	//float B = rx_pow2 * px * px + ry_pow2 * py * py;
+	//float D = 2 * rx_pow2 * nx * px + 2 * ry_pow2 * ny * py;
+	//float E = 2 * rx_pow2 * nx * ox + 2 * ry_pow2 * ny * oy;
+	//float F = 2 * rx_pow2 * px * ox + 2 * ry_pow2 * py * oy;
+	//float G = (ox / aCircle->radius_.x) * (ox / aCircle->radius_.x) + (oy / aCircle->radius_.y) * (oy / aCircle->radius_.y) - 1;
+
+	//// STEP3 : 平行移動量(h,k)及び回転角度θの算出
+	//float tmp1 = 1 / (D * D - 4 * A * B);
+	//float h = (F * D - 2 * E * B) * tmp1;
+	//float k = (E * D - 2 * A * F) * tmp1;
+	//float Th = (B - A) == 0 ? 0 : atan(D / (B - A)) * 0.5f;
+
+	//// STEP4 : +1楕円を元に戻した式で当たり判定
+	//float CosTh = cos(Th);
+	//float SinTh = sin(Th);
+	//float A_tt = A * CosTh * CosTh + B * SinTh * SinTh - D * CosTh * SinTh;
+	//float B_tt = A * SinTh * SinTh + B * CosTh * CosTh + D * CosTh * SinTh;
+	//float KK = A * h * h + B * k * k + D * h * k - E * h - F * k + G;
+	//if (KK > 0) KK = 0; // 念のため
+	//float Rx_tt = 1 + sqrt(-KK / A_tt);
+	//float Ry_tt = 1 + sqrt(-KK / B_tt);
+	//float x_tt = CosTh * h - SinTh * k;
+	//float y_tt = SinTh * h + CosTh * k;
+	//float JudgeValue = x_tt * x_tt / (Rx_tt * Rx_tt) + y_tt * y_tt / (Ry_tt * Ry_tt);
+
+	//if (JudgeValue <= 1) {
+	//	return true; // 衝突
+	//}
 
 	return false;
 }

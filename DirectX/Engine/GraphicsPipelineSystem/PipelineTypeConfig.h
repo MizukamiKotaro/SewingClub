@@ -14,4 +14,5 @@ enum class PipelineType {
 	NEGA_POSI_INVERSE,
 	RGB_SHIFT,
 	INSTANCING_MODEL,
+	NOISE,
 };

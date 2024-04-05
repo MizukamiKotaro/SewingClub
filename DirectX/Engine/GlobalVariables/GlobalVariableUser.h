@@ -31,6 +31,8 @@ public:
 	bool GetBoolValue(const std::string& key, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_") const;
 	std::string GetStringValue(const std::string& key, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_") const;
 
+	bool IsTreeOpen(const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_");
+
 private:
 	std::string chunkName_;
 	std::string groupName_;

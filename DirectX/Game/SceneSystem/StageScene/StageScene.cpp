@@ -24,6 +24,8 @@ StageScene::StageScene()
 	planetManager_ = PlanetManager::GetInstance();
 	clientManager_ = ClientManager::GetInstance();
 
+	waterManager_->InitializeGlobalVariables();
+
 	player_ = std::make_unique<Player>();
 	camera_->transform_.translate_.z = -50.0f;
 	camera_->Update();
@@ -31,18 +33,14 @@ StageScene::StageScene()
 	planetManager_->SetPlayer(player_.get());
 
 	waveFloor_ = std::make_unique<WaveFloor>();
-
-	for (int i = 0; i < waterNum_; i++) {
-		fullWater_[i] = std::make_unique<WaterChunk>(i);
-	}
 }
 
 void StageScene::Initialize()
 {
 	player_->Initialize();
 	waves_.clear();
-	waterManager_->Clear();
-	planetManager_->Initialize();
+	waterManager_->Initialize();
+	//planetManager_->Initialize();
 	clientManager_->Clear();
 }
 
@@ -56,9 +54,6 @@ void StageScene::Update()
 	collisionManager_->Clear();
 
 #ifdef _DEBUG
-	if (input_->PressedKey(DIK_R)) {
-		Initialize();
-	}
 	Yarn::StaticUpdate();
 	WaveFloorChip::StaticUpdate();
 	WaveFloor::StaticUpdate();
@@ -78,22 +73,21 @@ void StageScene::Update()
 		ImGui::End();
 	}
 
-	ImGui::Begin("水");
-	ImGui::SliderInt("水の数", &waterNum_, 1, 15);
+	int num = stageNo_;
+	ImGui::Begin("ステージ");
+	ImGui::DragInt("現在のステージ", &stageNo_, 1, 0, 30);
 	ImGui::End();
+
+	if (input_->PressedKey(DIK_R) || num != stageNo_) {
+		Initialize();
+	}
 #endif // _DEBUG
 
 	WaveUpdate();
 
 	float deltaTime = frameInfo_->GetDeltaTime();
 
-	for (int i = 0; i < waterNum_; i++) {
-		if (fullWater_.find(i) == fullWater_.end()) {
-			fullWater_[i] = std::make_unique<WaterChunk>(i);
-		}
-		fullWater_[i]->Update(deltaTime);
-	}
-	planetManager_->Update(deltaTime);
+	//planetManager_->Update(deltaTime);
 
 	player_->Update(deltaTime);
 
@@ -127,12 +121,9 @@ void StageScene::Draw()
 
 	//waveFloor_->Draw();
 
-	for (int i = 0; i < waterNum_; i++) {
-		fullWater_[i]->Draw();
-	}
 	waterManager_->Draw();
 
-	planetManager_->Draw();
+	//planetManager_->Draw();
 
 	clientManager_->Draw();
 

@@ -27,6 +27,7 @@ GlobalVariableUser::GlobalVariableUser(const std::string& name)
 void GlobalVariableUser::ResetGroupName(const std::string& groupName)
 {
 	groupName_ = groupName;
+	CreateGroup();
 }
 
 void GlobalVariableUser::CreateGroup()
@@ -152,4 +153,9 @@ std::string GlobalVariableUser::GetStringValue(const std::string& key, const std
 	else {
 		return globalVariable_->GetStringValue(chunkName_, groupName_, key, 0, tree1, tree2, tree3);
 	}
+}
+
+bool GlobalVariableUser::IsTreeOpen(const std::string& tree1, const std::string& tree2, const std::string& tree3)
+{
+	return globalVariable_->IsTreeOpen(chunkName_, groupName_, tree1, tree2, tree3);
 }

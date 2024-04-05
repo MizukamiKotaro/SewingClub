@@ -37,9 +37,6 @@
     <Filter Include="Engine\TextureManager">
       <UniqueIdentifier>{a31d3de8-c631-435d-9ea0-0a2bd605b732}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Shaders">
-      <UniqueIdentifier>{bb920b16-437b-4c88-945e-f165f871c387}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Utils">
       <UniqueIdentifier>{81b069ba-c471-4d14-950d-9136fb82e22d}</UniqueIdentifier>
     </Filter>
@@ -79,21 +76,6 @@
     <Filter Include="Game\SceneSystem\TitleScene">
       <UniqueIdentifier>{e2079556-6956-4ef8-9d02-3ca9d800f0d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Shaders\Object3d">
-      <UniqueIdentifier>{8615682e-5d57-4cd0-8528-5b00db8d89b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\Particle">
-      <UniqueIdentifier>{4cc84fff-2c8f-41e2-b252-6589c02476cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\PointLight">
-      <UniqueIdentifier>{8da06c5a-793a-4a32-946a-eeb53744cacd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\Sprite">
-      <UniqueIdentifier>{0dda2da9-e1b8-4d85-8c1f-0152db589a9e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\SpotLight">
-      <UniqueIdentifier>{6b73d2a6-687e-4bac-8541-df5c7acab588}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\SceneSystem\SelectScene">
       <UniqueIdentifier>{c17ebd32-289a-45cb-8daf-9cc4b4c8e758}</UniqueIdentifier>
     </Filter>
@@ -105,18 +87,6 @@
     </Filter>
     <Filter Include="Engine\Base\WindowsInfo">
       <UniqueIdentifier>{252bb9a8-5252-4508-b5a6-6a9888718a3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\Contrast">
-      <UniqueIdentifier>{8e9a08f8-7f3f-4671-9005-05e4235afa90}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\HighLumi">
-      <UniqueIdentifier>{775e5f7a-3acb-43c4-891d-15db2ba97c8c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\Blur">
-      <UniqueIdentifier>{a0e6a961-5442-4338-948c-717ca0f31ab9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\GaussianBlur">
-      <UniqueIdentifier>{4ab55fbc-5957-4fcc-bea2-cbb128bd6e44}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Base\DescriptorHeapManager\DescriptorHeap">
       <UniqueIdentifier>{0726e4ee-bd27-4bce-828b-ffcbbee33815}</UniqueIdentifier>
@@ -262,23 +232,11 @@
     <Filter Include="Engine\Drawer\PostEffect\ScanNoise">
       <UniqueIdentifier>{0f39ea69-cea9-44d3-9951-e45f8240600e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Shaders\ScanNoise">
-      <UniqueIdentifier>{4cc5fe25-f435-48fd-84b9-49fc321ca72e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Drawer\PostEffect\NegaPosiInverse">
       <UniqueIdentifier>{2e6a6cb4-305b-4afe-b232-ffc70e356e94}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Shaders\NegaPosiInverse">
-      <UniqueIdentifier>{b917f271-ea1b-415b-b681-3809d346a4f4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Drawer\PostEffect\Mosaic">
       <UniqueIdentifier>{902a2daa-619d-40e7-95a6-98fb91b2527f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\Mosaic">
-      <UniqueIdentifier>{7396ea11-8dfb-4979-8247-7c25204a160f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Shaders\RGBShift">
-      <UniqueIdentifier>{abca3444-799c-49e6-ae82-aae3901f11c7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Drawer\PostEffect\RGBShift">
       <UniqueIdentifier>{717d254c-0187-45c3-a2cc-75cae7742a61}</UniqueIdentifier>
@@ -355,9 +313,6 @@
     <Filter Include="Engine\Drawer\InstancingModel">
       <UniqueIdentifier>{068a5165-243b-43ff-b951-2c289cf3a5aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Shaders\InstancingModel">
-      <UniqueIdentifier>{dda43d26-1b21-4acb-8acf-47fd124cc6e6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Drawer\InstancingModel\InstancingModels">
       <UniqueIdentifier>{86f32023-3889-4371-b728-93ae897b9a7b}</UniqueIdentifier>
     </Filter>
@@ -417,6 +372,12 @@
     </Filter>
     <Filter Include="Game\GameElement\Player\GravityAreaSearch">
       <UniqueIdentifier>{51780411-b181-44de-82a1-51951aca82d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Drawer\PostEffect\Noise">
+      <UniqueIdentifier>{dc785551-07e4-4f65-acf5-bbe93c9cf29c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\NoiseGraphicsPipeline">
+      <UniqueIdentifier>{af017d39-4780-45d4-921b-5ebc22da1fe7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -776,6 +737,12 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Client\ClientManager.cpp">
       <Filter>Game\GameElement\Planet\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\PostEffect\Noise\Noise.cpp">
+      <Filter>Engine\Drawer\PostEffect\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\NoiseGraphicsPipeline\NoiseGraphicsPipeline.cpp">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\NoiseGraphicsPipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1193,93 +1160,11 @@
     <ClInclude Include="Game\GameElement\Client\ClientManager.h">
       <Filter>Game\GameElement\Planet\Client</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Resources\Shaders\Object3dShader\Object3d.PS.hlsl">
-      <Filter>Engine\Shaders\Object3d</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\Object3dShader\Object3d.VS.hlsl">
-      <Filter>Engine\Shaders\Object3d</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleShader\Particle.PS.hlsl">
-      <Filter>Engine\Shaders\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleShader\Particle.VS.hlsl">
-      <Filter>Engine\Shaders\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PointLightShader\PointLight.PS.hlsl">
-      <Filter>Engine\Shaders\PointLight</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PointLightShader\PointLight.VS.hlsl">
-      <Filter>Engine\Shaders\PointLight</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\SpriteShader\Sprite.PS.hlsl">
-      <Filter>Engine\Shaders\Sprite</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\SpriteShader\Sprite.VS.hlsl">
-      <Filter>Engine\Shaders\Sprite</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\SpotLightShader\SpotLight.PS.hlsl">
-      <Filter>Engine\Shaders\SpotLight</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\SpotLightShader\SpotLight.VS.hlsl">
-      <Filter>Engine\Shaders\SpotLight</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ContrastShader\Contrast.PS.hlsl">
-      <Filter>Engine\Shaders\Contrast</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ContrastShader\Contrast.VS.hlsl">
-      <Filter>Engine\Shaders\Contrast</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\HighLumiShader\HighLumi.PS.hlsl">
-      <Filter>Engine\Shaders\HighLumi</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\BlurShader\Blur.PS.hlsl">
-      <Filter>Engine\Shaders\Blur</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\GaussianBlurShader\GaussianBlur.PS.hlsl">
-      <Filter>Engine\Shaders\GaussianBlur</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ScanNoiseShader\ScanNoise.PS.hlsl">
-      <Filter>Engine\Shaders\ScanNoise</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\NegaPosiInverseShader\NegaPosiInverse.PS.hlsl">
-      <Filter>Engine\Shaders\NegaPosiInverse</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\MosaicShader\Mosaic.PS.hlsl">
-      <Filter>Engine\Shaders\Mosaic</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\RGBShiftShader\RGBShift.PS.hlsl">
-      <Filter>Engine\Shaders\RGBShift</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\InstancingModelShader\InstancingModel.PS.hlsl">
-      <Filter>Engine\Shaders\InstancingModel</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\InstancingModelShader\InstancingModel.VS.hlsl">
-      <Filter>Engine\Shaders\InstancingModel</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Shaders\Object3dShader\Object3d.hlsli">
-      <Filter>Engine\Shaders\Object3d</Filter>
-    </None>
-    <None Include="Resources\Shaders\ParticleShader\Particle.hlsli">
-      <Filter>Engine\Shaders\Particle</Filter>
-    </None>
-    <None Include="Resources\Shaders\PointLightShader\PointLight.hlsli">
-      <Filter>Engine\Shaders\PointLight</Filter>
-    </None>
-    <None Include="Resources\Shaders\SpriteShader\Sprite.hlsli">
-      <Filter>Engine\Shaders\Sprite</Filter>
-    </None>
-    <None Include="Resources\Shaders\SpotLightShader\SpotLight.hlsli">
-      <Filter>Engine\Shaders\SpotLight</Filter>
-    </None>
-    <None Include="Resources\Shaders\ContrastShader\Contrast.hlsli">
-      <Filter>Engine\Shaders\Contrast</Filter>
-    </None>
-    <None Include="Resources\Shaders\InstancingModelShader\InstancingModel.hlsli">
-      <Filter>Engine\Shaders\InstancingModel</Filter>
-    </None>
+    <ClInclude Include="Engine\Drawers\PostEffect\Noise\Noise.h">
+      <Filter>Engine\Drawer\PostEffect\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\NoiseGraphicsPipeline\NoiseGraphicsPipeline.h">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\NoiseGraphicsPipeline</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
