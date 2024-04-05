@@ -54,9 +54,6 @@ void StageScene::Update()
 	collisionManager_->Clear();
 
 #ifdef _DEBUG
-	if (input_->PressedKey(DIK_R)) {
-		Initialize();
-	}
 	Yarn::StaticUpdate();
 	WaveFloorChip::StaticUpdate();
 	WaveFloor::StaticUpdate();
@@ -76,6 +73,14 @@ void StageScene::Update()
 		ImGui::End();
 	}
 
+	int num = stageNo_;
+	ImGui::Begin("ステージ");
+	ImGui::DragInt("現在のステージ", &stageNo_, 1, 0, 30);
+	ImGui::End();
+
+	if (input_->PressedKey(DIK_R) || num != stageNo_) {
+		Initialize();
+	}
 #endif // _DEBUG
 
 	WaveUpdate();

@@ -38,4 +38,8 @@ private:
 	std::unique_ptr<GlobalVariableUser> globalVariable_;
 
 	int waterNum_;
+#ifdef _DEBUG
+	int preStageNo_;
+#endif // _DEBUG
+
 };
