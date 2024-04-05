@@ -84,6 +84,7 @@ public:
 	bool GetBoolValue(const std::string& groupName, const std::string& key, int treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_") const;
 	std::string GetStringValue(const std::string& groupName, const std::string& key, int treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_") const;
 
+	bool IsTreeOpen(const std::string& chunkName, const std::string& groupName, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_");
 
 	void SaveFile(const std::string& chunkName, const std::string& groupName);
 
@@ -121,6 +122,7 @@ private:
 	using Chunk = std::map<std::string, Group>;
 
 	std::map<std::string, Chunk> datas_;
+	std::map<std::string, Chunk> isTreeOpen_;
 
 	const std::string kDirectoryPath = "Resources/GlobalVariables/";
 	const std::string kChunkName = "GlobalVariables";

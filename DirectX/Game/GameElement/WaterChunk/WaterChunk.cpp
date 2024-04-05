@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "GameElement/Wave/Wave.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
+#include "ImGuiManager/ImGuiManager.h"
 
 InstancingModelManager* WaterChunk::instancingManager_ = nullptr;
 const ModelData* WaterChunk::modelData_ = nullptr;
@@ -34,6 +35,8 @@ WaterChunk::WaterChunk()
 	isSmaeGravitySize_ = false;
 	no_ = 0;
 	isSmall_ = false;
+	isTree_ = false;
+	color_ = { 0.3f,1.0f,0.8f,1.0f };
 }
 
 WaterChunk::WaterChunk(int no)
@@ -54,6 +57,8 @@ WaterChunk::WaterChunk(int no)
 	SetGlobalVariable();
 	scale_ = maxScale_;
 	isSmaeGravitySize_ = false;
+	isTree_ = false;
+	color_ = { 0.3f,1.0f,0.8f,1.0f };
 }
 
 WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
@@ -71,6 +76,8 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 	time_ = 0.0f;
 
 	isSmaeGravitySize_ = isSame;
+	isTree_ = false;
+	color_ = { 0.3f,1.0f,0.8f,1.0f };
 }
 
 void WaterChunk::StaticInitialize()
@@ -90,8 +97,22 @@ void WaterChunk::Update(float deltaTime)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
+	isTree_ = false;
 	if (globalVariable_) {
 		scale_ = maxScale_;
+		std::string tree = "水の惑星" + std::to_string(no_);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = std::to_string(no) + "～" + std::to_string(no + 9);
+		if (globalVariable_->IsTreeOpen(tree1, tree)) {
+			color_ = { 1.0f,0.3f,0.3f,1.0f };
+		}
+		else if (globalVariable_->IsTreeOpen(tree1)) {
+			color_ = { 0.8f,0.7f,0.1f,1.0f };
+		}
+		else {
+			color_ = { 0.3f,1.0f,0.8f,1.0f };
+		}
 	}
 #endif // _DEBUG
 
@@ -118,7 +139,7 @@ void WaterChunk::Draw() const
 #endif // _DEBUG
 
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,{0.3f,1.0f,0.8f,1.0f} });
+	instancingManager_->AddBox(modelData_, InstancingModel{ matrix, color_});
 }
 
 void WaterChunk::StaticUpdate()
