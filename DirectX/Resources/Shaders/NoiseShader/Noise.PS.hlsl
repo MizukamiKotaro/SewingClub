@@ -14,25 +14,26 @@ struct PixelShaderOutput {
 	float32_t4 color : SV_TARGET0;
 };
 
-struct NegaPosiInverseData {
-	int isNormal;
+struct BlurData {
+	float angle;
+	float pickRange;
+	float stepWidth;
+	int32_t isCenterBlur;
+	int32_t isNormal;
 };
-ConstantBuffer<NegaPosiInverseData> gNegaPosiInverse : register(b1);
+ConstantBuffer<BlurData> gBlur : register(b1);
+
+float random(float32_t2 fact) {
+	return frac(sin(dot(fact,float32_t(12.9898,78.233))) * 43758.5453);
+}
 
 PixelShaderOutput main(VertexShaderOutput input) {
 	PixelShaderOutput output;
 
 	float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
 
-	output.color = gTexture.Sample(gSampler, transformedUV.xy);
-
-	output.color = float32_t4(1.0f - output.color.r,1.0f - output.color.g,1.0f - output.color.b,output.color.a);
-
-	if (gNegaPosiInverse.isNormal == 1) {
-		if (output.color.a <= 0.5f) {
-			discard;
-		}
-	}
+	float r = random(transformedUV.xy);
+	output.color = float32_t4(r,r,r,1);
 
 	return output;
 }

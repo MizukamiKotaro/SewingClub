@@ -153,3 +153,8 @@ std::string GlobalVariableUser::GetStringValue(const std::string& key, const std
 		return globalVariable_->GetStringValue(chunkName_, groupName_, key, 0, tree1, tree2, tree3);
 	}
 }
+
+bool GlobalVariableUser::IsTreeOpen(const std::string& tree1, const std::string& tree2, const std::string& tree3)
+{
+	return globalVariable_->IsTreeOpen(chunkName_, groupName_, tree1, tree2, tree3);
+}
