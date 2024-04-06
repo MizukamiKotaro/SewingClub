@@ -304,9 +304,6 @@
     <Filter Include="Game\GameElement\Live\SpotLightBox">
       <UniqueIdentifier>{2ee7dc59-8aa1-4600-aabf-6472a93e6894}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameElement\Player">
-      <UniqueIdentifier>{cee6ae2d-2420-4a03-8555-9db648384d22}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\InstancingModelGraphicsPipline">
       <UniqueIdentifier>{e94f18c3-71c0-464a-9684-5588496d38a6}</UniqueIdentifier>
     </Filter>
@@ -364,14 +361,8 @@
     <Filter Include="Game\GameElement\Planet">
       <UniqueIdentifier>{a83b52dd-ead6-4f9a-861b-46b4a8237dc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameElement\Planet\Client">
-      <UniqueIdentifier>{3f940ed7-4ddd-4890-86c0-a1257fea8600}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Utils\Camera\DebugCamera">
       <UniqueIdentifier>{ef32961d-2a90-4097-92c5-b8a68ced86a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameElement\Player\GravityAreaSearch">
-      <UniqueIdentifier>{51780411-b181-44de-82a1-51951aca82d9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Drawer\PostEffect\Noise">
       <UniqueIdentifier>{dc785551-07e4-4f65-acf5-bbe93c9cf29c}</UniqueIdentifier>
@@ -384,6 +375,21 @@
     </Filter>
     <Filter Include="Game\GameElement\Item">
       <UniqueIdentifier>{947afa2a-6dbd-4d50-ae0b-ecc78cc8fa65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\Goal">
+      <UniqueIdentifier>{e9c85c54-8e8f-4e15-b376-657217e03611}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\Charactor\Baby">
+      <UniqueIdentifier>{711a850e-c81b-4aaf-81fd-9c65cae0d155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\Charactor\Player">
+      <UniqueIdentifier>{cee6ae2d-2420-4a03-8555-9db648384d22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\GravityArea\GravityAreaSearch">
+      <UniqueIdentifier>{51780411-b181-44de-82a1-51951aca82d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\Charactor\Client">
+      <UniqueIdentifier>{3f940ed7-4ddd-4890-86c0-a1257fea8600}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -670,7 +676,7 @@
       <Filter>Game\GameElement\Live\SpotLightBox</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Player\Player.cpp">
-      <Filter>Game\GameElement\Player</Filter>
+      <Filter>Game\GameElement\Charactor\Player</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GlobalVariables\GlobalVariableUser.cpp">
       <Filter>Engine\GlobalVariables</Filter>
@@ -724,7 +730,7 @@
       <Filter>Game\GameElement\WaterManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Client\Client.cpp">
-      <Filter>Game\GameElement\Planet\Client</Filter>
+      <Filter>Game\GameElement\Charactor\Client</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Planet\Planet.cpp">
       <Filter>Game\GameElement\Planet</Filter>
@@ -739,10 +745,10 @@
       <Filter>Engine\Utils\Camera\DebugCamera</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Player\GravityAreaSearch.cpp">
-      <Filter>Game\GameElement\Player\GravityAreaSearch</Filter>
+      <Filter>Game\GameElement\GravityArea\GravityAreaSearch</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Client\ClientManager.cpp">
-      <Filter>Game\GameElement\Planet\Client</Filter>
+      <Filter>Game\GameElement\Charactor\Client</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Drawers\PostEffect\Noise\Noise.cpp">
       <Filter>Engine\Drawer\PostEffect\Noise</Filter>
@@ -758,6 +764,12 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Item\ItemManager.cpp">
       <Filter>Game\GameElement\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Goal\Goal.cpp">
+      <Filter>Game\GameElement\Goal</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Baby\Baby.cpp">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1092,7 +1104,7 @@
       <Filter>Game\GameElement\Live\SpotLightBox</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Player\Player.h">
-      <Filter>Game\GameElement\Player</Filter>
+      <Filter>Game\GameElement\Charactor\Player</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GlobalVariables\GlobalVariableUser.h">
       <Filter>Engine\GlobalVariables</Filter>
@@ -1152,7 +1164,7 @@
       <Filter>Game\GameElement\WaterManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Client\Client.h">
-      <Filter>Game\GameElement\Planet\Client</Filter>
+      <Filter>Game\GameElement\Charactor\Client</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Planet\Planet.h">
       <Filter>Game\GameElement\Planet</Filter>
@@ -1170,10 +1182,10 @@
       <Filter>Engine\Utils\Camera\DebugCamera</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Player\GravityAreaSearch.h">
-      <Filter>Game\GameElement\Player\GravityAreaSearch</Filter>
+      <Filter>Game\GameElement\GravityArea\GravityAreaSearch</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Client\ClientManager.h">
-      <Filter>Game\GameElement\Planet\Client</Filter>
+      <Filter>Game\GameElement\Charactor\Client</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Drawers\PostEffect\Noise\Noise.h">
       <Filter>Engine\Drawer\PostEffect\Noise</Filter>
@@ -1189,6 +1201,12 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Item\ItemManager.h">
       <Filter>Game\GameElement\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Goal\Goal.h">
+      <Filter>Game\GameElement\Goal</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Baby\Baby.h">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -16,7 +16,6 @@ const std::string Particle::directoryPath_ = "Resources/Texture/";
 
 Particle::Particle(const std::string& fileName)
 {
-
 	ModelDataManager* modelManager = ModelDataManager::GetInstance();
 
 	modelData_ = modelManager->LoadObj("Plane");
