@@ -7,6 +7,7 @@
 #include "GameElement/Client/Client.h"
 #include "GravityAreaSearch.h"
 #include <vector>
+#include "StageEditor/StageEditor.h"
 
 class Input;
 class WaterManager;
@@ -77,6 +78,7 @@ private:
 	ClientManager* clientManager_ = nullptr;
 
 	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
+	std::unique_ptr<StageEditor> stageEditor_;
 
 	enum FloatParamater {
 		kAcceleration, // 加速度

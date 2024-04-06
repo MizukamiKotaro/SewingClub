@@ -14,13 +14,16 @@ void WaterManager::Clear()
 
 void WaterManager::InitializeGlobalVariables()
 {
-	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", "WaterManager");
+	stageEditor_ = std::make_unique<StageEditor>("水の配置");
 	SetGlobalVariable();
 }
 
 void WaterManager::Initialize()
 {
 	Clear();
+	stageEditor_->Initialize();
+	waterNum_ = 1;
+	SetGlobalVariable();
 	for (int i = 0; i < waterNum_; i++) {
 		stageWater_[i] = std::make_unique<WaterChunk>(i);
 	}
@@ -30,6 +33,10 @@ void WaterManager::Update(float deltaTime)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
+
+	if (stageEditor_->IsChangedStage()) {
+		Initialize();
+	}
 #endif // _DEBUG
 
 	for (int i = 0; i < waterNum_; i++) {
@@ -72,13 +79,13 @@ void WaterManager::CreateWater(const Vector2& pos, const Vector2& radius, bool i
 
 void WaterManager::SetGlobalVariable()
 {
-	globalVariable_->AddItem("水の数", waterNum_);
+	stageEditor_->AddItem("水の数", waterNum_);
 	ApplyGlobalVariable();
 }
 
 void WaterManager::ApplyGlobalVariable()
 {
-	waterNum_ = globalVariable_->GetIntValue("水の数");
+	waterNum_ = stageEditor_->GetIntValue("水の数");
 	if (waterNum_ <= 0) {
 		waterNum_ = 1;
 	}

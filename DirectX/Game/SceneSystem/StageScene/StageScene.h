@@ -12,6 +12,8 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "GameElement/Planet/PlanetManager.h"
 #include "GameElement/Client/ClientManager.h"
+#include "GameElement/Item/ItemManager.h"
+#include "GameElement/Goal/Goal.h"
 
 class StageScene : public IScene
 {
@@ -32,6 +34,7 @@ private:
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<WaveFloor> waveFloor_;
 	std::list<std::unique_ptr<Wave>> waves_;
+	std::unique_ptr<Goal> goal_;
 
 	float time_ = 0.0f;
 
@@ -40,4 +43,5 @@ private:
 	WaterManager* waterManager_;
 	PlanetManager* planetManager_;
 	ClientManager* clientManager_;
+	ItemManager* itemManager_;
 };

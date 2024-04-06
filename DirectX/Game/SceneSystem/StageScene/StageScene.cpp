@@ -16,19 +16,23 @@ StageScene::StageScene()
 	GravityArea::StaticInitialize();
 	Client::StaticInitialize();
 	Planet::StaticInitialize();
-	
+	Item::StaticInitialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
 	waterManager_ = WaterManager::GetInstance();
 	planetManager_ = PlanetManager::GetInstance();
 	clientManager_ = ClientManager::GetInstance();
+	itemManager_ = ItemManager::GetInstance();
 
 	waterManager_->InitializeGlobalVariables();
+	itemManager_->InitializeGlobalVariables();
 
 	player_ = std::make_unique<Player>();
 	camera_->transform_.translate_.z = -50.0f;
 	camera_->Update();
+
+	goal_ = std::make_unique<Goal>();
 
 	planetManager_->SetPlayer(player_.get());
 
@@ -38,10 +42,15 @@ StageScene::StageScene()
 void StageScene::Initialize()
 {
 	player_->Initialize();
+	camera_->transform_.translate_.x = player_->GetPosition().x;
+	camera_->transform_.translate_.y = player_->GetPosition().y;
+	camera_->Update();
 	waves_.clear();
 	waterManager_->Initialize();
 	//planetManager_->Initialize();
 	clientManager_->Clear();
+	itemManager_->Initialize();
+	goal_->Initialize();
 }
 
 void StageScene::Update()
@@ -50,13 +59,14 @@ void StageScene::Update()
 		// シーン切り替え
 		ChangeScene(CLEAR);
 	}
+	if (goal_->IsClear()) {
+		// シーン切り替え
+		ChangeScene(STAGE);
+	}
 
 	collisionManager_->Clear();
 
 #ifdef _DEBUG
-	if (input_->PressedKey(DIK_R)) {
-		Initialize();
-	}
 	Yarn::StaticUpdate();
 	WaveFloorChip::StaticUpdate();
 	WaveFloor::StaticUpdate();
@@ -65,6 +75,7 @@ void StageScene::Update()
 	GravityArea::StaticUpdate();
 	Client::StaticUpdate();
 	Planet::StaticUpdate();
+	Item::StaticUpdate();
 
 	if (!ImGui::Begin("Camera", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
@@ -76,6 +87,14 @@ void StageScene::Update()
 		ImGui::End();
 	}
 
+	int num = stageNo_;
+	ImGui::Begin("ステージ");
+	ImGui::DragInt("現在のステージ", &stageNo_, 1, 0, 30);
+	ImGui::End();
+
+	if (input_->PressedKey(DIK_R) || num != stageNo_) {
+		Initialize();
+	}
 #endif // _DEBUG
 
 	WaveUpdate();
@@ -89,6 +108,10 @@ void StageScene::Update()
 	clientManager_->Update(deltaTime);
 
 	waterManager_->Update(deltaTime);
+
+	itemManager_->Update(deltaTime);
+
+	goal_->Update(deltaTime);
 
 	debugCamera_->Update();
 	if (debugCamera_->IsDebug()) {
@@ -117,6 +140,10 @@ void StageScene::Draw()
 	//waveFloor_->Draw();
 
 	waterManager_->Draw();
+
+	itemManager_->Draw();
+
+	goal_->Draw();
 
 	//planetManager_->Draw();
 

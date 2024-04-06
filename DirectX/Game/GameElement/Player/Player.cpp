@@ -14,6 +14,7 @@ Player::Player()
 	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
 	Collider::AddTargetMask(ColliderMask::PLANET);
 	Collider::AddTargetMask(ColliderMask::CLIENT);
+	Collider::AddTargetMask(ColliderMask::ITEM);
 
 	CreateGlobalVariable("Player");
 
@@ -53,6 +54,8 @@ Player::Player()
 
 	model_ = std::make_unique<Model>("subPlayer");
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
+
+	stageEditor_ = std::make_unique<StageEditor>("プレイヤーの設定");
 	SetGlobalVariable();
 	putWaterNum_ = kMaxPutWaterNum_;
 	model_->Update();
@@ -68,12 +71,16 @@ Player::Player()
 
 void Player::Initialize()
 {
+	stageEditor_->Initialize();
 	Reset();
 }
 
 void Player::Update(float deltaTime)
 {
 #ifdef _DEBUG
+	if (stageEditor_->IsChangedStage()) {
+		Initialize();
+	}
 	ApplyGlobalVariable();
 #endif // _DEBUG
 	if (isInWater_ && preIsInWater_) {
@@ -461,6 +468,7 @@ void Player::Reset()
 
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
+	SetGlobalVariable();
 
 	floatingParameter_ = 0.0f;
 	isInWater_ = true;
@@ -469,6 +477,7 @@ void Player::Reset()
 
 	yarn_.reset(new Yarn(&model_->transform_.translate_, model_->transform_.translate_));
 	clients_.clear();
+	model_->Update();
 }
 
 void Player::InitializeFloating()
@@ -715,6 +724,8 @@ void Player::SetGlobalVariable()
 		}
 	}
 
+	stageEditor_->AddItem("初期座標", model_->transform_.translate_);
+	model_->transform_.translate_ = stageEditor_->GetVector3Value("初期座標");
 	ApplyGlobalVariable();
 }
 

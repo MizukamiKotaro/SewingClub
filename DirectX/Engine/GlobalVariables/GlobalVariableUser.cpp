@@ -27,6 +27,7 @@ GlobalVariableUser::GlobalVariableUser(const std::string& name)
 void GlobalVariableUser::ResetGroupName(const std::string& groupName)
 {
 	groupName_ = groupName;
+	CreateGroup();
 }
 
 void GlobalVariableUser::CreateGroup()
