@@ -23,4 +23,5 @@ enum class ColliderMask {
     CLIENT,
     ITEM,
     GOAL,
+    BABY,
 };

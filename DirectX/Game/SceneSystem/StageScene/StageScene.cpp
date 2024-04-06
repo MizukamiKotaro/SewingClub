@@ -42,6 +42,9 @@ StageScene::StageScene()
 void StageScene::Initialize()
 {
 	player_->Initialize();
+	camera_->transform_.translate_.x = player_->GetPosition().x;
+	camera_->transform_.translate_.y = player_->GetPosition().y;
+	camera_->Update();
 	waves_.clear();
 	waterManager_->Initialize();
 	//planetManager_->Initialize();
