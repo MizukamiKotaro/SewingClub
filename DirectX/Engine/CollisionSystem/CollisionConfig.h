@@ -22,4 +22,5 @@ enum class ColliderMask {
     GRAVITY_AREA_SEARCH,
     CLIENT,
     ITEM,
+    GOAL,
 };

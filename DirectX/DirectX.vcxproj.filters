@@ -385,6 +385,9 @@
     <Filter Include="Game\GameElement\Item">
       <UniqueIdentifier>{947afa2a-6dbd-4d50-ae0b-ecc78cc8fa65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\Goal">
+      <UniqueIdentifier>{e9c85c54-8e8f-4e15-b376-657217e03611}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -758,6 +761,9 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Item\ItemManager.cpp">
       <Filter>Game\GameElement\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Goal\Goal.cpp">
+      <Filter>Game\GameElement\Goal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1189,6 +1195,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Item\ItemManager.h">
       <Filter>Game\GameElement\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Goal\Goal.h">
+      <Filter>Game\GameElement\Goal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -32,6 +32,8 @@ StageScene::StageScene()
 	camera_->transform_.translate_.z = -50.0f;
 	camera_->Update();
 
+	goal_ = std::make_unique<Goal>();
+
 	planetManager_->SetPlayer(player_.get());
 
 	waveFloor_ = std::make_unique<WaveFloor>();
@@ -45,6 +47,7 @@ void StageScene::Initialize()
 	//planetManager_->Initialize();
 	clientManager_->Clear();
 	itemManager_->Initialize();
+	goal_->Initialize();
 }
 
 void StageScene::Update()
@@ -52,6 +55,10 @@ void StageScene::Update()
 	if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
 		// シーン切り替え
 		ChangeScene(CLEAR);
+	}
+	if (goal_->IsClear()) {
+		// シーン切り替え
+		ChangeScene(STAGE);
 	}
 
 	collisionManager_->Clear();
@@ -101,6 +108,8 @@ void StageScene::Update()
 
 	itemManager_->Update(deltaTime);
 
+	goal_->Update(deltaTime);
+
 	debugCamera_->Update();
 	if (debugCamera_->IsDebug()) {
 		debugCamera_->DebugUpdate();
@@ -130,6 +139,8 @@ void StageScene::Draw()
 	waterManager_->Draw();
 
 	itemManager_->Draw();
+
+	goal_->Draw();
 
 	//planetManager_->Draw();
 
