@@ -3,7 +3,7 @@
 #include <memory>
 #include <unordered_map>
 #include "GameElement/WaterChunk/WaterChunk.h"
-#include "GlobalVariables/GlobalVariableUser.h"
+#include "StageEditor/StageEditor.h"
 
 class WaterManager {
 public:
@@ -35,11 +35,8 @@ private:
 private:
 	std::list<std::unique_ptr<WaterChunk>> fullWater_;
 	std::unordered_map<int, std::unique_ptr<WaterChunk>> stageWater_;
-	std::unique_ptr<GlobalVariableUser> globalVariable_;
+	std::unique_ptr<StageEditor> stageEditor_;
 
 	int waterNum_;
-#ifdef _DEBUG
-	int preStageNo_;
-#endif // _DEBUG
 
 };

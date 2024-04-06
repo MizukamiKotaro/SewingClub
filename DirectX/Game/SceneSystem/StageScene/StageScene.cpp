@@ -16,15 +16,17 @@ StageScene::StageScene()
 	GravityArea::StaticInitialize();
 	Client::StaticInitialize();
 	Planet::StaticInitialize();
-	
+	Item::StaticInitialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
 	waterManager_ = WaterManager::GetInstance();
 	planetManager_ = PlanetManager::GetInstance();
 	clientManager_ = ClientManager::GetInstance();
+	itemManager_ = ItemManager::GetInstance();
 
 	waterManager_->InitializeGlobalVariables();
+	itemManager_->InitializeGlobalVariables();
 
 	player_ = std::make_unique<Player>();
 	camera_->transform_.translate_.z = -50.0f;
@@ -42,6 +44,7 @@ void StageScene::Initialize()
 	waterManager_->Initialize();
 	//planetManager_->Initialize();
 	clientManager_->Clear();
+	itemManager_->Initialize();
 }
 
 void StageScene::Update()
@@ -62,6 +65,7 @@ void StageScene::Update()
 	GravityArea::StaticUpdate();
 	Client::StaticUpdate();
 	Planet::StaticUpdate();
+	Item::StaticUpdate();
 
 	if (!ImGui::Begin("Camera", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
@@ -95,6 +99,8 @@ void StageScene::Update()
 
 	waterManager_->Update(deltaTime);
 
+	itemManager_->Update(deltaTime);
+
 	debugCamera_->Update();
 	if (debugCamera_->IsDebug()) {
 		debugCamera_->DebugUpdate();
@@ -122,6 +128,8 @@ void StageScene::Draw()
 	//waveFloor_->Draw();
 
 	waterManager_->Draw();
+
+	itemManager_->Draw();
 
 	//planetManager_->Draw();
 
