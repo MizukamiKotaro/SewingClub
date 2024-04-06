@@ -1,5 +1,4 @@
 #include "WaterManager.h"
-#include "SceneSystem/IScene/IScene.h"
 
 WaterManager* WaterManager::GetInstance()
 {
@@ -15,17 +14,14 @@ void WaterManager::Clear()
 
 void WaterManager::InitializeGlobalVariables()
 {
-	globalVariable_ = std::make_unique<GlobalVariableUser>("StageEditor", "Stage" + std::to_string(IScene::stageNo_));
+	stageEditor_ = std::make_unique<StageEditor>("水の配置");
 	SetGlobalVariable();
-#ifdef _DEBUG
-	preStageNo_ = IScene::stageNo_;
-#endif // _DEBUG
 }
 
 void WaterManager::Initialize()
 {
 	Clear();
-	globalVariable_->ResetGroupName("Stage" + std::to_string(IScene::stageNo_));
+	stageEditor_->Initialize();
 	waterNum_ = 1;
 	SetGlobalVariable();
 	for (int i = 0; i < waterNum_; i++) {
@@ -38,8 +34,7 @@ void WaterManager::Update(float deltaTime)
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 
-	if (preStageNo_ != IScene::stageNo_) {
-		preStageNo_ = IScene::stageNo_;
+	if (stageEditor_->IsChangedStage()) {
 		Initialize();
 	}
 #endif // _DEBUG
@@ -84,13 +79,13 @@ void WaterManager::CreateWater(const Vector2& pos, const Vector2& radius, bool i
 
 void WaterManager::SetGlobalVariable()
 {
-	globalVariable_->AddItem("水の数", waterNum_, "水の配置");
+	stageEditor_->AddItem("水の数", waterNum_);
 	ApplyGlobalVariable();
 }
 
 void WaterManager::ApplyGlobalVariable()
 {
-	waterNum_ = globalVariable_->GetIntValue("水の数", "水の配置");
+	waterNum_ = stageEditor_->GetIntValue("水の数");
 	if (waterNum_ <= 0) {
 		waterNum_ = 1;
 	}

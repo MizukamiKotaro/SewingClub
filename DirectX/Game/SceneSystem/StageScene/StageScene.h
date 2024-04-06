@@ -12,6 +12,7 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "GameElement/Planet/PlanetManager.h"
 #include "GameElement/Client/ClientManager.h"
+#include "GameElement/Item/ItemManager.h"
 
 class StageScene : public IScene
 {
@@ -40,4 +41,5 @@ private:
 	WaterManager* waterManager_;
 	PlanetManager* planetManager_;
 	ClientManager* clientManager_;
+	ItemManager* itemManager_;
 };

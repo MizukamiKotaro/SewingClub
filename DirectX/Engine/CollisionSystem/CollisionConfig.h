@@ -21,4 +21,5 @@ enum class ColliderMask {
     PLANET,
     GRAVITY_AREA_SEARCH,
     CLIENT,
+    ITEM,
 };

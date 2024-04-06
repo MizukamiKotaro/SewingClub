@@ -176,6 +176,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="Engine\Input\Input.cpp" />
     <ClCompile Include="Engine\Kyoko.cpp" />
+    <ClCompile Include="Engine\StageEditor\StageEditor.cpp" />
     <ClCompile Include="Engine\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Engine\TextureManager\Texture\Texture.cpp" />
     <ClCompile Include="Engine\Utils\Camera\DebugCamera\DebugCamera.cpp" />
@@ -186,6 +187,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Game.cpp" />
     <ClCompile Include="Game\GameElement\GravityArea\GravityArea.cpp" />
     <ClCompile Include="Game\GameElement\HitSystem\HitSystem.cpp" />
+    <ClCompile Include="Game\GameElement\Item\Item.cpp" />
+    <ClCompile Include="Game\GameElement\Item\ItemManager.cpp" />
     <ClCompile Include="Game\GameElement\Live\Dome\Dome.cpp" />
     <ClCompile Include="Game\GameElement\Live\Live.cpp" />
     <ClCompile Include="Game\GameElement\Live\Screen\Screen.cpp" />
@@ -315,6 +318,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\ImGuiManager\ImGuiManager.h" />
     <ClInclude Include="Engine\Input\Input.h" />
     <ClInclude Include="Engine\Kyoko.h" />
+    <ClInclude Include="Engine\StageEditor\StageEditor.h" />
     <ClInclude Include="Engine\TextureManager\TextureManager.h" />
     <ClInclude Include="Engine\TextureManager\Texture\Texture.h" />
     <ClInclude Include="Engine\Utils\Camera\Camera.h" />
@@ -344,6 +348,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Game.h" />
     <ClInclude Include="Game\GameElement\GravityArea\GravityArea.h" />
     <ClInclude Include="Game\GameElement\HitSystem\HitSystem.h" />
+    <ClInclude Include="Game\GameElement\Item\Item.h" />
+    <ClInclude Include="Game\GameElement\Item\ItemManager.h" />
     <ClInclude Include="Game\GameElement\Live\Dome\Dome.h" />
     <ClInclude Include="Game\GameElement\Live\Live.h" />
     <ClInclude Include="Game\GameElement\Live\Screen\Screen.h" />

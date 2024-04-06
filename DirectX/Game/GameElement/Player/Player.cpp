@@ -14,6 +14,7 @@ Player::Player()
 	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
 	Collider::AddTargetMask(ColliderMask::PLANET);
 	Collider::AddTargetMask(ColliderMask::CLIENT);
+	Collider::AddTargetMask(ColliderMask::ITEM);
 
 	CreateGlobalVariable("Player");
 
