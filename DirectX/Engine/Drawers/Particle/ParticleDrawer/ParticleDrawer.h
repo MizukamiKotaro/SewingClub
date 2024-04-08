@@ -13,13 +13,13 @@ class Camera;
 enum class PipelineType;
 class ILight;
 
-class Particle : public IDrawer
+class ParticleDrawer : public IDrawer
 {
 public:
 	static const uint32_t kNumInstance = 100000;
 
-	Particle(const ModelData* modelData, const Texture* texture);
-	~Particle();
+	ParticleDrawer(const ParticleMeshTexData& data);
+	~ParticleDrawer();
 
 	struct Material
 	{
@@ -39,8 +39,6 @@ public:
 
 	static void PreDraw();
 
-	void SetMesh(const ModelData* modelData);
-
 	void SetLight(const ILight* light);
 
 private:
@@ -58,7 +56,6 @@ private:
 private:
 
 	static const PipelineType pipelineType_;
-	const ModelData* modelData_;
-	const Texture* texture_;
+	ParticleMeshTexData data_;
 	const DescriptorHandles* srvHandles_;
 };

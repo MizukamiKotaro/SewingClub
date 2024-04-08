@@ -771,13 +771,16 @@
     <ClCompile Include="Game\GameElement\Yarn\YarnLimit.cpp">
       <Filter>Game\GameElement\Yarn</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Drawers\Particle\Particle\Particle.cpp">
-      <Filter>Engine\Drawer\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Drawers\Particle\ParticleList\ParticleList.cpp">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Drawers\Particle\ParticleManager.cpp">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\Particle\ParticleDrawer\ParticleDrawer.cpp">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\Particle\Particle.cpp">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1217,9 +1220,6 @@
     <ClInclude Include="Game\GameElement\Yarn\YarnLimit.h">
       <Filter>Game\GameElement\Yarn</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Drawers\Particle\Particle\Particle.h">
-      <Filter>Engine\Drawer\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Drawers\Particle\ParticleList\ParticleList.h">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClInclude>
@@ -1227,6 +1227,12 @@
       <Filter>Engine\Drawer\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Drawers\Particle\ParticleManager.h">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\Particle\ParticleDrawer\ParticleDrawer.h">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\Particle\Particle.h">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClInclude>
   </ItemGroup>

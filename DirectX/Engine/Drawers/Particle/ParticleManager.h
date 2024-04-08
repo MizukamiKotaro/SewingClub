@@ -21,12 +21,9 @@ public:
 
 	static ParticleManager* GetInstance();
 
-	void LoadModel();
-
 	void Draw(const Camera& camera);
 
-	ParticleData* const AddBox(ParticleData&& model, const Texture* texture);
-	ParticleData* const AddBox(ParticleData&& model, const  ModelData* modelData, const Texture* texture = nullptr);
+	ParticleData* const AddBox(ParticleData&& model, const ParticleMeshTexData* data);
 
 	void Clear();
 
@@ -39,7 +36,5 @@ private:
 	const ParticleManager& operator=(const ParticleManager&) = delete;
 
 private:
-	const ModelData* plane_;
-
-	std::map<std::pair<const ModelData*,const Texture*>, std::unique_ptr<ParticleList>> instancingModelMap_;
+	std::unordered_map<const ParticleMeshTexData*, std::unique_ptr<ParticleList>> particleMap_;
 };

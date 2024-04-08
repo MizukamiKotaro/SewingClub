@@ -11,32 +11,32 @@
 #include "Light/Light.h"
 #include "ModelDataManager.h"
 
-ParticleList::ParticleList(const ModelData* modelData, const Texture* texture)
+ParticleList::ParticleList(const ParticleMeshTexData& data)
 {
-	modelsResource_ = std::make_unique<Particle>(modelData, texture);
+	drawer_ = std::make_unique<ParticleDrawer>(data);
 }
 
 void ParticleList::SetLight(const ILight* light) {
-	modelsResource_->SetLight(light);
+	drawer_->SetLight(light);
 }
 
 void ParticleList::Draw(const Camera& camera)
 {
-	modelsResource_->Draw(camera, modelList_);
+	drawer_->Draw(camera, dataList_);
 }
 
 void ParticleList::Clear()
 {
-	modelList_.clear();
+	dataList_.clear();
 }
 
-ParticleData* const ParticleList::AddModel(ParticleData&& instancingModel)
+ParticleData* const ParticleList::AddModel(ParticleData&& data)
 {
-	modelList_.push_back(std::move(instancingModel));
-	return &modelList_.back();
+	dataList_.push_back(std::move(data));
+	return &dataList_.back();
 }
 
 uint32_t ParticleList::GetSize() const
 {
-	return static_cast<uint32_t>(modelList_.size());
+	return static_cast<uint32_t>(dataList_.size());
 }

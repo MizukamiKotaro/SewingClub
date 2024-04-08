@@ -138,9 +138,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Drawers\Light\SpotLight\SpotLight.cpp" />
     <ClCompile Include="Engine\Drawers\Model\Model.cpp" />
     <ClCompile Include="Engine\Drawers\Model\ModelData\ModelDataManager\ModelDataManager.cpp" />
+    <ClCompile Include="Engine\Drawers\Particle\Particle.cpp" />
+    <ClCompile Include="Engine\Drawers\Particle\ParticleDrawer\ParticleDrawer.cpp" />
     <ClCompile Include="Engine\Drawers\Particle\ParticleList\ParticleList.cpp" />
     <ClCompile Include="Engine\Drawers\Particle\ParticleManager.cpp" />
-    <ClCompile Include="Engine\Drawers\Particle\Particle\Particle.cpp" />
     <ClCompile Include="Engine\Drawers\PostEffect\BasePostEffect\BasePostEffect.cpp" />
     <ClCompile Include="Engine\Drawers\PostEffect\Bloom\Bloom.cpp" />
     <ClCompile Include="Engine\Drawers\PostEffect\Blur\Blur.cpp" />
@@ -282,10 +283,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Drawers\Model\ModelData\ModelDataManager\ModelDataManager.h" />
     <ClInclude Include="Engine\Drawers\Model\ModelData\NodeData3D.h" />
     <ClInclude Include="Engine\Drawers\Model\ModelData\VertexData3D.h" />
+    <ClInclude Include="Engine\Drawers\Particle\Particle.h" />
     <ClInclude Include="Engine\Drawers\Particle\ParticleData.h" />
+    <ClInclude Include="Engine\Drawers\Particle\ParticleDrawer\ParticleDrawer.h" />
     <ClInclude Include="Engine\Drawers\Particle\ParticleList\ParticleList.h" />
     <ClInclude Include="Engine\Drawers\Particle\ParticleManager.h" />
-    <ClInclude Include="Engine\Drawers\Particle\Particle\Particle.h" />
     <ClInclude Include="Engine\Drawers\PostEffect\BasePostEffect\BasePostEffect.h" />
     <ClInclude Include="Engine\Drawers\PostEffect\Bloom\Bloom.h" />
     <ClInclude Include="Engine\Drawers\PostEffect\Blur\Blur.h" />

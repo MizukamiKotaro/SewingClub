@@ -17,7 +17,7 @@ public:
 
 	void Initialize();
 
-	void Update(float deltaTime);
+	void Update(float deltaTime, Camera* camera);
 
 	void Draw() const;
 
@@ -42,6 +42,8 @@ private:
 	static std::unique_ptr<GlobalVariableUser> staticGlobalVariable_;
 	std::unique_ptr<StageEditor> stageEditor_;
 
+	void ActiveCheck(Camera* camera);
+
 private:
 	static float deleteTime_;
 
@@ -56,4 +58,5 @@ private:
 	Vector4 color_;
 
 	int no_;
+	bool isActive_;
 };

@@ -1,4 +1,4 @@
-#include "Particle.h"
+#include "ParticleDrawer.h"
 #include "DirectXBase/DirectXBase.h"
 #include "Camera.h"
 #include <algorithm>
@@ -10,12 +10,11 @@
 #include "GraphicsPipelineSystem/PipelineTypeConfig.h"
 #include "ILight/ILight.h"
 
-const PipelineType Particle::pipelineType_ = PipelineType::PARTICLE;
+const PipelineType ParticleDrawer::pipelineType_ = PipelineType::PARTICLE;
 
-Particle::Particle(const ModelData* modelData, const Texture* texture)
+ParticleDrawer::ParticleDrawer(const ParticleMeshTexData& data)
 {
-	modelData_ = modelData;
-	texture_ = texture;
+	data_ = data;
 
 	materialResource_ = DirectXBase::CreateBufferResource(sizeof(Material));
 
@@ -39,13 +38,13 @@ Particle::Particle(const ModelData* modelData, const Texture* texture)
 	light_.Initialize();
 }
 
-Particle::~Particle()
+ParticleDrawer::~ParticleDrawer()
 {
 	instancingResource_->Release();
 	materialResource_->Release();
 }
 
-void Particle::Draw(const Camera& camera, std::list<ParticleData>& blocks, BlendMode blendMode)
+void ParticleDrawer::Draw(const Camera& camera, std::list<ParticleData>& blocks, BlendMode blendMode)
 {
 	PreDraw();
 
@@ -66,7 +65,7 @@ void Particle::Draw(const Camera& camera, std::list<ParticleData>& blocks, Blend
 	}
 	psoManager_->SetBlendMode(pipelineType_, blendMode);
 	//Spriteの描画。変更に必要なものだけ変更する
-	commandList_->IASetVertexBuffers(0, 1, &modelData_->mesh.vertexBufferView_); // VBVを設定
+	commandList_->IASetVertexBuffers(0, 1, &data_.modelData_->mesh.vertexBufferView_); // VBVを設定
 	//マテリアルCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	//TransformationMatrixCBufferの場所を設定
@@ -74,27 +73,22 @@ void Particle::Draw(const Camera& camera, std::list<ParticleData>& blocks, Blend
 	commandList_->SetGraphicsRootDescriptorTable(1, srvHandles_->gpuHandle);
 	//平行光源CBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(3, light_.GetDirectionalLightGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, texture_->handles_->gpuHandle);
+	commandList_->SetGraphicsRootDescriptorTable(2, data_.texture_->handles_->gpuHandle);
 	//描画!!!!（DrawCall/ドローコール）
-	commandList_->DrawInstanced(UINT(modelData_->mesh.verteces.size()), instaceNum, 0, 0);
+	commandList_->DrawInstanced(UINT(data_.modelData_->mesh.verteces.size()), instaceNum, 0, 0);
 }
 
-void Particle::PreDraw()
+void ParticleDrawer::PreDraw()
 {
 	psoManager_->PreDraw(pipelineType_);
 }
 
-void Particle::SetMesh(const ModelData* modelData)
-{
-	modelData_ = modelData;
-}
-
-void Particle::SetLight(const ILight* light)
+void ParticleDrawer::SetLight(const ILight* light)
 {
 	light_.SetLight(light);
 }
 
-void Particle::CreateSRV()
+void ParticleDrawer::CreateSRV()
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = DXGI_FORMAT_UNKNOWN;

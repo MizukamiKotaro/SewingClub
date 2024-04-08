@@ -1,4 +1,5 @@
 #include "ItemManager.h"
+#include "Camera.h"
 
 ItemManager* ItemManager::GetInstance()
 {
@@ -31,7 +32,7 @@ void ItemManager::Initialize()
 	}
 }
 
-void ItemManager::Update(float deltaTime)
+void ItemManager::Update(float deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -47,7 +48,7 @@ void ItemManager::Update(float deltaTime)
 			itemMap_[i] = std::make_unique<Item>(i, &scale_);
 		}
 #endif // _DEBUG
-		itemMap_[i]->Update(deltaTime);
+		itemMap_[i]->Update(deltaTime, camera);
 	}
 }
 

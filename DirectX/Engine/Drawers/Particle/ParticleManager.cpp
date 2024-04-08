@@ -14,44 +14,28 @@ ParticleManager* ParticleManager::GetInstance()
 	return &instance;
 }
 
-void ParticleManager::LoadModel()
-{
-	plane_ = ModelDataManager::GetInstance()->LoadObj("Plane");
-}
-
 void ParticleManager::Draw(const Camera& camera)
 {
-	Particle::PreDraw();
+	ParticleDrawer::PreDraw();
 
-	for (const auto& [model, particleList] : instancingModelMap_) {
+	for (const auto& [model, particleList] : particleMap_) {
 		if (particleList->GetSize() == 0) { continue; }
 		particleList->Draw(camera);
 	}
 }
 
-ParticleData* const ParticleManager::AddBox(ParticleData&& model, const Texture* texture)
+ParticleData* const ParticleManager::AddBox(ParticleData&& model, const ParticleMeshTexData* data)
 {
-	std::pair<const ModelData*, const Texture*> pair = { plane_,texture };
-	if (instancingModelMap_.find(pair) == instancingModelMap_.end()) {
-		instancingModelMap_[pair] = std::make_unique<ParticleList>(plane_, texture);
+	if (particleMap_.find(data) == particleMap_.end()) {
+		particleMap_[data] = std::make_unique<ParticleList>(*data);
 	}
-	return instancingModelMap_[pair]->AddModel(std::move(model));
-}
-
-ParticleData* const ParticleManager::AddBox(ParticleData&& model, const ModelData* modelData, const Texture* texture)
-{
-	const Texture* tex = texture ? texture : modelData->texture;
-	std::pair<const ModelData*, const Texture*> pair = { modelData,tex };
-	if (instancingModelMap_.find(pair) == instancingModelMap_.end()) {
-		instancingModelMap_[pair] = std::make_unique<ParticleList>(modelData, tex);
-	}
-	return instancingModelMap_[pair]->AddModel(std::move(model));
+	return particleMap_[data]->AddModel(std::move(model));
 }
 
 void ParticleManager::Clear()
 {
-	for (auto& modelList : instancingModelMap_) {
-		modelList.second->Clear();
+	for (auto& particleList : particleMap_) {
+		particleList.second->Clear();
 	}
 }
 

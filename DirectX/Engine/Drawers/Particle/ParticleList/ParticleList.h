@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "ParticleData.h"
-#include "Particle/Particle.h"
+#include "ParticleDrawer/ParticleDrawer.h"
 #include "ILight/ILight.h"
 
 class Camera;
@@ -11,13 +11,13 @@ class Camera;
 class ParticleList {
 public:
 
-	ParticleList(const ModelData* modelData, const Texture* texture);
+	ParticleList(const ParticleMeshTexData& data);
 
 	void Draw(const Camera& camera);
 
 	void Clear();
 
-	ParticleData* const AddModel(ParticleData&& instancingModel);
+	ParticleData* const AddModel(ParticleData&& data);
 
 	uint32_t GetSize() const;
 
@@ -25,6 +25,6 @@ public:
 
 private:
 
-	std::unique_ptr<Particle> modelsResource_;
-	std::list<ParticleData> modelList_;
+	std::unique_ptr<ParticleDrawer> drawer_;
+	std::list<ParticleData> dataList_;
 };

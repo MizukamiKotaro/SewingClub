@@ -4,6 +4,8 @@
 #include "Item.h"
 #include "StageEditor/StageEditor.h"
 
+class Camera;
+
 class ItemManager {
 public:
 	static ItemManager* GetInstance();
@@ -14,7 +16,7 @@ public:
 
 	void Initialize();
 
-	void Update(float deltaTime);
+	void Update(float deltaTime, Camera* camera);
 
 	void Draw();
 

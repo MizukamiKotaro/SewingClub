@@ -5,6 +5,7 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "SceneSystem/IScene/IScene.h"
+#include "WindowsInfo/WindowsInfo.h"
 
 InstancingModelManager* Item::instancingManager_ = nullptr;
 const ModelData* Item::modelData_ = nullptr;
@@ -28,6 +29,7 @@ Item::Item(int no, const float* scale)
 	SetGlobalVariable();
 	scale_ = *maxScale_;
 	color_ = { 1.0f,1.0f,0.3f,1.0f };
+	isActive_ = true;
 }
 
 void Item::StaticInitialize()
@@ -43,7 +45,7 @@ void Item::Initialize()
 
 }
 
-void Item::Update(float deltaTime)
+void Item::Update(float deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -72,16 +74,20 @@ void Item::Update(float deltaTime)
 		time_ = std::clamp(time_, 0.0f, deleteTime_);
 		scale_ = (1.0f - time_ / deleteTime_) * maxScale_;
 	}*/
+	ActiveCheck(camera);
 	deltaTime = deltaTime;
-
-	SetCollider();
+	if (isActive_) {
+		SetCollider();
+	}
 }
 
 void Item::Draw() const
 {
-	if (!isHit_) {
-		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-		instancingManager_->AddBox(modelData_, InstancingModel{ matrix, color_ });
+	if (isActive_) {
+		if (!isHit_) {
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
+			instancingManager_->AddBox(modelData_, InstancingModel{ matrix, color_ });
+		}
 	}
 }
 
@@ -143,5 +149,24 @@ void Item::SetCollider()
 	if (!isHit_) {
 		Collider::SetCircle({ position_.x,position_.y }, scale_);
 		collisionManager_->SetCollider(this);
+	}
+}
+
+void Item::ActiveCheck(Camera* camera)
+{
+	Vector2 win = WindowsInfo::GetInstance()->GetWindowSize();
+	float ratio = win.y / (std::tanf(0.225f) * (position_.z - camera->transform_.translate_.z) * 2);
+
+	Vector2 pos{};
+	pos.x = position_.x * ratio - camera->transform_.translate_.x * ratio + camera->transform_.translate_.x;
+	pos.y = position_.y * ratio - camera->transform_.translate_.y * ratio + camera->transform_.translate_.y;
+
+	float radius = scale_ * ratio;
+
+	if ((std::abs(pos.x) - radius > win.x * 0.7f) || (std::abs(pos.y) - radius > win.y * 0.7f)) {
+		isActive_ = false;
+	}
+	else {
+		isActive_ = true;
 	}
 }
