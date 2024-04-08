@@ -138,7 +138,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Drawers\Light\SpotLight\SpotLight.cpp" />
     <ClCompile Include="Engine\Drawers\Model\Model.cpp" />
     <ClCompile Include="Engine\Drawers\Model\ModelData\ModelDataManager\ModelDataManager.cpp" />
-    <ClCompile Include="Engine\Drawers\Particle\Particle.cpp" />
+    <ClCompile Include="Engine\Drawers\Particle\ParticleList\ParticleList.cpp" />
+    <ClCompile Include="Engine\Drawers\Particle\ParticleManager.cpp" />
+    <ClCompile Include="Engine\Drawers\Particle\Particle\Particle.cpp" />
     <ClCompile Include="Engine\Drawers\PostEffect\BasePostEffect\BasePostEffect.cpp" />
     <ClCompile Include="Engine\Drawers\PostEffect\Bloom\Bloom.cpp" />
     <ClCompile Include="Engine\Drawers\PostEffect\Blur\Blur.cpp" />
@@ -214,6 +216,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\WaveFloor\WaveFloorChip.cpp" />
     <ClCompile Include="Game\GameElement\Wave\Wave.cpp" />
     <ClCompile Include="Game\GameElement\Yarn\Yarn.cpp" />
+    <ClCompile Include="Game\GameElement\Yarn\YarnLimit.cpp" />
     <ClCompile Include="Game\SceneSystem\ClearScene\ClearScene.cpp" />
     <ClCompile Include="Game\SceneSystem\ISceneFactory\ISceneFactory.cpp" />
     <ClCompile Include="Game\SceneSystem\IScene\IScene.cpp" />
@@ -279,7 +282,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Drawers\Model\ModelData\ModelDataManager\ModelDataManager.h" />
     <ClInclude Include="Engine\Drawers\Model\ModelData\NodeData3D.h" />
     <ClInclude Include="Engine\Drawers\Model\ModelData\VertexData3D.h" />
-    <ClInclude Include="Engine\Drawers\Particle\Particle.h" />
+    <ClInclude Include="Engine\Drawers\Particle\ParticleData.h" />
+    <ClInclude Include="Engine\Drawers\Particle\ParticleList\ParticleList.h" />
+    <ClInclude Include="Engine\Drawers\Particle\ParticleManager.h" />
+    <ClInclude Include="Engine\Drawers\Particle\Particle\Particle.h" />
     <ClInclude Include="Engine\Drawers\PostEffect\BasePostEffect\BasePostEffect.h" />
     <ClInclude Include="Engine\Drawers\PostEffect\Bloom\Bloom.h" />
     <ClInclude Include="Engine\Drawers\PostEffect\Blur\Blur.h" />
@@ -378,6 +384,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\WaveFloor\WaveFloorChip.h" />
     <ClInclude Include="Game\GameElement\Wave\Wave.h" />
     <ClInclude Include="Game\GameElement\Yarn\Yarn.h" />
+    <ClInclude Include="Game\GameElement\Yarn\YarnLimit.h" />
     <ClInclude Include="Game\SceneSystem\ClearScene\ClearScene.h" />
     <ClInclude Include="Game\SceneSystem\ISceneFactory\ISceneFactory.h" />
     <ClInclude Include="Game\SceneSystem\IScene\IScene.h" />

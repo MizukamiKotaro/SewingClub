@@ -11,7 +11,7 @@ class Wave;
 class Item : public Collider
 {
 public:
-	Item(int no);
+	Item(int no, const float* scale);
 	
 	static void StaticInitialize();
 
@@ -46,9 +46,9 @@ private:
 	static float deleteTime_;
 
 	bool isHit_;
+	const float* maxScale_;
 
 	Vector3 position_;
-	float maxScale_;
 	float scale_;
 	float rotate_;
 	bool isSmall_;

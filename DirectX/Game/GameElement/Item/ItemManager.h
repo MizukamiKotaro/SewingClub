@@ -31,7 +31,9 @@ private:
 
 private:
 	std::unique_ptr<StageEditor> stageEditor_;
-	std::unordered_map<int, std::unique_ptr<Item>> ItemMap_;
+	std::unordered_map<int, std::unique_ptr<Item>> itemMap_;
+	std::unique_ptr<GlobalVariableUser> globalVariable_;
 
+	float scale_;
 	int itemNum_;
 };

@@ -12,22 +12,21 @@ const ModelData* Item::modelData_ = nullptr;
 std::unique_ptr<GlobalVariableUser> Item::staticGlobalVariable_ = nullptr;
 float Item::deleteTime_ = 2.0f;
 
-Item::Item(int no)
+Item::Item(int no, const float* scale)
 {
 	isHit_ = false;
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::ITEM);
 	Collider::AddTargetMask(ColliderMask::PLAYER);
 
 	position_ = { 0.0f,1.0f,-0.02f };
-	scale_ = 0.5f;
-	maxScale_ = scale_;
+	maxScale_ = scale;
 	rotate_ = 0.0f;
 
 	no_ = no;
 	isSmall_ = false;
 	stageEditor_ = std::make_unique<StageEditor>("アイテムの配置");
 	SetGlobalVariable();
-	scale_ = maxScale_;
+	scale_ = *maxScale_;
 	color_ = { 1.0f,1.0f,0.3f,1.0f };
 }
 
@@ -49,7 +48,6 @@ void Item::Update(float deltaTime)
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 	if (stageEditor_) {
-		scale_ = maxScale_;
 		std::string tree = "アイテム" + std::to_string(no_);
 		int no = no_ / 10;
 		no = no * 10;
@@ -65,6 +63,8 @@ void Item::Update(float deltaTime)
 		}
 	}
 #endif // _DEBUG
+
+	scale_ = *maxScale_;
 
 	/*if (isSmall_) {
 		time_ += deltaTime;
@@ -100,7 +100,6 @@ void Item::SetGlobalVariable()
 		no = no * 10;
 		std::string tree1 = "アイテム" + std::to_string(no) + "～" + std::to_string(no + 9);
 		stageEditor_->AddItem("ポジション", position_, tree1, tree);
-		stageEditor_->AddItem("スケール", maxScale_, tree1, tree);
 	}
 	ApplyGlobalVariable();
 }
@@ -113,7 +112,6 @@ void Item::ApplyGlobalVariable()
 		no = no * 10;
 		std::string tree1 = "アイテム" + std::to_string(no) + "～" + std::to_string(no + 9);
 		position_ = stageEditor_->GetVector3Value("ポジション", tree1, tree);
-		maxScale_ = stageEditor_->GetFloatValue("スケール", tree1, tree);
 	}
 }
 
