@@ -10,6 +10,11 @@ class FrameInfo;
 class SceneManager
 {
 private:
+
+	//デバッグウィンドウ
+	void DebugWindow();
+
+private:
 	// シーンを保持するメンバ変数
 	std::unique_ptr<IScene> scene_;
 
@@ -20,6 +25,9 @@ private:
 
 	Input* inputManager_;
 	FrameInfo* frameInfo_;
+
+	//デバッグ用シーン名
+	std::vector<std::string> sceneName_;
 public:
 	SceneManager();
 	int Run();

@@ -29,6 +29,8 @@ private:
 
 	void WaveUpdate();
 
+	//シーン変更
+	void SceneChange();
 private:
 
 	std::unique_ptr<Player> player_;

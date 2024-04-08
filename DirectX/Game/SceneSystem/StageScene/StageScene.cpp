@@ -55,14 +55,7 @@ void StageScene::Initialize()
 
 void StageScene::Update()
 {
-	if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
-		// シーン切り替え
-		ChangeScene(CLEAR);
-	}
-	if (goal_->IsClear()) {
-		// シーン切り替え
-		ChangeScene(STAGE);
-	}
+	
 
 	collisionManager_->Clear();
 
@@ -127,6 +120,8 @@ void StageScene::Update()
 	waveFloor_->Update();
 
 	collisionManager_->CheckCollision();
+
+	SceneChange();
 }
 
 void StageScene::Draw()
@@ -189,6 +184,18 @@ void StageScene::WaveUpdate()
 		else {
 			it++;
 		}
+	}
+}
+
+void StageScene::SceneChange()
+{
+	if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
+		// シーン切り替え
+		ChangeScene(CLEAR);
+	}
+	if (goal_->IsClear()) {
+		// シーン切り替え
+		ChangeScene(SELECT);
 	}
 }
 

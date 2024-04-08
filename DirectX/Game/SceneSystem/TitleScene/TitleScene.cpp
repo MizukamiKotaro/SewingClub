@@ -16,7 +16,7 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
-	
+	SceneChange();
 }
 
 void TitleScene::Draw()
@@ -35,5 +35,15 @@ void TitleScene::Draw()
 void TitleScene::WrightPostEffect()
 {
 	
+}
+
+void TitleScene::SceneChange()
+{
+	//
+	if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
+		// シーン切り替え
+		stageNo_ = 0;
+		ChangeScene(SELECT);
+	}
 }
 
