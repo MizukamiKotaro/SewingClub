@@ -23,7 +23,9 @@ public:
 
 	void Draw(const Camera& camera);
 
-	ParticleData* const AddBox(ParticleData&& model, const ParticleMeshTexData* data);
+	const ParticleMeshTexData* GetDrawData(const ParticleMeshTexData& data);
+
+	ParticleData* const AddParticle(ParticleData&& model, const ParticleMeshTexData* data);
 
 	void Clear();
 
@@ -37,4 +39,5 @@ private:
 
 private:
 	std::unordered_map<const ParticleMeshTexData*, std::unique_ptr<ParticleList>> particleMap_;
+	std::list<std::unique_ptr<ParticleMeshTexData>> drawDatas_;
 };
