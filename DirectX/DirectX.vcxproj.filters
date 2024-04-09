@@ -594,9 +594,6 @@
     <ClCompile Include="Engine\Drawers\Model\Model.cpp">
       <Filter>Engine\Drawer\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Drawers\Particle\Particle.cpp">
-      <Filter>Engine\Drawer\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Drawers\Sprite\Sprite.cpp">
       <Filter>Engine\Drawer\Sprite</Filter>
     </ClCompile>
@@ -770,6 +767,21 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Baby\Baby.cpp">
       <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Yarn\YarnLimit.cpp">
+      <Filter>Game\GameElement\Yarn</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\Particle\ParticleList\ParticleList.cpp">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\Particle\ParticleDrawer\ParticleDrawer.cpp">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\Particle\Particle.cpp">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\Particle\ParticleManager.cpp">
+      <Filter>Engine\Drawer\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -989,9 +1001,6 @@
     <ClInclude Include="Engine\Drawers\Model\Model.h">
       <Filter>Engine\Drawer\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Drawers\Particle\Particle.h">
-      <Filter>Engine\Drawer\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Drawers\Sprite\Sprite.h">
       <Filter>Engine\Drawer\Sprite</Filter>
     </ClInclude>
@@ -1207,6 +1216,24 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Baby\Baby.h">
       <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Yarn\YarnLimit.h">
+      <Filter>Game\GameElement\Yarn</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\Particle\ParticleList\ParticleList.h">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\Particle\ParticleData.h">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\Particle\ParticleDrawer\ParticleDrawer.h">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\Particle\Particle.h">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\Particle\ParticleManager.h">
+      <Filter>Engine\Drawer\Particle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

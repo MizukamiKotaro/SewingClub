@@ -100,9 +100,9 @@ void StageScene::Update()
 
 	clientManager_->Update(deltaTime);
 
-	waterManager_->Update(deltaTime);
+	waterManager_->Update(deltaTime, camera_.get());
 
-	itemManager_->Update(deltaTime);
+	itemManager_->Update(deltaTime, camera_.get());
 
 	goal_->Update(deltaTime);
 

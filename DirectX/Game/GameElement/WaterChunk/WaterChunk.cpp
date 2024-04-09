@@ -5,6 +5,8 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "SceneSystem/IScene/IScene.h"
+#include "WindowsInfo/WindowsInfo.h"
+#include "Camera.h"
 
 InstancingModelManager* WaterChunk::instancingManager_ = nullptr;
 const ModelData* WaterChunk::modelData_ = nullptr;
@@ -94,7 +96,7 @@ void WaterChunk::Initialize()
 
 }
 
-void WaterChunk::Update(float deltaTime)
+void WaterChunk::Update(float deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -123,24 +125,29 @@ void WaterChunk::Update(float deltaTime)
 		time_ = std::clamp(time_, 0.0f, deleteTime_);
 		scale_ = (1.0f - time_ / deleteTime_) * maxScale_;
 	}
+
+	ActiveCheck(camera);
 	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
 		chip->Update();
 	}*/
-	gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
-	SetCollider();
+	if (isActive_) {
+		gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
+		SetCollider();
+	}
 }
 
 void WaterChunk::Draw() const
 {
-	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
+	if (isActive_) {
+		/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
 		chip->Draw();
 	}*/
 #ifdef _DEBUG
-	gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
+		gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 #endif // _DEBUG
-
-	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-	instancingManager_->AddBox(modelData_, InstancingModel{ matrix, color_});
+		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
+		instancingManager_->AddBox(modelData_, InstancingModel{ matrix, color_ });
+	}
 }
 
 void WaterChunk::StaticUpdate()
@@ -188,6 +195,25 @@ void WaterChunk::StaticApplyGlobalVariable()
 
 	if (deleteTime_ <= 0.0f) {
 		0.1f;
+	}
+}
+
+void WaterChunk::ActiveCheck(Camera* camera)
+{
+	Vector2 win = WindowsInfo::GetInstance()->GetWindowSize();
+	float ratio = win.y / (std::tanf(0.225f) * (position_.z - camera->transform_.translate_.z) * 2);
+
+	Vector2 pos{};
+	pos.x = position_.x * ratio - camera->transform_.translate_.x * ratio + camera->transform_.translate_.x;
+	pos.y = position_.y * ratio - camera->transform_.translate_.y * ratio + camera->transform_.translate_.y;
+
+	float radius = scale_ * ratio;
+
+	if ((std::abs(pos.x) - radius > win.x * 0.7f) || (std::abs(pos.y) - radius > win.y * 0.7f)) {
+		isActive_ = false;
+	}
+	else {
+		isActive_ = true;
 	}
 }
 
