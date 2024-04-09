@@ -11,13 +11,13 @@ class Wave;
 class Item : public Collider
 {
 public:
-	Item(int no);
+	Item(int no, const float* scale);
 	
 	static void StaticInitialize();
 
 	void Initialize();
 
-	void Update(float deltaTime);
+	void Update(float deltaTime, Camera* camera);
 
 	void Draw() const;
 
@@ -42,13 +42,15 @@ private:
 	static std::unique_ptr<GlobalVariableUser> staticGlobalVariable_;
 	std::unique_ptr<StageEditor> stageEditor_;
 
+	void ActiveCheck(Camera* camera);
+
 private:
 	static float deleteTime_;
 
 	bool isHit_;
+	const float* maxScale_;
 
 	Vector3 position_;
-	float maxScale_;
 	float scale_;
 	float rotate_;
 	bool isSmall_;
@@ -56,4 +58,5 @@ private:
 	Vector4 color_;
 
 	int no_;
+	bool isActive_;
 };
