@@ -20,7 +20,7 @@ public:
 
 	void Initialize();
 
-	void Update(float deltaTime);
+	void Update(float deltaTime, Camera* camera);
 
 	void Draw() const;
 
@@ -37,6 +37,8 @@ private:
 
 	static void StaticSetGlobalVariable();
 	static void StaticApplyGlobalVariable();
+
+	void ActiveCheck(Camera* camera);
 
 private:
 	void OnCollision(const Collider& collider) override;
@@ -77,7 +79,7 @@ private:
 	bool isTree_;
 	Vector4 color_;
 
+	bool isActive_;
 	std::unique_ptr<GravityArea> gravityArea_;
-	std::string groupName_ = "_";
 	int no_;
 };

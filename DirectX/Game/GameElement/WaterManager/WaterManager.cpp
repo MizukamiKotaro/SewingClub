@@ -1,4 +1,5 @@
 #include "WaterManager.h"
+#include "Camera.h"
 
 WaterManager* WaterManager::GetInstance()
 {
@@ -29,7 +30,7 @@ void WaterManager::Initialize()
 	}
 }
 
-void WaterManager::Update(float deltaTime)
+void WaterManager::Update(float deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -45,7 +46,7 @@ void WaterManager::Update(float deltaTime)
 			stageWater_[i] = std::make_unique<WaterChunk>(i);
 		}
 #endif // _DEBUG
-		stageWater_[i]->Update(deltaTime);
+		stageWater_[i]->Update(deltaTime, camera);
 	}
 
 	for (std::list<std::unique_ptr<WaterChunk>>::iterator it = fullWater_.begin(); it != fullWater_.end();) {
@@ -54,7 +55,7 @@ void WaterManager::Update(float deltaTime)
 			it = fullWater_.erase(it);
 		}
 		else {
-			(*it)->Update(deltaTime);
+			(*it)->Update(deltaTime, camera);
 			it++;
 		}
 	}

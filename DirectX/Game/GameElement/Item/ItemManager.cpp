@@ -1,4 +1,5 @@
 #include "ItemManager.h"
+#include "Camera.h"
 
 ItemManager* ItemManager::GetInstance()
 {
@@ -8,13 +9,15 @@ ItemManager* ItemManager::GetInstance()
 
 void ItemManager::Clear()
 {
-	ItemMap_.clear();
+	itemMap_.clear();
 }
 
 void ItemManager::InitializeGlobalVariables()
 {
 	stageEditor_ = std::make_unique<StageEditor>("アイテムの配置");
+	globalVariable_ = std::make_unique<GlobalVariableUser>("Item", "StaticItem");
 	itemNum_ = 1;
+	scale_ = 0.5f;
 	SetGlobalVariable();
 }
 
@@ -25,11 +28,11 @@ void ItemManager::Initialize()
 	itemNum_ = 1;
 	SetGlobalVariable();
 	for (int i = 0; i < itemNum_; i++) {
-		ItemMap_[i] = std::make_unique<Item>(i);
+		itemMap_[i] = std::make_unique<Item>(i, &scale_);
 	}
 }
 
-void ItemManager::Update(float deltaTime)
+void ItemManager::Update(float deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -41,30 +44,32 @@ void ItemManager::Update(float deltaTime)
 
 	for (int i = 0; i < itemNum_; i++) {
 #ifdef _DEBUG
-		if (ItemMap_.find(i) == ItemMap_.end()) {
-			ItemMap_[i] = std::make_unique<Item>(i);
+		if (itemMap_.find(i) == itemMap_.end()) {
+			itemMap_[i] = std::make_unique<Item>(i, &scale_);
 		}
 #endif // _DEBUG
-		ItemMap_[i]->Update(deltaTime);
+		itemMap_[i]->Update(deltaTime, camera);
 	}
 }
 
 void ItemManager::Draw()
 {
 	for (int i = 0; i < itemNum_; i++) {
-		ItemMap_[i]->Draw();
+		itemMap_[i]->Draw();
 	}
 }
 
 void ItemManager::SetGlobalVariable()
 {
 	stageEditor_->AddItem("アイテムの数", itemNum_);
+	globalVariable_->AddItem("アイテムのスケール", scale_);
 	ApplyGlobalVariable();
 }
 
 void ItemManager::ApplyGlobalVariable()
 {
 	itemNum_ = stageEditor_->GetIntValue("アイテムの数");
+	scale_ = globalVariable_->GetFloatValue("アイテムのスケール");
 	if (itemNum_ <= 0) {
 		itemNum_ = 1;
 	}
