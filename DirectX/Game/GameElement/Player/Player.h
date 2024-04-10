@@ -93,6 +93,7 @@ private:
 		kMinPositionY, // プレイヤーの最低の高さ
 		kKeepSpeedTime, // 加速を維持する時間
 		kGravity, // 重力
+		kBuoyancy, // 水の浮力
 		kGravityDown, // 降下中の重力
 		kGravityWater, // 水の塊の重力
 		kWaterSize, // プレイヤーが生成する水のサイズ
@@ -117,6 +118,7 @@ private:
 
 	enum BoolParamater {
 		kGravityArea, // 水ごとに重力がありか
+		kIsBuoyancy, // 水の浮力があるか
 		kGravityAreaSearch, // 一番近くの重力場に引き寄せられるか
 		kAddWaterTriger, // ボタンを押したときに水を生成するか
 		kAddWaterMove, // ジャンプしたときに水を生成するか

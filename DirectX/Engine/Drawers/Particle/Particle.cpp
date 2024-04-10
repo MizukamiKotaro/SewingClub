@@ -9,16 +9,22 @@ ParticleManager* Particle::particleManager_ = nullptr;
 
 
 
-Particle::Particle(const std::string& particleName, const std::string& textureName, BlendMode blendMode)
+Particle::Particle(const std::string& particleName, const std::string& textureName, bool isStageEditor, BlendMode blendMode)
 {
 	drawData_ = particleManager_->GetDrawData(ParticleMeshTexData{ plane_,textureManager_->LoadTexture(textureName),blendMode });
-	globalVariable_ = std::make_unique<GlobalVariableUser>("Particle", particleName);
+	
+	if (isStageEditor) {
+		stageEditor_ = std::make_unique<StageEditor>("パーティクルの設置");
+	}
+	else {
+		globalVariable_ = std::make_unique<GlobalVariableUser>("Particle", particleName);
+	}
 	SetGlobalVariable();
 
 
 }
 
-Particle::Particle(const std::string& particleName, const std::string& modelName, const std::string& textureName, BlendMode blendMode)
+Particle::Particle(const std::string& particleName, const std::string& modelName, const std::string& textureName, bool isStageEditor, BlendMode blendMode)
 {
 	if (textureName == "_") {
 		const ModelData* modelData = modelDataManager_->LoadObj(modelName);
@@ -27,7 +33,12 @@ Particle::Particle(const std::string& particleName, const std::string& modelName
 	else {
 		drawData_ = particleManager_->GetDrawData(ParticleMeshTexData{ modelDataManager_->LoadObj(modelName),textureManager_->LoadTexture(textureName),blendMode});
 	}
-	globalVariable_ = std::make_unique<GlobalVariableUser>("Particle", particleName);
+	if (isStageEditor) {
+		stageEditor_ = std::make_unique<StageEditor>("パーティクルの設置");
+	}
+	else {
+		globalVariable_ = std::make_unique<GlobalVariableUser>("Particle", particleName);
+	}
 	SetGlobalVariable();
 }
 
