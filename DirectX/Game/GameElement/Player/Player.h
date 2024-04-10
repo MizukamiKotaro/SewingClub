@@ -33,6 +33,8 @@ public:
 	// ポジションの取得
 	const Vector3& GetPosition() const;
 
+	const Vector3* GetPositionPtr() const;
+
 	//void SetIsInWater(bool is) { isInWater_ = is; }
 
 private:

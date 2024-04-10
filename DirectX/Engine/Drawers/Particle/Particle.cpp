@@ -34,7 +34,7 @@ Particle::Particle(const std::string& particleName, const std::string& modelName
 		drawData_ = particleManager_->GetDrawData(ParticleMeshTexData{ modelDataManager_->LoadObj(modelName),textureManager_->LoadTexture(textureName),blendMode});
 	}
 	if (isStageEditor) {
-		stageEditor_ = std::make_unique<StageEditor>("パーティクルの設置");
+		stageEditor_ = std::make_unique<StageEditor>("パーティクルの設置", particleName);
 	}
 	else {
 		globalVariable_ = std::make_unique<GlobalVariableUser>("Particle", particleName);
@@ -54,6 +54,11 @@ void Particle::Initialize()
 
 void Particle::Update(float deltaTime, Camera* camera)
 {
+#ifdef _DEBUG
+	ApplyGlobalVariable();
+#endif // _DEBUG
+
+
 	deltaTime = deltaTime;
 	camera->transform_ = camera->transform_;
 }
@@ -65,8 +70,22 @@ void Particle::Draw(Camera* camera)
 
 void Particle::SetGlobalVariable()
 {
+	if (globalVariable_) {
+
+	}
+	if (stageEditor_) {
+
+	}
+
+	ApplyGlobalVariable();
 }
 
 void Particle::ApplyGlobalVariable()
 {
+	if (globalVariable_) {
+
+	}
+	if (stageEditor_) {
+
+	}
 }

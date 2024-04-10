@@ -14,6 +14,7 @@
 #include "GameElement/Client/ClientManager.h"
 #include "GameElement/Item/ItemManager.h"
 #include "GameElement/Goal/Goal.h"
+#include "GameElement/DeadLine/DeadLine.h"
 
 class StageScene : public IScene
 {
@@ -35,6 +36,7 @@ private:
 	std::unique_ptr<WaveFloor> waveFloor_;
 	std::list<std::unique_ptr<Wave>> waves_;
 	std::unique_ptr<Goal> goal_;
+	std::unique_ptr<DeadLine> deadLine_;
 
 	float time_ = 0.0f;
 
