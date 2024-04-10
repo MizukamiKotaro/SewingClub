@@ -226,6 +226,11 @@ void Player::Move(float deltaTime)
 		}
 	}
 
+	if (bParas_[kIsBuoyancy]) {
+		Vector3 vect = model_->transform_.translate_ - Vector3{ gravityPos_.x,gravityPos_.y,0.0f };
+		velocity_ += vect * fParas_[kBuoyancy] * deltaTime;
+	}
+
 	model_->transform_.translate_ += velocity_;
 }
 
@@ -587,6 +592,7 @@ void Player::InitializeGlobalVariable()
 		"プレイヤーの最低の高さ",
 		"加速を維持する時間",
 		"重力加速度",
+		"浮力",
 		"降下中の重力",
 		"水の塊の重力",
 		"プレイヤーが生成する水のサイズ",
@@ -609,6 +615,7 @@ void Player::InitializeGlobalVariable()
 	bNames.resize(kBoolEnd);
 	bNames = {
 		"水ごとに重力がありか",
+		"水の浮力があるか",
 		"一番近くの重力場に引き寄せられるか",
 		"ボタンを押したときに水を生成するか",
 		"ジャンプしたときに水を生成するか",
@@ -652,6 +659,10 @@ void Player::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER || collider.GetMask() == ColliderMask::PLANET) {
 		isInWater_ = true;
+		if (bParas_[kIsBuoyancy]) {
+			ShapeCircle* circle = collider.GetCircle();
+			gravityPos_ = circle->position_;
+		}
 	}
 	else if (collider.GetMask() == ColliderMask::GRAVITY_AREA) {
 
