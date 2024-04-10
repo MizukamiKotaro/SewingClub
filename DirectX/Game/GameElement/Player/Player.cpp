@@ -171,6 +171,11 @@ const Vector3& Player::GetPosition() const
 	return model_->transform_.GetWorldPosition();
 }
 
+const Vector3* Player::GetPositionPtr() const
+{
+	return &model_->transform_.GetWorldPosition();
+}
+
 void Player::Move(float deltaTime)
 {
 	timeCount_ += deltaTime;

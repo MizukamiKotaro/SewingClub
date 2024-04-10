@@ -37,6 +37,8 @@ StageScene::StageScene()
 	planetManager_->SetPlayer(player_.get());
 
 	waveFloor_ = std::make_unique<WaveFloor>();
+
+	deadLine_ = std::make_unique<DeadLine>(camera_.get(),player_->GetPositionPtr());
 }
 
 void StageScene::Initialize()
@@ -51,6 +53,7 @@ void StageScene::Initialize()
 	clientManager_->Clear();
 	itemManager_->Initialize();
 	goal_->Initialize();
+	deadLine_->Initialize();
 }
 
 void StageScene::Update()
@@ -98,6 +101,8 @@ void StageScene::Update()
 
 	player_->Update(deltaTime);
 
+	deadLine_->Update(deltaTime);
+
 	clientManager_->Update(deltaTime);
 
 	waterManager_->Update(deltaTime, camera_.get());
@@ -143,6 +148,8 @@ void StageScene::Draw()
 	//planetManager_->Draw();
 
 	clientManager_->Draw();
+
+	deadLine_->Draw();
 
 	instancingmodelManager_->Draw(*camera_.get());
 
@@ -195,6 +202,9 @@ void StageScene::SceneChange()
 	}
 	if (goal_->IsClear()) {
 		// シーン切り替え
+		ChangeScene(SELECT);
+	}
+	if (|| deadLine_->IsPlayerDead()) {
 		ChangeScene(SELECT);
 	}
 }
