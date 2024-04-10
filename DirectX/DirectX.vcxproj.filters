@@ -391,6 +391,9 @@
     <Filter Include="Game\GameElement\Charactor\Client">
       <UniqueIdentifier>{3f940ed7-4ddd-4890-86c0-a1257fea8600}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\Animation">
+      <UniqueIdentifier>{5f1b55bd-022e-46ca-bc01-851aea0fbaea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -782,6 +785,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Drawers\Particle\ParticleManager.cpp">
       <Filter>Engine\Drawer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Animation\Animation2D.cpp">
+      <Filter>Game\GameElement\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Animation\TestModel.cpp">
+      <Filter>Game\GameElement\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1234,6 +1243,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Drawers\Particle\ParticleManager.h">
       <Filter>Engine\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Animation\Animation2D.h">
+      <Filter>Game\GameElement\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Animation\TestModel.h">
+      <Filter>Game\GameElement\Animation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

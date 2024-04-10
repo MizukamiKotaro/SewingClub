@@ -37,6 +37,8 @@ StageScene::StageScene()
 	planetManager_->SetPlayer(player_.get());
 
 	waveFloor_ = std::make_unique<WaveFloor>();
+
+	testModel_ = std::make_unique<TestModel>();
 }
 
 void StageScene::Initialize()
@@ -106,6 +108,8 @@ void StageScene::Update()
 
 	goal_->Update(deltaTime);
 
+	testModel_->Update();
+
 	debugCamera_->Update();
 	if (debugCamera_->IsDebug()) {
 		debugCamera_->DebugUpdate();
@@ -147,6 +151,8 @@ void StageScene::Draw()
 	instancingmodelManager_->Draw(*camera_.get());
 
 	player_->DrawClient();
+
+	testModel_->Draw(camera_.get());
 
 	BlackDraw();
 

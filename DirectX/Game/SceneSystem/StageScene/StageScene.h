@@ -14,6 +14,7 @@
 #include "GameElement/Client/ClientManager.h"
 #include "GameElement/Item/ItemManager.h"
 #include "GameElement/Goal/Goal.h"
+#include "GameElement/Animation/TestModel.h"
 
 class StageScene : public IScene
 {
@@ -37,6 +38,7 @@ private:
 	std::unique_ptr<WaveFloor> waveFloor_;
 	std::list<std::unique_ptr<Wave>> waves_;
 	std::unique_ptr<Goal> goal_;
+	std::unique_ptr<TestModel> testModel_;
 
 	float time_ = 0.0f;
 
