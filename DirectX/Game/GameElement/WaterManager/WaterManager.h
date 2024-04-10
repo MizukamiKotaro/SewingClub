@@ -5,6 +5,8 @@
 #include "GameElement/WaterChunk/WaterChunk.h"
 #include "StageEditor/StageEditor.h"
 
+class Camera;
+
 class WaterManager {
 public:
 	static WaterManager* GetInstance();
@@ -15,7 +17,7 @@ public:
 
 	void Initialize();
 
-	void Update(float deltaTime);
+	void Update(float deltaTime, Camera* camera);
 
 	void Draw();
 

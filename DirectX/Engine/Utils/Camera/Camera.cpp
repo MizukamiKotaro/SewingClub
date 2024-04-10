@@ -51,6 +51,23 @@ void Camera::Update()
 	cameraForGPUData_->worldPosition = transform_.GetWorldPosition();
 }
 
+const bool Camera::InScreenCheck2D(const Vector3& position, const float& radius) const 
+{
+	Vector2 win = WindowsInfo::GetInstance()->GetWindowSize();
+	float ratio = win.y / (std::tanf(0.225f) * (position.z - transform_.translate_.z) * 2);
+
+	Vector2 pos{};
+	pos.x = position.x * ratio - transform_.translate_.x * ratio + transform_.translate_.x;
+	pos.y = position.y * ratio - transform_.translate_.y * ratio + transform_.translate_.y;
+
+	float size = radius * ratio;
+
+	if ((std::abs(pos.x) - size > win.x * 0.7f) || (std::abs(pos.y) - size > win.y * 0.7f)) {
+		return false;
+	}
+	return true;
+}
+
 void Camera::CreateResource()
 {
 	//WVP用のリソースを作る。Matrix4x4　1つ分のサイズを用意する
