@@ -13,6 +13,10 @@ SelectScene::SelectScene()
 		stageBoxes_[i] = std::make_unique<Model>("WaterCircle");
 
 		stageBoxes_[i]->Initialize();
+
+		stageNumbers_[i] = std::make_unique<Model>("plane");
+		stageNumbers_[i]->Initialize();
+		
 	}
 
 
@@ -95,8 +99,13 @@ void SelectScene::SceneChange()
 {
 	if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
 		// シーン切り替え
-		stageNo_ = 0;
+		stageNo_ = pickedNum_;
 		ChangeScene(STAGE);
+	}
+
+	if (input_->PressedGamePadButton(Input::GamePadButton::B)) {
+		// シーン切り替え
+		ChangeScene(TITLE);
 	}
 }
 

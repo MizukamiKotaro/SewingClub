@@ -35,6 +35,9 @@ private:
 	//選択するステージボックス
 	std::unique_ptr<Model>stageBoxes_[_countOfStageNumbers];
 
+	//番号
+	std::unique_ptr<Model>stageNumbers_[_countOfStageNumbers];
+
 	//各ステージの配置データを持っておくところが欲しい
 
 	//選ばれている番号
