@@ -204,7 +204,7 @@ void StageScene::SceneChange()
 		// シーン切り替え
 		ChangeScene(SELECT);
 	}
-	if (|| deadLine_->IsPlayerDead()) {
+	if (deadLine_->IsPlayerDead()) {
 		ChangeScene(SELECT);
 	}
 }
