@@ -59,7 +59,13 @@ private:
 	float speed_;
 	float firstPosition_;
 
-	float timeCount_;
+	struct Ganerater
+	{
+		float generateTime;
+		float timeCount;
+	};
+	std::vector<Ganerater> generator_;
+
 	float position_;
 
 	std::list<std::unique_ptr<Chip>> chips_;
