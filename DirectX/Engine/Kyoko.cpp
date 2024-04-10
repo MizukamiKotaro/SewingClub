@@ -49,6 +49,7 @@ void Kyoko::Engine::Initialize(const char* windowName, int width, int height)
 	gpoManager->Initialize();
 
 	globalVariables = GlobalVariables::GetInstance();
+	globalVariables->Initialize();
 	globalVariables->LoadFiles();
 
 	GlobalVariableUser::StaticInitialize();
