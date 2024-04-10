@@ -14,6 +14,12 @@ public:
 
 	void WrightPostEffect();
 
+
+private:
+
+	//シーン変更処理
+	void SceneChange();
+
 private:
 
 };

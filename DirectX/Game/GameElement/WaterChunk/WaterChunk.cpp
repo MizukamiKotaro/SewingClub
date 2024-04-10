@@ -40,6 +40,7 @@ WaterChunk::WaterChunk()
 	isSmall_ = false;
 	isTree_ = false;
 	color_ = { 0.3f,1.0f,0.8f,1.0f };
+	isActive_ = true;
 }
 
 WaterChunk::WaterChunk(int no)
@@ -62,6 +63,7 @@ WaterChunk::WaterChunk(int no)
 	isSmaeGravitySize_ = false;
 	isTree_ = false;
 	color_ = { 0.3f,1.0f,0.8f,1.0f };
+	isActive_ = true;
 }
 
 WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
@@ -81,6 +83,7 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 	isSmaeGravitySize_ = isSame;
 	isTree_ = false;
 	color_ = { 0.3f,1.0f,0.8f,1.0f };
+	isActive_ = true;
 }
 
 void WaterChunk::StaticInitialize()

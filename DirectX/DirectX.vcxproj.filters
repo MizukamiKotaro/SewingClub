@@ -774,13 +774,13 @@
     <ClCompile Include="Engine\Drawers\Particle\ParticleList\ParticleList.cpp">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Drawers\Particle\ParticleManager.cpp">
-      <Filter>Engine\Drawer\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Drawers\Particle\ParticleDrawer\ParticleDrawer.cpp">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Drawers\Particle\Particle.cpp">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\Particle\ParticleManager.cpp">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1226,13 +1226,13 @@
     <ClInclude Include="Engine\Drawers\Particle\ParticleData.h">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Drawers\Particle\ParticleManager.h">
-      <Filter>Engine\Drawer\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Drawers\Particle\ParticleDrawer\ParticleDrawer.h">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Drawers\Particle\Particle.h">
+      <Filter>Engine\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\Particle\ParticleManager.h">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,11 +7,19 @@
 #include "GameElement/ScoreManager/ScoreManager.h"
 #include "SceneSystem/SceneFactory/SceneFactory.h"
 
+
+
 SceneManager::SceneManager()
 {
 	ScoreManager::GetInstance()->Initialize();
 
-	IScene::sceneNo_ = STAGE;
+	IScene::sceneNo_ = TITLE;
+	
+	sceneName_.clear();
+	sceneName_.push_back("TITLE");
+	sceneName_.push_back("SELECT");
+	sceneName_.push_back("STAGE");
+	sceneName_.push_back("CLEAR");
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 
@@ -23,6 +31,8 @@ SceneManager::SceneManager()
 
 	inputManager_ = Input::GetInstance();
 	frameInfo_ = FrameInfo::GetInstance();
+
+
 }
 
 int SceneManager::Run()
@@ -49,32 +59,8 @@ int SceneManager::Run()
 
 		scene_->Play();
 
-#ifdef _DEBUG
-		ImGui::Begin("SCENE");
-		switch (currentSceneNo_)
-		{
-		case SCENE::SELECT:
-			ImGui::Text("SELECT");
-			break;
-		case SCENE::TITLE:
-			ImGui::Text("TITLE");
-			break;
-		case SCENE::STAGE:
-			ImGui::Text("STAGE");
-			break;
-		case SCENE::CLEAR:
-			ImGui::Text("CLEAR");
-			break;
-		default:
-			break;
-		}
-		ImGui::End();
+		DebugWindow();
 
-		ImGui::Begin("フレームレート");
-		ImGui::Text("フレーム : %4.1f", frameInfo_->GetFramerate());
-		ImGui::End();
-#endif // _DEBUG
-		
 		scene_->Draw();
 
 		frameInfo_->End();
@@ -84,4 +70,48 @@ int SceneManager::Run()
 	sceneFactory_.reset();
 
 	return 0;
+}
+
+void SceneManager::DebugWindow()
+{
+
+//#ifdef _DEBUG
+//	ImGui::Begin("SCENE");
+//	switch (currentSceneNo_)
+//	{
+//	case SCENE::SELECT:
+//		ImGui::Text("SELECT");
+//		break;
+//	case SCENE::TITLE:
+//		ImGui::Text("TITLE");
+//		break;
+//	case SCENE::STAGE:
+//		ImGui::Text("STAGE");
+//		break;
+//	case SCENE::CLEAR:
+//		ImGui::Text("CLEAR");
+//		break;
+//	default:
+//		break;
+//	}
+//	ImGui::End();
+//
+//	ImGui::Begin("フレームレート");
+//	ImGui::Text("フレーム : %4.1f", frameInfo_->GetFramerate());
+//	ImGui::End();
+//#endif // _DEBUG
+
+#ifdef _DEBUG
+
+	int num = IScene::sceneNo_;
+
+	ImGui::Begin("SceneManager");
+	ImGui::Text("SceneNo.%d", currentSceneNo_);
+	ImGui::Text("%s", sceneName_[currentSceneNo_].c_str());
+	ImGui::SliderInt("sceneNo", &num, 0, _SceneCount - 1);
+	ImGui::End();
+
+	IScene::sceneNo_ = num;
+#endif // _DEBUG
+
 }

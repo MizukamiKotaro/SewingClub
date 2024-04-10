@@ -24,7 +24,18 @@ void ParticleManager::Draw(const Camera& camera)
 	}
 }
 
-ParticleData* const ParticleManager::AddBox(ParticleData&& model, const ParticleMeshTexData* data)
+const ParticleMeshTexData* ParticleManager::GetDrawData(const ParticleMeshTexData& data)
+{
+	for (const std::unique_ptr<ParticleMeshTexData>& dataPtr : drawDatas_) {
+		if (dataPtr->modelData_ == data.modelData_ && dataPtr->texture_ == data.texture_ && dataPtr->blendMode_ == data.blendMode_) {
+			return dataPtr.get();
+		}
+	}
+	drawDatas_.push_back(std::make_unique<ParticleMeshTexData>(data));
+	return drawDatas_.back().get();
+}
+
+ParticleData* const ParticleManager::AddParticle(ParticleData&& model, const ParticleMeshTexData* data)
 {
 	if (particleMap_.find(data) == particleMap_.end()) {
 		particleMap_[data] = std::make_unique<ParticleList>(*data);
