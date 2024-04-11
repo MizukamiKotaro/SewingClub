@@ -16,7 +16,6 @@ Client::Client(PlanetType type, const Vector3& pos, const Vector3& velocity)
 	Collider::AddTargetMask(ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::PLANET);
 	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
-	Collider::AddTargetMask(ColliderMask::PLAYER);
 
 	type_ = type;
 	position_ = pos;
@@ -119,9 +118,6 @@ void Client::OnCollision(const Collider& collider)
 
 		Vector2 vector = circle->position_ - pos;
 		gravityVelocity_ += vector.Normalize() * planetGravitySpeed_;
-	}
-	else if (collider.GetMask() == ColliderMask::PLAYER) {
-
 	}
 }
 

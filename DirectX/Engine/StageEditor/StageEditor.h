@@ -1,14 +1,13 @@
 #pragma once
 #include "GlobalVariables/GlobalVariableUser.h"
 #include <memory>
+#include <vector>
 
 class StageEditor {
 public:
-	StageEditor(const std::string& tree1, const std::string& tree2 = "_");
+	StageEditor(const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_");
 
 	void Initialize();
-
-	const std::string& GetTree2Name() { return tree2_; }
 
 	void AddItem(const std::string& key, const int32_t& value, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
 	void AddItem(const std::string& key, const float& value, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
@@ -25,6 +24,7 @@ public:
 	const std::string& GetStringValue(const std::string& key, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 
 	bool IsTreeOpen(const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
+	bool IsTreeOpen(const int& treeNo);
 
 	const bool IsChangedStage();
 
@@ -33,7 +33,6 @@ private:
 
 private:
 	int preStageNo_;
-	std::string tree1_;
-	std::string tree2_;
+	std::vector<std::string> tree_;
 	std::unique_ptr<GlobalVariableUser> global_;
 };
