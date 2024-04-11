@@ -12,10 +12,11 @@
 
 #include "ParticleData.h"
 #include "ParticleList/ParticleList.h"
+#include "Drawers/IDrawer/IDrawer.h"
 
 class Camera;
 
-class ParticleManager
+class ParticleManager : public IDrawer
 {
 public:
 
@@ -23,7 +24,11 @@ public:
 
 	void Draw(const Camera& camera);
 
+	void FirstInitialize();
+
 	const ParticleMeshTexData* GetDrawData(const ParticleMeshTexData& data);
+	// 板ポリの場合
+	const ParticleMeshTexData* GetDrawData(const std::string& texturePath, const BlendMode& blendMode = BlendMode::kBlendModeNormal);
 
 	ParticleData* const AddParticle(ParticleData&& model, const ParticleMeshTexData* data);
 
@@ -40,4 +45,5 @@ private:
 private:
 	std::unordered_map<const ParticleMeshTexData*, std::unique_ptr<ParticleList>> particleMap_;
 	std::list<std::unique_ptr<ParticleMeshTexData>> drawDatas_;
+	const ModelData* plane_;
 };

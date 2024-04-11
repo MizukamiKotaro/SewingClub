@@ -33,6 +33,9 @@ public:
 	// ポジションの取得
 	const Vector3& GetPosition() const;
 
+	const Vector3* GetPositionPtr() const;
+
+	const bool& GetIsHitEnemy() const { return isHitEnemy_; }
 	//void SetIsInWater(bool is) { isInWater_ = is; }
 
 private:
@@ -86,6 +89,7 @@ private:
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
 		kMaxAddAcceleration, // 加算される加速度の最大値
+		kInterpolationRateInWater, // 水中での補間の割合
 		kInterpolationRate, // 補間の割合
 		kFloatingTime, // 上下挙動の1往復の時間
 		kOutWaterAcceleration, // 水から飛び出したときの加速度
@@ -93,6 +97,7 @@ private:
 		kMinPositionY, // プレイヤーの最低の高さ
 		kKeepSpeedTime, // 加速を維持する時間
 		kGravity, // 重力
+		kBuoyancy, // 水の浮力
 		kGravityDown, // 降下中の重力
 		kGravityWater, // 水の塊の重力
 		kWaterSize, // プレイヤーが生成する水のサイズ
@@ -117,6 +122,7 @@ private:
 
 	enum BoolParamater {
 		kGravityArea, // 水ごとに重力がありか
+		kIsBuoyancy, // 水の浮力があるか
 		kGravityAreaSearch, // 一番近くの重力場に引き寄せられるか
 		kAddWaterTriger, // ボタンを押したときに水を生成するか
 		kAddWaterMove, // ジャンプしたときに水を生成するか
@@ -154,6 +160,8 @@ private:
 	bool isDotTarget_;
 	float addAutoAcceleration_;
 
+	Vector2 waterGravityPos_;
+
 	int kFireClientNum_;
 	int kMaxPutClient_;
 	int kMaxPutWaterNum_;
@@ -161,6 +169,7 @@ private:
 
 	float memoOutWaterSpeed_;
 	bool isFireClients_;
+	bool isHitEnemy_;
 
 	float timeCount_;
 	float coolTimeCount_;

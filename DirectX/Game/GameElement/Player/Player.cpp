@@ -15,7 +15,8 @@ Player::Player()
 	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
 	Collider::AddTargetMask(ColliderMask::PLANET);
 	Collider::AddTargetMask(ColliderMask::CLIENT);
-	Collider::AddTargetMask(ColliderMask::ITEM);
+	Collider::AddTargetMask(ColliderMask::ENEMY);
+	//Collider::AddTargetMask(ColliderMask::ITEM);
 
 	CreateGlobalVariable("Player");
 
@@ -49,9 +50,11 @@ Player::Player()
 
 	memoOutWaterSpeed_ = 0.0f;
 	isFireClients_ = false;
+	isHitEnemy_ = false;
 
 	kMaxPutClient_ = 5;
 	kMaxPutWaterNum_ = 5;
+	waterGravityPos_ = {};
 
 	model_ = std::make_unique<Model>("subPlayer");
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
@@ -125,6 +128,7 @@ void Player::Update(float deltaTime)
 	isInWater_ = false;
 	isGravity_ = false;
 	gravityVelocity_ = {};
+	waterGravityPos_ = {};
 	SetCollider();
 
 
@@ -174,6 +178,11 @@ const Vector3& Player::GetPosition() const
 	return model_->transform_.GetWorldPosition();
 }
 
+const Vector3* Player::GetPositionPtr() const
+{
+	return &model_->transform_.GetWorldPosition();
+}
+
 void Player::Move(float deltaTime)
 {
 	timeCount_ += deltaTime;
@@ -185,11 +194,11 @@ void Player::Move(float deltaTime)
 		vector = vector.Normalize();
 
 		if (vector_.x != -vector.x) {
-			vector_ = Calc::Lerp(vector_, vector, fParas_[kInterpolationRate]).Normalize();
+			vector_ = Calc::Lerp(vector_, vector, fParas_[kInterpolationRateInWater]).Normalize();
 		}
 		else {
 			// 真逆の時の細かい修正保留
-			vector_ = Calc::Lerp(vector_, vector, fParas_[kInterpolationRate]).Normalize();
+			vector_ = Calc::Lerp(vector_, vector, fParas_[kInterpolationRateInWater]).Normalize();
 		}
 
 		speed_ = std::clamp(speed_ + fParas_[kAcceleration] * deltaTime, fParas_[kMinSpeed] * deltaTime, fParas_[kMaxSpeed] * deltaTime + addAcceleration_ + addAutoAcceleration_);
@@ -227,6 +236,11 @@ void Player::Move(float deltaTime)
 		if (addAutoAcceleration_ <= 0.3f) {
 			addAutoAcceleration_ = 0.0f;
 		}
+	}
+
+	if (bParas_[kIsBuoyancy]) {
+		Vector3 vect = model_->transform_.translate_ - Vector3{ waterGravityPos_.x,waterGravityPos_.y,0.0f };
+		velocity_ += vect * fParas_[kBuoyancy] * deltaTime;
 	}
 
 	model_->transform_.translate_ += velocity_;
@@ -472,6 +486,8 @@ void Player::Reset()
 
 	memoOutWaterSpeed_ = 0.0f;
 	isFireClients_ = false;
+	isHitEnemy_ = false;
+	waterGravityPos_ = {};
 
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
@@ -587,6 +603,7 @@ void Player::InitializeGlobalVariable()
 		"最大速度",
 		"最低速度",
 		"加算される加速度の最大値",
+		"水中での補間の割合",
 		"補間の割合",
 		"上下挙動の1往復の時間",
 		"水から飛び出したときの加速度",
@@ -594,6 +611,7 @@ void Player::InitializeGlobalVariable()
 		"プレイヤーの最低の高さ",
 		"加速を維持する時間",
 		"重力加速度",
+		"浮力",
 		"降下中の重力",
 		"水の塊の重力",
 		"プレイヤーが生成する水のサイズ",
@@ -616,6 +634,7 @@ void Player::InitializeGlobalVariable()
 	bNames.resize(kBoolEnd);
 	bNames = {
 		"水ごとに重力がありか",
+		"水の浮力があるか",
 		"一番近くの重力場に引き寄せられるか",
 		"ボタンを押したときに水を生成するか",
 		"ジャンプしたときに水を生成するか",
@@ -659,6 +678,16 @@ void Player::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER || collider.GetMask() == ColliderMask::PLANET) {
 		isInWater_ = true;
+		if (bParas_[kIsBuoyancy]) {
+			ShapeCircle* circle = collider.GetCircle();
+			gravityPos_ = circle->position_;;
+			if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
+				waterGravityPos_ = circle->position_;
+			}
+			else {
+				waterGravityPos_ = (circle->position_ + waterGravityPos_) * 0.5f;
+			}
+		}
 	}
 	else if (collider.GetMask() == ColliderMask::GRAVITY_AREA) {
 
@@ -680,6 +709,9 @@ void Player::OnCollision(const Collider& collider)
 			clients_.push_back(std::make_unique<Client>(clientManager_->GetHitClientType(), Vector3{}));
 			clientManager_->DeleteHitClient();
 		}
+	}
+	else if (collider.GetMask() == ColliderMask::ENEMY) {
+		isHitEnemy_ = true;
 	}
 }
 
