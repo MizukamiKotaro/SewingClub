@@ -18,7 +18,7 @@ Planet::Planet(PlanetType type, const Vector3& pos, Player* player, int no)
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::PLANET);
 	Collider::AddTargetMask(ColliderMask::PLAYER);
-	Collider::AddTargetMask(ColliderMask::WATER);
+	//Collider::AddTargetMask(ColliderMask::WATER);
 	Collider::AddTargetMask(ColliderMask::CLIENT);
 
 	gravityArea_ = std::make_unique<GravityArea>();

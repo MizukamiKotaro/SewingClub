@@ -113,6 +113,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EffectOutWater.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
     <ClCompile Include="Engine\Audio\AudioManager\AudioManager.cpp" />
     <ClCompile Include="Engine\Audio\VolumeManager\VolumeManager.cpp" />
@@ -189,6 +190,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Client\Client.cpp" />
     <ClCompile Include="Game\GameElement\Client\ClientManager.cpp" />
     <ClCompile Include="Game\GameElement\DeadLine\DeadLine.cpp" />
+    <ClCompile Include="Game\GameElement\Enemy\DoesNotWorkEnemy.cpp" />
+    <ClCompile Include="Game\GameElement\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Game\GameElement\Enemy\IEnemy.cpp" />
     <ClCompile Include="Game\GameElement\Game.cpp" />
     <ClCompile Include="Game\GameElement\Goal\Goal.cpp" />
     <ClCompile Include="Game\GameElement\GravityArea\GravityArea.cpp" />
@@ -246,6 +250,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Utils\Transform\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EffectOutWater.h" />
     <ClInclude Include="Engine\Audio\Audio.h" />
     <ClInclude Include="Engine\Audio\AudioConfig.h" />
     <ClInclude Include="Engine\Audio\AudioManager\AudioManager.h" />
@@ -358,6 +363,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Client\Client.h" />
     <ClInclude Include="Game\GameElement\Client\ClientManager.h" />
     <ClInclude Include="Game\GameElement\DeadLine\DeadLine.h" />
+    <ClInclude Include="Game\GameElement\Enemy\DoesNotWorkEnemy.h" />
+    <ClInclude Include="Game\GameElement\Enemy\EnemyManager.h" />
+    <ClInclude Include="Game\GameElement\Enemy\IEnemy.h" />
     <ClInclude Include="Game\GameElement\Game.h" />
     <ClInclude Include="Game\GameElement\Goal\Goal.h" />
     <ClInclude Include="Game\GameElement\GravityArea\GravityArea.h" />

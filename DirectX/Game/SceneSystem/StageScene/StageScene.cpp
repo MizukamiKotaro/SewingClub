@@ -3,6 +3,13 @@
 #include "Kyoko.h"
 #include "RandomGenerator/RandomGenerator.h"
 #include "GameElement/WaterManager/WaterManager.h"
+#include "InstancingModelManager.h"
+#include "CollisionSystem/CollisionManager/CollisionManager.h"
+#include "GameElement/Planet/PlanetManager.h"
+#include "GameElement/Client/ClientManager.h"
+#include "GameElement/Item/ItemManager.h"
+#include "ParticleManager.h"
+#include "GameElement/Enemy/EnemyManager.h"
 
 StageScene::StageScene()
 {
@@ -24,6 +31,8 @@ StageScene::StageScene()
 	planetManager_ = PlanetManager::GetInstance();
 	clientManager_ = ClientManager::GetInstance();
 	itemManager_ = ItemManager::GetInstance();
+	particleManager_ = ParticleManager::GetInstance();
+	enemyManager_ = EnemyManager::GetInstance();
 
 	waterManager_->InitializeGlobalVariables();
 	itemManager_->InitializeGlobalVariables();
@@ -39,6 +48,9 @@ StageScene::StageScene()
 	waveFloor_ = std::make_unique<WaveFloor>();
 
 	deadLine_ = std::make_unique<DeadLine>(camera_.get(),player_->GetPositionPtr());
+
+	eOutWater_ = EffectOutWater::GetInstance();
+	eOutWater_->SetUp();
 }
 
 void StageScene::Initialize()
@@ -53,7 +65,10 @@ void StageScene::Initialize()
 	clientManager_->Clear();
 	itemManager_->Initialize();
 	goal_->Initialize();
+
+	eOutWater_->Initialize();
 	deadLine_->Initialize();
+	enemyManager_->Initialize();
 }
 
 void StageScene::Update()
@@ -101,6 +116,8 @@ void StageScene::Update()
 
 	player_->Update(deltaTime);
 
+	enemyManager_->Update(deltaTime, camera_.get());
+
 	deadLine_->Update(deltaTime);
 
 	clientManager_->Update(deltaTime);
@@ -126,12 +143,15 @@ void StageScene::Update()
 
 	collisionManager_->CheckCollision();
 
+	eOutWater_->Update();
+
 	SceneChange();
 }
 
 void StageScene::Draw()
 {
 	instancingmodelManager_->Clear();
+	particleManager_->Clear();
 
 	Kyoko::Engine::PreDraw();
 
@@ -145,17 +165,26 @@ void StageScene::Draw()
 
 	goal_->Draw();
 
+	enemyManager_->Draw();
+
 	//planetManager_->Draw();
 
 	clientManager_->Draw();
 
 	deadLine_->Draw();
 
+
+	eOutWater_->Draw();
+
+	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
+	particleManager_->Draw(*camera_.get());
 
 	player_->DrawClient();
 
+
 	BlackDraw();
+
 
 	// フレームの終了
 	Kyoko::Engine::PostDraw();
@@ -204,7 +233,7 @@ void StageScene::SceneChange()
 		// シーン切り替え
 		ChangeScene(SELECT);
 	}
-	if (deadLine_->IsPlayerDead()) {
+	if (deadLine_->IsPlayerDead() || player_->GetIsHitEnemy()) {
 		ChangeScene(SELECT);
 	}
 }
