@@ -89,6 +89,7 @@ private:
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
 		kMaxAddAcceleration, // 加算される加速度の最大値
+		kInterpolationRateInWater, // 水中での補間の割合
 		kInterpolationRate, // 補間の割合
 		kFloatingTime, // 上下挙動の1往復の時間
 		kOutWaterAcceleration, // 水から飛び出したときの加速度
@@ -158,6 +159,8 @@ private:
 	Vector2 dotTargetPos_;
 	bool isDotTarget_;
 	float addAutoAcceleration_;
+
+	Vector2 waterGravityPos_;
 
 	int kFireClientNum_;
 	int kMaxPutClient_;

@@ -24,6 +24,11 @@ void ParticleManager::Draw(const Camera& camera)
 	}
 }
 
+void ParticleManager::FirstInitialize()
+{
+	plane_ = modelDataManager_->LoadObj("plane");
+}
+
 const ParticleMeshTexData* ParticleManager::GetDrawData(const ParticleMeshTexData& data)
 {
 	for (const std::unique_ptr<ParticleMeshTexData>& dataPtr : drawDatas_) {
@@ -32,6 +37,19 @@ const ParticleMeshTexData* ParticleManager::GetDrawData(const ParticleMeshTexDat
 		}
 	}
 	drawDatas_.push_back(std::make_unique<ParticleMeshTexData>(data));
+	return drawDatas_.back().get();
+}
+
+const ParticleMeshTexData* ParticleManager::GetDrawData(const std::string& texturePath, const BlendMode& blendMode)
+{
+	const Texture* texture = textureManager_->LoadTexture(texturePath);
+
+	for (const std::unique_ptr<ParticleMeshTexData>& dataPtr : drawDatas_) {
+		if (dataPtr->modelData_ == plane_ && dataPtr->texture_ == texture && dataPtr->blendMode_ == blendMode) {
+			return dataPtr.get();
+		}
+	}
+	drawDatas_.push_back(std::make_unique<ParticleMeshTexData>(ParticleMeshTexData{plane_,texture,blendMode}));
 	return drawDatas_.back().get();
 }
 
