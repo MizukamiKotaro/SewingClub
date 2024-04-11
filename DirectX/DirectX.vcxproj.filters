@@ -391,6 +391,12 @@
     <Filter Include="Game\GameElement\Charactor\Client">
       <UniqueIdentifier>{3f940ed7-4ddd-4890-86c0-a1257fea8600}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\Effects">
+      <UniqueIdentifier>{fc260e57-9b0f-4dd0-b9c4-70f92ac71464}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\Effects\EffectOutWater">
+      <UniqueIdentifier>{8e2e097a-a0d5-488d-b71e-2a7f53240a02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -782,6 +788,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Drawers\Particle\ParticleManager.cpp">
       <Filter>Engine\Drawer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectOutWater.cpp">
+      <Filter>Game\GameElement\Effects\EffectOutWater</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1234,6 +1243,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Drawers\Particle\ParticleManager.h">
       <Filter>Engine\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectOutWater.h">
+      <Filter>Game\GameElement\Effects\EffectOutWater</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

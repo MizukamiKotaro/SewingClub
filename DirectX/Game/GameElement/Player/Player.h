@@ -185,4 +185,5 @@ private:
 
 	std::list<DelayProcess> delayProcess_;
 	bool isMemoryPos_;
+
 };

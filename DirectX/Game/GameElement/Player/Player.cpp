@@ -6,6 +6,7 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "GameElement/WaterManager/WaterManager.h"
 #include "GameElement/Client/ClientManager.h"
+#include"EffectOutWater.h"
 
 Player::Player()
 {
@@ -125,6 +126,8 @@ void Player::Update(float deltaTime)
 	isGravity_ = false;
 	gravityVelocity_ = {};
 	SetCollider();
+
+
 }
 
 void Player::Draw(const Camera* camera)
@@ -244,6 +247,10 @@ void Player::PopUpFromWater()
 	if (bParas_[BoolParamater::kAddWaterMove]) {
 		delayProcess_.push_back({ { model_->transform_.translate_.x,model_->transform_.translate_.y },0.0f });
 	}
+
+	Vector2 gvelo =  Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y)- gravityPos_;
+
+	EffectOutWater::GetInstance()->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y),gvelo ,5);
 }
 
 void Player::ComeToWater()

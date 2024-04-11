@@ -37,6 +37,9 @@ StageScene::StageScene()
 	planetManager_->SetPlayer(player_.get());
 
 	waveFloor_ = std::make_unique<WaveFloor>();
+
+	eOutWater_ = EffectOutWater::GetInstance();
+	eOutWater_->SetUp();
 }
 
 void StageScene::Initialize()
@@ -51,6 +54,8 @@ void StageScene::Initialize()
 	clientManager_->Clear();
 	itemManager_->Initialize();
 	goal_->Initialize();
+
+	eOutWater_->Initialize();
 }
 
 void StageScene::Update()
@@ -121,6 +126,8 @@ void StageScene::Update()
 
 	collisionManager_->CheckCollision();
 
+	eOutWater_->Update();
+
 	SceneChange();
 }
 
@@ -144,11 +151,17 @@ void StageScene::Draw()
 
 	clientManager_->Draw();
 
+
+	eOutWater_->Draw();
+
+	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
 
 	player_->DrawClient();
 
+
 	BlackDraw();
+
 
 	// フレームの終了
 	Kyoko::Engine::PostDraw();

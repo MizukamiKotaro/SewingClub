@@ -14,6 +14,7 @@
 #include "GameElement/Client/ClientManager.h"
 #include "GameElement/Item/ItemManager.h"
 #include "GameElement/Goal/Goal.h"
+#include"EffectOutWater.h"
 
 class StageScene : public IScene
 {
@@ -46,4 +47,7 @@ private:
 	PlanetManager* planetManager_;
 	ClientManager* clientManager_;
 	ItemManager* itemManager_;
+
+	//エフェクト関連のデータ
+	EffectOutWater* eOutWater_;
 };
