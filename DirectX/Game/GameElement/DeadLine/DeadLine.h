@@ -1,11 +1,8 @@
 #pragma once
 
-#include "Vector2.h"
-#include "Vector3.h"
-#include "Quaternion.h"
 #include <string>
 #include <memory>
-#include "InstancingModelManager.h"
+#include "ParticleManager.h"
 #include "GlobalVariables/GlobalVariableUser.h"
 #include "RandomGenerator/RandomGenerator.h"
 
@@ -33,8 +30,8 @@ private:
 	void GenerateChips(const float& deltaTime);
 
 private:
-	InstancingModelManager* instancingManager_;
-	const ModelData* modelData_;
+	ParticleManager* instancingManager_;
+	const ParticleMeshTexData* modelData_;
 	RandomGenerator* rand_;
 
 	std::unique_ptr<GlobalVariableUser> globalVariable_;

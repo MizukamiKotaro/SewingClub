@@ -8,8 +8,8 @@
 DeadLine::DeadLine(Camera* camera, const Vector3* playerPos)
 {
 	camera_ = camera;
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("plane");
-	instancingManager_ = InstancingModelManager::GetInstance();
+	instancingManager_ = ParticleManager::GetInstance();
+	modelData_ = instancingManager_->GetDrawData("deadbox.png");
 	rand_ = RandomGenerator::GetInstance();
 
 	playerPos_ = playerPos;
@@ -75,7 +75,7 @@ void DeadLine::Draw()
 	for (std::unique_ptr<Chip>& chip : chips_) {
 		if (chip->isActive_) {
 			Matrix4x4 mat = Matrix4x4::MakeAffinMatrix(chip->scale_, Vector3{}, chip->position_);
-			instancingManager_->AddBox(modelData_, { mat,1.0f,1.0f,1.0f,1.0f });
+			instancingManager_->AddParticle({ mat,1.0f,1.0f,1.0f,1.0f }, modelData_);
 		}
 	}
 }
