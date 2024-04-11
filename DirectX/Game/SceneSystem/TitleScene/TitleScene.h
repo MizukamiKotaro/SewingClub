@@ -1,7 +1,5 @@
 #pragma once
-
 #include "SceneSystem/IScene/IScene.h"
-#include "GameElement/Player/Player.h"
 
 class TitleScene : public IScene
 {
@@ -14,7 +12,6 @@ public:
 
 	void WrightPostEffect();
 
-
 private:
 
 	//シーン変更処理
@@ -22,5 +19,6 @@ private:
 
 private:
 
+	std::unique_ptr<Sprite> buttonA_;
 };
 
