@@ -6,15 +6,19 @@
 
 #include "GameElement/Player/Player.h"
 #include "GameElement/WaveFloor/WaveFloor.h"
-#include "InstancingModelManager.h"
 #include "GameElement/Wave/Wave.h"
 #include "GameElement/WaterChunk/WaterChunk.h"
-#include "CollisionSystem/CollisionManager/CollisionManager.h"
-#include "GameElement/Planet/PlanetManager.h"
-#include "GameElement/Client/ClientManager.h"
-#include "GameElement/Item/ItemManager.h"
 #include "GameElement/Goal/Goal.h"
 #include "GameElement/DeadLine/DeadLine.h"
+
+class InstancingModelManager;
+class CollisionManager;
+class WaterManager;
+class PlanetManager;
+class ClientManager;
+class ItemManager;
+class ParticleManager;
+class EnemyManager;
 
 class StageScene : public IScene
 {
@@ -48,4 +52,6 @@ private:
 	PlanetManager* planetManager_;
 	ClientManager* clientManager_;
 	ItemManager* itemManager_;
+	ParticleManager* particleManager_;
+	EnemyManager* enemyManager_;
 };

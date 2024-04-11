@@ -14,7 +14,8 @@ Player::Player()
 	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
 	Collider::AddTargetMask(ColliderMask::PLANET);
 	Collider::AddTargetMask(ColliderMask::CLIENT);
-	Collider::AddTargetMask(ColliderMask::ITEM);
+	Collider::AddTargetMask(ColliderMask::ENEMY);
+	//Collider::AddTargetMask(ColliderMask::ITEM);
 
 	CreateGlobalVariable("Player");
 
@@ -48,6 +49,7 @@ Player::Player()
 
 	memoOutWaterSpeed_ = 0.0f;
 	isFireClients_ = false;
+	isHitEnemy_ = false;
 
 	kMaxPutClient_ = 5;
 	kMaxPutWaterNum_ = 5;
@@ -475,6 +477,7 @@ void Player::Reset()
 
 	memoOutWaterSpeed_ = 0.0f;
 	isFireClients_ = false;
+	isHitEnemy_ = false;
 
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
@@ -689,6 +692,9 @@ void Player::OnCollision(const Collider& collider)
 			clients_.push_back(std::make_unique<Client>(clientManager_->GetHitClientType(), Vector3{}));
 			clientManager_->DeleteHitClient();
 		}
+	}
+	else if (collider.GetMask() == ColliderMask::ENEMY) {
+		isHitEnemy_ = true;
 	}
 }
 

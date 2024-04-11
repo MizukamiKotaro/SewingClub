@@ -58,6 +58,7 @@ private:
 	float generateTime_;
 	float speed_;
 	float firstPosition_;
+	float backSpeed_;
 
 	struct Ganerater
 	{
