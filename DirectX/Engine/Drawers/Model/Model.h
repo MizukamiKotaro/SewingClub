@@ -71,11 +71,15 @@ public:
 
 	void Draw(const Camera& camera, BlendMode blendMode = BlendMode::kBlendModeNormal);
 
+	void AnimationUpdate(float time);
+
 
 private:
 	static void PreDraw();
 
 public:
+	void LoadGLTF(const std::string& fileName);
+	void LoadAnimation(const std::string& fileName);
 
 	void SetTexture(const Texture* texture);
 
@@ -95,6 +99,9 @@ private:
 
 	ComPtr<ID3D12Resource> transformationResource_;
 	TransformationMatrix* transformationData_;
+
+	Vector3 CalculateValue(const AnimationCurve<Vector3>& keyframes, const float& time);
+	Quaternion CalculateValue(const AnimationCurve<Quaternion>& keyframes, const float& time);
 
 private:
 
@@ -122,6 +129,9 @@ private:
 	Vector3 uvPos_;
 
 	const ModelData* modelData_;
+
+	std::unique_ptr<Animation> animation_;
+	float animationTime_;
 
 	// texture変えたい時用
 	const Texture* texture_;

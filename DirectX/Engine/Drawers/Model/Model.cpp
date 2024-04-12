@@ -6,6 +6,7 @@
 #include "ModelDataManager.h"
 #include "Camera.h"
 #include "DescriptorHeapManager/DescriptorHandles/DescriptorHandles.h"
+#include "calc.h"
 
 Model::Model(const std::string& fileName)
 {
@@ -69,10 +70,25 @@ void Model::Draw(const Camera& camera, BlendMode blendMode)
 
 	materialData_->color = color_;
 
-	transformationData_->World = transform_.worldMat_;
-	transformationData_->WVP = transform_.worldMat_ * camera.GetViewProjection();
-	transformationData_->WorldInverse = Matrix4x4::Inverse(Matrix4x4::MakeScaleMatrix(transform_.scale_)) *
-		Matrix4x4::MakeRotateXYZMatrix(transform_.rotate_) * Matrix4x4::MakeTranslateMatrix(transform_.translate_);
+	if (animation_) {
+		NodeAnimation& rootNodeAnimation = animation_->nodeAnimations[modelData_->rootNode.name];
+		Vector3 translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
+		Quaternion rotate = CalculateValue(rootNodeAnimation.rotate, animationTime_);
+		Vector3 scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
+		Matrix4x4 localMatrix = Matrix4x4::MakeAffinMatrix(scale, rotate, translate);
+
+		transformationData_->World = localMatrix * transform_.worldMat_;
+		transformationData_->WVP = localMatrix * transform_.worldMat_ * camera.GetViewProjection();
+		transformationData_->WorldInverse = Matrix4x4::Inverse(Matrix4x4::MakeScaleMatrix(transform_.scale_)) *
+			Matrix4x4::MakeRotateXYZMatrix(transform_.rotate_) * Matrix4x4::MakeTranslateMatrix(transform_.translate_);
+	}
+	else {
+		transformationData_->World = transform_.worldMat_;
+		transformationData_->WVP = transform_.worldMat_ * camera.GetViewProjection();
+		transformationData_->WorldInverse = Matrix4x4::Inverse(Matrix4x4::MakeScaleMatrix(transform_.scale_)) *
+			Matrix4x4::MakeRotateXYZMatrix(transform_.rotate_) * Matrix4x4::MakeTranslateMatrix(transform_.translate_);
+	}
+
 	materialData_->uvTransform = uvMatrix_;
 
 	psoManager_->SetBlendMode(pipelineType_, blendMode);
@@ -99,6 +115,31 @@ void Model::Draw(const Camera& camera, BlendMode blendMode)
 
 }
 
+void Model::AnimationUpdate(float time)
+{
+	if (animation_) {
+		animationTime_ += time;
+		animationTime_ = std::fmod(animationTime_, animation_->duration);
+	}
+}
+
+void Model::LoadGLTF(const std::string& fileName)
+{
+	modelData_ = modelDataManager_->LoadGLTF(fileName);
+
+	texture_ = modelData_->texture;
+
+	srvGPUDescriptorHandle_ = texture_->handles_->gpuHandle;
+
+	LoadAnimation(fileName);
+}
+
+void Model::LoadAnimation(const std::string& fileName)
+{
+	animationTime_ = 0.0f;
+	animation_ = std::make_unique<Animation>(modelDataManager_->LoadAnimation(fileName));
+}
+
 void Model::SetTexture(const Texture* texture)
 {
 	texture_ = texture;
@@ -118,6 +159,39 @@ void Model::SetModelData(const ModelData* modelData)
 void Model::SetLight(const ILight* light)
 {
 	light_.SetLight(light);
+}
+
+Vector3 Model::CalculateValue(const AnimationCurve<Vector3>& keyframes, const float& time)
+{
+	assert(!keyframes.keyframes.empty());
+	if (keyframes.keyframes.size() == 1 || time <= keyframes.keyframes[0].time) {
+		return keyframes.keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.keyframes.size() - 1; index++) {
+		size_t nextIndex = index + 1;
+		if (keyframes.keyframes[index].time <= time && time <= keyframes.keyframes[nextIndex].time) {
+			float t = (time - keyframes.keyframes[index].time) / (keyframes.keyframes[nextIndex].time - keyframes.keyframes[index].time);
+			return Calc::Lerp(keyframes.keyframes[index].value, keyframes.keyframes[nextIndex].value, t);
+		}
+	}
+
+	return (*keyframes.keyframes.rbegin()).value;
+}
+
+Quaternion Model::CalculateValue(const AnimationCurve<Quaternion>& keyframes, const float& time) {
+	assert(!keyframes.keyframes.empty());
+	if (keyframes.keyframes.size() == 1 || time <= keyframes.keyframes[0].time) {
+		return keyframes.keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.keyframes.size() - 1; index++) {
+		size_t nextIndex = index + 1;
+		if (keyframes.keyframes[index].time <= time && time <= keyframes.keyframes[nextIndex].time) {
+			float t = (time - keyframes.keyframes[index].time) / (keyframes.keyframes[nextIndex].time - keyframes.keyframes[index].time);
+			return Quaternion::Slerp(keyframes.keyframes[index].value, keyframes.keyframes[nextIndex].value, t);
+		}
+	}
+
+	return (*keyframes.keyframes.rbegin()).value;
 }
 
 void Model::CreateResources()
