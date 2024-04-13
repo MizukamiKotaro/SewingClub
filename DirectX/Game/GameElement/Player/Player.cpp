@@ -71,6 +71,9 @@ Player::Player()
 
 	yarn_ = std::make_unique<Yarn>(&model_->transform_.translate_, model_->transform_.translate_);
 	gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
+
+	seIn2Water_.LoadWave("SE/inToWater.wav");
+	seOutWater_.LoadWave("SE/outWater.wav");
 }
 
 void Player::Initialize()
@@ -248,6 +251,8 @@ void Player::Move(float deltaTime)
 
 void Player::PopUpFromWater()
 {
+	seOutWater_.Play();
+
 	timeCount_ = 0.0f;
 	memoOutWaterSpeed_ = speed_;
 	isFireClients_ = false;
@@ -269,6 +274,7 @@ void Player::PopUpFromWater()
 
 void Player::ComeToWater()
 {
+	seIn2Water_.Play();
 	timeCount_ = 0.0f;
 	model_->transform_.translate_ += velocity_;
 }

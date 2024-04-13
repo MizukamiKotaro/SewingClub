@@ -8,6 +8,7 @@
 #include "GravityAreaSearch.h"
 #include <vector>
 #include "StageEditor/StageEditor.h"
+#include"Audio.h"
 
 class Input;
 class WaterManager;
@@ -195,4 +196,8 @@ private:
 	std::list<DelayProcess> delayProcess_;
 	bool isMemoryPos_;
 
+	//水に入る音
+	Audio seIn2Water_;
+	//水から出る音
+	Audio seOutWater_;
 };
