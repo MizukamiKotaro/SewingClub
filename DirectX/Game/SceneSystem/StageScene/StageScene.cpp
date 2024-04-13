@@ -51,6 +51,8 @@ StageScene::StageScene()
 
 	eOutWater_ = EffectOutWater::GetInstance();
 	eOutWater_->SetUp();
+
+	bgm_.LoadWave("SE/ingame.wav", "BGM", bgmVolume_);
 }
 
 void StageScene::Initialize()
@@ -69,6 +71,8 @@ void StageScene::Initialize()
 	eOutWater_->Initialize();
 	deadLine_->Initialize();
 	enemyManager_->Initialize();
+
+	bgm_.Play(true);
 }
 
 void StageScene::Update()
@@ -228,13 +232,16 @@ void StageScene::SceneChange()
 	if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
 		// シーン切り替え
 		ChangeScene(CLEAR);
+		bgm_.Stop();
 	}
 	if (goal_->IsClear()) {
 		// シーン切り替え
 		ChangeScene(SELECT);
+		bgm_.Stop();
 	}
 	if (deadLine_->IsPlayerDead() || player_->GetIsHitEnemy()) {
 		ChangeScene(SELECT);
+		bgm_.Stop();
 	}
 }
 

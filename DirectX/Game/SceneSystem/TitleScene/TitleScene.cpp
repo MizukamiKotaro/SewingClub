@@ -7,11 +7,13 @@ TitleScene::TitleScene()
 	FirstInit();
 
 	buttonA_ = std::make_unique<Sprite>("space.png");
+
+	bgm_.LoadWave("SE/title.wav","BGM",bgmVolume_);
 }
 
 void TitleScene::Initialize()
 {
-
+	bgm_.Play(true);
 }
 
 void TitleScene::Update()
@@ -44,6 +46,7 @@ void TitleScene::SceneChange()
 		// シーン切り替え
 		stageNo_ = 0;
 		ChangeScene(SELECT);
+		bgm_.Stop();
 	}
 }
 

@@ -2,6 +2,7 @@
 
 #include "SceneSystem/IScene/IScene.h"
 #include "Model.h"
+#include"Audio.h"
 
 class SelectScene : public IScene
 {
@@ -59,7 +60,8 @@ private:
 	inputAcceptance switchData_;
 
 
-
+	Audio  bgm_;
+	float bgmVolume_ = 0.5f;
 
 };
 
