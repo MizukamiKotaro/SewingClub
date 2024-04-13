@@ -6,7 +6,7 @@ TitleScene::TitleScene()
 {
 	FirstInit();
 
-
+	buttonA_ = std::make_unique<Sprite>("space.png");
 }
 
 void TitleScene::Initialize()
@@ -25,7 +25,7 @@ void TitleScene::Draw()
 
 	Kyoko::Engine::PreDraw();
 
-	
+	buttonA_->Draw();
 
 	BlackDraw();
 

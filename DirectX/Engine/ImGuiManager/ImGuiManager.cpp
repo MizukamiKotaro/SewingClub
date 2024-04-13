@@ -32,6 +32,7 @@ void Kyoko::ImGuiManager::Initialize()
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->AddFontFromFileTTF("Resources/Font/GenShinGothic-Heavy.ttf", 16.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
+	io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
 #endif // _DEBUG
 }
 
