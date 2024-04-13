@@ -200,4 +200,6 @@ private:
 	Audio seIn2Water_;
 	//水から出る音
 	Audio seOutWater_;
+	//水の中の音
+	Audio seStayWater_;
 };

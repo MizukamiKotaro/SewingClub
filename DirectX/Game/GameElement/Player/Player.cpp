@@ -74,6 +74,7 @@ Player::Player()
 
 	seIn2Water_.LoadWave("SE/inToWater.wav");
 	seOutWater_.LoadWave("SE/outWater.wav");
+	seStayWater_.LoadWave("SE/inWater.wav");
 }
 
 void Player::Initialize()
@@ -252,7 +253,7 @@ void Player::Move(float deltaTime)
 void Player::PopUpFromWater()
 {
 	seOutWater_.Play();
-
+	seStayWater_.Stop();
 	timeCount_ = 0.0f;
 	memoOutWaterSpeed_ = speed_;
 	isFireClients_ = false;
@@ -275,6 +276,7 @@ void Player::PopUpFromWater()
 void Player::ComeToWater()
 {
 	seIn2Water_.Play();
+	seStayWater_.Play(true);
 	timeCount_ = 0.0f;
 	model_->transform_.translate_ += velocity_;
 }
