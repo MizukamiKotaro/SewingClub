@@ -110,7 +110,7 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 
 	for (int i = 0; i < spawnNum; i++) {
 
-		//rotateNum = RandomGenerator::GetInstance()->RandFloat(-diffusionR_, diffusionR_);
+		rotateNum = RandomGenerator::GetInstance()->RandFloat(-diffusionR_, diffusionR_);
 
 		//傾けたベクトル計算
 		Vector2 newVelo = RotateVelo(velo, rotateNum);

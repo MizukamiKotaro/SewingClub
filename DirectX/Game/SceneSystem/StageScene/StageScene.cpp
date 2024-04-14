@@ -52,7 +52,7 @@ StageScene::StageScene()
 	eOutWater_ = EffectOutWater::GetInstance();
 	eOutWater_->SetUp();
 
-	bgm_.LoadWave("SE/ingame.wav", "BGM", bgmVolume_);
+	bgm_.LoadWave("Music/ingame.wav", "StageBGM", bgmVolume_);
 	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);
 }
 

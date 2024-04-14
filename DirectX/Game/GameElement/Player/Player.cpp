@@ -72,9 +72,9 @@ Player::Player()
 	yarn_ = std::make_unique<Yarn>(&model_->transform_.translate_, model_->transform_.translate_);
 	gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
 
-	seIn2Water_.LoadWave("SE/inToWater.wav");
-	seOutWater_.LoadWave("SE/outWater.wav");
-	seStayWater_.LoadWave("SE/inWater.wav");
+	seIn2Water_.LoadWave("SE/inToWater.wav","水に入る音");
+	seOutWater_.LoadWave("SE/outWater.wav","水から出る音");
+	seStayWater_.LoadWave("SE/inWater.wav","水の中にいる音");
 }
 
 void Player::Initialize()

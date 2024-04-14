@@ -19,7 +19,7 @@ SelectScene::SelectScene()
 		
 	}
 
-	bgm_.LoadWave("SE/stageSelect.wav","BGM",bgmVolume_);
+	bgm_.LoadWave("Music/stageSelect.wav","SelectBGM",bgmVolume_);
 
 }
 

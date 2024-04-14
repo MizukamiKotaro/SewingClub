@@ -8,7 +8,7 @@ TitleScene::TitleScene()
 
 	buttonA_ = std::make_unique<Sprite>("space.png");
 
-	bgm_.LoadWave("SE/title.wav","BGM",bgmVolume_);
+	bgm_.LoadWave("Music/title.wav","TitleBGM",bgmVolume_);
 }
 
 void TitleScene::Initialize()
