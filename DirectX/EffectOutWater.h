@@ -52,6 +52,21 @@ private:
 	InstancingModelManager* instancingManager_=nullptr;
 	const ModelData* modelData_ = nullptr;
 
+	//残存エフェクト
+	struct DustData {
+		Vector3 translate;
+		Vector3 velo;
+		float scale;
+
+		bool isDead = false;;
+
+		float startScale;
+		int count = 0;
+		int maxCount;
+	};
+
+	int maxCount = 30;
+
 	//描画データ群
 	struct OutWaterData
 	{
@@ -74,6 +89,10 @@ private:
 		float maxDelayCount = 5;
 
 		bool isDraw=false;
+
+		//残留エフェクトの表示間隔
+		int spawnCount=0;
+		int maxSpawnCount;
 	};
 
 
@@ -82,8 +101,11 @@ private:
 	float veloSpd_ = 0.1f;
 
 
-
+	//泡データ
 	std::list<std::unique_ptr<OutWaterData>>datas_;
+
+	//データ
+	std::list<std::unique_ptr<DustData>>dustDatas_;
 
 	//拡散量
 	float diffusionR_;
