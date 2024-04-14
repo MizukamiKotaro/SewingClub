@@ -61,7 +61,7 @@ private:
 
 
 	Audio  bgm_;
-	float bgmVolume_ = 0.5f;
+	float bgmVolume_ = 0.15f;
 
 };
 
