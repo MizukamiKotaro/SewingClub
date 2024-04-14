@@ -184,6 +184,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\TextureManager\Texture\Texture.cpp" />
     <ClCompile Include="Engine\Utils\Camera\DebugCamera\DebugCamera.cpp" />
     <ClCompile Include="Game\GameElement\Animation\Animation2D.cpp" />
+    <ClCompile Include="Game\GameElement\Animation\AnimationManager.cpp" />
     <ClCompile Include="Game\GameElement\Animation\TestModel.cpp" />
     <ClCompile Include="Game\GameElement\Baby\Baby.cpp" />
     <ClCompile Include="Game\GameElement\Charactor\Charactor.cpp" />
@@ -354,6 +355,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Utils\Shape\Triangle.h" />
     <ClInclude Include="Engine\Utils\Transform\Transform.h" />
     <ClInclude Include="Game\GameElement\Animation\Animation2D.h" />
+    <ClInclude Include="Game\GameElement\Animation\AnimationManager.h" />
     <ClInclude Include="Game\GameElement\Animation\TestModel.h" />
     <ClInclude Include="Game\GameElement\Baby\Baby.h" />
     <ClInclude Include="Game\GameElement\Charactor\Charactor.h" />

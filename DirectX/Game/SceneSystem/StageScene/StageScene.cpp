@@ -38,7 +38,7 @@ StageScene::StageScene()
 
 	waveFloor_ = std::make_unique<WaveFloor>();
 
-	testModel_ = std::make_unique<TestModel>();
+	testModel_ = std::make_unique<AnimationManager>();
 }
 
 void StageScene::Initialize()

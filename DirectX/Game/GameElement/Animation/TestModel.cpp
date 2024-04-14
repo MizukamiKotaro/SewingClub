@@ -6,7 +6,7 @@ TestModel::TestModel() {
 	model_ = std::make_unique<Model>("plane");
 	model_->transform_.scale_ = Vector3(5.0f, 5.0f, 1.0f);
 	animation_ = std::make_unique<Animation2D>();
-	animation_->Initialize(model_.get(), 512, 512, 8, 8);
+	animation_->Initialize(model_.get(),8, 8);
 }
 
 void TestModel::Update() {

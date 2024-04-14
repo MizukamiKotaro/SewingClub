@@ -792,6 +792,9 @@
     <ClCompile Include="Game\GameElement\Animation\TestModel.cpp">
       <Filter>Game\GameElement\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\Animation\AnimationManager.cpp">
+      <Filter>Game\GameElement\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1248,6 +1251,9 @@
       <Filter>Game\GameElement\Animation</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Animation\TestModel.h">
+      <Filter>Game\GameElement\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Animation\AnimationManager.h">
       <Filter>Game\GameElement\Animation</Filter>
     </ClInclude>
   </ItemGroup>
