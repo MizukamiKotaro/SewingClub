@@ -161,6 +161,12 @@ void Model::SetLight(const ILight* light)
 	light_.SetLight(light);
 }
 
+void Model::SetUVParam(const Vector3& scale, const Vector3& rotate, const Vector3& position) {
+	uvScale_ = scale;
+	uvRotate_ = rotate;
+	uvPos_ = position;
+}
+
 Vector3 Model::CalculateValue(const AnimationCurve<Vector3>& keyframes, const float& time)
 {
 	assert(!keyframes.keyframes.empty());

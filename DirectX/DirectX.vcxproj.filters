@@ -391,6 +391,9 @@
     <Filter Include="Game\GameElement\Charactor\Client">
       <UniqueIdentifier>{3f940ed7-4ddd-4890-86c0-a1257fea8600}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\Animation">
+      <UniqueIdentifier>{5f1b55bd-022e-46ca-bc01-851aea0fbaea}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game\GameElement\Effects">
       <UniqueIdentifier>{fc260e57-9b0f-4dd0-b9c4-70f92ac71464}</UniqueIdentifier>
     </Filter>
@@ -815,6 +818,15 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Effects\EffectExtraJump.cpp">
       <Filter>Game\GameElement\Effects\EffectExtraJump</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Animation\Animation2D.cpp">
+      <Filter>Game\GameElement\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Animation\TestModel.cpp">
+      <Filter>Game\GameElement\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Animation\AnimationManager.cpp">
+      <Filter>Game\GameElement\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1285,6 +1297,15 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\EffectExtraJump.h">
       <Filter>Game\GameElement\Effects\EffectExtraJump</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Animation\Animation2D.h">
+      <Filter>Game\GameElement\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Animation\TestModel.h">
+      <Filter>Game\GameElement\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Animation\AnimationManager.h">
+      <Filter>Game\GameElement\Animation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

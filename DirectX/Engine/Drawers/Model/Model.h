@@ -93,6 +93,9 @@ public:
 
 	void SetColor(const Vector4& color) { color_ = color; }
 
+	// UVパラメータのセッター
+	void SetUVParam(const Vector3& scale, const Vector3& rotate, const Vector3& position);
+
 private:
 	ComPtr<ID3D12Resource> materialResource_;
 	Material* materialData_;
