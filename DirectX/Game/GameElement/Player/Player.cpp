@@ -154,6 +154,13 @@ void Player::DrawClient()
 	}
 }
 
+void Player::Finalize()
+{
+	seIn2Water_.Stop();
+	seOutWater_.Stop();
+	seStayWater_.Stop();
+}
+
 void Player::OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<Client>>& clients)
 {
 	for (std::list<std::unique_ptr<Client>>::iterator it = clients_.begin(); it != clients_.end();) {

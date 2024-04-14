@@ -28,6 +28,8 @@ public:
 	// 左上の客の描画、Sprite描画
 	void DrawClient();
 
+	//シーン変わり目の処理
+	void Finalize();
 public:
 	// 惑星と衝突したときの処理、惑星にPlayerのポインタを持たせて呼び出している
 	void OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<Client>>& clients);

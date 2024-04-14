@@ -233,15 +233,18 @@ void StageScene::SceneChange()
 		// シーン切り替え
 		ChangeScene(CLEAR);
 		bgm_.Stop();
+		player_->Finalize();
 	}
 	if (goal_->IsClear()) {
 		// シーン切り替え
 		ChangeScene(SELECT);
 		bgm_.Stop();
+		player_->Finalize();
 	}
 	if (deadLine_->IsPlayerDead() || player_->GetIsHitEnemy()) {
 		ChangeScene(SELECT);
 		bgm_.Stop();
+		player_->Finalize();
 	}
 }
 
