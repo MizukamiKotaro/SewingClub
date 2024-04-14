@@ -133,8 +133,6 @@ void StageScene::Update()
 
 	goal_->Update(deltaTime);
 
-	testModel_->Update();
-
 	debugCamera_->Update();
 	if (debugCamera_->IsDebug()) {
 		debugCamera_->DebugUpdate();
