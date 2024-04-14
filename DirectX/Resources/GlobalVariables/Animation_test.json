@@ -1,0 +1,27 @@
+{
+    "test": {
+        "Tree1Key0～9_Tree2Key0_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key0_画像No": 0,
+        "Tree1Key0～9_Tree2Key1_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key1_画像No": 1,
+        "Tree1Key0～9_Tree2Key2_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key2_画像No": 2,
+        "Tree1Key0～9_Tree2Key3_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key3_画像No": 3,
+        "Tree1Key0～9_Tree2Key4_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key4_画像No": 4,
+        "Tree1Key0～9_Tree2Key5_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key5_画像No": 5,
+        "Tree1Key0～9_Tree2Key6_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key6_画像No": 6,
+        "Tree1Key0～9_Tree2Key7_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key7_画像No": 7,
+        "Tree1Key0～9_Tree2Key8_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key8_画像No": 8,
+        "Tree1Key0～9_Tree2Key9_切替わるまでのフレーム": 20.0,
+        "Tree1Key0～9_Tree2Key9_画像No": 9,
+        "Tree1詳細設定_キーの最大数": 10,
+        "Tree1詳細設定_横分割数": 10,
+        "Tree1詳細設定_縦分割数": 1
+    }
+}

@@ -5,15 +5,20 @@
 
 
 AnimationManager::AnimationManager() {
-	global_ptr = GlobalVariables::GetInstance();
 	model_ = std::make_unique<Model>("plane");
 	model_->transform_.scale_ = Vector3(5.0f, 5.0f, 1.0f);
 	Initialize();
 }
 
+AnimationManager::~AnimationManager() {
+	if (animation_) {
+		animation_.release();
+	}
+}
+
 void AnimationManager::Update() {
 #ifdef _DEBUG
-	//ImGuiProcess();
+	ImGuiProcess();
 #endif // _DEBUG
 
 	if (animation_) {
@@ -26,16 +31,17 @@ void AnimationManager::Draw(const Camera* camera) {
 	model_->Draw(*camera);
 }
 
-Animation2D* AnimationManager::FindAnimation(const std::string& groupName) {
+Animation2D* AnimationManager::AddAnimation(const std::string& groupName) {
 	// 追加されていなければ追加する
 	if (container_.find(groupName) == container_.end()) {
 		container_.emplace(std::make_pair(groupName, std::make_unique<Animation2D>()));
+		container_.at(groupName).get()->Initialize(groupName, model_.get());
 	}
 	return container_.at(groupName).get();
 }
 
 void AnimationManager::Initialize() {
-	SetGlobalVariable();
+	//SetGlobalVariable();
 }
 
 void AnimationManager::ImGuiProcess() {
@@ -43,29 +49,48 @@ void AnimationManager::ImGuiProcess() {
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("Initialize")) {
 			ImGui::InputText("FileName", nameHandle_, sizeof(nameHandle_));
+
+			if (ImGui::TreeNode("Texture")) {
+				ImGui::InputText("TextureName", textureName_, sizeof(textureName_));
+				if (ImGui::Button("ChangeTexture")) {
+					// 板ポリにtextureのセット
+					model_->SetTexture(TextureManager::GetInstance()->LoadTexture(textureName_));
+				}
+				ImGui::TreePop();
+			}
+
 			if (ImGui::TreeNode("Create")) {
 				int handle = static_cast<int>(divisionHeight);
 				ImGui::DragInt("縦分割数", &handle, 1, 1, 100);
+				divisionHeight = static_cast<uint32_t>(handle);
 				handle = static_cast<int>(divisionWidth);
 				ImGui::DragInt("横分割数", &handle, 1, 1, 100);
+				divisionWidth = static_cast<uint32_t>(handle);
 
 				// アニメーション生成
 				if (ImGui::Button("Create")) {
-					itemName_ = nameHandle_;
-					// 板ポリにtextureのセット
-					model_->SetTexture(TextureManager::GetInstance()->LoadTexture(itemName_));
 					if (animation_) {
 						animation_.reset(nullptr);
 					}
-					animation_ = std::make_unique<Animation2D>();
-					animation_->Initialize(model_.get(), divisionHeight, divisionWidth);
+					animation_.release();
+					animation_.reset(AddAnimation(nameHandle_));
+					animation_->Initialize(nameHandle_, model_.get(), divisionWidth, divisionHeight);
 				}
 				ImGui::TreePop();
 			}
 
 			if (ImGui::Button("Save")) {
-				SetGlobalVariable();
+				
 			}
+
+			if (ImGui::Button("Play")) {
+				animation_->isPlay_ = !animation_->isPlay_;
+			}
+			if (ImGui::Button("Load")) {
+				animation_.release();
+				animation_.reset(AddAnimation(nameHandle_));
+			}
+
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -78,19 +103,9 @@ void AnimationManager::Editor() {
 }
 
 void AnimationManager::SetGlobalVariable() {
-	global_ptr->CreateGroup(chunkName, nameHandle_);
-	global_ptr->AddItem(chunkName, nameHandle_, "TextureName", itemName_);
-	global_ptr->AddItem(chunkName, nameHandle_, "DivisionWidth", static_cast<int>(divisionWidth));
-	global_ptr->AddItem(chunkName, nameHandle_, "DivisionHeight", static_cast<int>(divisionHeight));
+	
 }
 
 void AnimationManager::ApplyGlobalVariable() {
-	itemName_ = global_ptr->GetStringValue(chunkName, nameHandle_, "TextureName");
-	// 板ポリにtextureのセット
-	model_->SetTexture(TextureManager::GetInstance()->LoadTexture(itemName_));
-	if (animation_) {
-		animation_.reset(nullptr);
-	}
-	animation_ = std::make_unique<Animation2D>();
-	animation_->Initialize(model_.get(), divisionHeight, divisionWidth);
+	
 }
