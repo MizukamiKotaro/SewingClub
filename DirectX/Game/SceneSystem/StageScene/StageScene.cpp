@@ -53,6 +53,7 @@ StageScene::StageScene()
 	eOutWater_->SetUp();
 
 	bgm_.LoadWave("SE/ingame.wav", "BGM", bgmVolume_);
+	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);
 }
 
 void StageScene::Initialize()
@@ -245,6 +246,7 @@ void StageScene::SceneChange()
 		ChangeScene(SELECT);
 		bgm_.Stop();
 		player_->Finalize();
+		seDead_.Play();
 	}
 }
 
