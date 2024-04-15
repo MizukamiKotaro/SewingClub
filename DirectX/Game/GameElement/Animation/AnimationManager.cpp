@@ -45,6 +45,7 @@ void AnimationManager::Initialize() {
 }
 
 void AnimationManager::ImGuiProcess() {
+#ifdef _DEBUG
 	ImGui::Begin("Animation", nullptr, ImGuiWindowFlags_MenuBar);
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("Initialize")) {
@@ -96,6 +97,7 @@ void AnimationManager::ImGuiProcess() {
 		ImGui::EndMenuBar();
 	}
 	ImGui::End();
+#endif // _DEBUG
 }
 
 void AnimationManager::Editor() {
