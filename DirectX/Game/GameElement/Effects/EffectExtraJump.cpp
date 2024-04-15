@@ -12,9 +12,9 @@ EffectExtraJump::~EffectExtraJump()
 {
 }
 
-void EffectExtraJump::Initialize(const Vector3& playerPos)
+void EffectExtraJump::Initialize(const Vector3* playerPos)
 {
-	playerPos_ = &playerPos;
+	playerPos_ = playerPos;
 
 	datas_.clear();
 	isActive_ = false;
@@ -37,9 +37,11 @@ void EffectExtraJump::Update()
 				//座標設定
 				newData->translate = {
 					playerPos_->x + RandomGenerator::GetInstance()->RandFloat(-spawnAreaSize_.x,spawnAreaSize_.x),
-					playerPos_->x + RandomGenerator::GetInstance()->RandFloat(-spawnAreaSize_.y,spawnAreaSize_.y),
+					playerPos_->y + RandomGenerator::GetInstance()->RandFloat(-spawnAreaSize_.y,spawnAreaSize_.y),
 					1
 				};
+
+				newData->translate = *playerPos_;
 				newData->velo = { 0,0,0 };
 				newData->maxCount_ = dustDeadCount_;
 

@@ -801,7 +801,7 @@
     <ClCompile Include="Engine\Drawers\Particle\ParticleManager.cpp">
       <Filter>Engine\Drawer\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="EffectOutWater.cpp">
+    <ClCompile Include="Game\GameElement\Effects\EffectOutWater.cpp">
       <Filter>Game\GameElement\Effects\EffectOutWater</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\DeadLine\DeadLine.cpp">
@@ -1289,7 +1289,7 @@
     <ClInclude Include="Game\GameElement\Enemy\IEnemy.h">
       <Filter>Game\GameElement\Charactor\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="EffectOutWater.h">
+    <ClInclude Include="Game\GameElement\Effects\EffectOutWater.h">
       <Filter>Game\GameElement\Effects\EffectOutWater</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\EffectExtraJump.h">

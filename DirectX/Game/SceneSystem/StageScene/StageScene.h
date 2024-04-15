@@ -19,7 +19,7 @@ class ClientManager;
 class ItemManager;
 class ParticleManager;
 class EnemyManager;
-#include"EffectOutWater.h"
+#include"GameElement/Effects/EffectOutWater.h"
 
 class StageScene : public IScene
 {

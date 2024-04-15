@@ -6,7 +6,7 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "GameElement/WaterManager/WaterManager.h"
 #include "GameElement/Client/ClientManager.h"
-#include"EffectOutWater.h"
+#include"GameElement/Effects/EffectOutWater.h"
 
 Player::Player()
 {
@@ -80,12 +80,17 @@ Player::Player()
 	seIn2Water_.LoadWave("SE/inToWater.wav","水に入る音");
 	seOutWater_.LoadWave("SE/outWater.wav","水から出る音");
 	seStayWater_.LoadWave("SE/inWater.wav","水の中にいる音");
+
+	effeExtraJump_ = std::make_unique<EffectExtraJump>();
+	
 }
 
 void Player::Initialize()
 {
+	
 	stageEditor_->Initialize();
 	Reset();
+	effeExtraJump_->Initialize(&model_->transform_.GetWorldPosition());
 }
 
 void Player::Update(float deltaTime)
@@ -140,13 +145,13 @@ void Player::Update(float deltaTime)
 	waterGravityPos_ = {};
 	SetCollider();
 
-
+	effeExtraJump_->Update();
 }
 
 void Player::Draw(const Camera* camera)
 {
 	model_->Draw(*camera);
-
+	effeExtraJump_->Draw();
 	//yarn_->Draw();
 }
 
@@ -284,7 +289,11 @@ void Player::PopUpFromWater()
 
 	Vector2 gvelo =  Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y)- gravityPos_;
 
+	//各エフェクト発生処理
+	//みずしぶき
 	EffectOutWater::GetInstance()->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y),gvelo ,5);
+	//軌道エフェクト
+	effeExtraJump_->SpawnEffect(60);
 }
 
 void Player::ComeToWater()
