@@ -124,6 +124,7 @@ private:
 		kNaminamiAcceleration, // なみなみの加速度
 		kNaminamiChangeDirectionTime, // 方向転換を許容する時間
 		kNaminamiAccelerationTime, // 加速するまでの継続時間
+		kNaminamiMaxAcceleration, // なみなみ加速の最大速度
 		kFloatEnd,
 	};
 	std::vector<const char*> fNames;
