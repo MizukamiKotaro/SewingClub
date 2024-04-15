@@ -75,6 +75,8 @@ private:
 	// 自動で水や惑星に向かう挙動
 	void AutoMove(float deltaTime);
 
+	void Naminami(const float& deltaTime);
+
 private:
 	Input* input_ = nullptr;
 	WaterManager* waterManager_ = nullptr;
@@ -115,6 +117,9 @@ private:
 		kAutoAcceleration, // 自動の時の加速度
 		kAutoMaxSpeed, // 自動の時の最大速度
 		kAutoLerp, // 自動の時の補間
+		kNaminamiAcceleration, // なみなみの加速度
+		kNaminamiChangeDirectionTime, // 方向転換を許容する時間
+		kNaminamiAccelerationTime, // 加速するまでの継続時間
 		kFloatEnd,
 	};
 	std::vector<const char*> fNames;
@@ -131,6 +136,7 @@ private:
 		kAccelerationInJump, // ボタン入力でジャンプ中に加速できるか
 		kRecoveryInJump, // ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか
 		kInputFireClient, // 入力で客を飛ばすか
+		kIsNaminami, // なみなみ加速するか
 		kBoolEnd,
 	};
 	std::vector<const char*> bNames;
@@ -143,6 +149,7 @@ private:
 		kTree1InputAcceleration,
 		kTree1Client,
 		kTree1AutoMove,
+		kTree1Naminami,
 		kTree1End,
 	};
 	std::vector<const char*> tree1Name_;
@@ -194,4 +201,9 @@ private:
 
 	std::list<DelayProcess> delayProcess_;
 	bool isMemoryPos_;
+
+	float naminamiTimeCount_;
+	float outerNaminami_;
+	Vector2 preVector_;
+	float naminamiChangeDirectionTime_;
 };
