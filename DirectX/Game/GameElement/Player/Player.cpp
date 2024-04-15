@@ -640,8 +640,8 @@ void Player::Naminami(const float& deltaTime)
 		float outer = Calc::Outer(preVector_, vector_);
 		if (outer > 0 && outerNaminami_ < 0 || outer < 0 && outerNaminami_ > 0) {
 			naminamiChangeDirectionTime_ = 0.0f;
-			outerNaminami_ = outer;
 		}
+		outerNaminami_ = outer;
 		if (naminamiChangeDirectionTime_ > fParas_[kNaminamiChangeDirectionTime]) {
 			naminamiChangeDirectionTime_ = 0.0f;
 			naminamiTimeCount_ = 0.0f;
