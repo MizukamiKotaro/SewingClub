@@ -56,6 +56,11 @@ Player::Player()
 	kMaxPutWaterNum_ = 5;
 	waterGravityPos_ = {};
 
+	naminamiTimeCount_ = 0.0f;
+	outerNaminami_ = 0.0f;
+	preVector_ = vector_;
+	naminamiChangeDirectionTime_ = 0.0f;
+
 	model_ = std::make_unique<Model>("subPlayer");
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
 
@@ -238,6 +243,8 @@ void Player::Move(float deltaTime)
 		}
 	}
 
+	Naminami(deltaTime);
+
 	if (timeCount_ >= fParas_[kKeepSpeedTime]) {
 		addAcceleration_ *= 0.92f;
 		if (addAcceleration_ <= 0.3f) {
@@ -285,6 +292,10 @@ void Player::ComeToWater()
 	seIn2Water_.Play();
 	seStayWater_.Play(true);
 	timeCount_ = 0.0f;
+	naminamiTimeCount_ = 0.0f;
+	outerNaminami_ = 0.0f;
+	preVector_ = vector_;
+	naminamiChangeDirectionTime_ = 0.0f;
 	model_->transform_.translate_ += velocity_;
 }
 
@@ -504,6 +515,11 @@ void Player::Reset()
 	isHitEnemy_ = false;
 	waterGravityPos_ = {};
 
+	naminamiTimeCount_ = 0.0f;
+	outerNaminami_ = 0.0f;
+	preVector_ = vector_;
+	naminamiChangeDirectionTime_ = 0.0f;
+
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
 	SetGlobalVariable();
@@ -606,6 +622,31 @@ void Player::AutoMove(float deltaTime)
 	model_->transform_.translate_ += velocity_;
 }
 
+void Player::Naminami(const float& deltaTime)
+{
+	if (bParas_[kIsNaminami]) {
+		naminamiTimeCount_ += deltaTime;
+		naminamiChangeDirectionTime_ += deltaTime;
+
+		float outer = Calc::Outer(preVector_, vector_);
+		if (outer > 0 && outerNaminami_ < 0 || outer < 0 && outerNaminami_ > 0) {
+			naminamiChangeDirectionTime_ = 0.0f;
+		}
+		if (naminamiChangeDirectionTime_ > fParas_[kNaminamiChangeDirectionTime]) {
+			naminamiChangeDirectionTime_ = 0.0f;
+			naminamiTimeCount_ = 0.0f;
+		}
+		if (naminamiTimeCount_ >= fParas_[kNaminamiAccelerationTime]) {
+			addAcceleration_ += fParas_[kNaminamiAcceleration] * deltaTime;
+			speed_ += fParas_[kNaminamiAcceleration] * deltaTime;
+			velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
+			timeCount_ = 0.0f;
+		}
+
+		preVector_ = vector_;
+	}
+}
+
 void Player::InitializeGlobalVariable()
 {
 	fParas_.resize(kFloatEnd);
@@ -644,6 +685,9 @@ void Player::InitializeGlobalVariable()
 		"自動の時の加速度",
 		"自動の時の最大速度",
 		"自動の時の補間",
+		"なみなみの加速度",
+		"方向転換を許容する時間",
+		"加速するまでの継続時間",
 	};
 
 	bNames.resize(kBoolEnd);
@@ -658,6 +702,7 @@ void Player::InitializeGlobalVariable()
 		"ボタン入力でジャンプ中に加速できるか",
 		"ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか",
 		"入力で客を飛ばすか",
+		"なみなみ加速するか",
 	};
 
 	tree1Name_.resize(kTree1End);
@@ -668,6 +713,7 @@ void Player::InitializeGlobalVariable()
 		"入力による移動関係",
 		"乗客関係",
 		"自動移動関係",
+		"なみなみ加速関係"
 	};
 	fTree1.resize(kTree1End);
 	fTree1 = {
@@ -676,7 +722,8 @@ void Player::InitializeGlobalVariable()
 		{kWaterSize,kJumpInputAcceleration},
 		{kJumpInputAcceleration,kClientFirstSpeed},
 		{kClientFirstSpeed,kAutoAcceleration},
-		{kAutoAcceleration,kFloatEnd},
+		{kAutoAcceleration,kNaminamiAcceleration},
+		{kNaminamiAcceleration,kFloatEnd},
 	};
 	bTree1.resize(kTree1End);
 	bTree1 = {
@@ -684,8 +731,9 @@ void Player::InitializeGlobalVariable()
 		{kGravityArea,kAddWaterTriger},
 		{kAddWaterTriger,kJumpInput},
 		{kJumpInput,kInputFireClient},
-		{kInputFireClient,kBoolEnd},
+		{kInputFireClient,kIsNaminami},
 		{},
+		{kIsNaminami,kBoolEnd},
 	};
 }
 

@@ -40,6 +40,11 @@ public: // gameで使用する関数
 	/// </summary>
 	void ReStart() const;
 
+	/// <summary>
+	/// 全ての再生を停止
+	/// </summary>
+	static void AllStop();
+
 public: // エンジン内で使用する関数
 	static void StaticInitialize();
 	void Update();
