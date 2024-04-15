@@ -609,16 +609,18 @@ void Player::Naminami(const float& deltaTime)
 		float outer = Calc::Outer(preVector_, vector_);
 		if (outer > 0 && outerNaminami_ < 0 || outer < 0 && outerNaminami_ > 0) {
 			naminamiChangeDirectionTime_ = 0.0f;
-			outerNaminami_ = outer;
 		}
+		outerNaminami_ = outer;
 		if (naminamiChangeDirectionTime_ > fParas_[kNaminamiChangeDirectionTime]) {
 			naminamiChangeDirectionTime_ = 0.0f;
 			naminamiTimeCount_ = 0.0f;
 		}
 		if (naminamiTimeCount_ >= fParas_[kNaminamiAccelerationTime]) {
-			addAcceleration_ += fParas_[kNaminamiAcceleration] * deltaTime;
-			speed_ += fParas_[kNaminamiAcceleration] * deltaTime;
-			velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
+			if (speed_ <= fParas_[kNaminamiMaxAcceleration] * deltaTime) {
+				addAcceleration_ += fParas_[kNaminamiAcceleration] * deltaTime;
+				speed_ += fParas_[kNaminamiAcceleration] * deltaTime;
+				velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
+			}
 			timeCount_ = 0.0f;
 		}
 
@@ -667,6 +669,7 @@ void Player::InitializeGlobalVariable()
 		"なみなみの加速度",
 		"方向転換を許容する時間",
 		"加速するまでの継続時間",
+		"なみなみ加速時の最大速度",
 	};
 
 	bNames.resize(kBoolEnd);
