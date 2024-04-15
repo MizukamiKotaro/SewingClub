@@ -19,6 +19,7 @@ SelectScene::SelectScene()
 		
 	}
 
+	bgm_.LoadWave("Music/stageSelect.wav","SelectBGM",bgmVolume_);
 
 }
 
@@ -48,6 +49,8 @@ void SelectScene::Initialize()
 	switchData_.resetFlagLimit = 0.2f;
 	switchData_.maxSelectBoxScale_ = 1.5f;
 	switchData_.minSelectBoxScale_ = 1.0f;
+
+	bgm_.Play(true);
 }
 
 void SelectScene::Update()
@@ -101,11 +104,13 @@ void SelectScene::SceneChange()
 		// シーン切り替え
 		stageNo_ = pickedNum_;
 		ChangeScene(STAGE);
+		bgm_.Stop();
 	}
 
 	if (input_->PressedGamePadButton(Input::GamePadButton::B)) {
 		// シーン切り替え
 		ChangeScene(TITLE);
+		bgm_.Stop();
 	}
 }
 

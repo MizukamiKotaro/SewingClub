@@ -4,6 +4,7 @@
 #include "StageEditor/StageEditor.h"
 #include "InstancingModelManager.h"
 #include "CollisionSystem/Collider/Collider.h"
+#include"Audio/Audio.h"
 
 class Camera;
 class Wave;
@@ -48,4 +49,6 @@ private:
 	bool isSmall_;
 	float time_;
 	Vector4 color_;
+
+	Audio seGoal_;
 };

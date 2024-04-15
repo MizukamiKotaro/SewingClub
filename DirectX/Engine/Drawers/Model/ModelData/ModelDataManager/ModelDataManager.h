@@ -9,6 +9,7 @@
 
 class ModelData;
 class NodeData;
+class Animation;
 
 class ModelDataManager 
 {
@@ -38,7 +39,9 @@ public:
 	/// </summary>
 	/// <param name="fileName">.glTFが入っているフォルダの名前( "Cube" 等)</param>
 	/// <returns>モデルデータのハンドル</returns>
-	uint32_t LoadGLTF(const std::string& fileName);
+	const ModelData* LoadGLTF(const std::string& fileName);
+
+	Animation LoadAnimation(const std::string& fileName);
 
 private:
 	ModelDataManager() = default;
@@ -49,6 +52,8 @@ private:
 	void LoadObjFile(const std::string& directoryPath, const std::string& fileName);
 
 	NodeData ReadNode(aiNode* node);
+
+	Animation LoadAnimation(const std::string& directoryPath, const std::string& fileName);
 
 	void LoadGLTFFile(const std::string& directoryPath, const std::string& fileName);
 

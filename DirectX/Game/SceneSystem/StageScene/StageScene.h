@@ -58,4 +58,8 @@ private:
 	EffectOutWater* eOutWater_;
 	ParticleManager* particleManager_;
 	EnemyManager* enemyManager_;
+
+	Audio bgm_;
+	Audio seDead_;
+	float bgmVolume_ = 0.15f;
 };

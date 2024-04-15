@@ -1,7 +1,6 @@
 #pragma once
-
 #include "SceneSystem/IScene/IScene.h"
-#include "GameElement/Player/Player.h"
+#include"Audio.h"
 
 class TitleScene : public IScene
 {
@@ -14,7 +13,6 @@ public:
 
 	void WrightPostEffect();
 
-
 private:
 
 	//シーン変更処理
@@ -22,5 +20,9 @@ private:
 
 private:
 
+	std::unique_ptr<Sprite> buttonA_;
+
+	Audio bgm_;
+	float bgmVolume_ = 0.15f;
 };
 

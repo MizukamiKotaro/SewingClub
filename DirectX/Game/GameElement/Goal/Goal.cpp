@@ -25,6 +25,8 @@ Goal::Goal()
 	SetGlobalVariable();
 	scale_ = maxScale_;
 	color_ = { 0.2f,0.3f,0.3f,1.0f };
+
+	seGoal_.LoadWave("SE/goal.wav");
 }
 
 void Goal::Initialize()
@@ -84,6 +86,7 @@ void Goal::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::PLAYER) {
 		isHit_ = true;
+		seGoal_.Play();
 	}
 }
 

@@ -49,9 +49,18 @@ public:
 
 	void SetVolume(uint32_t voiceHandle, const SoundData* soundData, float volume);
 
+	void AllStop();
+
+	void StopSameSounds(const SoundData* soundData);
+
+	bool IsPlayingSameSound(const SoundData* soundData);
+
+	void SetVolumeSameSound(const SoundData* soundData, float volume);
+
 private:
 	void Unload(SoundData* soundData);
 	void DestroyVoice(uint32_t handle, const SoundData* soundData);
+	void DestroyVoiceSameSound(const SoundData* soundData);
 	Voice* FindUnusedVoice();
 
 private:

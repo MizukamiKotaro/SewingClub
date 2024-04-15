@@ -90,6 +90,11 @@ void Audio::ReStart() const
 	audioManager_->ReStart(voiceHandle_, soundData_);
 }
 
+void Audio::AllStop()
+{
+	audioManager_->AllStop();
+}
+
 void Audio::Update()
 {
 #ifdef _DEBUG
@@ -110,16 +115,12 @@ void Audio::Update()
 			if (ImGui::BeginMenu("音量再生")) {
 				std::string playButtonName = itemName_ + "の再生";
 				if (ImGui::Button(playButtonName.c_str())) {
-					if (IsPlaying()) {
-						Stop();
-					}
+					audioManager_->StopSameSounds(soundData_);
 					Play();
 				}
 				std::string stopButtonName = itemName_ + "の停止";
 				if (ImGui::Button(stopButtonName.c_str())) {
-					if (IsPlaying()) {
-						Stop();
-					}
+					audioManager_->StopSameSounds(soundData_);
 				}
 				ImGui::EndMenu();
 			}

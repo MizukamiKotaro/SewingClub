@@ -5,6 +5,7 @@
 #include<numbers>
 #include"Math/Vector3.h"
 #include"RandomGenerator/RandomGenerator.h"
+#include"Ease/Ease.h"
 
 EffectOutWater* EffectOutWater::GetInstance()
 {
@@ -27,6 +28,7 @@ void EffectOutWater::Initialize()
 {
 	datas_.clear();
 
+	dustDatas_.clear();
 	diffusionR_ = (1.0f / 6.0f) * (float)std::numbers::pi;
 }
 
@@ -68,12 +70,51 @@ void EffectOutWater::Update()
 				}
 			}
 		}
+
+		if (data->spawnCount++ >= data->maxSpawnCount) {
+			data->spawnCount = 0;
+
+			std::unique_ptr<DustData> newDust =  std::make_unique<DustData>();
+			newDust->translate = data->translate;
+			newDust->velo = { 0,0,0 };
+			newDust->startScale = data->scale;
+			newDust->maxCount = maxCount;
+
+			dustDatas_.emplace_back(std::move(newDust));
+		}
 	}
 
+
+	
+
+
+	for (auto& data : dustDatas_) {
+		data->translate += data->velo;
+
+		if (data->count++ <= data->maxCount) {
+			float t = (float)data->count / (float)data->maxCount;
+
+			data->scale = Ease::UseEase(data->startScale, 0, t);
+		}
+		else {
+			data->isDead = true;
+		}
+	}
 
 	//データ削除処理
 	datas_.remove_if([](auto& data) {
 		if (data->isDead_) {
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		});
+
+	//データ削除処理
+	dustDatas_.remove_if([](auto& data) {
+		if (data->isDead) {
 			return true;
 		}
 		else
@@ -89,6 +130,11 @@ void EffectOutWater::Draw()
 
 		if (!data->isDraw)continue;
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3(data->scale, data->scale, 1), Vector3(0, 0, data->rotate), data->translate);
+		instancingManager_->AddBox(modelData_, InstancingModel{ matrix ,{1,1,1,1} });
+	}
+
+	for (auto& data : dustDatas_) {
+		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3(data->scale, data->scale, 1), Vector3(0, 0, 0), data->translate);
 		instancingManager_->AddBox(modelData_, InstancingModel{ matrix ,{1,1,1,1} });
 	}
 }
@@ -110,7 +156,7 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 
 	for (int i = 0; i < spawnNum; i++) {
 
-		//rotateNum = RandomGenerator::GetInstance()->RandFloat(-diffusionR_, diffusionR_);
+		rotateNum = RandomGenerator::GetInstance()->RandFloat(-diffusionR_, diffusionR_);
 
 		//傾けたベクトル計算
 		Vector2 newVelo = RotateVelo(velo, rotateNum);
@@ -120,10 +166,15 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		newData = std::make_unique<OutWaterData>();
 		newData->translate = { translate.x,translate.y,-1 };
 		
+		float randVelo = RandomGenerator::GetInstance()->RandFloat(0.5f, 1.5f);
+
 		//速度計算
-		newData->velo = Vector3{ newVelo.x,newVelo.y,0 }.Normalize()*0.2f;
+		newData->velo = Vector3{ newVelo.x,newVelo.y,0 }.Normalize()*0.2f*randVelo;
 		//加速度計算
 		newData->acce = -Vector3{ velo.x,velo.y,0 }.Normalize()*0.01f;
+
+		//残留演出を出すまでの間隔
+		newData->maxSpawnCount = 0;
 
 		//データを群に送る
 		datas_.emplace_back(std::move(newData));

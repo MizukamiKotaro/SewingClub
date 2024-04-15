@@ -30,6 +30,8 @@ Item::Item(int no, const float* scale)
 	scale_ = *maxScale_;
 	color_ = { 1.0f,1.0f,0.3f,1.0f };
 	isActive_ = true;
+
+	seGetCoin_.LoadWave("SE/getCoin.wav");
 }
 
 void Item::StaticInitialize()
@@ -141,6 +143,7 @@ void Item::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::PLAYER) {
 		isHit_ = true;
+		seGetCoin_.Play();
 	}
 }
 

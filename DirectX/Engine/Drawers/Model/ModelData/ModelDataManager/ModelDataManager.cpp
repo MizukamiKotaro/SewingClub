@@ -36,18 +36,23 @@ const ModelData* ModelDataManager::LoadObj(const std::string& fileName)
 	return modelDatas_.back().get();
 }
 
-uint32_t ModelDataManager::LoadGLTF(const std::string& fileName)
+const ModelData* ModelDataManager::LoadGLTF(const std::string& fileName)
 {
 	for (uint32_t modelNum = 0; modelNum < static_cast<uint32_t>(modelDatas_.size()); modelNum++) {
 
 		if (modelDatas_[modelNum]->fileName == fileName) {
-			return modelNum;
+			return modelDatas_[modelNum].get();
 		}
 	}
 
 	LoadGLTFFile(directoryPath_, fileName);
 
-	return static_cast<uint32_t>(modelDatas_.size()) - 1;
+	return modelDatas_.back().get();
+}
+
+Animation ModelDataManager::LoadAnimation(const std::string& fileName)
+{
+	return LoadAnimation(directoryPath_, fileName);
 }
 
 void ModelDataManager::LoadObjFile(const std::string& directoryPath, const std::string& fileName)
@@ -159,6 +164,50 @@ NodeData ModelDataManager::ReadNode(aiNode* node)
 	return result;
 }
 
+Animation ModelDataManager::LoadAnimation(const std::string& directoryPath, const std::string& fileName)
+{
+	Animation animation;
+	Assimp::Importer importer;
+	std::string filePath = directoryPath + "/" + fileName + "/" + fileName + ".gltf";
+	const aiScene* scene_ = importer.ReadFile(filePath.c_str(), 0);
+	assert(scene_->mNumAnimations != 0);
+	aiAnimation* animationAssimp = scene_->mAnimations[0];
+	animation.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
+
+	for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; channelIndex++) {
+		aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+
+		NodeAnimation& nodeAnimation = animation.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+
+		for (uint32_t positionIndex = 0; positionIndex < nodeAnimationAssimp->mNumPositionKeys; positionIndex++) {
+			aiVectorKey& key = nodeAnimationAssimp->mPositionKeys[positionIndex];
+			KeyframeVector3 keyframe;
+			keyframe.time = float(key.mTime / animationAssimp->mTicksPerSecond);
+			keyframe.value = { -key.mValue.x,key.mValue.y ,key.mValue.z };
+
+			nodeAnimation.translate.keyframes.push_back(keyframe);
+		}
+		for (uint32_t rotateIndex = 0; rotateIndex < nodeAnimationAssimp->mNumRotationKeys; rotateIndex++) {
+			aiQuatKey key = nodeAnimationAssimp->mRotationKeys[rotateIndex];
+			KeyframeQuaternion keyframe;
+			keyframe.time = float(key.mTime / animationAssimp->mTicksPerSecond);
+			keyframe.value = { key.mValue.x,-key.mValue.y ,-key.mValue.z, key.mValue.w };
+
+			nodeAnimation.rotate.keyframes.push_back(keyframe);
+		}
+		for (uint32_t scaleIndex = 0; scaleIndex < nodeAnimationAssimp->mNumScalingKeys; scaleIndex++) {
+			aiVectorKey key = nodeAnimationAssimp->mScalingKeys[scaleIndex];
+			KeyframeVector3 keyframe;
+			keyframe.time = float(key.mTime / animationAssimp->mTicksPerSecond);
+			keyframe.value = { key.mValue.x,key.mValue.y ,key.mValue.z };
+
+			nodeAnimation.scale.keyframes.push_back(keyframe);
+		}
+	}
+
+	return animation;
+}
+
 void ModelDataManager::LoadGLTFFile(const std::string& directoryPath, const std::string& fileName)
 {// 1. 中で必要となる変数の宣言
 	modelDatas_.push_back(std::make_unique<ModelData>());; // 構築するModelData
@@ -232,7 +281,7 @@ void ModelDataManager::LoadGLTFFile(const std::string& directoryPath, const std:
 
 	// materialを解析する
 	// ここ間違い
-	/*for (uint32_t materialIndex = 0; materialIndex < scene_->mNumMaterials; materialIndex++) {
+	for (uint32_t materialIndex = 0; materialIndex < scene_->mNumMaterials; materialIndex++) {
 		aiMaterial* material = scene_->mMaterials[materialIndex];
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
 			aiString textureFilePath;
@@ -246,54 +295,54 @@ void ModelDataManager::LoadGLTFFile(const std::string& directoryPath, const std:
 
 			modelDatas_.back()->texture = TextureManager::GetInstance()->LoadTexture(texFilePath);
 		}
-	}*/
-	modelDatas_.back()->texture = TextureManager::GetInstance()->LoadTexture("white.png");
+	}
+	//modelDatas_.back()->texture = TextureManager::GetInstance()->LoadTexture("white.png");
 
 	// rootNodeの解析
 	modelDatas_.back()->rootNode = ReadNode(scene_->mRootNode);
 
-	// animationの解析
-	if (scene_->HasAnimations()) {
-		for (uint32_t animationIndex = 0; animationIndex < scene_->mNumAnimations; animationIndex++) {
-			aiAnimation* animation = scene_->mAnimations[animationIndex];
-			modelDatas_.back()->animationData.duration = static_cast<float>(animation->mDuration);
-			modelDatas_.back()->animationData.ticksPerSecond = static_cast<float>(animation->mTicksPerSecond);
+	//// animationの解析
+	//if (scene_->HasAnimations()) {
+	//	for (uint32_t animationIndex = 0; animationIndex < scene_->mNumAnimations; animationIndex++) {
+	//		aiAnimation* animation = scene_->mAnimations[animationIndex];
+	//		modelDatas_.back()->animationData.duration = static_cast<float>(animation->mDuration);
+	//		modelDatas_.back()->animationData.ticksPerSecond = static_cast<float>(animation->mTicksPerSecond);
 
-			for (uint32_t channelIndex = 0; channelIndex < animation->mNumChannels; channelIndex++) {
-				aiNodeAnim* nodeAnim = animation->mChannels[channelIndex];
-				
-				NodeAnime channel;
-				channel.name = nodeAnim->mNodeName.C_Str();
+	//		for (uint32_t channelIndex = 0; channelIndex < animation->mNumChannels; channelIndex++) {
+	//			aiNodeAnim* nodeAnim = animation->mChannels[channelIndex];
+	//			
+	//			NodeAnime channel;
+	//			channel.name = nodeAnim->mNodeName.C_Str();
 
-				for (uint32_t positionIndex = 0; positionIndex < nodeAnim->mNumPositionKeys; positionIndex++) {
-					aiVectorKey key = nodeAnim->mPositionKeys[positionIndex];
-					NodeAnime::Positions position;
-					position.time = static_cast<float>(key.mTime);
-					position.position = { key.mValue.x,key.mValue.y ,key.mValue.z };
+	//			for (uint32_t positionIndex = 0; positionIndex < nodeAnim->mNumPositionKeys; positionIndex++) {
+	//				aiVectorKey key = nodeAnim->mPositionKeys[positionIndex];
+	//				NodeAnime::Positions position;
+	//				position.time = static_cast<float>(key.mTime);
+	//				position.position = { key.mValue.x,key.mValue.y ,key.mValue.z };
 
-					channel.positions.push_back(position);
-				}
-				for (uint32_t rotateIndex = 0; rotateIndex < nodeAnim->mNumRotationKeys; rotateIndex++) {
-					aiQuatKey key = nodeAnim->mRotationKeys[rotateIndex];
-					NodeAnime::Rotates rotate;
-					rotate.time = static_cast<float>(key.mTime);
-					rotate.rotate = { key.mValue.x,key.mValue.y ,key.mValue.z, key.mValue.w };
+	//				channel.positions.push_back(position);
+	//			}
+	//			for (uint32_t rotateIndex = 0; rotateIndex < nodeAnim->mNumRotationKeys; rotateIndex++) {
+	//				aiQuatKey key = nodeAnim->mRotationKeys[rotateIndex];
+	//				NodeAnime::Rotates rotate;
+	//				rotate.time = static_cast<float>(key.mTime);
+	//				rotate.rotate = { key.mValue.x,key.mValue.y ,key.mValue.z, key.mValue.w };
 
-					channel.rotates.push_back(rotate);
-				}
-				for (uint32_t scaleIndex = 0; scaleIndex < nodeAnim->mNumScalingKeys; scaleIndex++) {
-					aiVectorKey key = nodeAnim->mScalingKeys[scaleIndex];
-					NodeAnime::Scales scale;
-					scale.time = static_cast<float>(key.mTime);
-					scale.scale = { key.mValue.x,key.mValue.y ,key.mValue.z };
+	//				channel.rotates.push_back(rotate);
+	//			}
+	//			for (uint32_t scaleIndex = 0; scaleIndex < nodeAnim->mNumScalingKeys; scaleIndex++) {
+	//				aiVectorKey key = nodeAnim->mScalingKeys[scaleIndex];
+	//				NodeAnime::Scales scale;
+	//				scale.time = static_cast<float>(key.mTime);
+	//				scale.scale = { key.mValue.x,key.mValue.y ,key.mValue.z };
 
-					channel.scales.push_back(scale);
-				}
+	//				channel.scales.push_back(scale);
+	//			}
 
-				modelDatas_.back()->animationData.channels.push_back(channel);
-			}
-		}
-	}
+	//			modelDatas_.back()->animationData.channels.push_back(channel);
+	//		}
+	//	}
+	//}
 
 	modelDatas_.back()->mesh.vertexResource_ = DirectXBase::CreateBufferResource(sizeof(VertexData) * modelDatas_.back()->mesh.verteces.size());
 

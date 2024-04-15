@@ -154,6 +154,18 @@ void AudioManager::DestroyVoice(uint32_t handle, const SoundData* soundData)
 	}
 }
 
+void AudioManager::DestroyVoiceSameSound(const SoundData* soundData)
+{
+	for (const std::unique_ptr<Voice>& voice : voices_) {
+		if (voice->soundData == soundData) {
+			if (voice->sourceVoice) {
+				voice->sourceVoice->DestroyVoice();
+				voice->sourceVoice = nullptr;
+			}
+		}
+	}
+}
+
 AudioManager::Voice* AudioManager::FindUnusedVoice()
 {
 	for (const std::unique_ptr<Voice>& voice : voices_) {
@@ -250,6 +262,48 @@ void AudioManager::SetVolume(uint32_t voiceHandle, const SoundData* soundData, f
 		if (voice->handle == voiceHandle && voice->soundData == soundData) {
 			voice->sourceVoice->SetVolume(volume);
 			break;
+		}
+	}
+}
+
+void AudioManager::AllStop()
+{
+	for (const std::unique_ptr<Voice>& voice : voices_) {
+		if (voice->sourceVoice) {
+			voice->sourceVoice->DestroyVoice();
+			voice->sourceVoice = nullptr;
+		}
+	}
+}
+
+void AudioManager::StopSameSounds(const SoundData* soundData)
+{
+	DestroyVoiceSameSound(soundData);
+}
+
+bool AudioManager::IsPlayingSameSound(const SoundData* soundData)
+{
+	for (const std::unique_ptr<Voice>& voice : voices_) {
+		if (voice->soundData == soundData) {
+			if (voice->sourceVoice) {
+				XAUDIO2_VOICE_STATE state{};
+				voice->sourceVoice->GetState(&state);
+				if (state.BuffersQueued != 0) {
+					return true;
+				}
+				return false;
+			}
+		}
+	}
+
+	return false;
+}
+
+void AudioManager::SetVolumeSameSound(const SoundData* soundData, float volume)
+{
+	for (const std::unique_ptr<Voice>& voice : voices_) {
+		if (voice->soundData == soundData) {
+			voice->sourceVoice->SetVolume(volume);
 		}
 	}
 }

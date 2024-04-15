@@ -4,6 +4,7 @@
 #include "StageEditor/StageEditor.h"
 #include "InstancingModelManager.h"
 #include "CollisionSystem/Collider/Collider.h"
+#include"Audio.h"
 
 class Camera;
 class Wave;
@@ -59,4 +60,7 @@ private:
 
 	int no_;
 	bool isActive_;
+
+	//コイン取得音
+	Audio seGetCoin_;
 };
