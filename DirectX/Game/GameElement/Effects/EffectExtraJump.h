@@ -8,7 +8,7 @@ public:
 	EffectExtraJump();
 	~EffectExtraJump();
 
-	void Initialize(const Vector3&playerPos);
+	void Initialize(const Vector3*playerPos);
 
 	void Update();
 
@@ -44,14 +44,15 @@ private:
 	const Vector3* playerPos_;
 
 	//湧きエリアのサイズ
-	Vector2 spawnAreaSize_ = { 2,2 };
+	Vector2 spawnAreaSize_ = { 0.5f,0.5f };
 
-	Vector3 scale = { 0.1f,0.1f,1 };
+	//塵のサイズ
+	Vector3 scale = { 0.05f,0.05f,1 };
 
 	//湧き間隔
 	int spawnInterval_=1;
 	int spawnIntervalCount_ = 0;
 
 	//塵の消える時間
-	int dustDeadCount_ = 10;
+	int dustDeadCount_ = 30;
 };

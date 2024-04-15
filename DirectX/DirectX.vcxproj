@@ -113,7 +113,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="EffectOutWater.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\EffectOutWater.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
     <ClCompile Include="Engine\Audio\AudioManager\AudioManager.cpp" />
     <ClCompile Include="Engine\Audio\VolumeManager\VolumeManager.cpp" />
@@ -253,7 +253,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Utils\Transform\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EffectOutWater.h" />
+    <ClInclude Include="Game\GameElement\Effects\EffectOutWater.h" />
     <ClInclude Include="Engine\Audio\Audio.h" />
     <ClInclude Include="Engine\Audio\AudioConfig.h" />
     <ClInclude Include="Engine\Audio\AudioManager\AudioManager.h" />

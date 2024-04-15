@@ -9,6 +9,7 @@
 #include <vector>
 #include "StageEditor/StageEditor.h"
 #include"Audio.h"
+#include"GameElement/Effects/EffectExtraJump.h"
 
 class Input;
 class WaterManager;
@@ -216,4 +217,7 @@ private:
 	float outerNaminami_;
 	Vector2 preVector_;
 	float naminamiChangeDirectionTime_;
+
+	//追加ジャンプエフェクト
+	std::unique_ptr<EffectExtraJump>effeExtraJump_;
 };
