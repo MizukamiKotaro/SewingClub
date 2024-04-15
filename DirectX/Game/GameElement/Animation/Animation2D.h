@@ -12,6 +12,8 @@ public:
 	~Animation2D() = default;
 
 	void Initialize(std::string fileName, Model* model, const uint32_t& hDivNum = 1u, const uint32_t& wDivNum = 1u);
+	// アニメーションさせない時のセッター
+	void SetScene(const uint32_t& scene, const bool& flag = false) { nowScene_ = scene, isPlay_ = flag; }
 
 	void Update();
 
