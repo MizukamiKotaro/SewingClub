@@ -14,7 +14,7 @@ DeadLine::DeadLine(Camera* camera, const Vector3* playerPos)
 
 	playerPos_ = playerPos;
 
-	globalVariable_ = std::make_unique<GlobalVariableUser>("DeadLine");
+	globalVariable_ = std::make_unique<GlobalVariableUser>("DeadLine", "DeadLine");
 
 	lifeTime_ = 0.0f;
 	firstScale_ = 0.0f;
@@ -75,7 +75,7 @@ void DeadLine::Draw()
 	for (std::unique_ptr<Chip>& chip : chips_) {
 		if (chip->isActive_) {
 			Matrix4x4 mat = Matrix4x4::MakeAffinMatrix(chip->scale_, Vector3{}, chip->position_);
-			instancingManager_->AddParticle({ mat,1.0f,1.0f,1.0f,1.0f }, modelData_);
+			instancingManager_->AddParticle({ mat,Matrix4x4::MakeIdentity4x4(), 1.0f,1.0f,1.0f,1.0f }, modelData_);
 		}
 	}
 }
