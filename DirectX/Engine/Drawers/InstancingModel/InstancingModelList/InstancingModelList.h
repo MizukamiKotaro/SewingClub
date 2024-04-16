@@ -2,7 +2,7 @@
 #include <list>
 #include <memory>
 
-#include "InstancingModel.h"
+#include "InstancingModelData.h"
 #include "InstancingModels/InstancingModels.h"
 #include "ILight/ILight.h"
 
@@ -11,7 +11,7 @@ class Camera;
 class InstancingModelList {
 public:
 
-	InstancingModelList(const ModelData* modelData);
+	InstancingModelList(const InstancingMeshTexData* modelData);
 
 	void Draw(const Camera& camera);
 
@@ -19,16 +19,16 @@ public:
 
 	void Clear();
 
-	InstancingModel* const AddModel(InstancingModel&& instancingModel);
+	InstancingModelData* const AddModel(InstancingModelData&& instancingModel);
 
 	uint32_t GetSize() const;
 
-	void SetModel(const ModelData* modelData);
+	void SetModel(const InstancingMeshTexData* modelData);
 
 	void SetLight(const ILight* light);
 
 private:
 
 	std::unique_ptr<InstancingModels> modelsResource_;
-	std::list<InstancingModel> modelList_;
+	std::list<InstancingModelData> modelList_;
 };

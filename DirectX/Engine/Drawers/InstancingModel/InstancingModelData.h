@@ -4,14 +4,14 @@
 #include "ModelData/ModelData.h"
 #include "GraphicsPipelineSystem/BlendModeConfig.h"
 
-class ParticleData {
+class InstancingModelData {
 public:
 	Matrix4x4 matrix_;
-	Matrix4x4 uvTransform;
+	Matrix4x4 uvMatrix_;
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 };
 
-class ParticleMeshTexData {
+class InstancingMeshTexData {
 public:
 	const ModelData* modelData_;
 	const Texture* texture_;

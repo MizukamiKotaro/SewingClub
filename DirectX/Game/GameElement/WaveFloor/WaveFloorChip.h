@@ -50,7 +50,7 @@ private:
 	static float fParas_[kFloatEnd];
 
 	static InstancingModelManager* instancingManager_;
-	static const ModelData* modelData_;
+	static const InstancingMeshTexData* modelData_;
 	static FrameInfo* frameInfo_;
 
 	static Vector3 scale_;

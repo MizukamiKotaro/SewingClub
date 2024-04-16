@@ -4,7 +4,7 @@
 #include <algorithm>
 
 InstancingModelManager* Yarn::instancingManager_ = nullptr;
-const ModelData* Yarn::modelData_ = nullptr;
+const InstancingMeshTexData* Yarn::modelData_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> Yarn::globalVariable_ = nullptr;
 
@@ -32,7 +32,8 @@ Yarn::Yarn(const Vector3* parent, const Vector3& ganeratePosition)
 void Yarn::StaticInitialize()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("Cube");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("Cube");
+	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Yarn", "StaticYarn");
 	globalVariable_->CreateGroup();
@@ -73,7 +74,7 @@ void Yarn::Update()
 void Yarn::Draw() const 
 {
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(scale_, rotate_, position_);
-	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,{1.0f,1.0f,1.0f,1.0f} });
+	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4() ,{1.0f,1.0f,1.0f,1.0f} });
 
 	if (child_) {
 		child_->Draw();

@@ -11,7 +11,7 @@
 #include "Light/Light.h"
 #include "ModelDataManager.h"
 
-InstancingModelList::InstancingModelList(const ModelData* modelData)
+InstancingModelList::InstancingModelList(const InstancingMeshTexData* modelData)
 {
 	modelsResource_ = std::make_unique<InstancingModels>(modelData);
 }
@@ -30,7 +30,7 @@ void InstancingModelList::Clear()
 	modelList_.clear();
 }
 
-InstancingModel* const InstancingModelList::AddModel(InstancingModel&& instancingModel)
+InstancingModelData* const InstancingModelList::AddModel(InstancingModelData&& instancingModel)
 {
 	modelList_.push_back(std::move(instancingModel));
 	return &modelList_.back();
@@ -41,7 +41,7 @@ uint32_t InstancingModelList::GetSize() const
 	return static_cast<uint32_t>(modelList_.size());
 }
 
-void InstancingModelList::SetModel(const ModelData* modelData)
+void InstancingModelList::SetModel(const InstancingMeshTexData* modelData)
 {
 	modelsResource_->SetMesh(modelData);
 }

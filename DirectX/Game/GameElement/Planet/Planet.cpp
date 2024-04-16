@@ -7,7 +7,7 @@
 #include "GameElement/Client/ClientManager.h"
 
 InstancingModelManager* Planet::instancingManager_ = nullptr;
-const ModelData* Planet::modelData_ = nullptr;
+const InstancingMeshTexData* Planet::modelData_ = nullptr;
 RandomGenerator* Planet::rand_ = nullptr;
 ClientManager* Planet::clientManager_ = nullptr;
 
@@ -43,7 +43,8 @@ Planet::Planet(PlanetType type, const Vector3& pos, Player* player, int no)
 void Planet::StaticInitialize()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 	rand_ = RandomGenerator::GetInstance();
 	clientManager_ = ClientManager::GetInstance();
 
@@ -80,7 +81,7 @@ void Planet::Draw() const
 	}
 
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,PlanetTypeColor::GetColor(type_) });
+	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(), PlanetTypeColor::GetColor(type_) });
 }
 
 void Planet::OnCollision(const Collider& collider)

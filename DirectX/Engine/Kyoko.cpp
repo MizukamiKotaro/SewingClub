@@ -21,6 +21,7 @@
 #include "Audio.h"
 #include "GlobalVariables/GlobalVariableUser.h"
 #include "ParticleManager.h"
+#include "InstancingModelManager.h"
 
 static ResourceLeackChecker leakCheck;
 
@@ -60,6 +61,7 @@ void Kyoko::Engine::Initialize(const char* windowName, int width, int height)
 	Model::StaticInitialize();
 	BasePostEffect::StaticInitialize();
 	ParticleManager::GetInstance()->FirstInitialize();
+	InstancingModelManager::GetInstance()->FirstInitialize();
 
 	audioManager = AudioManager::GetInstance();
 	audioManager->Initialize();

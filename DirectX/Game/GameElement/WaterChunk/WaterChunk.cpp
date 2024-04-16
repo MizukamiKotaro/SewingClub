@@ -9,7 +9,7 @@
 #include "Camera.h"
 
 InstancingModelManager* WaterChunk::instancingManager_ = nullptr;
-const ModelData* WaterChunk::modelData_ = nullptr;
+const InstancingMeshTexData* WaterChunk::modelData_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> WaterChunk::staticGlobalVariable_ = nullptr;
 float WaterChunk::deleteTime_ = 2.0f;
@@ -89,7 +89,8 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 void WaterChunk::StaticInitialize()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 
 	StaticSetGlobalVariable();
 }
@@ -149,7 +150,7 @@ void WaterChunk::Draw() const
 		gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 #endif // _DEBUG
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-		instancingManager_->AddBox(modelData_, InstancingModel{ matrix, color_ });
+		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
 	}
 }
 

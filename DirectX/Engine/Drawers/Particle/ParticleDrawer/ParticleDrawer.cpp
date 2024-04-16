@@ -20,7 +20,6 @@ ParticleDrawer::ParticleDrawer(const ParticleMeshTexData& data)
 
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	*materialData_ = { Vector4(1.0f, 1.0f, 1.0f, 1.0f) , 2 };
-	materialData_->uvTransform = Matrix4x4::MakeIdentity4x4();
 
 	//WVP用のリソースを作る。Matrix4x4　1つ分のサイズを用意する
 	instancingResource_ = DirectXBase::CreateBufferResource(sizeof(ParticleForGPU) * kNumInstance);
@@ -30,6 +29,7 @@ ParticleDrawer::ParticleDrawer(const ParticleMeshTexData& data)
 	for (uint32_t index = 0; index < kNumInstance; index++) {
 		instancingData_[index].WVP = Matrix4x4::MakeIdentity4x4();
 		instancingData_[index].World = Matrix4x4::MakeIdentity4x4();
+		instancingData_[index].uvTransform = Matrix4x4::MakeIdentity4x4();
 		instancingData_[index].color = { 1.0f,1.0f,1.0f,0.0f };
 	}
 
@@ -59,6 +59,7 @@ void ParticleDrawer::Draw(const Camera& camera, std::list<ParticleData>& blocks,
 
 		instancingData_[index].World = iter->matrix_;
 		instancingData_[index].WVP = instancingData_[index].World * camera.GetViewProjection();
+		instancingData_[index].uvTransform = iter->uvTransform;
 		instancingData_[index].color = iter->color_;
 
 		index++;

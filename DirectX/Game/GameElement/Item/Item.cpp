@@ -8,7 +8,7 @@
 #include "WindowsInfo/WindowsInfo.h"
 
 InstancingModelManager* Item::instancingManager_ = nullptr;
-const ModelData* Item::modelData_ = nullptr;
+const InstancingMeshTexData* Item::modelData_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> Item::staticGlobalVariable_ = nullptr;
 float Item::deleteTime_ = 2.0f;
@@ -37,7 +37,8 @@ Item::Item(int no, const float* scale)
 void Item::StaticInitialize()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 
 	StaticSetGlobalVariable();
 }
@@ -88,7 +89,7 @@ void Item::Draw() const
 	if (isActive_) {
 		if (!isHit_) {
 			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-			instancingManager_->AddBox(modelData_, InstancingModel{ matrix, color_ });
+			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ });
 		}
 	}
 }
