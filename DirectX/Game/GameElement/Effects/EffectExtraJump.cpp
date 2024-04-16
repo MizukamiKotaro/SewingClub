@@ -42,7 +42,7 @@ void EffectExtraJump::Update()
 					1
 				};
 
-				newData->translate = *playerPos_;
+				//newData->translate = *playerPos_;
 				newData->velo = { 0,0,0 };
 				newData->maxCount_ = dustDeadCount_;
 

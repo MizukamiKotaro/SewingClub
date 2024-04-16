@@ -30,7 +30,7 @@ void EffectOutWater::Initialize()
 	datas_.clear();
 
 	dustDatas_.clear();
-	diffusionR_ = (1.0f / 6.0f) * (float)std::numbers::pi;
+	diffusionR_ = (1.0f / 2.0f) * (float)std::numbers::pi;
 }
 
 void EffectOutWater::SetPlayerData(const Vector2& translate, const Vector2& Velo)
@@ -75,7 +75,7 @@ void EffectOutWater::Update()
 		if (data->spawnCount++ >= data->maxSpawnCount) {
 			data->spawnCount = 0;
 
-			std::unique_ptr<DustData> newDust =  std::make_unique<DustData>();
+			std::unique_ptr<DustData> newDust = std::make_unique<DustData>();
 			newDust->translate = data->translate;
 			newDust->velo = { 0,0,0 };
 			newDust->startScale = data->scale;
@@ -86,7 +86,7 @@ void EffectOutWater::Update()
 	}
 
 
-	
+
 
 
 	for (auto& data : dustDatas_) {
@@ -146,10 +146,10 @@ void EffectOutWater::Finalize()
 }
 
 
-void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, int32_t spawnNum)
+void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, const Vector2& acce, int32_t spawnNum)
 {
 
-
+	acce;
 #pragma region 
 	float rotateNum = -(diffusionR_ / 2.0f);
 
@@ -157,7 +157,7 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 
 	for (int i = 0; i < spawnNum; i++) {
 
-		rotateNum = RandomGenerator::GetInstance()->RandFloat(-diffusionR_, diffusionR_);
+		rotateNum = RandomGenerator::GetInstance()->RandFloat(-diffusionR_ / 2.0f, diffusionR_ / 2.0f);
 
 		//傾けたベクトル計算
 		Vector2 newVelo = RotateVelo(velo, rotateNum);
@@ -166,16 +166,24 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		std::unique_ptr<OutWaterData> newData;
 		newData = std::make_unique<OutWaterData>();
 		newData->translate = { translate.x,translate.y,-1 };
-		
-		float randVelo = RandomGenerator::GetInstance()->RandFloat(0.5f, 1.5f);
+
+
+		//内積から放物線を描きたかった
+		Vector2 v1 =(velo / sqrtf(velo.x * velo.x + velo.y * velo.y))*addveloNum;
+		Vector2 v2 =( newVelo / sqrtf(newVelo.x * newVelo.x + newVelo.y * newVelo.y))*addveloNum;	
+		//float num = (v1.x * v2.x + v1.y * v2.y);
+
+		float num = RandomGenerator::GetInstance()->RandFloat(1.0f, 1.5f);
 
 		//速度計算
-		newData->velo = Vector3{ newVelo.x,newVelo.y,0 }.Normalize()*0.2f*randVelo;
+		newData->velo = Vector3{ newVelo.x,newVelo.y,0 }*num * 0.8f;
 		//加速度計算
-		newData->acce = -Vector3{ velo.x,velo.y,0 }.Normalize()*0.01f;
+		newData->acce = -Vector3{ velo.x,velo.y,0 }.Normalize() * acceSpd_;
 
 		//残留演出を出すまでの間隔
 		newData->maxSpawnCount = 0;
+
+		newData->maxDeadCount_ = (int)(sqrtf(velo.x * velo.x + velo.y * velo.y)*90.0f);
 
 		//データを群に送る
 		datas_.emplace_back(std::move(newData));

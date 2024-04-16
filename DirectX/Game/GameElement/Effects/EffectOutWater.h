@@ -39,7 +39,7 @@ public:
 	/// <param name="translate">生成開始座標</param>
 	/// <param name="velo">プレイヤー進行ベクトルの向き</param>
 	/// <param name="spawnNum">生成量</param>
-	void SpawnEffect(const Vector2& translate, const Vector2& velo, int32_t spawnNum=10);
+	void SpawnEffect(const Vector2& translate, const Vector2& velo, const Vector2& acce, int32_t spawnNum=10);
 
 private:
 
@@ -115,6 +115,12 @@ private:
 	//プレイヤー座標
 	const Vector2* playerTranslate_;
 
-	float maxSpped_ = 1;
+	float maxSpped_ = 10.0f;
+
+	float acceSpd_=0.01f;
+
+
+	//内積の値ののび
+	float addveloNum = 1.0f;
 };
 
