@@ -111,24 +111,26 @@ private:
 	//拡縮
 	float scale_ = 0.1f;
 
-	//最高速度
-	float maxSpped_ = 10.0f;
-
-	//遅延のカウント
-	float spawnDelayCount_ = 5;
-
 	//初速度の範囲x=min,y=max
 	Vector2 startVelo = { 1.0f,1.5f };
 
 	//初速度の細かい速度倍率
 	float  rateScaling_ = 0.8f;
 
-	//加速度の速度
-	float acceSpd_ = 0.01f;
-
+	//最高速度
+	float maxSpped_ = 10.0f;
+	
 	//塵を出す感覚
 	int spawnDustCount_ = 0;
 
+	//遅延のカウント
+	float spawnDelayCount_ = 5;
+
+	
+	//加速度の速度
+	float acceSpd_ = 0.01f;
+
+	
 	//生存カウントのプレイヤー速度に乗算する値
 	float alliveLeverage_ = 90.0f;
 };

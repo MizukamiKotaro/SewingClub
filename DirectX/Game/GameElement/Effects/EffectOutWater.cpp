@@ -158,6 +158,8 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		newData = std::make_unique<OutWaterData>();
 		newData->translate = { translate.x,translate.y,1 };
 
+		newData->scale = scale_;
+
 		//内積から放物線を描きたかった
 		//Vector2 v1 =(velo / sqrtf(velo.x * velo.x + velo.y * velo.y))*addveloNum;
 		//Vector2 v2 =( newVelo / sqrtf(newVelo.x * newVelo.x + newVelo.y * newVelo.y))*addveloNum;	
@@ -177,7 +179,7 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		newData->maxDeadCount_ = (int)(sqrtf(velo.x * velo.x + velo.y * velo.y)*alliveLeverage_);
 
 		//出現遅延
-		newData->maxDeadCount_ = spawnDustCount_;
+		newData->maxDelayCount = spawnDelayCount_;
 
 		//データを群に送る
 		datas_.emplace_back(std::move(newData));
