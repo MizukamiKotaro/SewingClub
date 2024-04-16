@@ -109,6 +109,7 @@ void SceneManager::DebugWindow()
 	ImGui::Text("SceneNo.%d", currentSceneNo_);
 	ImGui::Text("%s", sceneName_[currentSceneNo_].c_str());
 	ImGui::SliderInt("sceneNo", &num, 0, _SceneCount - 1);
+	ImGui::Text("フレーム : %4.1f", frameInfo_->GetFramerate());
 	ImGui::End();
 
 	IScene::sceneNo_ = num;
