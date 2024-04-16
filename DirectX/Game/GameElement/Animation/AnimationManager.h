@@ -13,6 +13,8 @@ public:
 	AnimationManager();
 	~AnimationManager();
 
+	static AnimationManager* GetInstance();
+
 	void Update();
 
 	void Draw(const Camera* camera);
@@ -22,21 +24,14 @@ public:
 private:
 	void Initialize();
 	void ImGuiProcess();
-	void Editor();
-	// グローバル変数のセット
-	void SetGlobalVariable();
-	// グローバル変数の更新
-	void ApplyGlobalVariable();
 
 private:
 	char nameHandle_[256]{};
 	char textureName_[256]{};
 	std::unique_ptr<GlobalVariableUser> global_;
 	std::unordered_map<std::string, std::unique_ptr<Animation2D>> container_;
-
 	std::unique_ptr<Animation2D> animation_;
-	std::unique_ptr<Model> model_;
-	std::unique_ptr<Texture> texture_;
+
 	// 分割数
 	uint32_t divisionWidth = 1u;
 	uint32_t divisionHeight = 1u;
@@ -45,4 +40,7 @@ private:
 
 	const std::string chunkName = "Animation";
 
+	// editor用
+	std::unique_ptr<Model> model_;
+	std::unique_ptr<Texture> texture_;
 };

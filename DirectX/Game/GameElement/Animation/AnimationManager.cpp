@@ -16,6 +16,11 @@ AnimationManager::~AnimationManager() {
 	}
 }
 
+AnimationManager* AnimationManager::GetInstance() {
+	static AnimationManager instance;
+	return &instance;
+}
+
 void AnimationManager::Update() {
 #ifdef _DEBUG
 	ImGuiProcess();
@@ -35,7 +40,7 @@ Animation2D* AnimationManager::AddAnimation(const std::string& groupName) {
 	// 追加されていなければ追加する
 	if (container_.find(groupName) == container_.end()) {
 		container_.emplace(std::make_pair(groupName, std::make_unique<Animation2D>()));
-		container_.at(groupName).get()->Initialize(groupName, model_.get());
+		container_.at(groupName).get()->Initialize(groupName);
 	}
 	return container_.at(groupName).get();
 }
@@ -46,7 +51,7 @@ void AnimationManager::Initialize() {
 
 void AnimationManager::ImGuiProcess() {
 #ifdef _DEBUG
-	ImGui::Begin("Animation", nullptr, ImGuiWindowFlags_MenuBar);
+	ImGui::Begin("Animation作成", nullptr, ImGuiWindowFlags_MenuBar);
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("Initialize")) {
 			ImGui::InputText("FileName", nameHandle_, sizeof(nameHandle_));
@@ -75,14 +80,11 @@ void AnimationManager::ImGuiProcess() {
 					}
 					animation_.release();
 					animation_.reset(AddAnimation(nameHandle_));
-					animation_->Initialize(nameHandle_, model_.get(), divisionWidth, divisionHeight);
+					animation_->Initialize(nameHandle_, divisionWidth, divisionHeight);
 				}
 				ImGui::TreePop();
 			}
 
-			if (ImGui::Button("Save")) {
-				
-			}
 
 			if (ImGui::Button("Play")) {
 				animation_->isPlay_ = !animation_->isPlay_;
@@ -98,16 +100,4 @@ void AnimationManager::ImGuiProcess() {
 	}
 	ImGui::End();
 #endif // _DEBUG
-}
-
-void AnimationManager::Editor() {
-
-}
-
-void AnimationManager::SetGlobalVariable() {
-	
-}
-
-void AnimationManager::ApplyGlobalVariable() {
-	
 }
