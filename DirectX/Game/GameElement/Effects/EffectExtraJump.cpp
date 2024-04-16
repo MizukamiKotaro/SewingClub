@@ -5,7 +5,8 @@
 EffectExtraJump::EffectExtraJump()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	modelData_ = instancingManager_->GetDrawData({ modelData, modelData->texture, BlendMode::kBlendModeNormal });
 }
 
 EffectExtraJump::~EffectExtraJump()
@@ -85,7 +86,7 @@ void EffectExtraJump::Draw()
 {
 	for (auto& data : datas_) {
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(scale, Vector3{0,0,0}, data->translate);
-		instancingManager_->AddBox(modelData_, InstancingModel{ matrix ,{1,1,1,1} });
+		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix ,Matrix4x4::MakeIdentity4x4(), {1,1,1,1} });
 	}
 
 }

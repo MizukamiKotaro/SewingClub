@@ -21,7 +21,8 @@ void EffectOutWater::SetUp()
 	isSetUp_ = true;
 
 	instancingManager_ = InstancingModelManager::GetInstance();
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 }
 
 void EffectOutWater::Initialize()
@@ -130,12 +131,12 @@ void EffectOutWater::Draw()
 
 		if (!data->isDraw)continue;
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3(data->scale, data->scale, 1), Vector3(0, 0, data->rotate), data->translate);
-		instancingManager_->AddBox(modelData_, InstancingModel{ matrix ,{1,1,1,1} });
+		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix ,Matrix4x4::MakeIdentity4x4(), {1,1,1,1} });
 	}
 
 	for (auto& data : dustDatas_) {
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3(data->scale, data->scale, 1), Vector3(0, 0, 0), data->translate);
-		instancingManager_->AddBox(modelData_, InstancingModel{ matrix ,{1,1,1,1} });
+		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix ,Matrix4x4::MakeIdentity4x4(), {1,1,1,1} });
 	}
 }
 

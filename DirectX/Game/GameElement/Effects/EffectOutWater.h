@@ -50,7 +50,7 @@ private:
 
 	//インスタンシングに必要
 	InstancingModelManager* instancingManager_=nullptr;
-	const ModelData* modelData_ = nullptr;
+	const InstancingMeshTexData* modelData_ = nullptr;
 
 	//残存エフェクト
 	struct DustData {
