@@ -219,6 +219,9 @@ private:
 	Vector2 preVector_;
 	float naminamiChangeDirectionTime_;
 
+	//通常水面ジャンプ演出の数
+	int normalJumpEffectNum_ = 5;
+
 	//追加ジャンプエフェクト
 	std::unique_ptr<EffectExtraJump>effeExtraJump_;
 };

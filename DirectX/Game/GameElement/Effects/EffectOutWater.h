@@ -39,7 +39,7 @@ public:
 	/// <param name="translate">生成開始座標</param>
 	/// <param name="velo">プレイヤー進行ベクトルの向き</param>
 	/// <param name="spawnNum">生成量</param>
-	void SpawnEffect(const Vector2& translate, const Vector2& velo, const Vector2& acce, int32_t spawnNum=10);
+	void SpawnEffect(const Vector2& translate, const Vector2& velo, int32_t spawnNum=10);
 
 private:
 
@@ -82,9 +82,6 @@ private:
 		bool isDead_ = false;
 		int maxDeadCount_ = 30;
 
-		bool isVeloDirectionDead_ = false;
-		Vector3 saveVelo;
-
 		float delayCount=0;
 		float maxDelayCount = 5;
 
@@ -96,31 +93,43 @@ private:
 	};
 
 
-
-	//発射速度
-	float veloSpd_ = 0.1f;
-
-
 	//泡データ
 	std::list<std::unique_ptr<OutWaterData>>datas_;
 
 	//データ
 	std::list<std::unique_ptr<DustData>>dustDatas_;
 
-	//拡散量
-	float diffusionR_;
-
 	//プレイヤー向きベクトル
 	const Vector2* playerVelo_;
 	//プレイヤー座標
 	const Vector2* playerTranslate_;
 
+
+	//拡散角度
+	float diffusionR_;
+
+	//拡縮
+	float scale_ = 0.1f;
+
+	//最高速度
 	float maxSpped_ = 10.0f;
 
-	float acceSpd_=0.01f;
+	//遅延のカウント
+	float spawnDelayCount_ = 5;
 
+	//初速度の範囲x=min,y=max
+	Vector2 startVelo = { 1.0f,1.5f };
 
-	//内積の値ののび
-	float addveloNum = 1.0f;
+	//初速度の細かい速度倍率
+	float  rateScaling_ = 0.8f;
+
+	//加速度の速度
+	float acceSpd_ = 0.01f;
+
+	//塵を出す感覚
+	int spawnDustCount_ = 0;
+
+	//生存カウントのプレイヤー速度に乗算する値
+	float alliveLeverage_ = 90.0f;
 };
 

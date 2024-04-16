@@ -63,13 +63,6 @@ void EffectOutWater::Update()
 				}
 			}
 
-			float dot = (data->velo.x * data->acce.x) + (data->velo.y * data->acce.y);
-			if (data->isVeloDirectionDead_) {
-				//ベクトルが同じ方向
-				if (dot > 0) {
-					data->isDead_ = true;
-				}
-			}
 		}
 
 		if (data->spawnCount++ >= data->maxSpawnCount) {
@@ -146,14 +139,12 @@ void EffectOutWater::Finalize()
 }
 
 
-void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, const Vector2& acce, int32_t spawnNum)
+void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, int32_t spawnNum)
 {
 
-	acce;
 #pragma region 
 	float rotateNum = -(diffusionR_ / 2.0f);
 
-	int accePower = -(spawnNum / 2);
 
 	for (int i = 0; i < spawnNum; i++) {
 
@@ -165,25 +156,28 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		//新しくデータを作成して移動
 		std::unique_ptr<OutWaterData> newData;
 		newData = std::make_unique<OutWaterData>();
-		newData->translate = { translate.x,translate.y,-1 };
-
+		newData->translate = { translate.x,translate.y,1 };
 
 		//内積から放物線を描きたかった
-		Vector2 v1 =(velo / sqrtf(velo.x * velo.x + velo.y * velo.y))*addveloNum;
-		Vector2 v2 =( newVelo / sqrtf(newVelo.x * newVelo.x + newVelo.y * newVelo.y))*addveloNum;	
+		//Vector2 v1 =(velo / sqrtf(velo.x * velo.x + velo.y * velo.y))*addveloNum;
+		//Vector2 v2 =( newVelo / sqrtf(newVelo.x * newVelo.x + newVelo.y * newVelo.y))*addveloNum;	
 		//float num = (v1.x * v2.x + v1.y * v2.y);
 
-		float num = RandomGenerator::GetInstance()->RandFloat(1.0f, 1.5f);
+		float num = RandomGenerator::GetInstance()->RandFloat(startVelo.x, startVelo.y);
 
 		//速度計算
-		newData->velo = Vector3{ newVelo.x,newVelo.y,0 }*num * 0.8f;
+		newData->velo = Vector3{ newVelo.x,newVelo.y,0 }*num * rateScaling_;
 		//加速度計算
 		newData->acce = -Vector3{ velo.x,velo.y,0 }.Normalize() * acceSpd_;
 
 		//残留演出を出すまでの間隔
-		newData->maxSpawnCount = 0;
+		newData->maxSpawnCount = spawnDustCount_;
 
-		newData->maxDeadCount_ = (int)(sqrtf(velo.x * velo.x + velo.y * velo.y)*90.0f);
+		//生存カウント
+		newData->maxDeadCount_ = (int)(sqrtf(velo.x * velo.x + velo.y * velo.y)*alliveLeverage_);
+
+		//出現遅延
+		newData->maxDeadCount_ = spawnDustCount_;
 
 		//データを群に送る
 		datas_.emplace_back(std::move(newData));
@@ -191,15 +185,8 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		//回転量加算
 		rotateNum += diffusionR_ / (float)spawnNum;
 
-		accePower++;
 	}
 #pragma endregion
-
-	//
-
-
-
-
 }
 
 Vector2 EffectOutWater::RotateVelo(const Vector2& velo, float theta)
