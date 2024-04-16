@@ -27,7 +27,7 @@ SelectScene::SelectScene()
 void SelectScene::Initialize()
 {
 	// アニメーション初期化
-	animation_ = AnimationManager::GetInstance()->AddAnimation("numbers");
+	animation_ = AnimationManager::GetInstance()->AddAnimation("idle");
 
 	//カメラ初期化
 	camera_->Initialize();
@@ -42,8 +42,8 @@ void SelectScene::Initialize()
 		
 		// UV座標のセット
 		Transform handle = animation_->GetSceneUV(static_cast<uint32_t>(count) + 1u);
-		box->SetUVParam(handle.scale_, handle.rotate_, handle.translate_);
-		box->SetTexture(TextureManager::GetInstance()->LoadTexture("numbers.png"));
+		box->SetUVParam(handle);
+		box->SetTexture(TextureManager::GetInstance()->LoadTexture("PlayerIdle.png"));
 
 		box->Update();
 		count++;
@@ -71,6 +71,21 @@ void SelectScene::Update()
 	//カメラ更新
 	camera_->Update();
 
+	AnimationManager::GetInstance()->Update();
+
+	if (input_->PressedKey(DIK_L)) {
+		// アニメーション初期化
+		animation_ = AnimationManager::GetInstance()->AddAnimation("idle1");
+		animation_->Play();
+	}
+
+	uint32_t index = 0u;
+	for (auto& box : stageBoxes_) {
+		box->SetUVParam(animation_->GetSceneUV(index++));
+	}
+	if (animation_->Update()) {
+		stageBoxes_[pickedNum_]->SetUVParam(animation_->GetUVTrans());
+	}
 
 	//ステージを選ぶ処理
 	SelectStage();
@@ -89,6 +104,8 @@ void SelectScene::Draw()
 	for (auto& box : stageBoxes_) {
 		box->Draw(*camera_.get());
 	}
+
+	//AnimationManager::GetInstance()->Draw(camera_.get());
 
 	//シーン転換時のフェードインアウト
 	BlackDraw();
