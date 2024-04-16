@@ -1,13 +1,12 @@
 #pragma once
 #include <list>
 
-#include "GraphicsPipelineSystem/BlendModeConfig.h"
 #include "Light/Light.h"
 #include "Drawers/IDrawer/IDrawer.h"
 #include "ModelData/ModelData.h"
 #include "DescriptorHeapManager/DescriptorHandles/DescriptorHandles.h"
 
-#include "InstancingModel.h"
+#include "InstancingModelData.h"
 
 class Camera;
 enum class PipelineType;
@@ -18,28 +17,28 @@ class InstancingModels : public IDrawer
 public:
 	static const uint32_t kNumInstance = 100000;
 
-	InstancingModels(const ModelData* modelData);
+	InstancingModels(const InstancingMeshTexData* modelData);
 	~InstancingModels();
 
 	struct Material
 	{
 		Vector4 color;
 		int32_t enableLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
+		//float padding[3];
 	};
 
 	struct ParticleForGPU {
 		Matrix4x4 WVP;
 		Matrix4x4 World;
+		Matrix4x4 uvMatrix;
 		Vector4 color;
 	};
 
-	void Draw(const Camera& camera, std::list<InstancingModel>& blocks, BlendMode blendMode = BlendMode::kBlendModeNormal);
+	void Draw(const Camera& camera, std::list<InstancingModelData>& blocks);
 
 	static void PreDraw();
 
-	void SetMesh(const ModelData* modelData);
+	void SetMesh(const InstancingMeshTexData* modelData);
 
 	void SetLight(const ILight* light);
 
@@ -59,6 +58,6 @@ private:
 private:
 
 	static const PipelineType pipelineType_;
-	const ModelData* modelData_;
+	const InstancingMeshTexData* modelData_;
 	const DescriptorHandles* srvHandles_;
 };

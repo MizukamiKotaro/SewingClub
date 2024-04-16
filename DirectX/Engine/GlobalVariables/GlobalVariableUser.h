@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <stdint.h>
+#include <vector>
 
 class Vector2;
 class Vector3;
@@ -11,8 +12,7 @@ public:
 	static void StaticInitialize();
 
 public:
-	GlobalVariableUser(const std::string& chunkName, const std::string& groupName);
-	GlobalVariableUser(const std::string& name);
+	GlobalVariableUser(const std::string& chunkName, const std::string& groupName, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_");
 	void ResetGroupName(const std::string& groupName);
 
 	void CreateGroup();
@@ -32,11 +32,13 @@ public:
 	const std::string& GetStringValue(const std::string& key, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 
 	bool IsTreeOpen(const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
+	bool IsTreeOpen(const int& treeNo);
 
 private:
 	std::string chunkName_;
 	std::string groupName_;
 
 private:
-	static GlobalVariables* globalVariable_;
+	static GlobalVariables* global_;
+	std::vector<std::string> tree_;
 };

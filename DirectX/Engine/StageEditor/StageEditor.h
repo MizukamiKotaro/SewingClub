@@ -1,7 +1,6 @@
 #pragma once
 #include "GlobalVariables/GlobalVariableUser.h"
 #include <memory>
-#include <vector>
 
 class StageEditor {
 public:
@@ -33,6 +32,5 @@ private:
 
 private:
 	int preStageNo_;
-	std::vector<std::string> tree_;
 	std::unique_ptr<GlobalVariableUser> global_;
 };

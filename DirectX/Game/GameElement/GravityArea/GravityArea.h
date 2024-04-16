@@ -32,6 +32,6 @@ private:
 
 #ifdef _DEBUG
 	static InstancingModelManager* instancingManager_;
-	static const ModelData* modelData_;
+	static const InstancingMeshTexData* modelData_;
 #endif // _DEBUG
 };

@@ -43,7 +43,7 @@ private:
 	static std::unique_ptr<GlobalVariableUser> staticGlobalVariable_;
 
 	static InstancingModelManager* instancingManager_;
-	static const ModelData* modelData_;
+	static const InstancingMeshTexData* modelData_;
 	static RandomGenerator* rand_;
 	static ClientManager* clientManager_;
 

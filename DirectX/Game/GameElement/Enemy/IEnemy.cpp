@@ -29,7 +29,7 @@ void IEnemy::CreateStageEditor(const std::string& name, const int& no)
 void IEnemy::DrawDefault(const ParticleMeshTexData* data) const
 {
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, position_);
-	instancingManager_->AddParticle(ParticleData{ matrix,color_ }, data);
+	instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ }, data);
 }
 
 const ParticleMeshTexData* IEnemy::CreateData(const std::string& textureName)
