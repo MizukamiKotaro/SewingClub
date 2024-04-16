@@ -12,12 +12,18 @@ void Animation2D::Initialize(std::string fileName, const uint32_t& hDivNum, cons
 	SceneEntry();
 }
 
+Transform Animation2D::GetSceneUV(const uint32_t& scene) {
+	nowScene_ = scene;
+	UpdateTrans();
+	return transform_;
+}
+
 void Animation2D::Play() {
 	isPlay_ = true;
 	nowFrame_ = 0.0f;
 }
 
-Transform Animation2D::Update() {
+void Animation2D::Update() {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
@@ -30,17 +36,16 @@ Transform Animation2D::Update() {
 		}
 	}*/
 
+	if (!isPlay_) { return; }
+
 	// 
 	AnimationCount();
 	// UV座標の更新
 	if (!sceneNumberList_.empty()) {
 		//model_->SetUVParam(uvScale_, Vector3(0.0f, 0.0f, 0.0f), sceneNumberList_.at(nowScene_));
 	}
-	Transform result;
-	result.scale_ = uvScale_;
-	result.translate_ = sceneNumberList_.at(nowScene_);
-	result.UpdateMatrix();
-	return result;
+
+	UpdateTrans();
 }
 
 void Animation2D::SceneEntry() {
@@ -123,4 +128,11 @@ void Animation2D::ApplyGlobalVariable() {
 	}
 
 
+}
+
+void Animation2D::UpdateTrans() {
+	transform_.scale_ = uvScale_;
+	transform_.rotate_ = Vector3(0.0f, 0.0f, 0.0f);
+	transform_.translate_ = sceneNumberList_.at(nowScene_);
+	transform_.UpdateMatrix();
 }

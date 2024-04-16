@@ -101,15 +101,3 @@ void AnimationManager::ImGuiProcess() {
 	ImGui::End();
 #endif // _DEBUG
 }
-
-void AnimationManager::Editor() {
-
-}
-
-void AnimationManager::SetGlobalVariable() {
-	
-}
-
-void AnimationManager::ApplyGlobalVariable() {
-	
-}
