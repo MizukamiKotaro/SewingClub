@@ -7,6 +7,7 @@
 class ParticleData {
 public:
 	Matrix4x4 matrix_;
+	Matrix4x4 uvTransform;
 	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 };
 

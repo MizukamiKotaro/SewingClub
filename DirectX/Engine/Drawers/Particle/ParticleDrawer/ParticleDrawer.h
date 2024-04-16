@@ -25,13 +25,13 @@ public:
 	{
 		Vector4 color;
 		int32_t enableLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
+		//float padding[3];
 	};
 
 	struct ParticleForGPU {
 		Matrix4x4 WVP;
 		Matrix4x4 World;
+		Matrix4x4 uvTransform;
 		Vector4 color;
 	};
 
