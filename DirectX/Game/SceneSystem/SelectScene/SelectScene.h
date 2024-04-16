@@ -22,7 +22,7 @@ private:
 
 	//ステージを選ぶ処理
 	void SelectStage();
-
+	
 private:
 
 	//ステージ管理

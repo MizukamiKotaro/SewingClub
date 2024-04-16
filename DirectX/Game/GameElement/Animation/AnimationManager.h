@@ -13,6 +13,8 @@ public:
 	AnimationManager();
 	~AnimationManager();
 
+	static AnimationManager* GetInstance();
+
 	void Update();
 
 	void Draw(const Camera* camera);

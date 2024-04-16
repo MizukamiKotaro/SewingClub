@@ -3,8 +3,7 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include "GlobalVariables/GlobalVariables.h"
 
-void Animation2D::Initialize(std::string fileName, Model* model, const uint32_t& hDivNum, const uint32_t& wDivNum) {
-	model_ = model;
+void Animation2D::Initialize(std::string fileName, const uint32_t& hDivNum, const uint32_t& wDivNum) {
 	global_ = std::make_unique<GlobalVariableUser>(chunkName, fileName);
 	texParam_.divisionNumber = Vector2(static_cast<float>(wDivNum), static_cast<float>(hDivNum));
 
@@ -13,7 +12,12 @@ void Animation2D::Initialize(std::string fileName, Model* model, const uint32_t&
 	SceneEntry();
 }
 
-void Animation2D::Update() {
+void Animation2D::Play() {
+	isPlay_ = true;
+	nowFrame_ = 0.0f;
+}
+
+Transform Animation2D::Update() {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
@@ -30,8 +34,13 @@ void Animation2D::Update() {
 	AnimationCount();
 	// UV座標の更新
 	if (!sceneNumberList_.empty()) {
-		model_->SetUVParam(uvScale_, Vector3(0.0f, 0.0f, 0.0f), sceneNumberList_.at(nowScene_));
+		//model_->SetUVParam(uvScale_, Vector3(0.0f, 0.0f, 0.0f), sceneNumberList_.at(nowScene_));
 	}
+	Transform result;
+	result.scale_ = uvScale_;
+	result.translate_ = sceneNumberList_.at(nowScene_);
+	result.UpdateMatrix();
+	return result;
 }
 
 void Animation2D::SceneEntry() {
@@ -89,11 +98,11 @@ void Animation2D::ApplyGlobalVariable() {
 	if (global_) {
 		std::string initTree = "詳細設定";
 		maxKeyNumber_ = static_cast<uint32_t>(global_->GetIntValue("キーの最大数", initTree));
-		SceneEntry();
 
 		// 分割数の代入
 		texParam_.divisionNumber.y = static_cast<float>(global_->GetIntValue("縦分割数", initTree));
 		texParam_.divisionNumber.x = static_cast<float>(global_->GetIntValue("横分割数", initTree));
+		SceneEntry();
 		
 		// キーコンテナ以上に生成された場合リサイズする
 		if (keyParam_.size() < maxKeyNumber_) {

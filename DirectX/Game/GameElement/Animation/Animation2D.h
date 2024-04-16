@@ -2,6 +2,7 @@
 #include "Model.h"
 #include <vector>
 #include "GlobalVariables/GlobalVariableUser.h"
+#include "TextureManager.h"
 
 // textureのアニメーション
 // 今回は板ポリでスプライト同様の描画を行うためModelを使用
@@ -11,11 +12,14 @@ public:
 	Animation2D() = default;
 	~Animation2D() = default;
 
-	void Initialize(std::string fileName, Model* model, const uint32_t& hDivNum = 1u, const uint32_t& wDivNum = 1u);
+	void Initialize(std::string fileName, const uint32_t& hDivNum = 1u, const uint32_t& wDivNum = 1u);
 	// アニメーションさせない時のセッター
-	void SetScene(const uint32_t& scene, const bool& flag = false) { nowScene_ = scene, isPlay_ = flag; }
+	void SetScene(const uint32_t& scene) { nowScene_ = scene; }
+	// アニメーションの再生
+	void Play();
 
-	void Update();
+	/// <returns>UV座標をTransformの型で返す</returns>
+	Transform Update();
 
 private:
 	// アニメーションNo.の格納
@@ -28,7 +32,6 @@ private:
 	void ApplyGlobalVariable();
 
 private:
-	Model* model_ = nullptr; // modelPtr
 	std::unique_ptr<GlobalVariableUser> global_;
 
 	struct TextureParameter	{
