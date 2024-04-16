@@ -60,8 +60,10 @@ private:
 	inputAcceptance switchData_;
 
 
-	Audio  bgm_;
+	Audio bgm_;
 	float bgmVolume_ = 0.15f;
+
+	class Animation2D* animation_ = nullptr;
 
 };
 

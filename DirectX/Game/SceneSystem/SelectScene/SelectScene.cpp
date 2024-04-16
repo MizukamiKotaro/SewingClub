@@ -2,7 +2,8 @@
 #include "Kyoko.h"
 #include "Ease/Ease.h"
 
-#include<imgui.h>
+#include "ImGuiManager/ImGuiManager.h"
+#include "Game/GameElement/Animation/AnimationManager.h"
 
 SelectScene::SelectScene()
 {
@@ -25,6 +26,9 @@ SelectScene::SelectScene()
 
 void SelectScene::Initialize()
 {
+	// アニメーション初期化
+	animation_ = AnimationManager::GetInstance()->AddAnimation("default");
+
 	//カメラ初期化
 	camera_->Initialize();
 
@@ -36,6 +40,12 @@ void SelectScene::Initialize()
 		box->Initialize();
 		box->transform_.translate_.x = -diff + diff * count;
 		box->Update();
+		
+		// UV座標のセット
+		Transform handle = animation_->GetSceneUV(static_cast<uint32_t>(count) + 1u);
+		box->SetUVParam(handle.scale_, handle.rotate_, handle.translate_);
+		box->SetTexture(TextureManager::GetInstance()->LoadTexture("numbers.png"));
+
 		count++;
 	}
 
@@ -51,6 +61,8 @@ void SelectScene::Initialize()
 	switchData_.minSelectBoxScale_ = 1.0f;
 
 	bgm_.Play(true);
+
+
 }
 
 void SelectScene::Update()
