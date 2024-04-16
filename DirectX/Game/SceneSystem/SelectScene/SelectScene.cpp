@@ -27,7 +27,7 @@ SelectScene::SelectScene()
 void SelectScene::Initialize()
 {
 	// アニメーション初期化
-	animation_ = AnimationManager::GetInstance()->AddAnimation("default");
+	animation_ = AnimationManager::GetInstance()->AddAnimation("numbers");
 
 	//カメラ初期化
 	camera_->Initialize();
@@ -39,13 +39,13 @@ void SelectScene::Initialize()
 		//初期化と配置
 		box->Initialize();
 		box->transform_.translate_.x = -diff + diff * count;
-		box->Update();
 		
 		// UV座標のセット
 		Transform handle = animation_->GetSceneUV(static_cast<uint32_t>(count) + 1u);
 		box->SetUVParam(handle.scale_, handle.rotate_, handle.translate_);
 		box->SetTexture(TextureManager::GetInstance()->LoadTexture("numbers.png"));
 
+		box->Update();
 		count++;
 	}
 
