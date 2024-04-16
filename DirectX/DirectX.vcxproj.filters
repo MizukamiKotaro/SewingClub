@@ -1142,9 +1142,6 @@
     <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelManager.h">
       <Filter>Engine\Drawer\InstancingModel</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModel.h">
-      <Filter>Engine\Drawer\InstancingModel</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModels\InstancingModels.h">
       <Filter>Engine\Drawer\InstancingModel\InstancingModels</Filter>
     </ClInclude>
@@ -1264,6 +1261,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Enemy\IEnemy.h">
       <Filter>Game\GameElement\Charactor\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelData.h">
+      <Filter>Engine\Drawer\InstancingModel</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

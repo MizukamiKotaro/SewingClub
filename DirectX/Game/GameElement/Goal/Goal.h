@@ -31,7 +31,7 @@ private:
 
 private:
 	InstancingModelManager* instancingManager_;
-	const ModelData* modelData_;
+	const InstancingMeshTexData* modelData_;
 
 	std::unique_ptr<GlobalVariableUser> globalVariable_;
 	std::unique_ptr<StageEditor> stageEditor_;

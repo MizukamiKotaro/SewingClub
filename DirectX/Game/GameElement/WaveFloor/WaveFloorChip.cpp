@@ -5,7 +5,7 @@
 #include "FrameInfo/FrameInfo.h"
 
 InstancingModelManager* WaveFloorChip::instancingManager_ = nullptr;
-const ModelData* WaveFloorChip::modelData_ = nullptr;
+const InstancingMeshTexData* WaveFloorChip::modelData_ = nullptr;
 FrameInfo* WaveFloorChip::frameInfo_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> WaveFloorChip::globalVariable_ = nullptr;
@@ -32,7 +32,8 @@ WaveFloorChip::WaveFloorChip(const Vector3& position)
 void WaveFloorChip::StaticInitialize()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("Cube");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("Cube");
+	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 	frameInfo_ = FrameInfo::GetInstance();
 
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Wave", "FloorChip");
@@ -85,7 +86,7 @@ void WaveFloorChip::Update()
 void WaveFloorChip::Draw() const 
 {
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(scale_, rotate_, position_);
-	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,{1.0f,1.0f,1.0f,1.0f} });
+	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4() ,{1.0f,1.0f,1.0f,1.0f} });
 }
 
 void WaveFloorChip::StaticUpdate()

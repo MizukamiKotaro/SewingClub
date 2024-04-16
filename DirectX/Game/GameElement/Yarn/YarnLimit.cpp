@@ -4,7 +4,7 @@
 #include <algorithm>
 
 InstancingModelManager* YarnLimit::instancingManager_ = nullptr;
-const ModelData* YarnLimit::modelData_ = nullptr;
+const InstancingMeshTexData* YarnLimit::modelData_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> YarnLimit::globalVariable_ = nullptr;
 
@@ -32,7 +32,8 @@ YarnLimit::YarnLimit(const Vector3* parent, const Vector3& ganeratePosition)
 void YarnLimit::StaticInitialize()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("Cube");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("Cube");
+	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Yarn", "StaticYarnLimit");
 	globalVariable_->CreateGroup();
@@ -73,7 +74,7 @@ void YarnLimit::Update()
 void YarnLimit::Draw() const
 {
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(scale_, rotate_, position_);
-	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,{1.0f,1.0f,1.0f,1.0f} });
+	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} });
 
 	if (child_) {
 		child_->Draw();

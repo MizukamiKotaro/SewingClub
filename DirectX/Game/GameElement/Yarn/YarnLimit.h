@@ -50,7 +50,7 @@ private:
 	//static Vector3 v3Paras_[kVector3End];
 
 	static InstancingModelManager* instancingManager_;
-	static const ModelData* modelData_;
+	static const InstancingMeshTexData* modelData_;
 
 	static Vector3 scale_;
 

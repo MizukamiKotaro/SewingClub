@@ -4,7 +4,7 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 
 InstancingModelManager* Client::instancingManager_ = nullptr;
-const ModelData* Client::modelData_ = nullptr;
+const InstancingMeshTexData* Client::modelData_ = nullptr;
 std::unique_ptr<GlobalVariableUser> Client::globalVariable_ = nullptr;
 float Client::scale_ = 0.5f;
 float Client::gravitySpeed_ = 0.5f;
@@ -36,7 +36,8 @@ Client::Client(PlanetType type, const Vector3& pos, const Vector3& velocity)
 void Client::StaticInitialize()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	modelData_ = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
+	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Charactor", "Client");
 	globalVariable_->CreateGroup();
 
@@ -80,7 +81,7 @@ void Client::Update(float deltaTime)
 void Client::Draw() const
 {
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,PlanetTypeColor::GetColor(type_) });
+	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(),PlanetTypeColor::GetColor(type_) });
 }
 
 void Client::Draw(const Vector2& pos) const

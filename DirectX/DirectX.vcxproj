@@ -269,7 +269,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\CollisionSystem\CollisionManager\CollisionManager.h" />
     <ClInclude Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleCircle\CollisionCircleCircle.h" />
     <ClInclude Include="Engine\Drawers\IDrawer\IDrawer.h" />
-    <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModel.h" />
+    <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelData.h" />
     <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelList\InstancingModelList.h" />
     <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelManager.h" />
     <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModels\InstancingModels.h" />

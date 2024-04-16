@@ -12,7 +12,7 @@
 
 const PipelineType InstancingModels::pipelineType_ = PipelineType::INSTANCING_MODEL;
 
-InstancingModels::InstancingModels(const ModelData* modelData)
+InstancingModels::InstancingModels(const InstancingMeshTexData* modelData)
 {
 	modelData_ = modelData;
 
@@ -20,7 +20,6 @@ InstancingModels::InstancingModels(const ModelData* modelData)
 
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	*materialData_ = { Vector4(1.0f, 1.0f, 1.0f, 1.0f) , 2 };
-	materialData_->uvTransform = Matrix4x4::MakeIdentity4x4();
 
 	//WVP用のリソースを作る。Matrix4x4　1つ分のサイズを用意する
 	instancingResource_ = DirectXBase::CreateBufferResource(sizeof(ParticleForGPU) * kNumInstance);
@@ -30,6 +29,7 @@ InstancingModels::InstancingModels(const ModelData* modelData)
 	for (uint32_t index = 0; index < kNumInstance; index++) {
 		instancingData_[index].WVP = Matrix4x4::MakeIdentity4x4();
 		instancingData_[index].World = Matrix4x4::MakeIdentity4x4();
+		instancingData_[index].uvMatrix = Matrix4x4::MakeIdentity4x4();
 		instancingData_[index].color = { 1.0f,1.0f,1.0f,0.0f };
 	}
 
@@ -44,7 +44,7 @@ InstancingModels::~InstancingModels()
 	materialResource_->Release();
 }
 
-void InstancingModels::Draw(const Camera& camera, std::list<InstancingModel>& blocks, BlendMode blendMode)
+void InstancingModels::Draw(const Camera& camera, std::list<InstancingModelData>& blocks)
 {
 	PreDraw();
 
@@ -52,20 +52,21 @@ void InstancingModels::Draw(const Camera& camera, std::list<InstancingModel>& bl
 	instaceNum = std::clamp<uint32_t>(instaceNum, 0, kNumInstance);
 	uint32_t index = 0;
 
-	for (std::list<InstancingModel>::iterator iter = blocks.begin(); iter != blocks.end(); iter++) {
+	for (std::list<InstancingModelData>::iterator iter = blocks.begin(); iter != blocks.end(); iter++) {
 		if (index >= kNumInstance) {
 			break;
 		}
 
 		instancingData_[index].World = iter->matrix_;
 		instancingData_[index].WVP = instancingData_[index].World * camera.GetViewProjection();
+		instancingData_[index].uvMatrix = iter->uvMatrix_;
 		instancingData_[index].color = iter->color_;
 
 		index++;
 	}
-	psoManager_->SetBlendMode(pipelineType_, blendMode);
+	psoManager_->SetBlendMode(pipelineType_, modelData_->blendMode_);
 	//Spriteの描画。変更に必要なものだけ変更する
-	commandList_->IASetVertexBuffers(0, 1, &modelData_->mesh.vertexBufferView_); // VBVを設定
+	commandList_->IASetVertexBuffers(0, 1, &modelData_->modelData_->mesh.vertexBufferView_); // VBVを設定
 	//マテリアルCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	//TransformationMatrixCBufferの場所を設定
@@ -73,9 +74,9 @@ void InstancingModels::Draw(const Camera& camera, std::list<InstancingModel>& bl
 	commandList_->SetGraphicsRootDescriptorTable(1, srvHandles_->gpuHandle);
 	//平行光源CBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(3, light_.GetDirectionalLightGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(2, modelData_->texture->handles_->gpuHandle);
+	commandList_->SetGraphicsRootDescriptorTable(2, modelData_->texture_->handles_->gpuHandle);
 	//描画!!!!（DrawCall/ドローコール）
-	commandList_->DrawInstanced(UINT(modelData_->mesh.verteces.size()), instaceNum, 0, 0);
+	commandList_->DrawInstanced(UINT(modelData_->modelData_->mesh.verteces.size()), instaceNum, 0, 0);
 }
 
 void InstancingModels::PreDraw()
@@ -83,7 +84,7 @@ void InstancingModels::PreDraw()
 	psoManager_->PreDraw(pipelineType_);
 }
 
-void InstancingModels::SetMesh(const ModelData* modelData)
+void InstancingModels::SetMesh(const InstancingMeshTexData* modelData)
 {
 	modelData_ = modelData;
 }
