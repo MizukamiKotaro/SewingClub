@@ -47,6 +47,31 @@ void Audio::LoadWave(const std::string& filename, const std::string& itemName, f
 #endif // _DEBUG
 }
 
+void Audio::LoadMP3(const std::string& filename, const std::string& itemName, float volume)
+{
+	soundData_ = audioManager_->LoadMP3(filename);
+	volume_ = volume;
+
+	if (itemName == "_") {
+		itemName_ = filename;
+	}
+	else {
+		itemName_ = itemName;
+	}
+
+	if (soundData_->type == AudioType::SE) {
+		globalVariables_->AddItem("Audio", "SE", itemName_ + "のボリューム", volume_);
+		volume_ = globalVariables_->GetFloatValue("Audio", "SE", itemName_ + "のボリューム");
+	}
+	else if (soundData_->type == AudioType::MUSIC) {
+		globalVariables_->AddItem("Audio", "Music", itemName_ + "のボリューム", volume_);
+		volume_ = globalVariables_->GetFloatValue("Audio", "Music", itemName_ + "のボリューム");
+	}
+#ifdef _DEBUG
+	volumeManager_->SetAudio(this);
+#endif // _DEBUG
+}
+
 void Audio::Play(bool isLoop)
 {
 #ifdef _DEBUG
