@@ -52,4 +52,6 @@ private:
 	ItemManager* itemManager_;
 	ParticleManager* particleManager_;
 	EnemyManager* enemyManager_;
+
+	Audio shi_;
 };

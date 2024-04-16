@@ -18,6 +18,13 @@ public: // gameで使用する関数
 	/// <param name="volume">ボリューム</param>
 	void LoadWave(const std::string& filename, const std::string& itemName = "_", float volume = 0.7f);
 	/// <summary>
+	/// waveデータのロード,タグの設定,ボリュームの設定(ImGuiで後からいじれるようになってる)
+	/// </summary>
+	/// <param name="filename">"hoge.mp3"で読み込める,Resources/Audio/SE or Musicの中にあれば更に格納しててもok</param>
+	/// <param name="itemName">ImGuiに表示する名前,日本語可</param>
+	/// <param name="volume">ボリューム</param>
+	void LoadMP3(const std::string& filename, const std::string& itemName = "_", float volume = 0.7f);
+	/// <summary>
 	/// 再生
 	/// </summary>
 	/// <param name="isLoop">ループさせるか</param>

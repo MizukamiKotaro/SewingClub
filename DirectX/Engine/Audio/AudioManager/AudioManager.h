@@ -37,6 +37,8 @@ public:
 
 	const SoundData* LoadWave(const std::string& filename);
 
+	const SoundData* LoadMP3(const std::string& filename);
+
 	uint32_t Play(const SoundData* soundData, bool loopFlag = false, float volume = 0.7f);
 
 	void Stop(uint32_t voiceHandle, const SoundData* soundData);

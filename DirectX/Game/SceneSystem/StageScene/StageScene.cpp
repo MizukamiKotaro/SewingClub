@@ -48,6 +48,8 @@ StageScene::StageScene()
 	waveFloor_ = std::make_unique<WaveFloor>();
 
 	deadLine_ = std::make_unique<DeadLine>(camera_.get(),player_->GetPositionPtr());
+
+	shi_.LoadMP3("maou_short_14_shining_star.mp3", "お試し");
 }
 
 void StageScene::Initialize()
@@ -64,6 +66,8 @@ void StageScene::Initialize()
 	goal_->Initialize();
 	deadLine_->Initialize();
 	enemyManager_->Initialize();
+
+	shi_.Play(false);
 }
 
 void StageScene::Update()
