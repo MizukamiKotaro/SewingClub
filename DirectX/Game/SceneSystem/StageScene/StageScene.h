@@ -35,7 +35,7 @@ private:
 
 	void WaveUpdate();
 
-	//シーン変更
+	//�V�[���ύX
 	void SceneChange();
 private:
 
@@ -54,7 +54,7 @@ private:
 	ClientManager* clientManager_;
 	ItemManager* itemManager_;
 
-	//エフェクト関連のデータ
+	//�G�t�F�N�g�֘A�̃f�[�^
 	EffectOutWater* eOutWater_;
 	ParticleManager* particleManager_;
 	EnemyManager* enemyManager_;

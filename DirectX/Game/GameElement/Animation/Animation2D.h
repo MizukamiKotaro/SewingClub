@@ -11,9 +11,17 @@ public:
 	Animation2D() = default;
 	~Animation2D() = default;
 
-	void Initialize(std::string fileName, Model* model, const uint32_t& hDivNum = 1u, const uint32_t& wDivNum = 1u);
+	void Initialize(std::string fileName, const uint32_t& hDivNum = 1u, const uint32_t& wDivNum = 1u);
 
+	/// <returns>UV座標をTransformの型で返す</returns>
 	void Update();
+
+	// 指定したSceneのUV取得
+	Transform GetSceneUV(const uint32_t& scene);
+	// アニメーションの再生
+	void Play();
+
+	Transform GetUVTrans() const { return transform_; }
 
 private:
 	// アニメーションNo.の格納
@@ -25,9 +33,12 @@ private:
 	// グローバル変数の更新
 	void ApplyGlobalVariable();
 
+	void UpdateTrans();
+
 private:
-	Model* model_ = nullptr; // modelPtr
 	std::unique_ptr<GlobalVariableUser> global_;
+
+	Transform transform_;
 
 	struct TextureParameter	{
 		Vector2 divisionNumber{}; // 分割数

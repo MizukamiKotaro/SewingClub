@@ -22,7 +22,7 @@ private:
 
 	//ステージを選ぶ処理
 	void SelectStage();
-
+	
 private:
 
 	//ステージ管理
@@ -60,8 +60,10 @@ private:
 	inputAcceptance switchData_;
 
 
-	Audio  bgm_;
+	Audio bgm_;
 	float bgmVolume_ = 0.15f;
+
+	class Animation2D* animation_ = nullptr;
 
 };
 
