@@ -293,7 +293,7 @@ void Player::PopUpFromWater()
 	//みずしぶき
 	EffectOutWater::GetInstance()->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y), Vector2{ velocity_.x,velocity_.y },normalJumpEffectNum_);
 	//軌道エフェクト
-	effeExtraJump_->SpawnEffect(60);
+	//effeExtraJump_->SpawnEffect(60);
 }
 
 void Player::ComeToWater()

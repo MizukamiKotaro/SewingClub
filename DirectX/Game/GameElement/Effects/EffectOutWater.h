@@ -115,13 +115,13 @@ private:
 	Vector2 startVelo = { 1.0f,1.5f };
 
 	//初速度の細かい速度倍率
-	float  rateScaling_ = 0.8f;
+	float  rateScaling_ = 0.6f;
 
 	//最高速度
 	float maxSpped_ = 10.0f;
 	
 	//塵を出す感覚
-	int spawnDustCount_ = 0;
+	int spawnDustCount_ = 10;
 
 	//遅延のカウント
 	float spawnDelayCount_ = 5;

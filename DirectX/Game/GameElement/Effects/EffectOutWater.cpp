@@ -156,7 +156,7 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		//新しくデータを作成して移動
 		std::unique_ptr<OutWaterData> newData;
 		newData = std::make_unique<OutWaterData>();
-		newData->translate = { translate.x,translate.y,1 };
+		newData->translate = { translate.x,translate.y,-0.1f };
 
 		newData->scale = scale_;
 
