@@ -230,7 +230,13 @@ void StageScene::SceneChange()
 	}
 	if (goal_->IsClear()) {
 		// シーン切り替え
-		ChangeScene(SELECT);
+		if (stageNo_ + 1 == maxStageNo_) {
+			ChangeScene(SELECT);
+		}
+		else {
+			stageNo_++;
+			ChangeScene(STAGE);
+		}
 		bgm_.Stop();
 		player_->Finalize();
 	}
