@@ -6,22 +6,38 @@ class Noise : public BasePostEffect
 public:
 	Noise();
 	~Noise() override;
+
+	enum NoiseType {
+		RAND_NOISE,
+		MOSAIC_NOISE,
+		MOSAIC_LERP_NOISE,
+		MOSAIC_VALUE_NOISE,
+		MOSAIC_PERLIN_NOISE,
+		MOSAIC_FRACTAL_SUM_PERLIN_NOISE,
+		SANDSTORM,
+		LIGHTNING,
+	};
+
+	void Initialize();
+
+	void Update(const float& time);
+
 	/// <summary>
 	/// 描画処理
 	/// </summary>
 	void Draw(BlendMode blendMode = BlendMode::kBlendModeNormal) override;
-	struct BlurData {
-		float angle; // 角度。0だと横ブラー、1.57fだと縦ブラー
-		float pickRange; // 取得する色の幅
-		float stepWidth; // 取得する色の位置変更の幅。0.0f < stepWidth < pickRange
-		int isCenterBlur; // 真ん中からブラーか。1=true,0=false;
+	struct NoiseData {
+		float density; // 密度
+		float time; // 時間
+		Vector2 screenSize; // スクリーンのサイズ
+		int type;
 		int isNormal; // NormalBlendかどうか
 	};
 private:
-	void CreateBlurRes();
+	void CreateNoiseRes();
 	void CreateResources() override;
 private:
-	ComPtr<ID3D12Resource> blurResource_;
+	ComPtr<ID3D12Resource> noiseResource_;
 public:
-	BlurData* blurData_;
+	NoiseData* noiseData_;
 };
