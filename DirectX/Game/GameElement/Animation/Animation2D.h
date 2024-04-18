@@ -13,14 +13,15 @@ public:
 
 	void Initialize(std::string fileName, const uint32_t& hDivNum = 1u, const uint32_t& wDivNum = 1u);
 
-	/// <returns>UV座標をTransformの型で返す</returns>
-	void Update();
+	/// <returns>アニメーション更新時はtrueを返す</returns>
+	bool Update();
 
-	// 指定したSceneのUV取得
-	Transform GetSceneUV(const uint32_t& scene);
 	// アニメーションの再生
 	void Play();
 
+	// 指定したSceneのUV取得
+	Transform GetSceneUV(const uint32_t& scene);
+	// uv座標のゲッター
 	Transform GetUVTrans() const { return transform_; }
 
 private:
@@ -32,33 +33,32 @@ private:
 	void SetGlobalVariable();
 	// グローバル変数の更新
 	void ApplyGlobalVariable();
-
-	void UpdateTrans();
+	// transform更新
+	void UpdateTrans(const uint32_t& listNum);
 
 private:
 	std::unique_ptr<GlobalVariableUser> global_;
 
-	Transform transform_;
+	Transform transform_; // uv座標の返却用で簡易敵に用意
 
 	struct TextureParameter	{
 		Vector2 divisionNumber{}; // 分割数
+		Vector3 uvScale; // uv用のscale変数
 	};
 	TextureParameter texParam_;
-	Vector3 uvScale_; // uv用のscale変数
 
 	std::vector<Vector3> sceneNumberList_; // 左上を0としたアニメーション番号で、positionを格納する
 	uint32_t nowScene_ = 0u; // 今のアニメーション番号を格納
 	float nowFrame_ = 0.0f; // 今の経過フレーム、タイマー
 	bool isLoop_ = true; // ループするか
-	bool isPlay_ = false;
+	bool isPlay_ = false; // 再生するか
 
 	struct KeyParameter {
 		float keyFrame = 0.0f; // 中間フレーム このフレーム経過したら次のsceneに切り替える
 		uint32_t sceneNumber = 0u; // 今のscene。
 	};
 	std::vector<KeyParameter> keyParam_; // 中間フレームコンテナ
-	uint32_t maxKeyNumber_ = 1u;
-
+	uint32_t maxKeyNumber_ = 1u; // keyの最大数
 
 	const std::string chunkName = "Animation";
 

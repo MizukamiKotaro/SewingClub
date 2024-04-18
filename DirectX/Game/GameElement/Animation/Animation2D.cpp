@@ -5,6 +5,7 @@
 
 void Animation2D::Initialize(std::string fileName, const uint32_t& hDivNum, const uint32_t& wDivNum) {
 	global_ = std::make_unique<GlobalVariableUser>(chunkName, fileName);
+	// 新しくアニメーションを作る時のみ代入がされる。もともとある場合はファイル側からもらってくる
 	texParam_.divisionNumber = Vector2(static_cast<float>(wDivNum), static_cast<float>(hDivNum));
 
 	SetGlobalVariable();
@@ -13,39 +14,28 @@ void Animation2D::Initialize(std::string fileName, const uint32_t& hDivNum, cons
 }
 
 Transform Animation2D::GetSceneUV(const uint32_t& scene) {
-	nowScene_ = scene;
-	UpdateTrans();
+	UpdateTrans(scene);
 	return transform_;
 }
 
 void Animation2D::Play() {
-	isPlay_ = true;
+	isPlay_ = !isPlay_;
 	nowFrame_ = 0.0f;
+	nowScene_ = 0u;
 }
 
-void Animation2D::Update() {
+bool Animation2D::Update() {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
 
+	if (!isPlay_) { return false; }
 
-	/*if (Input::GetInstance()->PressedKey(DIK_SPACE)) {
-		nowScene_ += 1u;
-		if (nowScene_ >= sceneNumberList_.size()) { 
-			nowScene_ = 0u;
-		}
-	}*/
-
-	if (!isPlay_) { return; }
-
-	// 
 	AnimationCount();
+	uint32_t number = keyParam_.at(nowScene_).sceneNumber;
 	// UV座標の更新
-	if (!sceneNumberList_.empty()) {
-		//model_->SetUVParam(uvScale_, Vector3(0.0f, 0.0f, 0.0f), sceneNumberList_.at(nowScene_));
-	}
-
-	UpdateTrans();
+	UpdateTrans(number);
+	return true;
 }
 
 void Animation2D::SceneEntry() {
@@ -55,24 +45,23 @@ void Animation2D::SceneEntry() {
 	for (uint32_t y = 0u; y < texParam_.divisionNumber.y; y++) {
 		for (uint32_t x = 0u; x < texParam_.divisionNumber.x; x++) {
 			Vector3 pos{};
-			pos.x = static_cast<float>(x) * uvScale_.x;
-			pos.y = static_cast<float>(y) * uvScale_.y;
+			pos.x = static_cast<float>(x) * texParam_.uvScale.x;
+			pos.y = static_cast<float>(y) * texParam_.uvScale.y;
 			pos.z = 0.0f;
 			sceneNumberList_[handle] = pos;
 			handle++;
 		}
 	}
 	// uvScaleの設定
-	uvScale_ = Vector3(1.0f / texParam_.divisionNumber.x, 1.0f / texParam_.divisionNumber.y, 1.0f);
+	texParam_.uvScale = Vector3(1.0f / texParam_.divisionNumber.x, 1.0f / texParam_.divisionNumber.y, 1.0f);
 }
 
 bool Animation2D::AnimationCount() {
-	if (!isPlay_) { return false; }
-
 	if (keyParam_.at(nowScene_).keyFrame <= nowFrame_++) {
 		nowScene_ += 1u;
 		nowFrame_ = 0.0f;
-		if (nowScene_ == keyParam_.size()) {
+		// 最後まで行った&&ループするならば
+		if (nowScene_ == keyParam_.size() && isLoop_) {
 			nowScene_ = 0u;
 		}
 		return true;
@@ -130,9 +119,9 @@ void Animation2D::ApplyGlobalVariable() {
 
 }
 
-void Animation2D::UpdateTrans() {
-	transform_.scale_ = uvScale_;
+void Animation2D::UpdateTrans(const uint32_t& listNum) {
+	transform_.scale_ = texParam_.uvScale;
 	transform_.rotate_ = Vector3(0.0f, 0.0f, 0.0f);
-	transform_.translate_ = sceneNumberList_.at(nowScene_);
+	transform_.translate_ = sceneNumberList_.at(listNum);
 	transform_.UpdateMatrix();
 }

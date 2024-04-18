@@ -165,6 +165,14 @@ void Model::SetUVParam(const Vector3& scale, const Vector3& rotate, const Vector
 	uvScale_ = scale;
 	uvRotate_ = rotate;
 	uvPos_ = position;
+	uvMatrix_ = Matrix4x4::MakeAffinMatrix(uvScale_, uvRotate_, uvPos_);
+}
+
+void Model::SetUVParam(const Transform& trans) {
+	uvScale_ = trans.scale_;
+	uvRotate_ = trans.rotate_;
+	uvPos_ = trans.translate_;
+	uvMatrix_ = trans.worldMat_;
 }
 
 Vector3 Model::CalculateValue(const AnimationCurve<Vector3>& keyframes, const float& time)

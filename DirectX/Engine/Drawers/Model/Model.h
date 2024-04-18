@@ -95,6 +95,7 @@ public:
 
 	// UVパラメータのセッター
 	void SetUVParam(const Vector3& scale, const Vector3& rotate, const Vector3& position);
+	void SetUVParam(const Transform& trans);
 
 private:
 	ComPtr<ID3D12Resource> materialResource_;

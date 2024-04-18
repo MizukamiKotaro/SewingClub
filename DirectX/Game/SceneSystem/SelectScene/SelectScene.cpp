@@ -42,7 +42,7 @@ void SelectScene::Initialize()
 		
 		// UV座標のセット
 		Transform handle = animation_->GetSceneUV(static_cast<uint32_t>(count) + 1u);
-		box->SetUVParam(handle.scale_, handle.rotate_, handle.translate_);
+		box->SetUVParam(handle);
 		box->SetTexture(TextureManager::GetInstance()->LoadTexture("numbers.png"));
 
 		box->Update();

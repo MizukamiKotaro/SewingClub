@@ -67,10 +67,10 @@ void AnimationManager::ImGuiProcess() {
 
 			if (ImGui::TreeNode("Create")) {
 				int handle = static_cast<int>(divisionHeight);
-				ImGui::DragInt("縦分割数", &handle, 1, 1, 100);
+				ImGui::DragInt("縦分割数", &handle, 1, 1, 50);
 				divisionHeight = static_cast<uint32_t>(handle);
 				handle = static_cast<int>(divisionWidth);
-				ImGui::DragInt("横分割数", &handle, 1, 1, 100);
+				ImGui::DragInt("横分割数", &handle, 1, 1, 50);
 				divisionWidth = static_cast<uint32_t>(handle);
 
 				// アニメーション生成
@@ -85,9 +85,8 @@ void AnimationManager::ImGuiProcess() {
 				ImGui::TreePop();
 			}
 
-
 			if (ImGui::Button("Play")) {
-				animation_->isPlay_ = !animation_->isPlay_;
+				animation_->Play();
 			}
 			if (ImGui::Button("Load")) {
 				animation_.release();
