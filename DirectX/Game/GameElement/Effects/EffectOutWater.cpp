@@ -7,13 +7,9 @@
 #include"RandomGenerator/RandomGenerator.h"
 #include"Ease/Ease.h"
 
-EffectOutWater* EffectOutWater::GetInstance()
-{
-	static EffectOutWater instance;
-	return &instance;
-}
 
-void EffectOutWater::SetUp()
+
+EffectOutWater::EffectOutWater()
 {
 	if (isSetUp_) {
 		//assert(false);
@@ -24,6 +20,14 @@ void EffectOutWater::SetUp()
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
 	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 }
+
+EffectOutWater::~EffectOutWater()
+{
+	datas_.clear();
+	dustDatas_.clear();
+}
+
+
 
 void EffectOutWater::Initialize()
 {
@@ -138,6 +142,14 @@ void EffectOutWater::Finalize()
 	datas_.clear();
 }
 
+void EffectOutWater::Debug()
+{
+#ifdef _DEBUG
+
+#endif // _DEBUG
+
+}
+
 
 void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, int32_t spawnNum)
 {
@@ -148,6 +160,7 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 
 	for (int i = 0; i < spawnNum; i++) {
 
+		//ランダムに角度取得
 		rotateNum = RandomGenerator::GetInstance()->RandFloat(-diffusionR_ / 2.0f, diffusionR_ / 2.0f);
 
 		//傾けたベクトル計算
@@ -157,7 +170,6 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		std::unique_ptr<OutWaterData> newData;
 		newData = std::make_unique<OutWaterData>();
 		newData->translate = { translate.x,translate.y,-0.1f };
-
 		newData->scale = scale_;
 
 		//内積から放物線を描きたかった
@@ -165,10 +177,23 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		//Vector2 v2 =( newVelo / sqrtf(newVelo.x * newVelo.x + newVelo.y * newVelo.y))*addveloNum;	
 		//float num = (v1.x * v2.x + v1.y * v2.y);
 
+		//初速度をランダムに設定
 		float num = RandomGenerator::GetInstance()->RandFloat(startVelo.x, startVelo.y);
+		//num = 1;
+
+		//湾曲度を計算
+		//放物線式のｘを求める（分母は速度が０になる値
+		float x = rotateNum / (float)std::numbers::pi;
+		//計算
+		float bend = (-bendNum_ * sqrtf(x * x) + 1);
 
 		//速度計算
-		newData->velo = Vector3{ newVelo.x,newVelo.y,0 }*num * rateScaling_;
+		if (rotateNum != 0.0f) {
+			newData->velo = (Vector3{ newVelo.x,newVelo.y,0 }*num * rateScaling_) * bend;
+		}
+		else {
+			newData->velo = Vector3{ newVelo.x,newVelo.y,0 }*num * rateScaling_;
+		}
 		//加速度計算
 		newData->acce = -Vector3{ velo.x,velo.y,0 }.Normalize() * acceSpd_;
 
@@ -176,7 +201,7 @@ void EffectOutWater::SpawnEffect(const Vector2& translate, const Vector2& velo, 
 		newData->maxSpawnCount = spawnDustCount_;
 
 		//生存カウント
-		newData->maxDeadCount_ = (int)(sqrtf(velo.x * velo.x + velo.y * velo.y)*alliveLeverage_);
+		newData->maxDeadCount_ = (int)(sqrtf(velo.x * velo.x + velo.y * velo.y) * alliveLeverage_);
 
 		//出現遅延
 		newData->maxDelayCount = spawnDelayCount_;

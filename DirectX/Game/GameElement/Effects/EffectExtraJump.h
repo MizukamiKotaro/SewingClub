@@ -8,12 +8,31 @@ public:
 	EffectExtraJump();
 	~EffectExtraJump();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="playerPos">プレイヤー座標</param>
 	void Initialize(const Vector3*playerPos);
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// デバッグ作業
+	/// </summary>
+	void Debug();
+
+	/// <summary>
+	/// エフェクト発生
+	/// </summary>
+	/// <param name="count">発生量</param>
 	void SpawnEffect(int count);
 
 private:
@@ -21,6 +40,7 @@ private:
 	InstancingModelManager* instancingManager_ = nullptr;
 	const InstancingMeshTexData* modelData_ = nullptr;
 
+	//塵データ構造体
 	struct Dust {
 		Vector3 translate;
 		Vector3 velo;

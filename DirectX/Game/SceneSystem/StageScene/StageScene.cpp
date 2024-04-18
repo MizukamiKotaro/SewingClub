@@ -49,8 +49,6 @@ StageScene::StageScene()
 
 	deadLine_ = std::make_unique<DeadLine>(camera_.get(),player_->GetPositionPtr());
 
-	eOutWater_ = EffectOutWater::GetInstance();
-	eOutWater_->SetUp();
 
 	bgm_.LoadWave("Music/ingame.wav", "StageBGM", bgmVolume_);
 	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);
@@ -69,7 +67,6 @@ void StageScene::Initialize()
 	itemManager_->Initialize();
 	goal_->Initialize();
 
-	eOutWater_->Initialize();
 	deadLine_->Initialize();
 	enemyManager_->Initialize();
 
@@ -148,8 +145,6 @@ void StageScene::Update()
 
 	collisionManager_->CheckCollision();
 
-	eOutWater_->Update();
-
 	SceneChange();
 }
 
@@ -177,9 +172,6 @@ void StageScene::Draw()
 	clientManager_->Draw();
 
 	deadLine_->Draw();
-
-
-	eOutWater_->Draw();
 
 	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());

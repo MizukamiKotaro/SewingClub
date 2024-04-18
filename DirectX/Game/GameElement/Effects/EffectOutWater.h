@@ -4,20 +4,11 @@
 
 class EffectOutWater
 {
-public://シングルトンパターン
-	static  EffectOutWater* GetInstance();
-
-private://シングルトンパターン
-
-	EffectOutWater() = default;
-	~EffectOutWater() = default;
-	EffectOutWater(const  EffectOutWater& o) = delete;
-	const  EffectOutWater& operator=(const EffectOutWater& o) = delete;
 
 public:
 
-	//各準備
-	void SetUp();
+	EffectOutWater();
+	~EffectOutWater();
 
 	//初期化
 	void Initialize();
@@ -32,6 +23,9 @@ public:
 
 	//終了処理
 	void Finalize();
+
+	//デバッグ処理
+	void Debug();
 
 	/// <summary>
 	/// エフェクト発生処理
@@ -105,14 +99,17 @@ private:
 	const Vector2* playerTranslate_;
 
 
-	//拡散角度
-	float diffusionR_;
+	//拡散角度(弧の半分)（あとでpiかけているので注意）
+	float diffusionR_=1.0f/2.0f;
 
-	//拡縮
+	//オブジェクトの拡縮
 	float scale_ = 0.1f;
 
 	//初速度の範囲x=min,y=max
 	Vector2 startVelo = { 1.0f,1.5f };
+
+	//湾曲度
+	float bendNum_ = 2.0f;
 
 	//初速度の細かい速度倍率
 	float  rateScaling_ = 0.6f;
@@ -130,8 +127,7 @@ private:
 	//加速度の速度
 	float acceSpd_ = 0.01f;
 
-	
-	//生存カウントのプレイヤー速度に乗算する値
+	//生存カウントのプレイヤー速度に対する影響度
 	float alliveLeverage_ = 90.0f;
 };
 

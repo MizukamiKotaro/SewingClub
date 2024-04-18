@@ -91,6 +91,14 @@ void EffectExtraJump::Draw()
 
 }
 
+void EffectExtraJump::Debug()
+{
+#ifdef _DEBUG
+
+#endif // _DEBUG
+
+}
+
 void EffectExtraJump::SpawnEffect(int count)
 {
 

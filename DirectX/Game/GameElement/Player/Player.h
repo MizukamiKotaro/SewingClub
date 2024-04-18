@@ -10,6 +10,7 @@
 #include "StageEditor/StageEditor.h"
 #include"Audio.h"
 #include"GameElement/Effects/EffectExtraJump.h"
+#include"GameElement/Effects/EffectOutWater.h"
 
 class Input;
 class WaterManager;
@@ -224,4 +225,7 @@ private:
 
 	//追加ジャンプエフェクト
 	std::unique_ptr<EffectExtraJump>effeExtraJump_;
+
+	//水しぶきエフェクト
+	std::unique_ptr<EffectOutWater>effectOutWater_;
 };

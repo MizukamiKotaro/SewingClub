@@ -6,7 +6,6 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "GameElement/WaterManager/WaterManager.h"
 #include "GameElement/Client/ClientManager.h"
-#include"GameElement/Effects/EffectOutWater.h"
 
 Player::Player()
 {
@@ -82,7 +81,7 @@ Player::Player()
 	seStayWater_.LoadWave("SE/inWater.wav","水の中にいる音");
 
 	effeExtraJump_ = std::make_unique<EffectExtraJump>();
-	
+	effectOutWater_ = std::make_unique<EffectOutWater>();
 }
 
 void Player::Initialize()
@@ -91,6 +90,7 @@ void Player::Initialize()
 	stageEditor_->Initialize();
 	Reset();
 	effeExtraJump_->Initialize(&model_->transform_.GetWorldPosition());
+	effectOutWater_->Initialize();
 }
 
 void Player::Update(float deltaTime)
@@ -100,6 +100,8 @@ void Player::Update(float deltaTime)
 		Initialize();
 	}
 	ApplyGlobalVariable();
+	effeExtraJump_->Debug();
+	effectOutWater_->Debug();
 #endif // _DEBUG
 	if (isInWater_ && preIsInWater_) {
 		// 水や惑星内での更新処理
@@ -146,12 +148,14 @@ void Player::Update(float deltaTime)
 	SetCollider();
 
 	effeExtraJump_->Update();
+	effectOutWater_->Update();
 }
 
 void Player::Draw(const Camera* camera)
 {
 	model_->Draw(*camera);
 	effeExtraJump_->Draw();
+	effectOutWater_->Draw();
 	//yarn_->Draw();
 }
 
@@ -291,7 +295,7 @@ void Player::PopUpFromWater()
 
 	//各エフェクト発生処理
 	//みずしぶき
-	EffectOutWater::GetInstance()->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y), Vector2{ velocity_.x,velocity_.y },normalJumpEffectNum_);
+	effectOutWater_->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y), Vector2{ velocity_.x,velocity_.y },normalJumpEffectNum_);
 	//軌道エフェクト
 	//effeExtraJump_->SpawnEffect(60);
 }
