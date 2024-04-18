@@ -224,4 +224,8 @@ private:
 
 	//追加ジャンプエフェクト
 	std::unique_ptr<EffectExtraJump>effeExtraJump_;
+
+	// アニメーション
+	class Animation2D* animation_ = nullptr;
+
 };

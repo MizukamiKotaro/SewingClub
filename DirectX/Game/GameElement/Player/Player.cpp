@@ -7,6 +7,9 @@
 #include "GameElement/WaterManager/WaterManager.h"
 #include "GameElement/Client/ClientManager.h"
 #include"GameElement/Effects/EffectOutWater.h"
+#include "GameElement/Animation/Animation2D.h"
+#include "GameElement/Animation/AnimationManager.h"
+#include "TextureManager/TextureManager.h"
 
 Player::Player()
 {
@@ -61,7 +64,7 @@ Player::Player()
 	preVector_ = vector_;
 	naminamiChangeDirectionTime_ = 0.0f;
 
-	model_ = std::make_unique<Model>("subPlayer");
+	model_ = std::make_unique<Model>("plane");
 	model_->transform_.scale_ = { 0.4f,0.2f,0.2f };
 
 	stageEditor_ = std::make_unique<StageEditor>("プレイヤーの設定");
@@ -83,6 +86,13 @@ Player::Player()
 
 	effeExtraJump_ = std::make_unique<EffectExtraJump>();
 	
+	// アニメーションの初期化とモデルのセット
+	animation_ = AnimationManager::GetInstance()->AddAnimation("default");
+	// UV座標のセット
+	Transform handle = animation_->GetSceneUV(0u);
+	model_->SetUVParam(handle);
+	model_->SetTexture(TextureManager::GetInstance()->LoadTexture("player.png"));
+
 }
 
 void Player::Initialize()
@@ -841,6 +851,8 @@ void Player::SetGlobalVariable()
 
 	stageEditor_->AddItem("初期座標", model_->transform_.translate_);
 	model_->transform_.translate_ = stageEditor_->GetVector3Value("初期座標");
+	// 重要 X座標を上に出すための処理--------------------------------------------------------------------------------------------------------------------------------------------
+	model_->transform_.translate_.z = -0.1f;
 	ApplyGlobalVariable();
 }
 
