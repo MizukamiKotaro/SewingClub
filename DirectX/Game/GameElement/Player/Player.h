@@ -226,6 +226,10 @@ private:
 	//追加ジャンプエフェクト
 	std::unique_ptr<EffectExtraJump>effeExtraJump_;
 
+	// アニメーション
+	class Animation2D* animation_ = nullptr;
+
+
 	//水しぶきエフェクト
 	std::unique_ptr<EffectOutWater>effectOutWater_;
 };

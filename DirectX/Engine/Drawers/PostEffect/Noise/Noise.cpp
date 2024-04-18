@@ -6,33 +6,41 @@
 #include "GraphicsPipelineSystem/PipelineTypeConfig.h"
 #include "DescriptorHeapManager/DescriptorHandles/DescriptorHandles.h"
 #include "GraphicsPipelineSystem/GraphicsPiplineManager/GraphicsPiplineManager.h"
+#include "WindowsInfo/WindowsInfo.h"
 
 Noise::Noise()
 {
 	piplineType_ = PipelineType::NOISE;
-	blurData_ = nullptr;
+	noiseData_ = nullptr;
 	CreatePostEffect();
 }
 
 Noise::~Noise()
 {
-	blurResource_->Release();
+	noiseResource_->Release();
+}
+
+void Noise::Initialize()
+{
+	noiseData_->time = 0.0f;
+}
+
+void Noise::Update(const float& time)
+{
+	noiseData_->time += time;
 }
 
 void Noise::Draw(BlendMode blendMode)
 {
-	if (blurData_->pickRange <= 0.0f) {
-		blurData_->pickRange = 0.01f;
-	}
-	if (blurData_->stepWidth <= 0.0f) {
-		blurData_->stepWidth = 0.001f;
+	if (noiseData_->density <= 0.0f) {
+		noiseData_->density = 1.0f;
 	}
 
 	if (blendMode == BlendMode::kBlendModeNormal) {
-		blurData_->isNormal = 1;
+		noiseData_->isNormal = 1;
 	}
 	else {
-		blurData_->isNormal = 0;
+		noiseData_->isNormal = 0;
 	}
 
 	if (isInvisible_) {
@@ -59,33 +67,29 @@ void Noise::Draw(BlendMode blendMode)
 
 	commandList->SetGraphicsRootDescriptorTable(2, srvHandles_->gpuHandle);
 
-	commandList->SetGraphicsRootConstantBufferView(3, blurResource_->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(3, noiseResource_->GetGPUVirtualAddress());
 
 	//描画!!!!（DrawCall/ドローコール）
 	commandList->DrawInstanced(6, 1, 0, 0);
 
 }
 
-void Noise::CreateBlurRes()
+void Noise::CreateNoiseRes()
 {
-	blurResource_ = DirectXBase::CreateBufferResource(sizeof(BlurData));
+	noiseResource_ = DirectXBase::CreateBufferResource(sizeof(NoiseData));
 
-	blurResource_->Map(0, nullptr, reinterpret_cast<void**>(&blurData_));
+	noiseResource_->Map(0, nullptr, reinterpret_cast<void**>(&noiseData_));
 
-	blurData_->angle = 0.0f;
-
-	blurData_->pickRange = 0.06f;
-
-	blurData_->stepWidth = 0.005f;
-
-	blurData_->isCenterBlur = 1;
-
-	blurData_->isNormal = 1;
+	noiseData_->density = 10.0f;
+	noiseData_->screenSize = WindowsInfo::GetInstance()->GetWindowSize();
+	noiseData_->time = 0.0f;
+	noiseData_->type = NoiseType::LIGHTNING;
+	noiseData_->isNormal = 1;
 }
 
 void Noise::CreateResources()
 {
 	BasePostEffect::CreateResources();
 
-	CreateBlurRes();
+	CreateNoiseRes();
 }
