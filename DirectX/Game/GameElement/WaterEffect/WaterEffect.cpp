@@ -23,7 +23,7 @@ void WaterEffect::Initialize()
 {
 	noise_->Initialize();
 	stageEditor_->Initialize();
-	noise_->Update(0.0f);
+	noise_->Update(0.01f);
 }
 
 void WaterEffect::Update(const float& deltaTime)
