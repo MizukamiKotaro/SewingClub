@@ -19,6 +19,7 @@ StageScene::StageScene()
 	WaveFloorChip::StaticInitialize();
 	WaveFloor::StaticInitialize();
 	Wave::StaticInitialize();
+	WaterChunkChip::StaticInitialize();
 	WaterChunk::StaticInitialize();
 	GravityArea::StaticInitialize();
 	Client::StaticInitialize();
@@ -49,7 +50,7 @@ StageScene::StageScene()
 
 	deadLine_ = std::make_unique<DeadLine>(camera_.get(),player_->GetPositionPtr());
 
-	shi_.LoadMP3("maou_short_14_shining_star.mp3", "お試し");
+	waterEffect_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
 }
 
 void StageScene::Initialize()
@@ -66,8 +67,7 @@ void StageScene::Initialize()
 	goal_->Initialize();
 	deadLine_->Initialize();
 	enemyManager_->Initialize();
-
-	shi_.Play(false);
+	waterEffect_->Initialize();
 }
 
 void StageScene::Update()
@@ -88,6 +88,7 @@ void StageScene::Update()
 	WaveFloorChip::StaticUpdate();
 	WaveFloor::StaticUpdate();
 	Wave::StaticUpdate();
+	WaterChunkChip::StaticUpdate();
 	WaterChunk::StaticUpdate();
 	GravityArea::StaticUpdate();
 	Client::StaticUpdate();
@@ -148,6 +149,8 @@ void StageScene::Update()
 	waveFloor_->Update();
 
 	collisionManager_->CheckCollision();
+
+	waterEffect_->Update(deltaTime);
 }
 
 void StageScene::Draw()
@@ -155,13 +158,16 @@ void StageScene::Draw()
 	instancingmodelManager_->Clear();
 	particleManager_->Clear();
 
+	// ポストエフェクトの用の描画
+	MakePostEffect();
+
 	Kyoko::Engine::PreDraw();
+	// 描画
+	waterEffect_->Draw();
 
 	player_->Draw(camera_.get());
 
 	//waveFloor_->Draw();
-
-	waterManager_->Draw();
 
 	itemManager_->Draw();
 
@@ -217,5 +223,25 @@ void StageScene::WaveUpdate()
 			it++;
 		}
 	}
+}
+
+void StageScene::MakePostEffect()
+{
+	waterEffect_->PreDrawBackGround();
+	// 背景の描画
+
+
+	waterEffect_->PostDrawBackGround();
+
+	waterEffect_->PreDrawWaterArea();
+	// 水のエリアの描画
+	waterManager_->Draw();
+
+	instancingmodelManager_->Draw(*camera_.get());
+	particleManager_->Draw(*camera_.get());
+	waterEffect_->PostDrawWaterArea();
+
+	instancingmodelManager_->Clear();
+	particleManager_->Clear();
 }
 

@@ -15,7 +15,7 @@ class FrameInfo;
 class WaterChunkChip {
 public:
 
-	WaterChunkChip(const Vector3& position);
+	WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate);
 
 	static void StaticInitialize();
 
@@ -65,10 +65,12 @@ private:
 	};
 	std::list<WavePower> wavePowers_;
 
+	Vector3 center_;
+
 	Vector3 velocity_;
 
 	Vector3 position_;
-	Quaternion rotate_;
+	Vector3 rotate_;
 
 	Vector3 ganeratePosition_;
 };

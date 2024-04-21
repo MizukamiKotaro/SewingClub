@@ -397,6 +397,9 @@
     <Filter Include="Game\GameElement\Charactor\Enemy">
       <UniqueIdentifier>{163fa9eb-b8fd-4d14-b37b-6074206dbed0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\WaterEffect">
+      <UniqueIdentifier>{a8e4c134-c369-4280-ba74-5433cdc59c4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -800,6 +803,9 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Enemy\DoesNotWorkEnemy.cpp">
       <Filter>Game\GameElement\Charactor\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\WaterEffect\WaterEffect.cpp">
+      <Filter>Game\GameElement\WaterEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1264,6 +1270,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelData.h">
       <Filter>Engine\Drawer\InstancingModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\WaterEffect\WaterEffect.h">
+      <Filter>Game\GameElement\WaterEffect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -19,14 +19,15 @@ const std::string WaterChunkChip::fNames[kFloatEnd] = {
 
 float WaterChunkChip::fParas_[kFloatEnd] = { 1.0f };
 
-Vector3 WaterChunkChip::scale_ = { WaterChunkChip::fParas_[WaterChunkChip::kScale],WaterChunkChip::fParas_[WaterChunkChip::kScale] ,WaterChunkChip::fParas_[WaterChunkChip::kScale] };
+Vector3 WaterChunkChip::scale_ = { WaterChunkChip::fParas_[WaterChunkChip::kScale],WaterChunkChip::fParas_[WaterChunkChip::kScale] ,0.0001f };
 
-WaterChunkChip::WaterChunkChip(const Vector3& position)
+WaterChunkChip::WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate)
 {
+	center_ = center;
 	position_ = position;
 	ganeratePosition_ = position;
 	velocity_ = {};
-	rotate_ = Quaternion::Identity();
+	rotate_ = { 0.0f,0.0f,rotate };
 }
 
 void WaterChunkChip::StaticInitialize()
@@ -36,7 +37,7 @@ void WaterChunkChip::StaticInitialize()
 	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
 	frameInfo_ = FrameInfo::GetInstance();
 
-	globalVariable_ = std::make_unique<GlobalVariableUser>("Wave", "FloorChip");
+	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", "WaterChip");
 	globalVariable_->CreateGroup();
 
 	SetGlobalVariable();
@@ -49,6 +50,8 @@ void WaterChunkChip::Initialize()
 
 void WaterChunkChip::Update()
 {
+
+
 	float y = 0.0f;
 
 	for (std::list<WavePower>::iterator it = wavePowers_.begin(); it != wavePowers_.end();) {
@@ -125,5 +128,5 @@ void WaterChunkChip::ApplyGlobalVariable()
 		}
 	}
 
-	scale_ = { fParas_[kScale],fParas_[kScale] ,fParas_[kScale] };
+	scale_ = { fParas_[kScale],fParas_[kScale] ,0.0001f };
 }

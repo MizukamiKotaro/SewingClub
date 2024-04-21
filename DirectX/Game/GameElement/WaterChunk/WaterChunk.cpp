@@ -39,7 +39,7 @@ WaterChunk::WaterChunk()
 	no_ = 0;
 	isSmall_ = false;
 	isTree_ = false;
-	color_ = { 0.3f,1.0f,0.8f,1.0f };
+	color_ = { 1.0f,1.0f,1.0f,1.0f };
 }
 
 WaterChunk::WaterChunk(int no)
@@ -61,7 +61,9 @@ WaterChunk::WaterChunk(int no)
 	scale_ = maxScale_;
 	isSmaeGravitySize_ = false;
 	isTree_ = false;
-	color_ = { 0.3f,1.0f,0.8f,1.0f };
+	color_ = { 1.0f,1.0f,1.0f,1.0f };
+
+	CreateChips();
 }
 
 WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
@@ -80,7 +82,7 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 
 	isSmaeGravitySize_ = isSame;
 	isTree_ = false;
-	color_ = { 0.3f,1.0f,0.8f,1.0f };
+	color_ = { 1.0f,1.0f,1.0f,1.0f };
 }
 
 void WaterChunk::StaticInitialize()
@@ -115,7 +117,7 @@ void WaterChunk::Update(float deltaTime, Camera* camera)
 			color_ = { 0.8f,0.7f,0.1f,1.0f };
 		}
 		else {
-			color_ = { 0.3f,1.0f,0.8f,1.0f };
+			color_ = { 1.0f,1.0f,1.0f,1.0f };
 		}
 	}
 #endif // _DEBUG
@@ -144,10 +146,15 @@ void WaterChunk::Draw() const
 		chip->Draw();
 	}*/
 #ifdef _DEBUG
-		gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
+		//gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 #endif // _DEBUG
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
 		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
+
+		/*for (const std::unique_ptr<WaterChunkChip>& chip : chips_) {
+			chip->Draw();
+		}*/
+
 	}
 }
 
@@ -216,6 +223,43 @@ void WaterChunk::ActiveCheck(Camera* camera)
 	else {
 		isActive_ = true;
 	}
+}
+
+void WaterChunk::CreateChips()
+{
+	float chipScale = WaterChunkChip::GetScale();
+	float rotateAdd = 3.1415f / 90;
+	float rotate = 0.0f;
+	float chipHalfScale = chipScale / 2;
+	bool isRad = false;
+
+	for (int i = 0; i < 180; i++) {
+		float rad = chipHalfScale;
+		isRad = false;
+		while (true) {
+
+			if (scale_ <= rad + chipHalfScale) {
+				rad = (scale_ - chipScale) / 2;
+				isRad = true;
+			}
+			
+			Vector3 pos{};
+			pos.x = rad * std::cosf(rotate);
+			pos.y = rad * std::sinf(rotate);
+
+			pos += position_;
+
+			chips_.push_back(std::make_unique<WaterChunkChip>(position_, pos, rotate));
+
+			if (isRad) {
+				break;
+			}
+
+			rad += chipScale;
+		}
+		rotate += rotateAdd;
+	}
+
 }
 
 void WaterChunk::OnCollision(const Collider& collider)
