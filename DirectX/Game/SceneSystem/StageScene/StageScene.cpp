@@ -166,8 +166,6 @@ void StageScene::Draw()
 	// 描画
 	waterEffect_->Draw();
 
-	player_->EffectDraw();
-
 	player_->Draw(camera_.get());
 
 	//waveFloor_->Draw();
@@ -270,6 +268,8 @@ void StageScene::MakePostEffect()
 	waterEffect_->PreDrawWaterArea();
 	// 水のエリアの描画
 	waterManager_->Draw();
+
+	player_->EffectDraw();
 
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
