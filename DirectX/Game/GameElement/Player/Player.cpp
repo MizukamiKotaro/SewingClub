@@ -86,6 +86,7 @@ Player::Player()
 
 	effeExtraJump_ = std::make_unique<EffectExtraJump>();
 	effectOutWater_ = std::make_unique<EffectOutWater>();
+	effeEnterWater_ = std::make_unique<EffectEnterWater>();
 	
 	// アニメーションの初期化とモデルのセット
 	animation_ = AnimationManager::GetInstance()->AddAnimation("default");
@@ -103,6 +104,7 @@ void Player::Initialize()
 	Reset();
 	effeExtraJump_->Initialize(&model_->transform_.GetWorldPosition());
 	effectOutWater_->Initialize();
+	effeEnterWater_->Initialize();
 }
 
 void Player::Update(float deltaTime)
@@ -161,6 +163,7 @@ void Player::Update(float deltaTime)
 
 	effeExtraJump_->Update();
 	effectOutWater_->Update();
+	effeEnterWater_->Update();
 }
 
 void Player::Draw(const Camera* camera)
@@ -168,6 +171,7 @@ void Player::Draw(const Camera* camera)
 	model_->Draw(*camera);
 	effeExtraJump_->Draw();
 	effectOutWater_->Draw();
+	effeEnterWater_->Draw();
 	//yarn_->Draw();
 }
 
@@ -322,6 +326,8 @@ void Player::ComeToWater()
 	preVector_ = vector_;
 	naminamiChangeDirectionTime_ = 0.0f;
 	model_->transform_.translate_ += velocity_;
+
+	effeEnterWater_->SpawnEffect(Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }, Vector2{ velocity_.x,velocity_.y }, gravityPos_, normalJumpEffectNum_);
 }
 
 void Player::OutWater(float deltaTime)

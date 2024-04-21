@@ -11,6 +11,7 @@
 #include"Audio.h"
 #include"GameElement/Effects/EffectExtraJump.h"
 #include"GameElement/Effects/EffectOutWater.h"
+#include"GameElement/Effects/EffectEnterWater.h"
 
 class Input;
 class WaterManager;
@@ -232,4 +233,5 @@ private:
 
 	//水しぶきエフェクト
 	std::unique_ptr<EffectOutWater>effectOutWater_;
+	std::unique_ptr<EffectEnterWater>effeEnterWater_;
 };
