@@ -31,6 +31,9 @@ public:
 	// 左上の客の描画、Sprite描画
 	void DrawClient();
 
+	//エフェクト描画
+	void EffectDraw();
+
 	//シーン変わり目の処理
 	void Finalize();
 public:

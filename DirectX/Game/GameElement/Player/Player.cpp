@@ -169,9 +169,6 @@ void Player::Update(float deltaTime)
 void Player::Draw(const Camera* camera)
 {
 	model_->Draw(*camera);
-	effeExtraJump_->Draw();
-	effectOutWater_->Draw();
-	effeEnterWater_->Draw();
 	//yarn_->Draw();
 }
 
@@ -182,6 +179,13 @@ void Player::DrawClient()
 		client->Draw(pos);
 		pos.x += 50.0f;
 	}
+}
+
+void Player::EffectDraw()
+{
+	effeExtraJump_->Draw();
+	effectOutWater_->Draw();
+	effeEnterWater_->Draw();
 }
 
 void Player::Finalize()
