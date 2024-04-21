@@ -18,6 +18,10 @@ struct NoiseData {
 	float density;
 	float time;
 	float32_t2 screenSize;
+	float32_t4 waterColor;
+	float32_t4 lightningColor;
+	float32_t2 cameraPos;
+	float moveScale;
 	int32_t type;
 	int32_t isNormal;
 };
@@ -169,6 +173,45 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		float n = step(0.985,1-abs(n1-n2));
 
 		output.color = float32_t4(n,n,n,1);
+	}
+	else if(gNoise.type == 8){
+		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
+
+		float n1 = FractalSumNoise(gNoise.density, transformedUV.xy + float32_t2(gNoise.time,gNoise.time));
+		float n2 = FractalSumNoise(gNoise.density, transformedUV.xy + float32_t2(-gNoise.time,-gNoise.time));
+		
+		float32_t4 textureColor = gTexture.Sample(gSampler, float32_t2(transformedUV.x + n1 / 5, transformedUV.y + n2 / 5));
+
+		output.color = textureColor;
+	}
+	else if(gNoise.type == 9){
+		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
+
+		float32_t2 pos = float32_t2(gNoise.cameraPos.x / (16 * gNoise.moveScale),-gNoise.cameraPos.y / (9 * gNoise.moveScale));
+
+		float n1 = FractalSumNoise(gNoise.density, transformedUV.xy + pos + float32_t2(gNoise.time,gNoise.time));
+		float n2 = FractalSumNoise(gNoise.density, transformedUV.xy + pos + float32_t2(-gNoise.time,-gNoise.time));
+		
+		float32_t4 textureColor = gTexture.Sample(gSampler, float32_t2(transformedUV.x + n1 / 5, transformedUV.y + n2 / 5));
+
+		float n3 = (n1 + n2) / 2;
+
+		float n4 = step(0.985,1-abs(n1-n2));
+
+		float32_t4 waterColor = float32_t4(n3,n3,n3,1);
+		waterColor.r = waterColor.r * gNoise.waterColor.r;
+		waterColor.g = waterColor.g * gNoise.waterColor.g;
+		waterColor.b = waterColor.b * gNoise.waterColor.b;
+
+		float32_t4 lightningColor = float32_t4(n4,n4,n4,1);
+		lightningColor.r = lightningColor.r * gNoise.lightningColor.r;
+		lightningColor.g = lightningColor.g * gNoise.lightningColor.g;
+		lightningColor.b = lightningColor.b * gNoise.lightningColor.b;
+
+		output.color.r = clamp(waterColor.r + lightningColor.r + textureColor.r, 0, 1);
+		output.color.g = clamp(waterColor.g + lightningColor.g + textureColor.g, 0, 1);
+		output.color.b = clamp(waterColor.b + lightningColor.b + textureColor.b, 0, 1);
+		output.color.a = 1;
 	}
 
 	output.color.r = output.color.r * gMaterial.color.r;

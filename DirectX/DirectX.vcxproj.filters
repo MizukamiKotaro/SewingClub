@@ -409,6 +409,9 @@
     <Filter Include="Game\GameElement\Effects\EffectExtraJump">
       <UniqueIdentifier>{7f03aa7c-74b2-4889-86c8-218bea19be6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\WaterEffect">
+      <UniqueIdentifier>{a8e4c134-c369-4280-ba74-5433cdc59c4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -827,6 +830,9 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Effects\EffectEnterWater.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\WaterEffect\WaterEffect.cpp">
+      <Filter>Game\GameElement\WaterEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1306,6 +1312,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\EffectEnterWater.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\WaterEffect\WaterEffect.h">
+      <Filter>Game\GameElement\WaterEffect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

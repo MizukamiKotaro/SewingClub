@@ -8,6 +8,10 @@
 #include "SceneSystem/SceneFactory/SceneFactory.h"
 
 
+#ifdef _DEBUG
+Vector4 color = { 1.0f,1.0f,1.0f,1.0 };
+#endif // _DEBUG
+
 
 SceneManager::SceneManager()
 {
@@ -61,6 +65,15 @@ int SceneManager::Run()
 
 		DebugWindow();
 
+		ImGui::Begin("フレームレート");
+		ImGui::Text("フレーム : %4.1f", frameInfo_->GetFramerate());
+		ImGui::End();
+
+		ImGui::Begin("色の確認");
+		ImGui::ColorEdit4("カラーの数値確認", &color.x);
+		ImGui::End();
+#endif // _DEBUG
+		
 		scene_->Draw();
 
 		frameInfo_->End();

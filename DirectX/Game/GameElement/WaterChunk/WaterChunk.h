@@ -40,6 +40,8 @@ private:
 
 	void ActiveCheck(Camera* camera);
 
+	void CreateChips();
+
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
@@ -64,7 +66,7 @@ private:
 
 public:
 	
-	//std::list<std::unique_ptr<WaterChunkChip>> chips_;
+	std::list<std::unique_ptr<WaterChunkChip>> chips_;
 
 private:
 	static float deleteTime_;

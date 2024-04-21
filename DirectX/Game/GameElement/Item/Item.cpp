@@ -38,7 +38,8 @@ void Item::StaticInitialize()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
-	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
+	const Texture* tex = TextureManager::GetInstance()->LoadTexture("ground.png");
+	modelData_ = instancingManager_->GetDrawData({ modelData,tex,BlendMode::kBlendModeNormal });
 
 	StaticSetGlobalVariable();
 }
