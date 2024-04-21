@@ -8,6 +8,10 @@
 #include "SceneSystem/SceneFactory/SceneFactory.h"
 
 
+#ifdef _DEBUG
+Vector4 color = { 1.0f,1.0f,1.0f,1.0 };
+#endif // _DEBUG
+
 
 SceneManager::SceneManager()
 {
@@ -60,7 +64,7 @@ int SceneManager::Run()
 		scene_->Play();
 
 		DebugWindow();
-
+		
 		scene_->Draw();
 
 		frameInfo_->End();
@@ -111,7 +115,9 @@ void SceneManager::DebugWindow()
 	ImGui::SliderInt("sceneNo", &num, 0, _SceneCount - 1);
 	ImGui::Text("フレーム : %4.1f", frameInfo_->GetFramerate());
 	ImGui::End();
-
+	ImGui::Begin("色の確認");
+	ImGui::ColorEdit4("カラーの数値確認", &color.x);
+	ImGui::End();
 	IScene::sceneNo_ = num;
 #endif // _DEBUG
 

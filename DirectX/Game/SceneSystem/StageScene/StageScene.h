@@ -10,6 +10,8 @@
 #include "GameElement/WaterChunk/WaterChunk.h"
 #include "GameElement/Goal/Goal.h"
 #include "GameElement/DeadLine/DeadLine.h"
+#include "GameElement/WaterEffect/WaterEffect.h"
+
 
 class InstancingModelManager;
 class CollisionManager;
@@ -35,6 +37,8 @@ private:
 
 	void WaveUpdate();
 
+	void MakePostEffect();
+
 	//�V�[���ύX
 	void SceneChange();
 private:
@@ -44,6 +48,7 @@ private:
 	std::list<std::unique_ptr<Wave>> waves_;
 	std::unique_ptr<Goal> goal_;
 	std::unique_ptr<DeadLine> deadLine_;
+	std::unique_ptr<WaterEffect> waterEffect_;
 
 	float time_ = 0.0f;
 

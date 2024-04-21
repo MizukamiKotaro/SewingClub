@@ -19,6 +19,7 @@ StageScene::StageScene()
 	WaveFloorChip::StaticInitialize();
 	WaveFloor::StaticInitialize();
 	Wave::StaticInitialize();
+	WaterChunkChip::StaticInitialize();
 	WaterChunk::StaticInitialize();
 	GravityArea::StaticInitialize();
 	Client::StaticInitialize();
@@ -52,6 +53,7 @@ StageScene::StageScene()
 
 	bgm_.LoadWave("Music/ingame.wav", "StageBGM", bgmVolume_);
 	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);
+	waterEffect_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
 }
 
 void StageScene::Initialize()
@@ -71,6 +73,7 @@ void StageScene::Initialize()
 	enemyManager_->Initialize();
 
 	bgm_.Play(true);
+	waterEffect_->Initialize();
 }
 
 void StageScene::Update()
@@ -84,6 +87,7 @@ void StageScene::Update()
 	WaveFloorChip::StaticUpdate();
 	WaveFloor::StaticUpdate();
 	Wave::StaticUpdate();
+	WaterChunkChip::StaticUpdate();
 	WaterChunk::StaticUpdate();
 	GravityArea::StaticUpdate();
 	Client::StaticUpdate();
@@ -146,6 +150,8 @@ void StageScene::Update()
 	collisionManager_->CheckCollision();
 
 	SceneChange();
+
+	waterEffect_->Update(deltaTime);
 }
 
 void StageScene::Draw()
@@ -153,13 +159,16 @@ void StageScene::Draw()
 	instancingmodelManager_->Clear();
 	particleManager_->Clear();
 
+	// ポストエフェクトの用の描画
+	MakePostEffect();
+
 	Kyoko::Engine::PreDraw();
+	// 描画
+	waterEffect_->Draw();
 
 	player_->Draw(camera_.get());
 
 	//waveFloor_->Draw();
-
-	waterManager_->Draw();
 
 	itemManager_->Draw();
 
@@ -246,5 +255,25 @@ void StageScene::SceneChange()
 		player_->Finalize();
 		seDead_.Play();
 	}
+}
+
+void StageScene::MakePostEffect()
+{
+	waterEffect_->PreDrawBackGround();
+	// 背景の描画
+
+
+	waterEffect_->PostDrawBackGround();
+
+	waterEffect_->PreDrawWaterArea();
+	// 水のエリアの描画
+	waterManager_->Draw();
+
+	instancingmodelManager_->Draw(*camera_.get());
+	particleManager_->Draw(*camera_.get());
+	waterEffect_->PostDrawWaterArea();
+
+	instancingmodelManager_->Clear();
+	particleManager_->Clear();
 }
 
