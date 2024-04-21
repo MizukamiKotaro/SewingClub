@@ -64,15 +64,6 @@ int SceneManager::Run()
 		scene_->Play();
 
 		DebugWindow();
-
-		ImGui::Begin("フレームレート");
-		ImGui::Text("フレーム : %4.1f", frameInfo_->GetFramerate());
-		ImGui::End();
-
-		ImGui::Begin("色の確認");
-		ImGui::ColorEdit4("カラーの数値確認", &color.x);
-		ImGui::End();
-#endif // _DEBUG
 		
 		scene_->Draw();
 
@@ -124,7 +115,9 @@ void SceneManager::DebugWindow()
 	ImGui::SliderInt("sceneNo", &num, 0, _SceneCount - 1);
 	ImGui::Text("フレーム : %4.1f", frameInfo_->GetFramerate());
 	ImGui::End();
-
+	ImGui::Begin("色の確認");
+	ImGui::ColorEdit4("カラーの数値確認", &color.x);
+	ImGui::End();
 	IScene::sceneNo_ = num;
 #endif // _DEBUG
 
