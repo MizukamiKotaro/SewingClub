@@ -168,6 +168,7 @@ void Player::Update(float deltaTime)
 
 void Player::Draw(const Camera* camera)
 {
+	effeExtraJump_->Draw();
 	model_->Draw(*camera);
 	//yarn_->Draw();
 }
@@ -183,7 +184,7 @@ void Player::DrawClient()
 
 void Player::EffectDraw()
 {
-	effeExtraJump_->Draw();
+	
 	effectOutWater_->Draw();
 	effeEnterWater_->Draw();
 }
@@ -315,9 +316,9 @@ void Player::PopUpFromWater()
 
 	//各エフェクト発生処理
 	//みずしぶき
-	effectOutWater_->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y), Vector2{ velocity_.x,velocity_.y },normalJumpEffectNum_);
+	//effectOutWater_->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y), Vector2{ velocity_.x,velocity_.y },normalJumpEffectNum_);
 	//軌道エフェクト
-	//effeExtraJump_->SpawnEffect(60);
+	effeExtraJump_->SpawnEffect(true);
 }
 
 void Player::ComeToWater()
@@ -331,7 +332,9 @@ void Player::ComeToWater()
 	naminamiChangeDirectionTime_ = 0.0f;
 	model_->transform_.translate_ += velocity_;
 
-	effeEnterWater_->SpawnEffect(Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }, Vector2{ velocity_.x,velocity_.y }, gravityPos_, normalJumpEffectNum_);
+	//effeEnterWater_->SpawnEffect(Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }, Vector2{ velocity_.x,velocity_.y }, gravityPos_, normalJumpEffectNum_);
+
+	effeExtraJump_->SpawnEffect(false);
 }
 
 void Player::OutWater(float deltaTime)

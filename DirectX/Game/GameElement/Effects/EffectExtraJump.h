@@ -30,10 +30,10 @@ public:
 	void Debug();
 
 	/// <summary>
-	/// エフェクト発生
+	/// エフェクト発生フラグ
 	/// </summary>
-	/// <param name="count">発生量</param>
-	void SpawnEffect(int count);
+	/// <param name="isAllive"></param>
+	void SpawnEffect(bool isAllive);
 
 private:
 	//インスタンシングに必要
@@ -44,6 +44,13 @@ private:
 	struct Dust {
 		Vector3 translate;
 		Vector3 velo;
+
+		//最大スケール
+		float maxScale;
+
+		float scale=0;
+
+		bool isSizeUp = true;
 
 		int count=0;
 		int maxCount_;
@@ -67,12 +74,13 @@ private:
 	Vector2 spawnAreaSize_ = { 0.5f,0.5f };
 
 	//塵のサイズ
-	Vector3 scale = { 0.05f,0.05f,1 };
+	float maxScale = 0.5f;
 
 	//湧き間隔
-	int spawnInterval_=1;
+	int spawnInterval_=0;
+
 	int spawnIntervalCount_ = 0;
 
 	//塵の消える時間
-	int dustDeadCount_ = 30;
+	int dustDeadCount_ = 15;
 };
