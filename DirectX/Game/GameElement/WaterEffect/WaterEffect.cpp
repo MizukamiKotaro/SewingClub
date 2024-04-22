@@ -25,6 +25,8 @@ void WaterEffect::Initialize()
 	noise_->Initialize();
 	stageEditor_->Initialize();
 	noise_->Update(0.01f);
+	
+	SetGlobalVariable();
 }
 
 void WaterEffect::Update(const float& deltaTime)
