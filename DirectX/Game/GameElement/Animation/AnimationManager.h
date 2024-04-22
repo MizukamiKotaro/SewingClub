@@ -6,7 +6,8 @@
 #include "Animation2D.h"
 #include "Model.h"
 #include "GlobalVariables/GlobalVariableUser.h"
-
+#include "Sprite.h"
+#include "Camera.h"
 
 class AnimationManager {
 public:
@@ -42,5 +43,8 @@ private:
 
 	// editor用
 	std::unique_ptr<Model> model_;
+	std::unique_ptr<Model> spritesheet_;
 	std::unique_ptr<Texture> texture_;
+	std::unique_ptr<Camera> camera_;
+	bool isEditor_ = false; // true:起動時いろいろ起きる
 };
