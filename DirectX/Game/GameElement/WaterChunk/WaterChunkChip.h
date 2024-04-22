@@ -15,7 +15,7 @@ class FrameInfo;
 class WaterChunkChip {
 public:
 
-	WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate);
+	WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate, const float& scale);
 
 	static void StaticInitialize();
 
@@ -71,6 +71,7 @@ private:
 
 	Vector3 position_;
 	Vector3 rotate_;
+	Vector3 myScale_;
 
 	Vector3 ganeratePosition_;
 };

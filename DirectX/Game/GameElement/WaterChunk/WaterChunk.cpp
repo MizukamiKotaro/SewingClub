@@ -7,12 +7,16 @@
 #include "SceneSystem/IScene/IScene.h"
 #include "WindowsInfo/WindowsInfo.h"
 #include "Camera.h"
+#include "GameElement/Player/Player.h"
 
 InstancingModelManager* WaterChunk::instancingManager_ = nullptr;
 const InstancingMeshTexData* WaterChunk::modelData_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> WaterChunk::staticGlobalVariable_ = nullptr;
 float WaterChunk::deleteTime_ = 2.0f;
+float WaterChunk::minScale_ = 0.7f;
+
+const Player* WaterChunk::player_ = nullptr;
 
 WaterChunk::WaterChunk()
 {
@@ -40,6 +44,7 @@ WaterChunk::WaterChunk()
 	isSmall_ = false;
 	isTree_ = false;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
+	isWave_ = false;
 }
 
 WaterChunk::WaterChunk(int no)
@@ -62,7 +67,9 @@ WaterChunk::WaterChunk(int no)
 	isSmaeGravitySize_ = false;
 	isTree_ = false;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
-
+	isWave_ = false;
+	isPlayer_ = false;
+	preIsPlayer_ = false;
 	CreateChips();
 }
 
@@ -83,6 +90,7 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 	isSmaeGravitySize_ = isSame;
 	isTree_ = false;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
+	isWave_ = false;
 }
 
 void WaterChunk::StaticInitialize()
@@ -148,13 +156,17 @@ void WaterChunk::Draw() const
 #ifdef _DEBUG
 		//gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 #endif // _DEBUG
-		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
-
-		/*for (const std::unique_ptr<WaterChunkChip>& chip : chips_) {
-			chip->Draw();
-		}*/
-
+		if (isWave_) {
+			for (const std::unique_ptr<WaterChunkChip>& chip : chips_) {
+				chip->Draw();
+			}
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_ * minScale_,scale_ * minScale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
+			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
+		}
+		else {
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
+			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
+		}
 	}
 }
 
@@ -163,6 +175,11 @@ void WaterChunk::StaticUpdate()
 #ifdef _DEBUG
 	StaticApplyGlobalVariable();
 #endif // _DEBUG
+}
+
+void WaterChunk::SetPlayer(const Player* player)
+{
+	player_ = player;
 }
 
 void WaterChunk::SetGlobalVariable()
@@ -227,36 +244,22 @@ void WaterChunk::ActiveCheck(Camera* camera)
 
 void WaterChunk::CreateChips()
 {
-	float chipScale = WaterChunkChip::GetScale();
 	float rotateAdd = 3.1415f / 90;
 	float rotate = 0.0f;
-	float chipHalfScale = chipScale / 2;
-	bool isRad = false;
+
+	float scale = scale_ / 2;
+	float rad = scale;
 
 	for (int i = 0; i < 180; i++) {
-		float rad = chipHalfScale;
-		isRad = false;
-		while (true) {
 
-			if (scale_ <= rad + chipHalfScale) {
-				rad = (scale_ - chipScale) / 2;
-				isRad = true;
-			}
-			
-			Vector3 pos{};
-			pos.x = rad * std::cosf(rotate);
-			pos.y = rad * std::sinf(rotate);
+		Vector3 pos{};
+		pos.x = rad * std::cosf(rotate);
+		pos.y = rad * std::sinf(rotate);
 
-			pos += position_;
+		pos += position_;
 
-			chips_.push_back(std::make_unique<WaterChunkChip>(position_, pos, rotate));
+		chips_.push_back(std::make_unique<WaterChunkChip>(position_, pos, rotate, scale));
 
-			if (isRad) {
-				break;
-			}
-
-			rad += chipScale;
-		}
 		rotate += rotateAdd;
 	}
 
@@ -265,7 +268,11 @@ void WaterChunk::CreateChips()
 void WaterChunk::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::PLAYER) {
-		
+		isPlayer_ = true;
+		if (!player_->GetPreInWater()) {
+			// 波発生
+
+		}
 	}
 }
 

@@ -7,6 +7,7 @@
 
 class Camera;
 class Wave;
+class Player;
 
 class WaterChunk : public Collider
 {
@@ -29,6 +30,8 @@ public:
 	const bool IsDelete() const { return deleteTime_ <= time_; }
 
 	void HitTest(const Wave& wave);
+
+	static void SetPlayer(const Player* player);
 
 private:
 	void SetGlobalVariable();
@@ -64,12 +67,20 @@ private:
 	static std::unique_ptr<GlobalVariableUser> staticGlobalVariable_;
 	std::unique_ptr<StageEditor> stageEditor_;
 
+	static float minScale_;
+
 public:
 	
 	std::list<std::unique_ptr<WaterChunkChip>> chips_;
 
 private:
+	static const Player* player_;
 	static float deleteTime_;
+
+	bool isWave_;
+
+	bool isPlayer_;
+	bool preIsPlayer_;
 
 	Vector3 position_;
 	float maxScale_;

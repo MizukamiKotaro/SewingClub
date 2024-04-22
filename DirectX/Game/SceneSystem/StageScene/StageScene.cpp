@@ -42,6 +42,8 @@ StageScene::StageScene()
 	camera_->transform_.translate_.z = -50.0f;
 	camera_->Update();
 
+	WaterChunk::SetPlayer(player_.get());
+
 	goal_ = std::make_unique<Goal>();
 
 	planetManager_->SetPlayer(player_.get());

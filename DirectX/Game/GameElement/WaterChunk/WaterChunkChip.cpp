@@ -21,12 +21,13 @@ float WaterChunkChip::fParas_[kFloatEnd] = { 1.0f };
 
 Vector3 WaterChunkChip::scale_ = { WaterChunkChip::fParas_[WaterChunkChip::kScale],WaterChunkChip::fParas_[WaterChunkChip::kScale] ,0.0001f };
 
-WaterChunkChip::WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate)
+WaterChunkChip::WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate, const float& scale)
 {
 	center_ = center;
 	position_ = position;
 	ganeratePosition_ = position;
 	velocity_ = {};
+	myScale_ = { scale,scale_.y,0.0001f };
 	rotate_ = { 0.0f,0.0f,rotate };
 }
 
@@ -50,6 +51,9 @@ void WaterChunkChip::Initialize()
 
 void WaterChunkChip::Update()
 {
+#ifdef _DEBUG
+	myScale_.y = scale_.y;
+#endif // _DEBUG
 
 
 	float y = 0.0f;
@@ -88,7 +92,7 @@ void WaterChunkChip::Update()
 
 void WaterChunkChip::Draw() const 
 {
-	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(scale_, rotate_, position_);
+	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(myScale_, rotate_, position_);
 	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} });
 }
 
