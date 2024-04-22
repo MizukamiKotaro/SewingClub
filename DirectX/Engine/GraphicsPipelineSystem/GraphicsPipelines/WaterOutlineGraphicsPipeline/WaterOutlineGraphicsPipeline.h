@@ -1,10 +1,10 @@
 #pragma once
 #include "GraphicsPipelineSystem/GraphicsPipeline/GraphicsPipeline.h"
 
-class WaterGraphicsPipeline : public GraphicsPipeline
+class WaterOutlineGraphicsPipeline : public GraphicsPipeline
 {
 public:
-	WaterGraphicsPipeline();
+	WaterOutlineGraphicsPipeline();
 private:
 	void InitializePSO() override;
 };

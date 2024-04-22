@@ -7,10 +7,11 @@ WaterEffect::WaterEffect(const Vector3& cameraPos)
 {
 	noise_ = std::make_unique<Noise>();
 	noise_->SetCameraPos(cameraPos);
-	post_ = std::make_unique<PostEffect>();
 	highLumi_ = std::make_unique<HighLumi>();
 	highLumi_->highLumiData_->max = 1.1f;
 	highLumi_->highLumiData_->isToWhite = 1;
+	outline_ = std::make_unique<WaterOutline>();
+	uneune_ = 20;
 
 	global_ = std::make_unique<GlobalVariableUser>("Water", "WaterEffect");
 	if (IScene::sceneNo_ == SCENE::STAGE) {
@@ -24,6 +25,8 @@ void WaterEffect::Initialize()
 	noise_->Initialize();
 	stageEditor_->Initialize();
 	noise_->Update(0.01f);
+	
+	SetGlobalVariable();
 }
 
 void WaterEffect::Update(const float& deltaTime)
@@ -34,12 +37,12 @@ void WaterEffect::Update(const float& deltaTime)
 #endif // _DEBUG
 
 
-	noise_->Update(deltaTime / 20);
+	noise_->Update(deltaTime / uneune_);
 }
 
 void WaterEffect::Draw()
 {
-	post_->Draw();
+	outline_->Draw();
 }
 
 void WaterEffect::PreDrawBackGround()
@@ -61,16 +64,17 @@ void WaterEffect::PostDrawWaterArea()
 {
 	highLumi_->PostDrawScene();
 
-	post_->PreDrawScene();
+	outline_->PreDrawScene();
 	noise_->Draw();
 	highLumi_->Draw(BlendMode::kBlendModeMultiply);
-	post_->PostDrawScene();
+	outline_->PostDrawScene();
 }
 
 void WaterEffect::SetGlobalVariable()
 {
 	global_->AddItem("密度", noise_->noiseData_->density);
 	global_->AddItem("カメラの影響の受けにくさ", noise_->noiseData_->moveScale);
+	global_->AddItem("うねうねの動きにくさ", uneune_);
 
 	if (stageEditor_) {
 		stageEditor_->AddItem("水の色", Vector3{ 0.3f,1.0f,0.8f });
@@ -88,6 +92,10 @@ void WaterEffect::ApplyGlobalVariable()
 {
 	noise_->noiseData_->density = global_->GetFloatValue("密度");
 	noise_->noiseData_->moveScale = global_->GetFloatValue("カメラの影響の受けにくさ");
+	uneune_ = global_->GetIntValue("うねうねの動きにくさ");
+	if (uneune_ <= 0) {
+		uneune_ = 1;
+	}
 
 	if (stageEditor_) {
 		Vector3 waterColor = stageEditor_->GetVector3Value("水の色");
@@ -101,4 +109,6 @@ void WaterEffect::ApplyGlobalVariable()
 		waterColor = global_->GetVector3Value("うねうねの色");
 		noise_->noiseData_->lightningColor = { waterColor.x,waterColor.y,waterColor.z,1.0f };
 	}
+
+	outline_->color_ = noise_->noiseData_->lightningColor;
 }

@@ -1,14 +1,14 @@
-#include "WaterGraphicsPipeline.h"
+#include "WaterOutlineGraphicsPipeline.h"
 #include "Engine/Base/DebugLog/DebugLog.h"
 #include "GraphicsPipelineSystem/BlendModeConfig.h"
 #include <cassert>
 
-WaterGraphicsPipeline::WaterGraphicsPipeline()
+WaterOutlineGraphicsPipeline::WaterOutlineGraphicsPipeline()
 {
 	Initialize();
 }
 
-void WaterGraphicsPipeline::InitializePSO()
+void WaterOutlineGraphicsPipeline::InitializePSO()
 {
 	//DescriptorRange
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -85,7 +85,7 @@ void WaterGraphicsPipeline::InitializePSO()
 	vertexShaderBlob_ = CompileShader(L"Resources/Shaders/SpriteShader/Sprite.VS.hlsl", L"vs_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_.Get());
 	assert(vertexShaderBlob_ != nullptr);
 
-	pixelShaderBlob_ = CompileShader(L"Resources/Shaders/WaterShader/Water.PS.hlsl", L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_.Get());
+	pixelShaderBlob_ = CompileShader(L"Resources/Shaders/WaterOutlineShader/WaterOutline.PS.hlsl", L"ps_6_0", dxcUtils_.Get(), dxcCompiler_.Get(), includeHandler_.Get());
 	assert(pixelShaderBlob_ != nullptr);
 
 	// DepthStencilStateの設定

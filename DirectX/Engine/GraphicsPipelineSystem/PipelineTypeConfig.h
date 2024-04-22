@@ -15,4 +15,5 @@ enum class PipelineType {
 	RGB_SHIFT,
 	INSTANCING_MODEL,
 	NOISE,
+	WATER_OUTLINE,
 };
