@@ -34,6 +34,7 @@ private:
 	void ApplyGlobalVariable();
 
 private:
+	int uneune_;
 	std::unique_ptr<Noise> noise_;
 	std::unique_ptr<HighLumi> highLumi_;
 	std::unique_ptr<WaterOutline> outline_;

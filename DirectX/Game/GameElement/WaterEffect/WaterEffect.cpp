@@ -11,6 +11,7 @@ WaterEffect::WaterEffect(const Vector3& cameraPos)
 	highLumi_->highLumiData_->max = 1.1f;
 	highLumi_->highLumiData_->isToWhite = 1;
 	outline_ = std::make_unique<WaterOutline>();
+	uneune_ = 20;
 
 	global_ = std::make_unique<GlobalVariableUser>("Water", "WaterEffect");
 	if (IScene::sceneNo_ == SCENE::STAGE) {
@@ -34,7 +35,7 @@ void WaterEffect::Update(const float& deltaTime)
 #endif // _DEBUG
 
 
-	noise_->Update(deltaTime / 20);
+	noise_->Update(deltaTime / uneune_);
 }
 
 void WaterEffect::Draw()
@@ -71,6 +72,7 @@ void WaterEffect::SetGlobalVariable()
 {
 	global_->AddItem("密度", noise_->noiseData_->density);
 	global_->AddItem("カメラの影響の受けにくさ", noise_->noiseData_->moveScale);
+	global_->AddItem("うねうねの動きにくさ", uneune_);
 
 	if (stageEditor_) {
 		stageEditor_->AddItem("水の色", Vector3{ 0.3f,1.0f,0.8f });
@@ -88,6 +90,10 @@ void WaterEffect::ApplyGlobalVariable()
 {
 	noise_->noiseData_->density = global_->GetFloatValue("密度");
 	noise_->noiseData_->moveScale = global_->GetFloatValue("カメラの影響の受けにくさ");
+	uneune_ = global_->GetIntValue("うねうねの動きにくさ");
+	if (uneune_ <= 0) {
+		uneune_ = 1;
+	}
 
 	if (stageEditor_) {
 		Vector3 waterColor = stageEditor_->GetVector3Value("水の色");
