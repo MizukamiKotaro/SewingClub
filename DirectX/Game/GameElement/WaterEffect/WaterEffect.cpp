@@ -7,10 +7,10 @@ WaterEffect::WaterEffect(const Vector3& cameraPos)
 {
 	noise_ = std::make_unique<Noise>();
 	noise_->SetCameraPos(cameraPos);
-	post_ = std::make_unique<PostEffect>();
 	highLumi_ = std::make_unique<HighLumi>();
 	highLumi_->highLumiData_->max = 1.1f;
 	highLumi_->highLumiData_->isToWhite = 1;
+	outline_ = std::make_unique<WaterOutline>();
 
 	global_ = std::make_unique<GlobalVariableUser>("Water", "WaterEffect");
 	if (IScene::sceneNo_ == SCENE::STAGE) {
@@ -39,7 +39,7 @@ void WaterEffect::Update(const float& deltaTime)
 
 void WaterEffect::Draw()
 {
-	post_->Draw();
+	outline_->Draw();
 }
 
 void WaterEffect::PreDrawBackGround()
@@ -61,10 +61,10 @@ void WaterEffect::PostDrawWaterArea()
 {
 	highLumi_->PostDrawScene();
 
-	post_->PreDrawScene();
+	outline_->PreDrawScene();
 	noise_->Draw();
 	highLumi_->Draw(BlendMode::kBlendModeMultiply);
-	post_->PostDrawScene();
+	outline_->PostDrawScene();
 }
 
 void WaterEffect::SetGlobalVariable()
@@ -101,4 +101,6 @@ void WaterEffect::ApplyGlobalVariable()
 		waterColor = global_->GetVector3Value("うねうねの色");
 		noise_->noiseData_->lightningColor = { waterColor.x,waterColor.y,waterColor.z,1.0f };
 	}
+
+	outline_->color_ = noise_->noiseData_->lightningColor;
 }

@@ -1,4 +1,4 @@
-#include "Water.h"
+#include "WaterOutline.h"
 
 #include "Engine/Base/DirectXBase/DirectXBase.h"
 #include "Engine/Base/DescriptorHeapManager/DescriptorHeapManager.h"
@@ -8,33 +8,20 @@
 #include "GraphicsPipelineSystem/GraphicsPiplineManager/GraphicsPiplineManager.h"
 #include "WindowsInfo/WindowsInfo.h"
 
-Water::Water()
+WaterOutline::WaterOutline()
 {
-	piplineType_ = PipelineType::WATER;
+	piplineType_ = PipelineType::WATER_OUTLINE;
 	waterData_ = nullptr;
 	CreatePostEffect();
 }
 
-Water::~Water()
+WaterOutline::~WaterOutline()
 {
 	waterResource_->Release();
 }
 
-void Water::Initialize()
+void WaterOutline::Draw(BlendMode blendMode)
 {
-	waterData_->time = 0.0f;
-}
-
-void Water::Update(const float& time)
-{
-	waterData_->time += time;
-}
-
-void Water::Draw(BlendMode blendMode)
-{
-	if (waterData_->density <= 0.0f) {
-		waterData_->density = 1.0f;
-	}
 
 	if (blendMode == BlendMode::kBlendModeNormal) {
 		waterData_->isNormal = 1;
@@ -74,19 +61,18 @@ void Water::Draw(BlendMode blendMode)
 
 }
 
-void Water::CreateWaterRes()
+void WaterOutline::CreateWaterRes()
 {
-	waterResource_ = DirectXBase::CreateBufferResource(sizeof(WaterData));
+	waterResource_ = DirectXBase::CreateBufferResource(sizeof(WaterOutlineData));
 
 	waterResource_->Map(0, nullptr, reinterpret_cast<void**>(&waterData_));
 
-	waterData_->density = 10.0f;
 	waterData_->screenSize = WindowsInfo::GetInstance()->GetWindowSize();
-	waterData_->time = 0.0f;
+	waterData_->outlinePix = 2;
 	waterData_->isNormal = 1;
 }
 
-void Water::CreateResources()
+void WaterOutline::CreateResources()
 {
 	BasePostEffect::CreateResources();
 

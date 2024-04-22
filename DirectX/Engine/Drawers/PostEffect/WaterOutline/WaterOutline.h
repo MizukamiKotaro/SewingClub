@@ -1,24 +1,19 @@
 #pragma once
 #include "BasePostEffect/BasePostEffect.h"
 
-class Water : public BasePostEffect
+class WaterOutline : public BasePostEffect
 {
 public:
-	Water();
-	~Water() override;
-
-	void Initialize();
-
-	void Update(const float& time);
+	WaterOutline();
+	~WaterOutline() override;
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
 	void Draw(BlendMode blendMode = BlendMode::kBlendModeNormal) override;
-	struct WaterData {
-		float density; // 密度
-		float time; // 時間
-		Vector2 screenSize; // スクリーンのサイズ
+	struct WaterOutlineData {
+		Vector2 screenSize;
+		int outlinePix;
 		int isNormal; // NormalBlendかどうか
 	};
 private:
@@ -27,5 +22,5 @@ private:
 private:
 	ComPtr<ID3D12Resource> waterResource_;
 public:
-	WaterData* waterData_;
+	WaterOutlineData* waterData_;
 };
