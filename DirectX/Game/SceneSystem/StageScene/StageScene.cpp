@@ -11,6 +11,8 @@
 #include "ParticleManager.h"
 #include "GameElement/Enemy/EnemyManager.h"
 
+#include "GameElement/Animation/AnimationManager.h"
+
 StageScene::StageScene()
 {
 	FirstInit();
@@ -93,6 +95,8 @@ void StageScene::Update()
 	Client::StaticUpdate();
 	Planet::StaticUpdate();
 	Item::StaticUpdate();
+
+	AnimationManager::GetInstance()->Update();
 
 	if (!ImGui::Begin("Camera", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
@@ -191,6 +195,9 @@ void StageScene::Draw()
 
 	BlackDraw();
 
+#ifdef _DEBUG
+	AnimationManager::GetInstance()->Draw(camera_.get());
+#endif // アニメーションエディター用描画
 
 	// フレームの終了
 	Kyoko::Engine::PostDraw();
