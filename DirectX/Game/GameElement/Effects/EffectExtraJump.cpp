@@ -46,10 +46,13 @@ void EffectExtraJump::Update()
 				};
 
 				//newData->translate = *playerPos_;
-				newData->velo = { 0,0,0 };
-				newData->maxCount_ = dustDeadCount_;
+				newData->velo = RandomGenerator::GetInstance()->RandVector3(-1, 1).Normalize() * RandomGenerator::GetInstance()->RandFloat(randVelo, randVelo);
+				newData->velo.z = 0;
+				newData->maxCount_ = dustDeadCount_ / 2;
 
 				newData->maxScale = maxScale;
+
+				newData->maxTenmetu = maxTenmetuCount_;
 
 				//データ送信
 				datas_.emplace_back(std::move(newData));
@@ -86,8 +89,15 @@ void EffectExtraJump::Update()
 		else
 		{
 			if (data->count++ >= data->maxCount_) {
-				data->isDead_ = true;
 				data->scale = 0;
+
+				if (data->tenmetuCount++ >= data->maxTenmetu) {
+					data->isDead_ = true;
+				}
+				else {
+					data->count = 0;
+					data->isSizeUp = true;
+				}
 			}
 			float t = float(data->count) / float(data->maxCount_);
 
@@ -115,7 +125,7 @@ void EffectExtraJump::Update()
 void EffectExtraJump::Draw()
 {
 	for (auto& data : datas_) {
-		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{data->scale,data->scale ,1}, Vector3{ 0,0,0 }, data->translate);
+		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ data->scale,data->scale ,1 }, Vector3{ 0,0,0 }, data->translate);
 		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix ,Matrix4x4::MakeIdentity4x4(), {1,1,1,1} });
 	}
 
@@ -125,8 +135,8 @@ void EffectExtraJump::Debug()
 {
 #ifdef _DEBUG
 	ImGui::Begin("ジャンプ時の演出");
-	ImGui::DragFloat2("エフェクト発生範囲", &spawnAreaSize_.x,0.1f);
-	ImGui::DragFloat("エフェクトの最大サイズ", &maxScale,0.01f);
+	ImGui::DragFloat2("エフェクト発生範囲", &spawnAreaSize_.x, 0.1f);
+	ImGui::DragFloat("エフェクトの最大サイズ", &maxScale, 0.01f);
 	ImGui::DragInt("エフェクト発生間隔", &spawnInterval_);
 	ImGui::DragInt("エフェクト拡縮ごとのカウント", &dustDeadCount_);
 	ImGui::End();

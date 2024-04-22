@@ -418,6 +418,9 @@
     <Filter Include="Engine\Drawer\PostEffect\WaterOutline">
       <UniqueIdentifier>{30970490-ec08-4a57-b2a8-4f903dedd76c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\Effects\EffectUIEnterWater">
+      <UniqueIdentifier>{f65a0944-23e5-48f5-9a07-6d00f14f8536}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -834,9 +837,6 @@
     <ClCompile Include="Game\GameElement\Animation\AnimationManager.cpp">
       <Filter>Game\GameElement\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameElement\Effects\EffectEnterWater.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameElement\WaterEffect\WaterEffect.cpp">
       <Filter>Game\GameElement\WaterEffect</Filter>
     </ClCompile>
@@ -845,6 +845,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Drawers\PostEffect\WaterOutline\WaterOutline.cpp">
       <Filter>Engine\Drawer\PostEffect\WaterOutline</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\EffectEnterWater.cpp">
+      <Filter>Game\GameElement\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\EffectUIEnterWater.cpp">
+      <Filter>Game\GameElement\Effects\EffectUIEnterWater</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1322,9 +1328,6 @@
     <ClInclude Include="Game\GameElement\Animation\AnimationManager.h">
       <Filter>Game\GameElement\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\Effects\EffectEnterWater.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameElement\WaterEffect\WaterEffect.h">
       <Filter>Game\GameElement\WaterEffect</Filter>
     </ClInclude>
@@ -1333,6 +1336,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Drawers\PostEffect\WaterOutline\WaterOutline.h">
       <Filter>Engine\Drawer\PostEffect\WaterOutline</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\EffectEnterWater.h">
+      <Filter>Game\GameElement\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\EffectUIEnterWater.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -56,6 +56,9 @@ private:
 		int maxCount_;
 
 		bool isDead_ = false;
+
+		int tenmetuCount = 0;
+		int maxTenmetu;
 	};
 
 	//塵データ
@@ -74,13 +77,19 @@ private:
 	Vector2 spawnAreaSize_ = { 0.5f,0.5f };
 
 	//塵のサイズ
-	float maxScale = 0.5f;
+	float maxScale = 0.25f;
+
+	//ランダム速度
+	float randVelo =0.01f;
 
 	//湧き間隔
 	int spawnInterval_=0;
 
 	int spawnIntervalCount_ = 0;
 
-	//塵の消える時間
-	int dustDeadCount_ = 15;
+	//塵の拡縮一回までの時間
+	int dustDeadCount_ = 10;
+
+	//点滅量
+	int maxTenmetuCount_ = 3;
 };

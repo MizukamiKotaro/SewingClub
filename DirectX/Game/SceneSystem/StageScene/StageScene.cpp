@@ -186,6 +186,8 @@ void StageScene::Draw()
 
 	deadLine_->Draw();
 
+	player_->DrawUI();
+
 	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());

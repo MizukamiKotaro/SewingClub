@@ -11,6 +11,7 @@
 #include "GameElement/Animation/AnimationManager.h"
 #include "TextureManager/TextureManager.h"
 
+
 Player::Player()
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::RIGID_BODY, ColliderMask::PLAYER);
@@ -87,6 +88,7 @@ Player::Player()
 	effeExtraJump_ = std::make_unique<EffectExtraJump>();
 	effectOutWater_ = std::make_unique<EffectOutWater>();
 	effeEnterWater_ = std::make_unique<EffectEnterWater>();
+	effeUIEnterWater_ = std::make_unique<EffectUIEnterWater>();
 	
 	// アニメーションの初期化とモデルのセット
 	animation_ = AnimationManager::GetInstance()->AddAnimation("default");
@@ -105,6 +107,7 @@ void Player::Initialize()
 	effeExtraJump_->Initialize(&model_->transform_.GetWorldPosition());
 	effectOutWater_->Initialize();
 	effeEnterWater_->Initialize();
+	effeUIEnterWater_->Initialize();
 }
 
 void Player::Update(float deltaTime)
@@ -164,6 +167,7 @@ void Player::Update(float deltaTime)
 	effeExtraJump_->Update();
 	effectOutWater_->Update();
 	effeEnterWater_->Update();
+	effeUIEnterWater_->Update();
 }
 
 void Player::Draw(const Camera* camera)
@@ -187,6 +191,11 @@ void Player::EffectDraw()
 	
 	effectOutWater_->Draw();
 	effeEnterWater_->Draw();
+}
+
+void Player::DrawUI()
+{
+	effeUIEnterWater_->Draw();
 }
 
 void Player::Finalize()
@@ -319,6 +328,9 @@ void Player::PopUpFromWater()
 	//effectOutWater_->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y), Vector2{ velocity_.x,velocity_.y },normalJumpEffectNum_);
 	//軌道エフェクト
 	effeExtraJump_->SpawnEffect(true);
+
+
+	effeUIEnterWater_->IsEffectActive(false);
 }
 
 void Player::ComeToWater()
@@ -335,6 +347,8 @@ void Player::ComeToWater()
 	//effeEnterWater_->SpawnEffect(Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }, Vector2{ velocity_.x,velocity_.y }, gravityPos_, normalJumpEffectNum_);
 
 	effeExtraJump_->SpawnEffect(false);
+
+	effeUIEnterWater_->IsEffectActive(true);
 }
 
 void Player::OutWater(float deltaTime)

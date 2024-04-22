@@ -113,6 +113,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\GameElement\Effects\EffectUIEnterWater.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectEnterWater.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectOutWater.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
@@ -257,6 +258,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Utils\Transform\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\GameElement\Effects\EffectUIEnterWater.h" />
     <ClInclude Include="Game\GameElement\Effects\EffectEnterWater.h" />
     <ClInclude Include="Game\GameElement\Effects\EffectOutWater.h" />
     <ClInclude Include="Engine\Audio\Audio.h" />

@@ -12,6 +12,7 @@
 #include"GameElement/Effects/EffectExtraJump.h"
 #include"GameElement/Effects/EffectOutWater.h"
 #include"GameElement/Effects/EffectEnterWater.h"
+#include"GameElement/Effects/EffectUIEnterWater.h"
 
 class Input;
 class WaterManager;
@@ -33,6 +34,9 @@ public:
 
 	//エフェクト描画
 	void EffectDraw();
+
+	//UI描画
+	void DrawUI();
 
 	//シーン変わり目の処理
 	void Finalize();
@@ -237,4 +241,5 @@ private:
 	//水しぶきエフェクト
 	std::unique_ptr<EffectOutWater>effectOutWater_;
 	std::unique_ptr<EffectEnterWater>effeEnterWater_;
+	std::unique_ptr<EffectUIEnterWater>effeUIEnterWater_;
 };
