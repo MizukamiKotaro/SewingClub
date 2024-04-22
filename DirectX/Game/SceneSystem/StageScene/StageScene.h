@@ -11,7 +11,7 @@
 #include "GameElement/Goal/Goal.h"
 #include "GameElement/DeadLine/DeadLine.h"
 #include "GameElement/WaterEffect/WaterEffect.h"
-
+#include "GameElement/BackGround/BackGround.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -69,4 +69,7 @@ private:
 
 	//ステージ最大数
 	int maxStageNo_ = 3;
+
+	// 背景
+	std::unique_ptr<BackGround> bg_;
 };

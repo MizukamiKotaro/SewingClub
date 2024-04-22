@@ -418,6 +418,9 @@
     <Filter Include="Engine\Drawer\PostEffect\WaterOutline">
       <UniqueIdentifier>{30970490-ec08-4a57-b2a8-4f903dedd76c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\BackGround">
+      <UniqueIdentifier>{624b3039-74f2-4ab6-95d7-518f87340912}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game\GameElement\Effects\EffectUIEnterWater">
       <UniqueIdentifier>{f65a0944-23e5-48f5-9a07-6d00f14f8536}</UniqueIdentifier>
     </Filter>
@@ -851,6 +854,12 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Effects\EffectUIEnterWater.cpp">
       <Filter>Game\GameElement\Effects\EffectUIEnterWater</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\BackGround\BackGround.cpp">
+      <Filter>Game\GameElement\BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\BackGround\Star.cpp">
+      <Filter>Game\GameElement\BackGround</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1342,6 +1351,12 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\EffectUIEnterWater.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\BackGround\BackGround.h">
+      <Filter>Game\GameElement\BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\BackGround\Star.h">
+      <Filter>Game\GameElement\BackGround</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

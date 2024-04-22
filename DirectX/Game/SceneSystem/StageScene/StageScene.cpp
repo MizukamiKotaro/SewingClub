@@ -52,6 +52,7 @@ StageScene::StageScene()
 
 	deadLine_ = std::make_unique<DeadLine>(camera_.get(),player_->GetPositionPtr());
 
+	bg_ = std::make_unique<BackGround>();
 
 	bgm_.LoadWave("Music/ingame.wav", "StageBGM", bgmVolume_);
 	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);
@@ -121,7 +122,7 @@ void StageScene::Update()
 	WaveUpdate();
 
 	float deltaTime = frameInfo_->GetDeltaTime();
-
+	
 	//planetManager_->Update(deltaTime);
 
 	player_->Update(deltaTime);
@@ -149,6 +150,9 @@ void StageScene::Update()
 		camera_->Update();
 	}
 
+	// 背景更新
+	bg_->Update(camera_.get());
+
 	waveFloor_->Update();
 
 	collisionManager_->CheckCollision();
@@ -168,6 +172,8 @@ void StageScene::Draw()
 
 	Kyoko::Engine::PreDraw();
 	// 描画
+	bg_->Draw();
+
 	waterEffect_->Draw();
 
 	player_->Draw(camera_.get());
