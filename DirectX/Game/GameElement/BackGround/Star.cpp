@@ -1,6 +1,5 @@
 #include "Star.h"
 #include <algorithm>
-#include "ImGuiManager/ImGuiManager.h"
 
 void Star::Initialize(const Vector3& position) {
 	transform_.translate_ = position;
@@ -9,11 +8,6 @@ void Star::Initialize(const Vector3& position) {
 }
 
 bool Star::Update() {
-#ifdef _DEBUG
-	ImGui::DragFloat3("StarScale", &transform_.scale_.x, 0.1f);
-	ImGui::DragFloat3("StarTranslate", &transform_.translate_.x, 0.1f);
-#endif // _DEBUG
-
 	bool flag = ScaleUpDown();
 	transform_.translate_.z = 0.0f;
 	transform_.UpdateMatrix();
@@ -31,7 +25,7 @@ bool Star::ScaleUpDown() {
 		isScaling_ = true;
 	}
 	else if (transform_.scale_.x <= 0.0f) {
-		return true;
+		return true; // 縮小しきったら座標を変更するためにtrueを返す
 	}
 	return false;
 }

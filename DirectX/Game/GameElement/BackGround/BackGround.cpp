@@ -1,5 +1,4 @@
 #include "BackGround.h"
-#include "ImGuiManager/ImGuiManager.h"
 #include "TextureManager.h"
 #include "InstancingModelManager.h"
 #include "RandomGenerator/RandomGenerator.h"
@@ -10,7 +9,7 @@ const InstancingMeshTexData* BackGround::modelData_ = nullptr;
 BackGround::BackGround() {
 	back_ = std::make_unique<Model>("plane");
 	back_->SetTexture(TextureManager::GetInstance()->LoadTexture("white.png"));
-	back_->SetColor(Vector4(0.0f,0.0f,0.0f,1.0f));
+	back_->SetColor(Vector4(0.09f,0.09f,0.13f,1.0f));
 	camera_ = std::make_unique<Camera>();
 	camera_->Initialize();
 	back_->transform_.scale_ = Vector3(22.5f, 15.0f, 0.1f);
@@ -25,7 +24,7 @@ void BackGround::StaticInitialize() {
 	instancingManager_ = InstancingModelManager::GetInstance();
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("plane");
 	const Texture* tex_ptr = TextureManager::GetInstance()->LoadTexture("star1.png");
-	modelData_ = instancingManager_->GetDrawData({ modelData,tex_ptr,BlendMode::kBlendModeNormal });
+	modelData_ = instancingManager_->GetDrawData({ modelData,tex_ptr,BlendMode::kBlendModeScreen });
 }
 
 void BackGround::Update(Camera* camera) {
