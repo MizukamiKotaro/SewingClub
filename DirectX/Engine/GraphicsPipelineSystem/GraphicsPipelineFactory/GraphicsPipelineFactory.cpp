@@ -14,6 +14,7 @@
 #include "GraphicsPipelineSystem/GraphicsPipelines/RGBShiftGraphicsPipeline/RGBShiftGraphicsPipeline.h"
 #include "GraphicsPipelineSystem/GraphicsPipelines/InstancingModelGraphicsPipline/InstancingModelGraphicsPipline.h"
 #include "GraphicsPipelineSystem/GraphicsPipelines/NoiseGraphicsPipeline/NoiseGraphicsPipeline.h"
+#include "GraphicsPipelineSystem/GraphicsPipelines/WaterOutlineGraphicsPipeline/WaterOutlineGraphicsPipeline.h"
 #include "GraphicsPipelineSystem/PipelineTypeConfig.h"
 
 GraphicsPipeline* GraphicsPipelineFactory::CreateGraphicsPipeline(PipelineType pipelineType)
@@ -67,6 +68,8 @@ GraphicsPipeline* GraphicsPipelineFactory::CreateGraphicsPipeline(PipelineType p
 	case PipelineType::NOISE:
 		graphicsPipeline = new NoiseGraphicsPipeline();
 		break;
+	case PipelineType::WATER_OUTLINE:
+		graphicsPipeline = new WaterOutlineGraphicsPipeline();
 	default:
 		break;
 	}
