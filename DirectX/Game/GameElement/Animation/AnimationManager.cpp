@@ -6,10 +6,7 @@
 
 AnimationManager::AnimationManager() {
 	model_ = std::make_unique<Model>("plane");
-	model_->transform_.scale_ = Vector3(5.0f, 5.0f, 1.0f);
-	sprite_ = std::make_unique<Sprite>();
 	camera_ = std::make_unique<Camera>();
-	camera_->Initialize();
 	Initialize();
 }
 
@@ -27,20 +24,22 @@ AnimationManager* AnimationManager::GetInstance() {
 void AnimationManager::Update() {
 #ifdef _DEBUG
 	ImGuiProcess();
-#endif // _DEBUG
 	if (isEditor_) {
 		if (animation_) {
 			animation_->Update();
+			model_->SetUVParam(animation_->GetUVTrans());
 		}
 		model_->Update();
+		spritesheet_->Update();
 	}
+#endif // _DEBUG
 }
 
 void AnimationManager::Draw(const Camera* camera) {
 	if (isEditor_) {
 		camera;
 		model_->Draw(*camera_);
-		sprite_->Draw();
+		spritesheet_->Draw(*camera_);
 	}
 }
 
@@ -54,7 +53,14 @@ Animation2D* AnimationManager::AddAnimation(const std::string& groupName) {
 }
 
 void AnimationManager::Initialize() {
-	//SetGlobalVariable();
+	spritesheet_ = std::make_unique<Model>("plane");
+	model_->transform_.scale_ = Vector3(3.0f, 3.0f, 1.0f);
+	model_->transform_.translate_ = Vector3(0.0f, 0.0f, 1.0f);
+	model_->Update();
+	spritesheet_->transform_.scale_ = Vector3(4.0f, 2.5f, 1.0f);
+	spritesheet_->transform_.translate_ = Vector3(-6.0f, 4.5f, 1.0f);
+	spritesheet_->Update();
+	camera_->Initialize();
 }
 
 void AnimationManager::ImGuiProcess() {
@@ -74,8 +80,13 @@ void AnimationManager::ImGuiProcess() {
 						// 板ポリにtextureのセット
 						auto texHandle = TextureManager::GetInstance()->LoadTexture(textureName_);
 						model_->SetTexture(texHandle);
-						sprite_->SetTexture(texHandle);
+						spritesheet_->SetTexture(texHandle);
 					}
+					ImGui::DragFloat3("modelTrans", &model_->transform_.translate_.x, 0.1f);
+					ImGui::DragFloat3("modelScale", &model_->transform_.scale_.x, 0.1f);
+					ImGui::DragFloat3("spritemodelTrans", &spritesheet_->transform_.translate_.x, 0.1f);
+					ImGui::DragFloat3("spritemodelScale", &spritesheet_->transform_.scale_.x, 0.1f);
+					
 					ImGui::TreePop();
 				}
 
