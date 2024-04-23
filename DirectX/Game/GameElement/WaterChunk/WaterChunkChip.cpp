@@ -2,11 +2,9 @@
 #include "Camera.h"
 #include "ModelDataManager.h"
 #include <algorithm>
-#include "FrameInfo/FrameInfo.h"
 
 InstancingModelManager* WaterChunkChip::instancingManager_ = nullptr;
 const InstancingMeshTexData* WaterChunkChip::modelData_ = nullptr;
-FrameInfo* WaterChunkChip::frameInfo_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> WaterChunkChip::globalVariable_ = nullptr;
 
@@ -36,7 +34,6 @@ void WaterChunkChip::StaticInitialize()
 	instancingManager_ = InstancingModelManager::GetInstance();
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("Cube");
 	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
-	frameInfo_ = FrameInfo::GetInstance();
 
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", "WaterChip");
 	globalVariable_->CreateGroup();
@@ -49,7 +46,7 @@ void WaterChunkChip::Initialize()
 	wavePowers_.clear();
 }
 
-void WaterChunkChip::Update()
+void WaterChunkChip::Update(const float& deltaTime)
 {
 #ifdef _DEBUG
 	myScale_.y = scale_.y;
@@ -59,22 +56,26 @@ void WaterChunkChip::Update()
 	float y = 0.0f;
 
 	for (std::list<WavePower>::iterator it = wavePowers_.begin(); it != wavePowers_.end();) {
-		(*it).time += frameInfo_->GetDeltaTime();
-		if (((*it).time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] / 2 &&
+		(*it).time += deltaTime;
+		if (((*it).time - deltaTime < fParas_[kLoopTime] / 2 &&
 			(*it).time > fParas_[kLoopTime] / 2) ||
-			((*it).time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] &&
+			((*it).time - deltaTime < fParas_[kLoopTime] &&
 				(*it).time > fParas_[kLoopTime])) {
 			(*it).radius *= fParas_[kAttenuation];
-			if ((*it).radius <= fParas_[kMinSpeed]) {
+			if ((*it).radius <= fParas_[kMinSpeed] * deltaTime) {
 				(*it).time = 0.0f;
 				(*it).radius = 0.0f;
 			}
-			if ((*it).time - frameInfo_->GetDeltaTime() < fParas_[kLoopTime] &&
+			if ((*it).time - deltaTime < fParas_[kLoopTime] &&
 				(*it).time > fParas_[kLoopTime]) {
 				(*it).time -= fParas_[kLoopTime];
 			}
 		}
-		float theta = 6.28f * (*it).time / fParas_[kLoopTime] + 4.71f;
+		float theta = 6.28f * (*it).time / fParas_[kLoopTime];
+
+		if ((*it).isDown) {
+			theta *= -1;
+		}
 
 		y += (*it).radius * std::sinf(theta);
 
@@ -87,7 +88,8 @@ void WaterChunkChip::Update()
 	}
 	
 	position_ = ganeratePosition_;
-	position_.y += y;
+	position_.x += std::cosf(rotate_.z) * y;
+	position_.y += std::sinf(rotate_.z) * y;
 }
 
 void WaterChunkChip::Draw() const 
@@ -103,9 +105,9 @@ void WaterChunkChip::StaticUpdate()
 #endif // _DEBUG
 }
 
-void WaterChunkChip::AddOutPower(float power)
+void WaterChunkChip::AddOutPower(const float& power, const bool& isDown)
 {
-	wavePowers_.push_back({ power,0.0f });
+	wavePowers_.push_back({ power,0.0f,isDown });
 }
 
 void WaterChunkChip::SetGlobalVariable()

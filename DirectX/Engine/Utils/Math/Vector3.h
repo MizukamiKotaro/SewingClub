@@ -55,9 +55,9 @@ public:
 		this->z /= a;
 	}
 
-	float Length();
+	float Length() const;
 
-	float Length(const Vector3& pos);
+	float Length(const Vector3& pos) const;
 
 	Vector3 Normalize();
 

@@ -17,7 +17,7 @@ public:
 
 	void Initialize();
 
-	void Update(float deltaTime, Camera* camera);
+	void Update(const float& deltaTime, Camera* camera);
 
 	void Draw();
 

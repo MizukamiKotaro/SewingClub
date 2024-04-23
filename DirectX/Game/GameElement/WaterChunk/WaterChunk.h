@@ -4,9 +4,10 @@
 #include "WaterChunkChip.h"
 #include "GameElement/GravityArea/GravityArea.h"
 #include "StageEditor/StageEditor.h"
+#include "WaterWave.h"
+
 
 class Camera;
-class Wave;
 class Player;
 
 class WaterChunk : public Collider
@@ -21,15 +22,13 @@ public:
 
 	void Initialize();
 
-	void Update(float deltaTime, Camera* camera);
+	void Update(const float& deltaTime, Camera* camera);
 
 	void Draw() const;
 
 	static void StaticUpdate();
 
 	const bool IsDelete() const { return deleteTime_ <= time_; }
-
-	void HitTest(const Wave& wave);
 
 	static void SetPlayer(const Player* player);
 
@@ -77,6 +76,7 @@ private:
 	static const Player* player_;
 	static float deleteTime_;
 
+	std::list<std::unique_ptr<WaterWave>> waves_;
 	bool isWave_;
 
 	bool isPlayer_;

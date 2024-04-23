@@ -1,7 +1,6 @@
 #include "WaterChunk.h"
 #include "ModelDataManager.h"
 #include <algorithm>
-#include "GameElement/Wave/Wave.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "SceneSystem/IScene/IScene.h"
@@ -67,10 +66,10 @@ WaterChunk::WaterChunk(int no)
 	isSmaeGravitySize_ = false;
 	isTree_ = false;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
-	isWave_ = false;
 	isPlayer_ = false;
 	preIsPlayer_ = false;
 	CreateChips();
+	isWave_ = false;
 }
 
 WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
@@ -107,7 +106,7 @@ void WaterChunk::Initialize()
 
 }
 
-void WaterChunk::Update(float deltaTime, Camera* camera)
+void WaterChunk::Update(const float& deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -137,10 +136,36 @@ void WaterChunk::Update(float deltaTime, Camera* camera)
 		scale_ = (1.0f - time_ / deleteTime_) * maxScale_;
 	}
 
+	for (std::list<std::unique_ptr<WaterWave>>::iterator it = waves_.begin(); it != waves_.end();) {
+		(*it)->Update(deltaTime);
+		it++;
+	}
+
+	isWave_ = false;
+	for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
+
+		for (std::unique_ptr<WaterWave>& wave : waves_) {
+			float power = wave->GetPower(chip->GetRotate());
+			if (power != 0.0f) {
+				chip->AddOutPower(std::abs(power), power < 0);
+			}
+		}
+
+		chip->Update(deltaTime);
+		if (chip->IsWave()) {
+			isWave_ = true;
+		}
+	}
+
+	for (std::list<std::unique_ptr<WaterWave>>::iterator it = waves_.begin(); it != waves_.end();) {
+		if ((*it)->IsFinish()) {
+			it = waves_.erase(it);
+		}
+		else {
+			it++;
+		}
+	}
 	ActiveCheck(camera);
-	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
-		chip->Update();
-	}*/
 	if (isActive_) {
 		gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 		SetCollider();
@@ -271,7 +296,14 @@ void WaterChunk::OnCollision(const Collider& collider)
 		isPlayer_ = true;
 		if (!player_->GetPreInWater()) {
 			// 波発生
-
+			Vector3 pos = player_->GetPosition() - position_;
+			Vector2 vect = { pos.x,pos.y };
+			vect = vect.Normalize();
+			float rotate = std::acosf(vect.x);
+			if (vect.y < 0) {
+				rotate = 6.28f - rotate;
+			}
+			waves_.push_back(std::make_unique<WaterWave>(player_->GetVelocity(), rotate, true));
 		}
 	}
 }

@@ -819,6 +819,9 @@
     <ClCompile Include="Engine\Drawers\PostEffect\WaterOutline\WaterOutline.cpp">
       <Filter>Engine\Drawer\PostEffect\WaterOutline</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\WaterChunk\WaterWave.cpp">
+      <Filter>Game\GameElement\WaterChunk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1291,6 +1294,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Drawers\PostEffect\WaterOutline\WaterOutline.h">
       <Filter>Engine\Drawer\PostEffect\WaterOutline</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\WaterChunk\WaterWave.h">
+      <Filter>Game\GameElement\WaterChunk</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

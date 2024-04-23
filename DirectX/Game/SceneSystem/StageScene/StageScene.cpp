@@ -10,6 +10,7 @@
 #include "GameElement/Item/ItemManager.h"
 #include "ParticleManager.h"
 #include "GameElement/Enemy/EnemyManager.h"
+#include "GameElement/WaterChunk/WaterWave.h"
 
 StageScene::StageScene()
 {
@@ -25,6 +26,7 @@ StageScene::StageScene()
 	Client::StaticInitialize();
 	Planet::StaticInitialize();
 	Item::StaticInitialize();
+	WaterWave::StaticInitialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
@@ -96,6 +98,7 @@ void StageScene::Update()
 	Client::StaticUpdate();
 	Planet::StaticUpdate();
 	Item::StaticUpdate();
+	WaterWave::StaticUpdate();
 
 	if (!ImGui::Begin("Camera", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
