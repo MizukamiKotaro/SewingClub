@@ -4,7 +4,7 @@
 #include "TextureManager.h"
 #include "BackGroundObjectConfig.h"
 
-InstancingModelManager* BackGroundObject::instancingManager_ = nullptr;
+ParticleManager* BackGroundObject::instancingManager_ = nullptr;
 
 BackGroundObject::BackGroundObject(const int& no, const BackGroundObjectType& type)
 {
@@ -24,6 +24,10 @@ BackGroundObject::BackGroundObject(const int& no, const BackGroundObjectType& ty
 		CreateStageEditor("雲");
 		tex = TextureManager::GetInstance()->LoadTexture("back_obj.png");
 		break;
+	case BackGroundObjectType::MIST:
+		CreateStageEditor("もや");
+		tex = TextureManager::GetInstance()->LoadTexture("back_obj_moya.png");
+		break;
 	default:
 		break;
 	}
@@ -33,7 +37,7 @@ BackGroundObject::BackGroundObject(const int& no, const BackGroundObjectType& ty
 
 void BackGroundObject::StaticInitialize()
 {
-	instancingManager_ = InstancingModelManager::GetInstance();
+	instancingManager_ = ParticleManager::GetInstance();
 }
 
 void BackGroundObject::Initialize()
@@ -45,15 +49,10 @@ void BackGroundObject::Update(float deltaTime)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
-	if (stageEditor_->IsTreeOpen(3)) {
+	if (stageEditor_->IsTreeOpen(2) && !stageEditor_->IsTreeOpen(3)) {
 		color_ = { 1.0f,0.3f,0.3f,1.0f };
 	}
-	else if (stageEditor_->IsTreeOpen(4)) {
-		color_ = { 0.7f,0.6f,0.1f,1.0f };
-	}
-	else {
-		color_ = { 1.0f,1.0f,0.3f,1.0f };
-	}
+	
 #endif // _DEBUG
 
 	deltaTime = deltaTime;
@@ -62,7 +61,7 @@ void BackGroundObject::Update(float deltaTime)
 void BackGroundObject::Draw() const
 {
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(scale_, rotate_, position_);
-	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ });
+	instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ }, modelData_);
 }
 
 void BackGroundObject::SetGlobalVariable()
@@ -90,5 +89,7 @@ void BackGroundObject::CreateStageEditor(const std::string& name)
 	no = no * 10;
 	std::string tree1 = name + std::to_string(no) + "～" + std::to_string(no + 9);
 
-	stageEditor_ = std::make_unique<StageEditor>("背景オブジェクトの配置", "雲の配置", tree1, tree);
+	std::string tree2 = name + "の配置";
+
+	stageEditor_ = std::make_unique<StageEditor>("背景オブジェクトの配置", tree2, tree1, tree);
 }

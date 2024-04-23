@@ -2,7 +2,7 @@
 #include <string>
 #include <memory>
 #include "StageEditor/StageEditor.h"
-#include "InstancingModelManager.h"
+#include "ParticleManager.h"
 
 enum class BackGroundObjectType;
 
@@ -27,11 +27,11 @@ private:
 	void CreateStageEditor(const std::string& name);
 
 private:
-	static InstancingModelManager* instancingManager_;
+	static ParticleManager* instancingManager_;
 
 private:
 	std::unique_ptr<StageEditor> stageEditor_;
-	const InstancingMeshTexData* modelData_;
+	const ParticleMeshTexData* modelData_;
 
 	Vector3 position_;
 	Vector3 scale_;

@@ -243,7 +243,12 @@ void StageScene::MakePostEffect()
 	// 背景の描画
 
 	backGroundObjectManager_->Draw();
+	instancingmodelManager_->Draw(*camera_.get());
+	particleManager_->Draw(*camera_.get());
 	waterEffect_->PostDrawBackGround();
+
+	instancingmodelManager_->Clear();
+	particleManager_->Clear();
 
 	waterEffect_->PreDrawWaterArea();
 	// 水のエリアの描画

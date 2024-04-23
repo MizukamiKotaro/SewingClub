@@ -34,6 +34,8 @@ private:
 private:
 	std::unique_ptr<StageEditor> stageEditor_;
 	std::unordered_map<int, std::unique_ptr<BackGroundObject>> cloudMap_;
+	std::unordered_map<int, std::unique_ptr<BackGroundObject>> mistMap_;
 
 	int cloudNum_;
+	int mistNum_;
 };

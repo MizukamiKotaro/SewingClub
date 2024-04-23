@@ -78,8 +78,7 @@ bool StageEditor::IsTreeOpen(const std::string& tree2, const std::string& tree3,
 
 bool StageEditor::IsTreeOpen(const int& treeNo)
 {
-	global_->IsTreeOpen(treeNo);
-	return false;
+	return global_->IsTreeOpen(treeNo);
 }
 
 const bool StageEditor::IsChangedStage()
