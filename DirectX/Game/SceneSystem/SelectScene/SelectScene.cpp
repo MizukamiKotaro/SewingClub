@@ -5,6 +5,8 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include "Game/GameElement/Animation/AnimationManager.h"
 #include"Audio/AudioManager/AudioManager.h"
+#include"GlobalVariables/GlobalVariables.h"
+
 
 SelectScene::SelectScene()
 {
@@ -22,6 +24,25 @@ SelectScene::SelectScene()
 	}
 
 	bgm_.LoadWave("Music/stageSelect.wav","SelectBGM",bgmVolume_);
+
+	bg_ = std::make_unique<BackGround>();
+	bg_->Update(camera_.get());
+
+	buttonA_ = std::make_unique<Sprite>("controler_UI_A1.png");
+	left_ = std::make_unique<Sprite>("pause_arrow.png");
+	left_->SetIsFlipX(true);
+	right_ = std::make_unique<Sprite>("pause_arrow.png");
+
+
+	GlobalVariables* GV = GlobalVariables::GetInstance();
+	GV->CreateGroup(groupName_);
+	GV->AddItem(groupName_, keys[buttonPos], buttonA_->pos_);
+	GV->AddItem(groupName_, keys[buttonSize], buttonA_->size_);
+	GV->AddItem(groupName_, keys[leftPos], left_->pos_);
+	GV->AddItem(groupName_, keys[leftSize], left_->size_);
+	GV->AddItem(groupName_, keys[rightPos], right_->pos_);
+	GV->AddItem(groupName_, keys[rightSize], right_->size_);
+
 
 }
 
@@ -65,6 +86,12 @@ void SelectScene::Initialize()
 	switchData_.minSelectBoxScale_ = 1.0f;
 
 	bgm_.Play(true);
+
+
+	buttonA_->Update();
+	left_->Update();
+	right_->Update();
+
 }
 
 void SelectScene::Update()
@@ -74,6 +101,14 @@ void SelectScene::Update()
 
 	//カメラ更新
 	camera_->Update();
+
+	bg_->Update(camera_.get());
+
+
+
+	buttonA_->Update();
+	left_->Update();
+	right_->Update();
 
 
 	//ステージを選ぶ処理
@@ -89,10 +124,16 @@ void SelectScene::Draw()
 	//必須
 	Kyoko::Engine::PreDraw();
 
+	bg_->Draw();
+
 	//ステージ選択BOX
 	for (auto& box : stageBoxes_) {
 		box->Draw(*camera_.get());
 	}
+
+	buttonA_->Draw();
+	left_->Draw();
+	right_->Draw();
 
 	//シーン転換時のフェードインアウト
 	BlackDraw();
@@ -107,6 +148,17 @@ void SelectScene::Debug()
 	ImGui::Begin("debug");
 	ImGui::Text("flag : %d , pickedNum : %d", switchData_.changeReception,pickedNum_);
 	ImGui::End();
+
+	GlobalVariables* GV = GlobalVariables::GetInstance();
+
+	buttonA_->pos_ = GV->GetVector2Value(groupName_, keys[buttonPos]);
+	buttonA_->size_ = GV->GetVector2Value(groupName_, keys[buttonSize]);
+	left_->pos_ = GV->GetVector2Value(groupName_, keys[leftPos]);
+	left_->size_ = GV->GetVector2Value(groupName_, keys[leftSize]);
+	right_->pos_ = GV->GetVector2Value(groupName_, keys[rightPos]);
+	right_->size_ = GV->GetVector2Value(groupName_, keys[rightSize]);
+
+
 #endif // _DEBUG
 
 

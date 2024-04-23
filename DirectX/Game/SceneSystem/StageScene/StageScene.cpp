@@ -54,6 +54,7 @@ StageScene::StageScene()
 	deadLine_ = std::make_unique<DeadLine>(camera_.get(),player_->GetPositionPtr());
 
 	bg_ = std::make_unique<BackGround>();
+	bg_->Update(camera_.get());
 
 	bgm_.LoadWave("Music/ingame.wav", "StageBGM", bgmVolume_);
 	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);

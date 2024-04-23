@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SceneSystem/IScene/IScene.h"
+#include"GameElement/BackGround/BackGround.h"
 #include "Model.h"
 #include"Audio.h"
 
@@ -64,6 +65,37 @@ private:
 	float bgmVolume_ = 0.15f;
 
 	class Animation2D* animation_ = nullptr;
+
+	// 背景
+	std::unique_ptr<BackGround> bg_;
+
+	//ボタン
+	std::unique_ptr<Sprite> buttonA_;
+
+	std::unique_ptr<Sprite> left_;
+	std::unique_ptr<Sprite> right_;
+
+	//Global用
+	std::string groupName_ = "select";
+
+	enum keys {
+		buttonPos,
+		buttonSize,
+		leftPos,
+		leftSize,
+		rightPos,
+		rightSize,
+		_countKeys
+	};
+
+	std::string keys[_countKeys] = {
+		"ボタン座標",
+		"ボタンサイズ",
+		"左矢印座標",
+		"左矢印サイズ"
+		"右矢印座標",
+		"右矢印サイズ"
+	};
 
 };
 
