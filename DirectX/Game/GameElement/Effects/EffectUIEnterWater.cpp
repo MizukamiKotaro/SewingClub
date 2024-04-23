@@ -29,7 +29,7 @@ void EffectUIEnterWater::Update()
 
 			std::unique_ptr<BubbleData> newData = std::make_unique<BubbleData>();
 			newData->sprite = new Sprite();
-			newData->sprite->LoadTexture("whiteStar.png");
+			newData->sprite->LoadTexture("bubble.png");
 			newData->sprite->Initialize();
 			newData->sprite->SetAnchorPoint({ 0.5f,0.0f });
 

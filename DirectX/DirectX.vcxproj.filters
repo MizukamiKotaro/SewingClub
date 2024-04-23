@@ -1352,9 +1352,6 @@
     <ClInclude Include="Game\GameElement\Effects\EffectEnterWater.h">
       <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\Effects\EffectUIEnterWater.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameElement\BackGround\BackGround.h">
       <Filter>Game\GameElement\BackGround</Filter>
     </ClInclude>
@@ -1363,6 +1360,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\WaterChunk\WaterWave.h">
       <Filter>Game\GameElement\WaterChunk</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\EffectUIEnterWater.h">
+      <Filter>Game\GameElement\Effects\EffectUIEnterWater</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

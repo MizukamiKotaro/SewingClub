@@ -110,7 +110,7 @@ void Player::Initialize()
 	effeUIEnterWater_->Initialize();
 
 	//水の中のUI演出を実行
-	//effeUIEnterWater_->IsEffectActive(true);
+	effeUIEnterWater_->IsEffectActive(true);
 	//音も再生
 	seStayWater_.Play();
 }
@@ -335,7 +335,7 @@ void Player::PopUpFromWater()
 	effeExtraJump_->SpawnEffect(true);
 
 
-	//effeUIEnterWater_->IsEffectActive(false);
+	effeUIEnterWater_->IsEffectActive(false);
 }
 
 void Player::ComeToWater()
@@ -353,7 +353,7 @@ void Player::ComeToWater()
 
 	effeExtraJump_->SpawnEffect(false);
 
-	//effeUIEnterWater_->IsEffectActive(true);
+	effeUIEnterWater_->IsEffectActive(true);
 }
 
 void Player::OutWater(float deltaTime)

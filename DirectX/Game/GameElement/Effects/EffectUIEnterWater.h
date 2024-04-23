@@ -50,7 +50,7 @@ private:
 	int spawnXDiff_ = 320;
 
 	//サイズ
-	float scale_ = 100.0f;
+	float scale_ = 64.0f;
 	
 	//サイズランダム度（加算）
 	float scaleDiff_ = 20.0f;
