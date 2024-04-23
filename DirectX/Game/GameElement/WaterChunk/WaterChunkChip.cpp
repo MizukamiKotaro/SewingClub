@@ -61,8 +61,9 @@ void WaterChunkChip::Update(const float& deltaTime)
 			(*it).time > fParas_[kLoopTime] / 2) ||
 			((*it).time - deltaTime < fParas_[kLoopTime] &&
 				(*it).time > fParas_[kLoopTime])) {
+			float preRad = (*it).radius;
 			(*it).radius *= fParas_[kAttenuation];
-			if ((*it).radius <= fParas_[kMinSpeed] * deltaTime) {
+			if ((*it).radius <= fParas_[kMinSpeed] * deltaTime || preRad - (*it).radius < 0.001f) {
 				(*it).time = 0.0f;
 				(*it).radius = 0.0f;
 			}

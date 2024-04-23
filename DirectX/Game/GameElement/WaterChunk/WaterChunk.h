@@ -44,6 +44,8 @@ private:
 
 	void CreateChips();
 
+	void AddWave(const bool& isDown);
+
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();

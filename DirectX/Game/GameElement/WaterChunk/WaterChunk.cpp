@@ -44,6 +44,8 @@ WaterChunk::WaterChunk()
 	isTree_ = false;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 	isWave_ = false;
+	isPlayer_ = false;
+	preIsPlayer_ = false;
 }
 
 WaterChunk::WaterChunk(int no)
@@ -90,6 +92,8 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 	isTree_ = false;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 	isWave_ = false;
+	isPlayer_ = false;
+	preIsPlayer_ = false;
 }
 
 void WaterChunk::StaticInitialize()
@@ -129,6 +133,11 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 	}
 #endif // _DEBUG
 
+	if (!isPlayer_ && preIsPlayer_ && !player_->GetPreInWater()) {
+		AddWave(false);
+	}
+
+
 	if (isSmall_) {
 		time_ += deltaTime;
 
@@ -166,6 +175,8 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 		}
 	}
 	ActiveCheck(camera);
+	preIsPlayer_ = isPlayer_;
+	isPlayer_ = false;
 	if (isActive_) {
 		gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 		SetCollider();
@@ -290,20 +301,27 @@ void WaterChunk::CreateChips()
 
 }
 
+void WaterChunk::AddWave(const bool& isDown)
+{
+	// 波発生
+	Vector3 pos = player_->GetPosition() - position_;
+	Vector2 vect = { pos.x,pos.y };
+	vect = vect.Normalize();
+	float rotate = std::acosf(vect.x);
+	if (vect.y < 0) {
+		rotate = 6.28f - rotate;
+	}
+	waves_.push_back(std::make_unique<WaterWave>(player_->GetVelocity(), rotate, isDown));
+	waves_.back()->Update(0.005f);
+}
+
 void WaterChunk::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::PLAYER) {
 		isPlayer_ = true;
 		if (!player_->GetPreInWater()) {
 			// 波発生
-			Vector3 pos = player_->GetPosition() - position_;
-			Vector2 vect = { pos.x,pos.y };
-			vect = vect.Normalize();
-			float rotate = std::acosf(vect.x);
-			if (vect.y < 0) {
-				rotate = 6.28f - rotate;
-			}
-			waves_.push_back(std::make_unique<WaterWave>(player_->GetVelocity(), rotate, true));
+			AddWave(true);
 		}
 	}
 }
