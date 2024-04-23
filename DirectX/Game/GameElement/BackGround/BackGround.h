@@ -1,5 +1,5 @@
 #pragma once
-#include "Model.h"
+#include "Sprite.h"
 #include <memory>
 #include "Camera/Camera.h"
 #include "Star.h"
@@ -15,7 +15,7 @@ public:
 
 	static void StaticInitialize();
 private:
-	std::unique_ptr<Model> back_;
+	std::unique_ptr<Sprite> back_;
 	std::unique_ptr<Camera> camera_; // 固定カメラ
 	std::array <std::unique_ptr<Star>, 20u> starlist_;
 

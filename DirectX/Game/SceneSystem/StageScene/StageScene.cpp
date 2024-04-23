@@ -175,9 +175,7 @@ void StageScene::Draw()
 	MakePostEffect();
 
 	Kyoko::Engine::PreDraw();
-	// 描画
-	bg_->Draw();
-
+	
 	waterEffect_->Draw();
 
 	player_->Draw(camera_.get());
@@ -280,7 +278,7 @@ void StageScene::MakePostEffect()
 {
 	waterEffect_->PreDrawBackGround();
 	// 背景の描画
-
+	bg_->Draw();
 
 	waterEffect_->PostDrawBackGround();
 

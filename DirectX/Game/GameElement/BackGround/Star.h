@@ -21,7 +21,7 @@ private:
 	bool ScaleUpDown(); // とりあえず等速で拡縮
 	bool isScaling_ = false; // true: 箱置きの変数。正直いらん
 	Transform transform_;
-	const float kMaxSize_ = 0.5f; // 最大サイズ
+	const float kMaxSize_ = 0.25f; // 最大サイズ
 	
 };
 
