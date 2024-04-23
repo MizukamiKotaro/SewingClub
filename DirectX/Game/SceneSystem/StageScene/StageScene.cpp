@@ -297,7 +297,8 @@ void StageScene::MakePostEffect()
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
 
-	waterEffect_->PostDrawBackGround();
+	instancingmodelManager_->Clear();
+	particleManager_->Clear();
 
 	instancingmodelManager_->Clear();
 	particleManager_->Clear();
