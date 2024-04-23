@@ -85,6 +85,7 @@ void StageScene::Initialize()
 
 	bgm_.Play(true);
 	waterEffect_->Initialize();
+	bg_->Initialize();
 }
 
 void StageScene::Update()
