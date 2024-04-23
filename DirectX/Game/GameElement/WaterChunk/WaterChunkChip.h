@@ -10,18 +10,17 @@
 #include "GlobalVariables/GlobalVariableUser.h"
 
 class Camera;
-class FrameInfo;
 
 class WaterChunkChip {
 public:
 
-	WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate);
+	WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate, const float& scale);
 
 	static void StaticInitialize();
 
 	void Initialize();
 
-	void Update();
+	void Update(const float& deltaTime);
 
 	void Draw() const;
 
@@ -29,9 +28,13 @@ public:
 
 	static const float GetScale() { return fParas_[kScale]; }
 
-	void AddOutPower(float power);
+	void AddOutPower(const float& power, const bool& isDown);
 
-	const Vector3 GetPosition() const { return position_; }
+	const Vector3& GetPosition() const { return position_; }
+
+	bool IsWave() const { return wavePowers_.size() > 0; }
+
+	const float& GetRotate() const { return rotate_.z; }
 
 private:
 	static void SetGlobalVariable();
@@ -51,8 +54,6 @@ private:
 
 	static InstancingModelManager* instancingManager_;
 	static const InstancingMeshTexData* modelData_;
-	static FrameInfo* frameInfo_;
-
 	static Vector3 scale_;
 
 	static std::unique_ptr<GlobalVariableUser> globalVariable_;
@@ -62,6 +63,7 @@ private:
 	{
 		float radius;
 		float time;
+		bool isDown;
 	};
 	std::list<WavePower> wavePowers_;
 
@@ -71,6 +73,7 @@ private:
 
 	Vector3 position_;
 	Vector3 rotate_;
+	Vector3 myScale_;
 
 	Vector3 ganeratePosition_;
 };

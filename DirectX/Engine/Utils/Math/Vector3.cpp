@@ -1,12 +1,12 @@
 #include "Vector3.h"
 #include <cmath>
 
-float Vector3::Length() {
+float Vector3::Length() const {
 	float result = static_cast<float>(sqrt(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2)));
 	return result;
 }
 
-float Vector3::Length(const Vector3& pos) {
+float Vector3::Length(const Vector3& pos) const {
 	float result = static_cast<float>(sqrt(powf(this->x - pos.x, 2) + powf(this->y - pos.y, 2) + powf(this->z - pos.z, 2)));
 	return result;
 }
