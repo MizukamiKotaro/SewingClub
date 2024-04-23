@@ -11,6 +11,7 @@
 #include "ParticleManager.h"
 #include "GameElement/Enemy/EnemyManager.h"
 #include "GameElement/WaterChunk/WaterWave.h"
+#include "GameElement/BackGroundObject/BackGroundObjectManager.h"
 
 StageScene::StageScene()
 {
@@ -27,6 +28,7 @@ StageScene::StageScene()
 	Planet::StaticInitialize();
 	Item::StaticInitialize();
 	WaterWave::StaticInitialize();
+	BackGroundObject::StaticInitialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
@@ -36,9 +38,11 @@ StageScene::StageScene()
 	itemManager_ = ItemManager::GetInstance();
 	particleManager_ = ParticleManager::GetInstance();
 	enemyManager_ = EnemyManager::GetInstance();
+	backGroundObjectManager_ = BackGroundObjectManager::GetInstance();
 
 	waterManager_->InitializeGlobalVariables();
 	itemManager_->InitializeGlobalVariables();
+	backGroundObjectManager_->InitializeGlobalVariables();
 
 	player_ = std::make_unique<Player>();
 	camera_->transform_.translate_.z = -50.0f;
@@ -71,6 +75,7 @@ void StageScene::Initialize()
 	goal_->Initialize();
 	deadLine_->Initialize();
 	enemyManager_->Initialize();
+	backGroundObjectManager_->Initialize();
 	waterEffect_->Initialize();
 }
 
@@ -137,6 +142,8 @@ void StageScene::Update()
 	waterManager_->Update(deltaTime, camera_.get());
 
 	itemManager_->Update(deltaTime, camera_.get());
+
+	backGroundObjectManager_->Update(deltaTime);
 
 	goal_->Update(deltaTime);
 
@@ -235,7 +242,7 @@ void StageScene::MakePostEffect()
 	waterEffect_->PreDrawBackGround();
 	// 背景の描画
 
-
+	backGroundObjectManager_->Draw();
 	waterEffect_->PostDrawBackGround();
 
 	waterEffect_->PreDrawWaterArea();

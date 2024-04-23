@@ -21,6 +21,7 @@ class ClientManager;
 class ItemManager;
 class ParticleManager;
 class EnemyManager;
+class BackGroundObjectManager;
 
 class StageScene : public IScene
 {
@@ -57,4 +58,5 @@ private:
 	ItemManager* itemManager_;
 	ParticleManager* particleManager_;
 	EnemyManager* enemyManager_;
+	BackGroundObjectManager* backGroundObjectManager_;
 };
