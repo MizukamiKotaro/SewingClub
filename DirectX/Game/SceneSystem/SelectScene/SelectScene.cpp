@@ -43,6 +43,12 @@ SelectScene::SelectScene()
 	GV->AddItem(groupName_, keys[rightPos], right_->pos_);
 	GV->AddItem(groupName_, keys[rightSize], right_->size_);
 
+	buttonA_->pos_ = GV->GetVector2Value(groupName_, keys[buttonPos]);
+	buttonA_->size_ = GV->GetVector2Value(groupName_, keys[buttonSize]);
+	left_->pos_ = GV->GetVector2Value(groupName_, keys[leftPos]);
+	left_->size_ = GV->GetVector2Value(groupName_, keys[leftSize]);
+	right_->pos_ = GV->GetVector2Value(groupName_, keys[rightPos]);
+	right_->size_ = GV->GetVector2Value(groupName_, keys[rightSize]);
 
 }
 
