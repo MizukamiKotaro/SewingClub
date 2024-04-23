@@ -349,7 +349,7 @@ void Player::ComeToWater()
 	naminamiChangeDirectionTime_ = 0.0f;
 	model_->transform_.translate_ += velocity_;
 
-	effeEnterWater_->SpawnEffect(Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }, Vector2{ velocity_.x,velocity_.y }, gravityPos_, normalJumpEffectNum_);
+	effeEnterWater_->SpawnEffect(Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }, Vector2{ velocity_.x,velocity_.y }, gravityPos_);
 
 	effeExtraJump_->SpawnEffect(false);
 

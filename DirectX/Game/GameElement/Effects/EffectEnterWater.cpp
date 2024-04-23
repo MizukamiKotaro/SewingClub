@@ -2,6 +2,7 @@
 #include"ModelDataManager.h"
 #include"Ease/Ease.h"
 #include"RandomGenerator/RandomGenerator.h"
+
 #include<numbers>
 
 EffectEnterWater::EffectEnterWater()
@@ -9,6 +10,22 @@ EffectEnterWater::EffectEnterWater()
 	instancingManager_ = InstancingModelManager::GetInstance();
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
 	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
+	gVariUser = new GlobalVariableUser("Effects","EffectEnterWater","effe");
+	
+	gVariUser->AddItem(keys[diffsion], diffusion_);
+	gVariUser->AddItem(keys[scale], scale_);
+	gVariUser->AddItem(keys[startVelo], startVelo_);
+	gVariUser->AddItem(keys[bendNum], bendNum_);
+	gVariUser->AddItem(keys[maxSPD], maxSpped_);
+	gVariUser->AddItem(keys[rateScaling], rateScaling_);
+	gVariUser->AddItem(keys[spawnDustCount], spawnDustCount_);
+	gVariUser->AddItem(keys[acceSPD], acceSpd_);
+	gVariUser->AddItem(keys[alliveLeverage], alliveLeverage_);
+	gVariUser->AddItem(keys[setEqualSpace], setEqualSpace_);
+	gVariUser->AddItem(keys[isRandomVelo], isVeloRandom_);
+	gVariUser->AddItem(keys[SpawnNum], spawnNum_);
+
+
 }
 
 EffectEnterWater::~EffectEnterWater()
@@ -26,6 +43,19 @@ void EffectEnterWater::Initialize()
 
 void EffectEnterWater::Update()
 {
+	diffusion_ = gVariUser->GetFloatValue(keys[diffsion]);
+	scale_ = gVariUser->GetFloatValue(keys[scale]);
+	startVelo_ = gVariUser->GetVector2Value(keys[startVelo]);
+	bendNum_ = gVariUser->GetFloatValue(keys[bendNum]);
+	maxSpped_ = gVariUser->GetFloatValue(keys[maxSPD]);
+	rateScaling_ = gVariUser->GetFloatValue(keys[rateScaling]);
+	spawnDustCount_ = gVariUser->GetIntValue(keys[spawnDustCount]);
+	acceSpd_ = gVariUser->GetFloatValue(keys[acceSPD]);
+	alliveLeverage_ = gVariUser->GetFloatValue(keys[alliveLeverage]);
+	setEqualSpace_ = gVariUser->GetBoolValue(keys[setEqualSpace]);
+	isVeloRandom_ = gVariUser->GetBoolValue(keys[isRandomVelo]);
+	spawnNum_ = gVariUser->GetIntValue(keys[SpawnNum]);
+
 	//更新処理
 	for (auto& data : datas_) {
 
@@ -123,7 +153,12 @@ void EffectEnterWater::Draw()
 	}
 }
 
-void EffectEnterWater::SpawnEffect(const Vector2& translate, const Vector2& velo, const Vector2& gpos, int32_t spawnNum)
+void EffectEnterWater::Debug()
+{
+	
+}
+
+void EffectEnterWater::SpawnEffect(const Vector2& translate, const Vector2& velo, const Vector2& gpos)
 {
 
 	//水の球からプレイヤーまでの上向きのベクトル
@@ -133,12 +168,13 @@ void EffectEnterWater::SpawnEffect(const Vector2& translate, const Vector2& velo
 	float rotate = diffusion_ * (float)std::numbers::pi;
 	
 	//等間隔の時の処理1
-	//rotate = -rotate / 2;
+	rotate = -rotate / 2;
 
-	for (int i = 0; i < spawnNum; i++) {
+	for (int i = 0; i < spawnNum_; i++) {
 		//ランダム
-		rotate = RandomGenerator::GetInstance()->RandFloat(-diffusion_ * (float)std::numbers::pi, diffusion_ * (float)std::numbers::pi);
-
+		if (!setEqualSpace_) {
+			rotate = RandomGenerator::GetInstance()->RandFloat(-diffusion_ * (float)std::numbers::pi, diffusion_ * (float)std::numbers::pi);
+		}
 		//傾けたベクトル計算
 		Vector2 newVelo = RotateVelo(effeVelo, rotate);
 
@@ -149,7 +185,11 @@ void EffectEnterWater::SpawnEffect(const Vector2& translate, const Vector2& velo
 		newData->saveScale = scale_;
 
 		//初速度
-		float num = RandomGenerator::GetInstance()->RandFloat(startVelo.x, startVelo.y);
+		float num = RandomGenerator::GetInstance()->RandFloat(startVelo_.x, startVelo_.y);
+
+		if (!isVeloRandom_) {
+			num = 1;
+		}
 
 		//湾曲度を計算
 		//放物線式のｘを求める（分母は速度が０になる値
@@ -175,7 +215,7 @@ void EffectEnterWater::SpawnEffect(const Vector2& translate, const Vector2& velo
 		//データを群に送る
 		datas_.emplace_back(std::move(newData));
 		
-		//rotate += (diffusion_ * (float)std::numbers::pi) / spawnNum;
+		rotate += (diffusion_ * (float)std::numbers::pi) / spawnNum_;
 
 	}
 

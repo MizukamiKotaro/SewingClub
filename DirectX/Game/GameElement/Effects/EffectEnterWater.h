@@ -1,5 +1,6 @@
 #pragma once
 #include "InstancingModelManager.h"
+#include"GlobalVariables/GlobalVariableUser.h"
 #include<list>
 
 class EffectEnterWater {
@@ -25,13 +26,16 @@ public:
 	/// </summary>
 	void Draw();
 
+	void Debug();
+
+
 	/// <summary>
 /// エフェクト発生処理
 /// </summary>
 /// <param name="translate">生成開始座標</param>
 /// <param name="velo">プレイヤー進行ベクトルの向き</param>
 /// <param name="spawnNum">生成量</param>
-	void SpawnEffect(const Vector2& translate, const Vector2& velo, const Vector2& gpos, int32_t spawnNum = 10);
+	void SpawnEffect(const Vector2& translate, const Vector2& velo, const Vector2& gpos);
 
 
 private:
@@ -95,6 +99,36 @@ private:
 	//データ
 	std::list<std::unique_ptr<DustData>>dustDatas_;
 
+	enum keyTags {
+		diffsion,//拡散量
+		scale,//サイズ
+		startVelo,//初速度のランダム範囲
+		bendNum,//湾曲度
+		maxSPD,//最高速度
+		rateScaling,//速度の倍率
+		spawnDustCount,//塵を出すまでのカウント
+		acceSPD,//加速度の速度
+		alliveLeverage,//生存カウントのプレイヤー速度に対する影響度
+		setEqualSpace,//等間隔フラグ
+		isRandomVelo,//速度ランダムフラグ
+		SpawnNum,
+		_count
+	};
+
+	std::string keys[_count] = {
+		"拡散量",
+		"サイズ",
+		"初速度の範囲",
+		"湾曲度",
+		"最高速度",
+		"初速度の倍率",
+		"塵を出す間隔",
+		"加速度の速度",
+		"生存カウントのプレイヤー影響量",
+		"等間隔に飛ばす",
+		"速度をランダムにする",
+		"出現量"
+	};
 
 	//拡散角度(弧の半分)（あとでpiかけているので注意）
 	float diffusion_ = 1.0f / 4.0f;
@@ -103,7 +137,7 @@ private:
 	float scale_ = 0.1f;
 
 	//初速度の範囲x=min,y=max
-	Vector2 startVelo = { 1.0f,1.5f };
+	Vector2 startVelo_ = { 1.0f,1.5f };
 
 	//湾曲度
 	float bendNum_ = 4.0f;
@@ -126,5 +160,15 @@ private:
 
 	//生存カウントのプレイヤー速度に対する影響度
 	float alliveLeverage_ = 90.0f;
+
+	//等間隔に角度を渡す
+	bool setEqualSpace_ = false;
+
+	//速度に差を作る
+	bool isVeloRandom_ = false;
+
+	int spawnNum_ = 5;
+
+	GlobalVariableUser* gVariUser;
 };
 
