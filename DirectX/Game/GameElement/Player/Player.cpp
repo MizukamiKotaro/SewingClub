@@ -110,7 +110,7 @@ void Player::Initialize()
 	effeUIEnterWater_->Initialize();
 
 	//水の中のUI演出を実行
-	effeUIEnterWater_->IsEffectActive(true);
+	//effeUIEnterWater_->IsEffectActive(true);
 	//音も再生
 	seStayWater_.Play();
 }
@@ -330,12 +330,12 @@ void Player::PopUpFromWater()
 
 	//各エフェクト発生処理
 	//みずしぶき
-	//effectOutWater_->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y), Vector2{ velocity_.x,velocity_.y },normalJumpEffectNum_);
+	effectOutWater_->SpawnEffect(Vector2(model_->transform_.translate_.x, model_->transform_.translate_.y), Vector2{ velocity_.x,velocity_.y },normalJumpEffectNum_);
 	//軌道エフェクト
 	effeExtraJump_->SpawnEffect(true);
 
 
-	effeUIEnterWater_->IsEffectActive(false);
+	//effeUIEnterWater_->IsEffectActive(false);
 }
 
 void Player::ComeToWater()
@@ -349,11 +349,11 @@ void Player::ComeToWater()
 	naminamiChangeDirectionTime_ = 0.0f;
 	model_->transform_.translate_ += velocity_;
 
-	//effeEnterWater_->SpawnEffect(Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }, Vector2{ velocity_.x,velocity_.y }, gravityPos_, normalJumpEffectNum_);
+	effeEnterWater_->SpawnEffect(Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }, Vector2{ velocity_.x,velocity_.y }, gravityPos_, normalJumpEffectNum_);
 
 	effeExtraJump_->SpawnEffect(false);
 
-	effeUIEnterWater_->IsEffectActive(true);
+	//effeUIEnterWater_->IsEffectActive(true);
 }
 
 void Player::OutWater(float deltaTime)

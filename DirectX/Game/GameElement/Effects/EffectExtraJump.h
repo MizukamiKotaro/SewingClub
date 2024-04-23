@@ -83,13 +83,13 @@ private:
 	float randVelo =0.01f;
 
 	//湧き間隔
-	int spawnInterval_=0;
+	int spawnInterval_=5;
 
 	int spawnIntervalCount_ = 0;
 
 	//塵の拡縮一回までの時間
-	int dustDeadCount_ = 10;
+	int dustDeadCount_ = 20;
 
 	//点滅量
-	int maxTenmetuCount_ = 3;
+	int maxTenmetuCount_ = 2;
 };
