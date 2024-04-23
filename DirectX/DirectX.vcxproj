@@ -193,6 +193,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Animation\Animation2D.cpp" />
     <ClCompile Include="Game\GameElement\Animation\AnimationManager.cpp" />
     <ClCompile Include="Game\GameElement\Baby\Baby.cpp" />
+    <ClCompile Include="Game\GameElement\BackGroundObject\BackGroundObject.cpp" />
+    <ClCompile Include="Game\GameElement\BackGroundObject\BackGroundObjectManager.cpp" />
     <ClCompile Include="Game\GameElement\Charactor\Charactor.cpp" />
     <ClCompile Include="Game\GameElement\ClearUI\ClearUI.cpp" />
     <ClCompile Include="Game\GameElement\Client\Client.cpp" />
@@ -377,6 +379,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Animation\Animation2D.h" />
     <ClInclude Include="Game\GameElement\Animation\AnimationManager.h" />
     <ClInclude Include="Game\GameElement\Baby\Baby.h" />
+    <ClInclude Include="Game\GameElement\BackGroundObject\BackGroundObject.h" />
+    <ClInclude Include="Game\GameElement\BackGroundObject\BackGroundObjectConfig.h" />
+    <ClInclude Include="Game\GameElement\BackGroundObject\BackGroundObjectManager.h" />
     <ClInclude Include="Game\GameElement\Charactor\Charactor.h" />
     <ClInclude Include="Game\GameElement\ClearUI\ClearUI.h" />
     <ClInclude Include="Game\GameElement\Client\Client.h" />
