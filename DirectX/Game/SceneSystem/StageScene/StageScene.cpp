@@ -12,6 +12,7 @@
 #include "GameElement/Enemy/EnemyManager.h"
 
 #include "GameElement/Animation/AnimationManager.h"
+#include"Audio/AudioManager/AudioManager.h"
 
 StageScene::StageScene()
 {
@@ -61,6 +62,9 @@ StageScene::StageScene()
 
 void StageScene::Initialize()
 {
+
+	AudioManager::GetInstance()->AllStop();
+
 	player_->Initialize();
 	camera_->transform_.translate_.x = player_->GetPosition().x;
 	camera_->transform_.translate_.y = player_->GetPosition().y;
@@ -192,14 +196,14 @@ void StageScene::Draw()
 
 	deadLine_->Draw();
 
-	player_->DrawUI();
-
+	
 	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
 
 	player_->DrawClient();
 
+	player_->DrawUI();
 
 	BlackDraw();
 

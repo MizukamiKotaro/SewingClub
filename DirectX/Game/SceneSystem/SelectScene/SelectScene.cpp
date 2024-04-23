@@ -4,6 +4,7 @@
 
 #include "ImGuiManager/ImGuiManager.h"
 #include "Game/GameElement/Animation/AnimationManager.h"
+#include"Audio/AudioManager/AudioManager.h"
 
 SelectScene::SelectScene()
 {
@@ -26,6 +27,9 @@ SelectScene::SelectScene()
 
 void SelectScene::Initialize()
 {
+	//現在GAMEOVER音が途切れてしまうのでコメント
+	//AudioManager::GetInstance()->AllStop();
+
 	// アニメーション初期化
 	animation_ = AnimationManager::GetInstance()->AddAnimation("numbers");
 

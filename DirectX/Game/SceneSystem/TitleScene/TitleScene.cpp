@@ -1,6 +1,7 @@
 #include "TitleScene.h"
 #include "Kyoko.h"
 #include "ImGuiManager/ImGuiManager.h"
+#include"Audio/AudioManager/AudioManager.h"
 
 TitleScene::TitleScene()
 {
@@ -13,6 +14,8 @@ TitleScene::TitleScene()
 
 void TitleScene::Initialize()
 {
+	AudioManager::GetInstance()->AllStop();
+
 	bgm_.Play(true);
 }
 

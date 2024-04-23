@@ -108,6 +108,11 @@ void Player::Initialize()
 	effectOutWater_->Initialize();
 	effeEnterWater_->Initialize();
 	effeUIEnterWater_->Initialize();
+
+	//水の中のUI演出を実行
+	effeUIEnterWater_->IsEffectActive(true);
+	//音も再生
+	seStayWater_.Play();
 }
 
 void Player::Update(float deltaTime)
