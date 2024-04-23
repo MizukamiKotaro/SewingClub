@@ -9,7 +9,7 @@ const InstancingMeshTexData* BackGround::modelData_ = nullptr;
 
 BackGround::BackGround() {
 	back_ = std::make_unique<Sprite>("white.png", Vector2(640.0f, 360.0f), Vector2(0.0f, 0.0f), Vector2(2.2f, 1.2f), Vector4(0.09f, 0.09f, 0.13f, 1.0f));
-	back_->size_ = Vector2(2.2f, 1.2f);
+	back_->size_ = Vector2(1280.0f, 720.0f);
 	for (auto& i : starlist_) {
 		i = std::make_unique<Star>();
 	}
@@ -39,7 +39,7 @@ void BackGround::Update(Camera* camera) {
 }
 
 void BackGround::Draw() {
-	back_->Draw(BlendMode::kBlendModeScreen);
+	back_->Draw();
 	Vector4 color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	for (auto& i : starlist_) {
 		instancingManager_->AddBox(modelData_, InstancingModelData{ i->GetTrans().worldMat_, Matrix4x4::MakeIdentity4x4(), color});
