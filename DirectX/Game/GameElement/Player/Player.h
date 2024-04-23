@@ -51,6 +51,10 @@ public:
 	const bool& GetIsHitEnemy() const { return isHitEnemy_; }
 	//void SetIsInWater(bool is) { isInWater_ = is; }
 
+	const bool& GetPreInWater() const { return preIsInWater_; }
+
+	const Vector3& GetVelocity() const { return velocity_; }
+
 private:
 	// グローバル変数の初期化、std::vectorに変更したためここで定義している
 	void InitializeGlobalVariable();

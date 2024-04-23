@@ -30,7 +30,7 @@ void WaterManager::Initialize()
 	}
 }
 
-void WaterManager::Update(float deltaTime, Camera* camera)
+void WaterManager::Update(const float& deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();

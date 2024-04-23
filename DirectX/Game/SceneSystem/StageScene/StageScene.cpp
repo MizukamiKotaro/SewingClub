@@ -10,6 +10,7 @@
 #include "GameElement/Item/ItemManager.h"
 #include "ParticleManager.h"
 #include "GameElement/Enemy/EnemyManager.h"
+#include "GameElement/WaterChunk/WaterWave.h"
 
 #include "GameElement/Animation/AnimationManager.h"
 #include"Audio/AudioManager/AudioManager.h"
@@ -28,6 +29,7 @@ StageScene::StageScene()
 	Client::StaticInitialize();
 	Planet::StaticInitialize();
 	Item::StaticInitialize();
+	WaterWave::StaticInitialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
@@ -44,6 +46,8 @@ StageScene::StageScene()
 	player_ = std::make_unique<Player>();
 	camera_->transform_.translate_.z = -50.0f;
 	camera_->Update();
+
+	WaterChunk::SetPlayer(player_.get());
 
 	goal_ = std::make_unique<Goal>();
 
@@ -82,6 +86,7 @@ void StageScene::Initialize()
 
 	bgm_.Play(true);
 	waterEffect_->Initialize();
+	bg_->Initialize();
 }
 
 void StageScene::Update()
@@ -101,6 +106,7 @@ void StageScene::Update()
 	Client::StaticUpdate();
 	Planet::StaticUpdate();
 	Item::StaticUpdate();
+	WaterWave::StaticUpdate();
 
 	AnimationManager::GetInstance()->Update();
 
@@ -176,9 +182,7 @@ void StageScene::Draw()
 	MakePostEffect();
 
 	Kyoko::Engine::PreDraw();
-	// 描画
-	bg_->Draw();
-
+	
 	waterEffect_->Draw();
 
 	player_->Draw(camera_.get());
@@ -281,7 +285,7 @@ void StageScene::MakePostEffect()
 {
 	waterEffect_->PreDrawBackGround();
 	// 背景の描画
-
+	bg_->Draw();
 
 	waterEffect_->PostDrawBackGround();
 

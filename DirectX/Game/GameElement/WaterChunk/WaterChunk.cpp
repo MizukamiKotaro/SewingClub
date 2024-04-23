@@ -1,18 +1,21 @@
 #include "WaterChunk.h"
 #include "ModelDataManager.h"
 #include <algorithm>
-#include "GameElement/Wave/Wave.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "SceneSystem/IScene/IScene.h"
 #include "WindowsInfo/WindowsInfo.h"
 #include "Camera.h"
+#include "GameElement/Player/Player.h"
 
 InstancingModelManager* WaterChunk::instancingManager_ = nullptr;
 const InstancingMeshTexData* WaterChunk::modelData_ = nullptr;
 
 std::unique_ptr<GlobalVariableUser> WaterChunk::staticGlobalVariable_ = nullptr;
 float WaterChunk::deleteTime_ = 2.0f;
+float WaterChunk::minScale_ = 0.7f;
+
+const Player* WaterChunk::player_ = nullptr;
 
 WaterChunk::WaterChunk()
 {
@@ -40,6 +43,9 @@ WaterChunk::WaterChunk()
 	isSmall_ = false;
 	isTree_ = false;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
+	isWave_ = false;
+	isPlayer_ = false;
+	preIsPlayer_ = false;
 	isActive_ = true;
 }
 
@@ -64,8 +70,10 @@ WaterChunk::WaterChunk(int no)
 	isTree_ = false;
 	isActive_ = true;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
-
+	isPlayer_ = false;
+	preIsPlayer_ = false;
 	CreateChips();
+	isWave_ = false;
 }
 
 WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
@@ -85,6 +93,9 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 	isSmaeGravitySize_ = isSame;
 	isTree_ = false;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
+	isWave_ = false;
+	isPlayer_ = false;
+	preIsPlayer_ = false;
 	isActive_ = true;
 }
 
@@ -102,7 +113,7 @@ void WaterChunk::Initialize()
 
 }
 
-void WaterChunk::Update(float deltaTime, Camera* camera)
+void WaterChunk::Update(const float& deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -125,6 +136,11 @@ void WaterChunk::Update(float deltaTime, Camera* camera)
 	}
 #endif // _DEBUG
 
+	if (!isPlayer_ && preIsPlayer_ && !player_->GetPreInWater()) {
+		AddWave(false);
+	}
+
+
 	if (isSmall_) {
 		time_ += deltaTime;
 
@@ -132,10 +148,38 @@ void WaterChunk::Update(float deltaTime, Camera* camera)
 		scale_ = (1.0f - time_ / deleteTime_) * maxScale_;
 	}
 
+	for (std::list<std::unique_ptr<WaterWave>>::iterator it = waves_.begin(); it != waves_.end();) {
+		(*it)->Update(deltaTime);
+		it++;
+	}
+
+	isWave_ = false;
+	for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
+
+		for (std::unique_ptr<WaterWave>& wave : waves_) {
+			float power = wave->GetPower(chip->GetRotate());
+			if (power != 0.0f) {
+				chip->AddOutPower(std::abs(power), power < 0);
+			}
+		}
+
+		chip->Update(deltaTime);
+		if (chip->IsWave()) {
+			isWave_ = true;
+		}
+	}
+
+	for (std::list<std::unique_ptr<WaterWave>>::iterator it = waves_.begin(); it != waves_.end();) {
+		if ((*it)->IsFinish()) {
+			it = waves_.erase(it);
+		}
+		else {
+			it++;
+		}
+	}
 	ActiveCheck(camera);
-	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
-		chip->Update();
-	}*/
+	preIsPlayer_ = isPlayer_;
+	isPlayer_ = false;
 	if (isActive_) {
 		gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 		SetCollider();
@@ -151,13 +195,17 @@ void WaterChunk::Draw() const
 #ifdef _DEBUG
 		//gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 #endif // _DEBUG
-		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
-
-		/*for (const std::unique_ptr<WaterChunkChip>& chip : chips_) {
-			chip->Draw();
-		}*/
-
+		if (isWave_) {
+			for (const std::unique_ptr<WaterChunkChip>& chip : chips_) {
+				chip->Draw();
+			}
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_ * minScale_,scale_ * minScale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
+			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
+		}
+		else {
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
+			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
+		}
 	}
 }
 
@@ -166,6 +214,11 @@ void WaterChunk::StaticUpdate()
 #ifdef _DEBUG
 	StaticApplyGlobalVariable();
 #endif // _DEBUG
+}
+
+void WaterChunk::SetPlayer(const Player* player)
+{
+	player_ = player;
 }
 
 void WaterChunk::SetGlobalVariable()
@@ -230,45 +283,49 @@ void WaterChunk::ActiveCheck(Camera* camera)
 
 void WaterChunk::CreateChips()
 {
-	float chipScale = WaterChunkChip::GetScale();
 	float rotateAdd = 3.1415f / 90;
 	float rotate = 0.0f;
-	float chipHalfScale = chipScale / 2;
-	bool isRad = false;
+
+	float scale = scale_ / 2;
+	float rad = scale;
 
 	for (int i = 0; i < 180; i++) {
-		float rad = chipHalfScale;
-		isRad = false;
-		while (true) {
 
-			if (scale_ <= rad + chipHalfScale) {
-				rad = (scale_ - chipScale) / 2;
-				isRad = true;
-			}
-			
-			Vector3 pos{};
-			pos.x = rad * std::cosf(rotate);
-			pos.y = rad * std::sinf(rotate);
+		Vector3 pos{};
+		pos.x = rad * std::cosf(rotate);
+		pos.y = rad * std::sinf(rotate);
 
-			pos += position_;
+		pos += position_;
 
-			chips_.push_back(std::make_unique<WaterChunkChip>(position_, pos, rotate));
+		chips_.push_back(std::make_unique<WaterChunkChip>(position_, pos, rotate, scale));
 
-			if (isRad) {
-				break;
-			}
-
-			rad += chipScale;
-		}
 		rotate += rotateAdd;
 	}
 
 }
 
+void WaterChunk::AddWave(const bool& isDown)
+{
+	// 波発生
+	Vector3 pos = player_->GetPosition() - position_;
+	Vector2 vect = { pos.x,pos.y };
+	vect = vect.Normalize();
+	float rotate = std::acosf(vect.x);
+	if (vect.y < 0) {
+		rotate = 6.28f - rotate;
+	}
+	waves_.push_back(std::make_unique<WaterWave>(player_->GetVelocity(), rotate, isDown));
+	waves_.back()->Update(0.005f);
+}
+
 void WaterChunk::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::PLAYER) {
-		
+		isPlayer_ = true;
+		if (!player_->GetPreInWater()) {
+			// 波発生
+			AddWave(true);
+		}
 	}
 }
 

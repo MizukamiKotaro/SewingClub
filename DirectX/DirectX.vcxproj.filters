@@ -861,6 +861,9 @@
     <ClCompile Include="Game\GameElement\BackGround\Star.cpp">
       <Filter>Game\GameElement\BackGround</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\WaterChunk\WaterWave.cpp">
+      <Filter>Game\GameElement\WaterChunk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1357,6 +1360,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\BackGround\Star.h">
       <Filter>Game\GameElement\BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\WaterChunk\WaterWave.h">
+      <Filter>Game\GameElement\WaterChunk</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

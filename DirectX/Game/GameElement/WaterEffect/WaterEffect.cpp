@@ -12,6 +12,7 @@ WaterEffect::WaterEffect(const Vector3& cameraPos)
 	highLumi_->highLumiData_->isToWhite = 1;
 	outline_ = std::make_unique<WaterOutline>();
 	uneune_ = 20;
+	post_ = std::make_unique<PostEffect>();
 
 	global_ = std::make_unique<GlobalVariableUser>("Water", "WaterEffect");
 	if (IScene::sceneNo_ == SCENE::STAGE) {
@@ -42,17 +43,18 @@ void WaterEffect::Update(const float& deltaTime)
 
 void WaterEffect::Draw()
 {
+	post_->Draw();
 	outline_->Draw();
 }
 
 void WaterEffect::PreDrawBackGround()
 {
-	noise_->PreDrawScene();
+	post_->PreDrawScene();
 }
 
 void WaterEffect::PostDrawBackGround()
 {
-	noise_->PostDrawScene();
+	post_->PostDrawScene();
 }
 
 void WaterEffect::PreDrawWaterArea()
@@ -63,6 +65,10 @@ void WaterEffect::PreDrawWaterArea()
 void WaterEffect::PostDrawWaterArea()
 {
 	highLumi_->PostDrawScene();
+
+	noise_->PreDrawScene();
+	post_->Draw();
+	noise_->PostDrawScene();
 
 	outline_->PreDrawScene();
 	noise_->Draw();
