@@ -11,15 +11,12 @@ TitleScene::TitleScene()
 	buttonA_ = std::make_unique<Sprite>("controler_UI_A1.png");
 	buttonA_->pos_.y = 500.0f;
 	buttonA_->size_ = { 123.0f,123.0f };
-	buttonA_->Update();
-
+	
 	titleLogo_ = std::make_unique<Sprite>("titleLogo_1.png");
-	titleLogo_->Update();
 
 	startWord_ = std::make_unique<Sprite>("title_startUI.png");
 	startWord_->pos_.y = 500.0f;
 	startWord_->pos_.x = 700.0f;
-	startWord_->Update();
 
 	bg_ = std::make_unique<BackGround>();
 
@@ -37,11 +34,30 @@ TitleScene::TitleScene()
 	gVari->AddItem(groupName_, "スタート文字座標", startWord_->pos_);
 	gVari->AddItem(groupName_, "スタート文字サイズ", startWord_->size_);
 
+	titleLogo_->pos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標");
+	titleLogo_->size_ = gVari->GetVector2Value(groupName_, "タイトルロゴサイズ");
+	buttonA_->pos_ = gVari->GetVector2Value(groupName_, "ボタン座標");
+	buttonA_->size_ = gVari->GetVector2Value(groupName_, "ボタンサイズ");
+	startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
+	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
+
 }
 
 void TitleScene::Initialize()
 {
 	AudioManager::GetInstance()->AllStop();
+	
+	GlobalVariables* gVari = GlobalVariables::GetInstance();
+
+	titleLogo_->pos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標");
+	titleLogo_->size_ = gVari->GetVector2Value(groupName_, "タイトルロゴサイズ");
+	buttonA_->pos_ = gVari->GetVector2Value(groupName_, "ボタン座標");
+	buttonA_->size_ = gVari->GetVector2Value(groupName_, "ボタンサイズ");
+	startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
+	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
+	buttonA_->Update();
+	titleLogo_->Update();
+	startWord_->Update();
 
 
 	bgm_.Play(true);
