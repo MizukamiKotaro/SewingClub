@@ -21,6 +21,7 @@ private:
 private:
 
 	std::unique_ptr<Sprite> buttonA_;
+	std::unique_ptr<Sprite>titleLogo_;
 
 	Audio bgm_;
 	float bgmVolume_ = 0.15f;

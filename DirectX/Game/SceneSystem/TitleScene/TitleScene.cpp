@@ -8,6 +8,10 @@ TitleScene::TitleScene()
 	FirstInit();
 
 	buttonA_ = std::make_unique<Sprite>("space.png");
+	buttonA_->pos_.y = 500.0f;
+	
+	titleLogo_ = std::make_unique<Sprite>("titleLogo_1.png");
+
 
 	bgm_.LoadWave("Music/title.wav","TitleBGM",bgmVolume_);
 }
@@ -21,6 +25,9 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
+	buttonA_->Update();
+	titleLogo_->Update();
+
 	SceneChange();
 }
 
@@ -31,6 +38,7 @@ void TitleScene::Draw()
 	Kyoko::Engine::PreDraw();
 
 	buttonA_->Draw();
+	titleLogo_->Draw();
 
 	BlackDraw();
 
