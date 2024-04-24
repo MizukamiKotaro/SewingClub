@@ -58,7 +58,7 @@ void SelectScene::Initialize()
 	//AudioManager::GetInstance()->AllStop();
 
 	// アニメーション初期化
-	animation_ = AnimationManager::GetInstance()->AddAnimation("numbers");
+	animation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("numbers"));
 
 	//カメラ初期化
 	camera_->Initialize();

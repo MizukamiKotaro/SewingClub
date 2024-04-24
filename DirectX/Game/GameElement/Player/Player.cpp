@@ -7,7 +7,6 @@
 #include "GameElement/WaterManager/WaterManager.h"
 #include "GameElement/Client/ClientManager.h"
 #include"GameElement/Effects/EffectOutWater.h"
-#include "GameElement/Animation/Animation2D.h"
 #include "GameElement/Animation/AnimationManager.h"
 #include "TextureManager/TextureManager.h"
 #include "ImGuiManager/ImGuiManager.h"
@@ -94,11 +93,12 @@ Player::Player()
 	effeUIEnterWater_ = std::make_unique<EffectUIEnterWater>();
 	
 	// アニメーションの初期化とモデルのセット
-	animation_ = AnimationManager::GetInstance()->AddAnimation("playermove");
+	animation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("playermove"));
 	// UV座標のセット
 	Transform handle = animation_->GetSceneUV(0u);
 	model_->SetUVParam(handle);
 	model_->SetTexture(TextureManager::GetInstance()->LoadTexture("player_anime.png"));
+	animation_->Play(true);
 }
 
 void Player::Initialize()
@@ -151,15 +151,15 @@ void Player::Update(float deltaTime)
 		Reset();
 	}
 
-	ImGui::DragFloat("Ro", &model_->transform_.rotate_.z, 0.1f);
+	std::string animationHandle;
 	if (velocity_.y != 0.0f) {
-		animation_->Play(true);
+		animationHandle = "playermove";
 	}
 	else {
-		animation_->Play(false);
+		animationHandle = "playeridle";
 	}
 	// アニメーションがされていたら
-	if (animation_->Update()) {
+	if (animation_->Update(animationHandle)) {
 		// modelにuvのセット
 		model_->SetUVParam(animation_->GetUVTrans());
 	}
