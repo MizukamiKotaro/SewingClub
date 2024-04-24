@@ -1,11 +1,10 @@
-#include "../SpriteShader/Sprite.hlsli"
+#include "../BasePostEffectShader/BasePostEffect.hlsli"
 
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
 struct Material {
 	float32_t4 color;
-	float32_t4x4 uvTransform;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
 
@@ -23,8 +22,7 @@ struct PixelShaderOutput {
 PixelShaderOutput main(VertexShaderOutput input) {
 	PixelShaderOutput output;
 
-	float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-	float32_t4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
+	float32_t4 textureColor = gTexture.Sample(gSampler, input.texcoord);
 
 	output.color = textureColor;
 
@@ -34,16 +32,16 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		float y = 1.0 / gWaterOutline.screenSize.y;
 		float x = 1.0 / gWaterOutline.screenSize.x;
 		for(int i = 0; i < gWaterOutline.outlinePix; i++){
-			textureColor = gTexture.Sample(gSampler, transformedUV.xy + float32_t2((-i - 1) * x,0));
+			textureColor = gTexture.Sample(gSampler, input.texcoord + float32_t2((-i - 1) * x,0));
 			n = n * textureColor.a;
 
-			textureColor = gTexture.Sample(gSampler, transformedUV.xy + float32_t2((i + 1) * x,0));
+			textureColor = gTexture.Sample(gSampler, input.texcoord + float32_t2((i + 1) * x,0));
 			n = n * textureColor.a;
 
-			textureColor = gTexture.Sample(gSampler, transformedUV.xy + float32_t2(0,(-i - 1) * y));
+			textureColor = gTexture.Sample(gSampler, input.texcoord + float32_t2(0,(-i - 1) * y));
 			n = n * textureColor.a;
 
-			textureColor = gTexture.Sample(gSampler, transformedUV.xy + float32_t2(0,(i + 1) * y));
+			textureColor = gTexture.Sample(gSampler, input.texcoord + float32_t2(0,(i + 1) * y));
 			n = n * textureColor.a;
 		}
 

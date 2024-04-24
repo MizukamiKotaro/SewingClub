@@ -1,12 +1,10 @@
-#include "../SpriteShader/Sprite.hlsli"
+#include "../BasePostEffectShader/BasePostEffect.hlsli"
 
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
 struct Material {
 	float32_t4 color;
-	//int32_t enableLighting;
-	float32_t4x4 uvTransform;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
 
@@ -96,26 +94,20 @@ PixelShaderOutput main(VertexShaderOutput input) {
 	PixelShaderOutput output;
 	
 	if(gNoise.type == 0){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
-		float r = random(transformedUV.xy);
+		float r = random(input.texcoord);
 		output.color = float32_t4(r,r,r,1);
 	}
 	else if(gNoise.type == 1){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
-		float r = random(floor(transformedUV.xy * gNoise.screenSize.xy / gNoise.density) * gNoise.density / gNoise.screenSize.xy);
+		float r = random(floor(input.texcoord * gNoise.screenSize.xy / gNoise.density) * gNoise.density / gNoise.screenSize.xy);
 		output.color = float32_t4(r,r,r,1);
 	}
 	else if(gNoise.type == 2){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
-		float v00 = random(floor(transformedUV.xy * gNoise.screenSize.xy / gNoise.density) * gNoise.density / gNoise.screenSize.xy);
-		float v01 = random((floor(transformedUV.xy * gNoise.screenSize.xy / gNoise.density) + float32_t2(0,1)) * gNoise.density / gNoise.screenSize.xy);
-		float v10 = random((floor(transformedUV.xy * gNoise.screenSize.xy / gNoise.density) + float32_t2(1,0)) * gNoise.density / gNoise.screenSize.xy);
-		float v11 = random((floor(transformedUV.xy * gNoise.screenSize.xy / gNoise.density) + float32_t2(1,1)) * gNoise.density / gNoise.screenSize.xy);
+		float v00 = random(floor(input.texcoord * gNoise.screenSize.xy / gNoise.density) * gNoise.density / gNoise.screenSize.xy);
+		float v01 = random((floor(input.texcoord * gNoise.screenSize.xy / gNoise.density) + float32_t2(0,1)) * gNoise.density / gNoise.screenSize.xy);
+		float v10 = random((floor(input.texcoord * gNoise.screenSize.xy / gNoise.density) + float32_t2(1,0)) * gNoise.density / gNoise.screenSize.xy);
+		float v11 = random((floor(input.texcoord * gNoise.screenSize.xy / gNoise.density) + float32_t2(1,1)) * gNoise.density / gNoise.screenSize.xy);
 		
-		float32_t2 p = frac(transformedUV.xy * gNoise.screenSize.xy / gNoise.density);
+		float32_t2 p = frac(input.texcoord * gNoise.screenSize.xy / gNoise.density);
 		float v0010 = lerp(v00,v10,p.x);
 		float v0111 = lerp(v01,v11,p.x);
 		float n = lerp(v0010,v0111,p.y);
@@ -123,14 +115,12 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		output.color = float32_t4(n,n,n,1);
 	}
 	else if(gNoise.type == 3){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
-		float v00 = random(floor(transformedUV.xy * gNoise.screenSize.xy / gNoise.density) * gNoise.density / gNoise.screenSize.xy);
-		float v01 = random((floor(transformedUV.xy * gNoise.screenSize.xy / gNoise.density) + float32_t2(0,1)) * gNoise.density / gNoise.screenSize.xy);
-		float v10 = random((floor(transformedUV.xy * gNoise.screenSize.xy / gNoise.density) + float32_t2(1,0)) * gNoise.density / gNoise.screenSize.xy);
-		float v11 = random((floor(transformedUV.xy * gNoise.screenSize.xy / gNoise.density) + float32_t2(1,1)) * gNoise.density / gNoise.screenSize.xy);
+		float v00 = random(floor(input.texcoord * gNoise.screenSize.xy / gNoise.density) * gNoise.density / gNoise.screenSize.xy);
+		float v01 = random((floor(input.texcoord * gNoise.screenSize.xy / gNoise.density) + float32_t2(0,1)) * gNoise.density / gNoise.screenSize.xy);
+		float v10 = random((floor(input.texcoord * gNoise.screenSize.xy / gNoise.density) + float32_t2(1,0)) * gNoise.density / gNoise.screenSize.xy);
+		float v11 = random((floor(input.texcoord * gNoise.screenSize.xy / gNoise.density) + float32_t2(1,1)) * gNoise.density / gNoise.screenSize.xy);
 		
-		float32_t2 p = frac(transformedUV.xy * gNoise.screenSize.xy / gNoise.density);
+		float32_t2 p = frac(input.texcoord * gNoise.screenSize.xy / gNoise.density);
 		float32_t2 v = p * p * (3 - 2 * p);
 
 		float v0010 = lerp(v00,v10,v.x);
@@ -140,59 +130,47 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		output.color = float32_t4(n,n,n,1);
 	}
 	else if(gNoise.type == 4){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
-		float n = PerlinNoise(gNoise.density, transformedUV.xy, gNoise.screenSize);
+		float n = PerlinNoise(gNoise.density, input.texcoord, gNoise.screenSize);
 
 		output.color = float32_t4(n,n,n,1);
 	}
 	else if(gNoise.type == 5){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
-		float n = FractalSumNoise(gNoise.density, transformedUV.xy);
+		float n = FractalSumNoise(gNoise.density, input.texcoord);
 
 		output.color = float32_t4(n,n,n,1);
 	}
 	else if(gNoise.type == 6){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
-		float n1 = FractalSumNoise(gNoise.density, transformedUV.xy + float32_t2(3 * gNoise.time,0));
-		float n2 = FractalSumNoise(gNoise.density, transformedUV.xy + float32_t2(gNoise.time,gNoise.time));
-		float n3 = FractalSumNoise(gNoise.density, transformedUV.xy + float32_t2(gNoise.time,-gNoise.time));
+		float n1 = FractalSumNoise(gNoise.density, input.texcoord + float32_t2(3 * gNoise.time,0));
+		float n2 = FractalSumNoise(gNoise.density, input.texcoord + float32_t2(gNoise.time,gNoise.time));
+		float n3 = FractalSumNoise(gNoise.density, input.texcoord + float32_t2(gNoise.time,-gNoise.time));
 
 		float n = (n1 + n2 + n3) / 3;
 
 		output.color = float32_t4(n,n,n,1);
 	}
 	else if(gNoise.type == 7){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
-		float n1 = FractalSumNoise(gNoise.density, transformedUV.xy + float32_t2(gNoise.time,gNoise.time));
-		float n2 = FractalSumNoise(gNoise.density, transformedUV.xy + float32_t2(-gNoise.time,-gNoise.time));
+		float n1 = FractalSumNoise(gNoise.density, input.texcoord + float32_t2(gNoise.time,gNoise.time));
+		float n2 = FractalSumNoise(gNoise.density, input.texcoord + float32_t2(-gNoise.time,-gNoise.time));
 		
 		float n = step(0.985,1-abs(n1-n2));
 
 		output.color = float32_t4(n,n,n,1);
 	}
 	else if(gNoise.type == 8){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
-		float n1 = FractalSumNoise(gNoise.density, transformedUV.xy + float32_t2(gNoise.time,gNoise.time));
-		float n2 = FractalSumNoise(gNoise.density, transformedUV.xy + float32_t2(-gNoise.time,-gNoise.time));
+		float n1 = FractalSumNoise(gNoise.density, input.texcoord + float32_t2(gNoise.time,gNoise.time));
+		float n2 = FractalSumNoise(gNoise.density, input.texcoord + float32_t2(-gNoise.time,-gNoise.time));
 		
-		float32_t4 textureColor = gTexture.Sample(gSampler, float32_t2(transformedUV.x + n1 / 5, transformedUV.y + n2 / 5));
+		float32_t4 textureColor = gTexture.Sample(gSampler, float32_t2(input.texcoord.x + n1 / 5, input.texcoord.y + n2 / 5));
 
 		output.color = textureColor;
 	}
 	else if(gNoise.type == 9){
-		float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
 		float32_t2 pos = float32_t2(gNoise.cameraPos.x / (16 * gNoise.moveScale),-gNoise.cameraPos.y / (9 * gNoise.moveScale));
 
-		float n1 = FractalSumNoise(gNoise.density, transformedUV.xy + pos + float32_t2(gNoise.time,gNoise.time));
-		float n2 = FractalSumNoise(gNoise.density, transformedUV.xy + pos + float32_t2(-gNoise.time,-gNoise.time));
+		float n1 = FractalSumNoise(gNoise.density, input.texcoord + pos + float32_t2(gNoise.time,gNoise.time));
+		float n2 = FractalSumNoise(gNoise.density, input.texcoord + pos + float32_t2(-gNoise.time,-gNoise.time));
 		
-		float32_t4 textureColor = gTexture.Sample(gSampler, float32_t2(transformedUV.x + n1 / 5, transformedUV.y + n2 / 5));
+		float32_t4 textureColor = gTexture.Sample(gSampler, float32_t2(input.texcoord.x + n1 / 5, input.texcoord.y + n2 / 5));
 
 		float n3 = (n1 + n2) / 2;
 

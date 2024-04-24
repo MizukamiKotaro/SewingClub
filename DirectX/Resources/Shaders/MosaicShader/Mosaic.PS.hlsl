@@ -1,12 +1,10 @@
-#include "../SpriteShader/Sprite.hlsli"
+#include "../BasePostEffectShader/BasePostEffect.hlsli"
 
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
 struct Material {
 	float32_t4 color;
-	//int32_t enableLighting;
-	float32_t4x4 uvTransform;
 };
 ConstantBuffer<Material> gMaterial : register(b0);
 
@@ -25,10 +23,8 @@ ConstantBuffer<MosaicData> gMosaic : register(b1);
 PixelShaderOutput main(VertexShaderOutput input) {
 	PixelShaderOutput output;
 
-	float32_t4 transformedUV = mul(float32_t4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
-
 	if(gMosaic.density == 0.0f){
-		output.color = gTexture.Sample(gSampler, transformedUV.xy);
+		output.color = gTexture.Sample(gSampler, input.texcoord);
 
 		if (gMosaic.isNormal == 1) {
 			if (output.color.a <= 0.5f) {
@@ -40,10 +36,10 @@ PixelShaderOutput main(VertexShaderOutput input) {
 
 	if(gMosaic.isSquare == 1){
 		output.color = gTexture.Sample(gSampler,
-		floor(transformedUV.xy * gMosaic.screenSize.xy / gMosaic.density) * gMosaic.density / gMosaic.screenSize.xy);
+		floor(input.texcoord * gMosaic.screenSize.xy / gMosaic.density) * gMosaic.density / gMosaic.screenSize.xy);
 	}
 	else {
-		output.color = gTexture.Sample(gSampler, floor(transformedUV.xy * gMosaic.density) / gMosaic.density);
+		output.color = gTexture.Sample(gSampler, floor(input.texcoord * gMosaic.density) / gMosaic.density);
 	}
 	
 	if (gMosaic.isNormal == 1) {
