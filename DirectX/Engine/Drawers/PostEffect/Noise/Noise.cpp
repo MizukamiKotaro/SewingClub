@@ -95,6 +95,7 @@ void Noise::CreateNoiseRes()
 	noiseData_->type = NoiseType::WATER;
 	noiseData_->isNormal = 1;
 	noiseData_->cameraPos = {};
+	noiseData_->correctionUV = {};
 	noiseData_->moveScale = 2.0f;
 }
 

@@ -5,7 +5,6 @@
 #include "WaterOutline/WaterOutline.h"
 #include "StageEditor/StageEditor.h"
 #include "PostEffect/PostEffect.h"
-#include "Sprite.h"
 
 class Camera;
 
@@ -41,7 +40,6 @@ private:
 	std::unique_ptr<HighLumi> highLumi_;
 	std::unique_ptr<WaterOutline> outline_;
 	std::unique_ptr<PostEffect> post_;
-	std::unique_ptr<Sprite> sprite_;
 
 	std::unique_ptr<GlobalVariableUser> global_;
 	std::unique_ptr<StageEditor> stageEditor_;
