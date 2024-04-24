@@ -10,7 +10,10 @@
 #include "GameElement/Animation/Animation2D.h"
 #include "GameElement/Animation/AnimationManager.h"
 #include "TextureManager/TextureManager.h"
+#include "ImGuiManager/ImGuiManager.h"
+#include <numbers>
 
+const float kRotate = 90.0f * (std::numbers::pi_v<float> / 180.0f);
 
 Player::Player()
 {
@@ -91,17 +94,16 @@ Player::Player()
 	effeUIEnterWater_ = std::make_unique<EffectUIEnterWater>();
 	
 	// アニメーションの初期化とモデルのセット
-	animation_ = AnimationManager::GetInstance()->AddAnimation("default");
+	animation_ = AnimationManager::GetInstance()->AddAnimation("playermove");
 	// UV座標のセット
 	Transform handle = animation_->GetSceneUV(0u);
 	model_->SetUVParam(handle);
-	model_->SetTexture(TextureManager::GetInstance()->LoadTexture("player.png"));
-
+	model_->SetTexture(TextureManager::GetInstance()->LoadTexture("player_anime.png"));
 }
 
 void Player::Initialize()
 {
-	
+
 	stageEditor_->Initialize();
 	Reset();
 	effeExtraJump_->Initialize(&model_->transform_.GetWorldPosition());
@@ -148,6 +150,20 @@ void Player::Update(float deltaTime)
 	if (model_->transform_.GetWorldPosition().y <= fParas_[kMinPositionY]) {
 		Reset();
 	}
+
+	ImGui::DragFloat("Ro", &model_->transform_.rotate_.z, 0.1f);
+	if (velocity_.y != 0.0f) {
+		animation_->Play(true);
+	}
+	else {
+		animation_->Play(false);
+	}
+	// アニメーションがされていたら
+	if (animation_->Update()) {
+		// modelにuvのセット
+		model_->SetUVParam(animation_->GetUVTrans());
+	}
+
 	model_->Update();
 	//yarn_->Update();
 	// プレイヤーの軌跡に水を発生させる処理(気にしなくていい)
@@ -266,10 +282,10 @@ void Player::Move(float deltaTime)
 		velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
 
 		if (vector_.y >= 0.0f) {
-			model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f;
+			model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f + kRotate;
 		}
 		else {
-			model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f;
+			model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f + kRotate;
 		}
 	}
 	else {
@@ -434,10 +450,10 @@ void Player::OutWater(float deltaTime)
 			speed_ = velocity_.y / normal.y;
 		}
 		if (vector_.y >= 0.0f) {
-			model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f;
+			model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f + kRotate;
 		}
 		else {
-			model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f;
+			model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f + kRotate;
 		}
 
 		model_->transform_.translate_ += velocity_;
@@ -671,10 +687,10 @@ void Player::AutoMove(float deltaTime)
 	velocity_ = { vector_.x * speed_,vector_.y * speed_,0.0f };
 
 	if (vector_.y >= 0.0f) {
-		model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f;
+		model_->transform_.rotate_.z = std::acosf(vector_.x) - 1.57f + kRotate;
 	}
 	else {
-		model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f;
+		model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f + kRotate;
 	}
 	model_->transform_.translate_ += velocity_;
 }
