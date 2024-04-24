@@ -3,7 +3,7 @@
 
 PostEffect::PostEffect()
 {
-	piplineType_ = PipelineType::SPRITE;
+	piplineType_ = PipelineType::COPY;
 
 	CreatePostEffect();
 }

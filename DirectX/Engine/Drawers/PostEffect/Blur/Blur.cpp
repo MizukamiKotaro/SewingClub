@@ -35,34 +35,24 @@ void Blur::Draw(BlendMode blendMode)
 		blurData_->isNormal = 0;
 	}
 
-	if (isInvisible_) {
-		return;
-	}
-
 	materialData_->color = color_;
 
 	PreDraw();
-
-	transformData_->WVP = worldMat_ * Camera::GetOrthographicMat();
-	materialData_->uvTransform = Matrix4x4::MakeAffinMatrix({ uvScale_.x,uvScale_.y,0.0f }, Vector3{ 0.0f,0.0f,uvRotate_ }, { uvTranslate_.x,uvTranslate_.y,0.0f });
 
 	psoManager_->SetBlendMode(piplineType_, blendMode);
 
 	ID3D12GraphicsCommandList* commandList = DirectXBase::GetInstance()->GetCommandList();
 
 	//Spriteの描画。変更に必要なものだけ変更する
-	commandList->IASetVertexBuffers(0, 1, &vertexBufferView_); // VBVを設定
 	//マテリアルCBufferの場所を設定
 	commandList->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-	//TransformationMatrixCBufferの場所を設定
-	commandList->SetGraphicsRootConstantBufferView(1, transformResource_->GetGPUVirtualAddress());
 
-	commandList->SetGraphicsRootDescriptorTable(2, srvHandles_->gpuHandle);
+	commandList->SetGraphicsRootDescriptorTable(1, srvHandles_->gpuHandle);
 
-	commandList->SetGraphicsRootConstantBufferView(3, blurResource_->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(2, blurResource_->GetGPUVirtualAddress());
 
 	//描画!!!!（DrawCall/ドローコール）
-	commandList->DrawInstanced(6, 1, 0, 0);
+	commandList->DrawInstanced(3, 1, 0, 0);
 
 }
 

@@ -15,6 +15,7 @@
 #include "GraphicsPipelineSystem/GraphicsPipelines/InstancingModelGraphicsPipline/InstancingModelGraphicsPipline.h"
 #include "GraphicsPipelineSystem/GraphicsPipelines/NoiseGraphicsPipeline/NoiseGraphicsPipeline.h"
 #include "GraphicsPipelineSystem/GraphicsPipelines/WaterOutlineGraphicsPipeline/WaterOutlineGraphicsPipeline.h"
+#include "GraphicsPipelineSystem/GraphicsPipelines/CopyGraphicsPipeline/CopyGraphicsPipeline.h"
 #include "GraphicsPipelineSystem/PipelineTypeConfig.h"
 
 GraphicsPipeline* GraphicsPipelineFactory::CreateGraphicsPipeline(PipelineType pipelineType)
@@ -25,6 +26,9 @@ GraphicsPipeline* GraphicsPipelineFactory::CreateGraphicsPipeline(PipelineType p
 	{
 	case PipelineType::SPRITE:
 		graphicsPipeline = new SpriteGraphicsPipeline();
+		break;
+	case PipelineType::COPY:
+		graphicsPipeline = new CopyGraphicsPipeline();
 		break;
 	case PipelineType::MODEL:
 		graphicsPipeline = new ModelGraphicsPipline();

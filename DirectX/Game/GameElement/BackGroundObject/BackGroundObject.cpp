@@ -9,7 +9,7 @@ ParticleManager* BackGroundObject::instancingManager_ = nullptr;
 BackGroundObject::BackGroundObject(const int& no, const BackGroundObjectType& type)
 {
 	position_ = { 0.0f,1.0f,-0.02f };
-	scale_ = { 1.0f,1.0f,1.0f };
+	scale_ = { 3.0f,3.0f,1.0f };
 	rotate_ = { 0.0f,0.0f,0.0f };
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 
