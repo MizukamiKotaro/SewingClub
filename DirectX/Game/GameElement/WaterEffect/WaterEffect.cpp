@@ -13,6 +13,8 @@ WaterEffect::WaterEffect(const Vector3& cameraPos)
 	outline_ = std::make_unique<WaterOutline>();
 	uneune_ = 20;
 	post_ = std::make_unique<PostEffect>();
+	sprite_ = std::make_unique<Sprite>();
+	sprite_->SetSRVGPUDescriptorHandle_(post_->GetSRVGPUDescriptorHandle());
 
 	global_ = std::make_unique<GlobalVariableUser>("Water", "WaterEffect");
 	if (IScene::sceneNo_ == SCENE::STAGE) {
@@ -68,6 +70,7 @@ void WaterEffect::PostDrawWaterArea()
 
 	noise_->PreDrawScene();
 	post_->Draw();
+	sprite_->Draw();
 	noise_->PostDrawScene();
 
 	outline_->PreDrawScene();
@@ -81,6 +84,7 @@ void WaterEffect::SetGlobalVariable()
 	global_->AddItem("密度", noise_->noiseData_->density);
 	global_->AddItem("カメラの影響の受けにくさ", noise_->noiseData_->moveScale);
 	global_->AddItem("うねうねの動きにくさ", uneune_);
+	global_->AddItem("映り込む背景の座標", sprite_->pos_);
 
 	if (stageEditor_) {
 		stageEditor_->AddItem("水の色", Vector3{ 0.3f,1.0f,0.8f });
@@ -117,4 +121,7 @@ void WaterEffect::ApplyGlobalVariable()
 	}
 
 	outline_->color_ = noise_->noiseData_->lightningColor;
+
+	sprite_->pos_ = global_->GetVector2Value("映り込む背景の座標");
+	sprite_->Update();
 }
