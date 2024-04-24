@@ -19,6 +19,7 @@ struct NoiseData {
 	float32_t4 waterColor;
 	float32_t4 lightningColor;
 	float32_t2 cameraPos;
+	float32_t2 correctionUV;
 	float moveScale;
 	int32_t type;
 	int32_t isNormal;
@@ -170,7 +171,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		float n1 = FractalSumNoise(gNoise.density, input.texcoord + pos + float32_t2(gNoise.time,gNoise.time));
 		float n2 = FractalSumNoise(gNoise.density, input.texcoord + pos + float32_t2(-gNoise.time,-gNoise.time));
 		
-		float32_t4 textureColor = gTexture.Sample(gSampler, float32_t2(input.texcoord.x + n1 / 5, input.texcoord.y + n2 / 5));
+		float32_t4 textureColor = gTexture.Sample(gSampler, float32_t2(input.texcoord.x + gNoise.correctionUV.x + n1 / 5, input.texcoord.y + gNoise.correctionUV.y + n2 / 5));
 
 		float n3 = (n1 + n2) / 2;
 
