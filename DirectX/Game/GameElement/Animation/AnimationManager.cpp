@@ -111,7 +111,7 @@ void AnimationManager::ImGuiProcess() {
 				}
 
 				if (ImGui::Button("Play")) {
-					animation_->Play();
+					animation_->Play(!animation_->isPlay_);
 				}
 				if (ImGui::Button("Load")) {
 					animation_.release();

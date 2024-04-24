@@ -18,8 +18,9 @@ Transform Animation2D::GetSceneUV(const uint32_t& scene) {
 	return transform_;
 }
 
-void Animation2D::Play() {
-	isPlay_ = !isPlay_;
+void Animation2D::Play(bool flag) {
+	if (isPlay_ == flag) { return; }
+	isPlay_ = flag;
 	nowFrame_ = 0.0f;
 	nowScene_ = 0u;
 }
@@ -121,7 +122,7 @@ void Animation2D::ApplyGlobalVariable() {
 
 void Animation2D::UpdateTrans(const uint32_t& listNum) {
 	transform_.scale_ = texParam_.uvScale;
-	transform_.rotate_ = Vector3(0.0f, 0.0f, 0.0f);
+	transform_.rotate_ = Vector3(0.0f, 0.0f, uvRotate_);
 	transform_.translate_ = sceneNumberList_.at(listNum);
 	transform_.UpdateMatrix();
 }

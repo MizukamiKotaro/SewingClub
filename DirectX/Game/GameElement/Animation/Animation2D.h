@@ -17,12 +17,14 @@ public:
 	bool Update();
 
 	// アニメーションの再生
-	void Play();
+	void Play(bool flag);
 
 	// 指定したSceneのUV取得
 	Transform GetSceneUV(const uint32_t& scene);
 	// uv座標のゲッター
 	Transform GetUVTrans() const { return transform_; }
+
+	void SetRotate(const float& rotate) { uvRotate_ = rotate; }
 
 private:
 	// アニメーションNo.の格納
@@ -40,6 +42,7 @@ private:
 	std::unique_ptr<GlobalVariableUser> global_;
 
 	Transform transform_; // uv座標の返却用で簡易敵に用意
+	float uvRotate_ = 0.0f;
 
 	struct TextureParameter	{
 		Vector2 divisionNumber{}; // 分割数
