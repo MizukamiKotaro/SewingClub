@@ -99,3 +99,7 @@ void Goal::SetCollider()
 		collisionManager_->SetCollider(this);
 	}
 }
+
+void Goal::UpDownScale() {
+
+}

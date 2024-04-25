@@ -30,6 +30,8 @@ private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
 
+	void UpDownScale();
+
 private:
 	InstancingModelManager* instancingManager_;
 	const InstancingMeshTexData* modelData_;
