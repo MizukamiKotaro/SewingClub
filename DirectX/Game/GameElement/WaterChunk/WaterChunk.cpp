@@ -359,12 +359,58 @@ void WaterChunk::AddWave(const WaterChunk& water, WaterWave& wave)
 			Vector2 pos1 = { x,y };
 			Vector2 pos2 = { x,-y };
 
-			wave.IsFinish();
-
 			// ここから角度求めて範囲内にあったら角度求めて波の生成とナンバーの追加
+			Vector3 postion1 = { 0.0f,0.0f,position_.z };
+			postion1.x = pos1.x * std::cosf(theta) - pos1.y * std::sinf(theta);
+			postion1.y = pos1.x * std::sinf(theta) + pos1.y * std::cosf(theta);
+
+			Vector3 postion2 = { 0.0f,0.0f,position_.z };
+			postion2.x = pos2.x * std::cosf(theta) - pos2.y * std::sinf(theta);
+			postion2.y = pos2.x * std::sinf(theta) + pos2.y * std::cosf(theta);
 
 
+			pos = postion1 - water.position_;
+			vect = { pos.x,pos.y };
+			vect = vect.Normalize();
+			theta = std::acosf(vect.x);
+			if (vect.y < 0) {
+				theta = 6.28f - theta;
+			}
 
+			float power1 = wave.GetPower(rotate_);
+
+			pos = postion2 - water.position_;
+			vect = { pos.x,pos.y };
+			vect = vect.Normalize();
+			theta = std::acosf(vect.x);
+			if (vect.y < 0) {
+				theta = 6.28f - theta;
+			}
+
+			float power2 = wave.GetPower(rotate_);
+
+
+			if (power1 != 0.0f && power2 != 0.0f) {
+				wave.AddNum(no_);
+
+				pos = postion1 - position_;
+				vect = { pos.x,pos.y };
+				vect = vect.Normalize();
+				theta = std::acosf(vect.x);
+				if (vect.y < 0) {
+					theta = 6.28f - theta;
+				}
+
+				
+			}
+			else if (power1 != 0.0f) {
+				wave.AddNum(no_);
+
+			}
+			else if (power2 != 0.0f) {
+				wave.AddNum(no_);
+
+			}
 		}
 	}
 }
