@@ -6,9 +6,13 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include "SceneSystem/IScene/IScene.h"
 #include "WindowsInfo/WindowsInfo.h"
+#include "ItemManager.h"
 
 InstancingModelManager* Item::instancingManager_ = nullptr;
 const InstancingMeshTexData* Item::modelData_ = nullptr;
+
+ItemManager* Item::itemManager_ = nullptr;
+Vector4 Item::staticColor_ = { 1.0f,1.0f,1.0f,1.0f };
 
 std::unique_ptr<GlobalVariableUser> Item::staticGlobalVariable_ = nullptr;
 float Item::deleteTime_ = 2.0f;
@@ -28,7 +32,7 @@ Item::Item(int no, const float* scale)
 	stageEditor_ = std::make_unique<StageEditor>("アイテムの配置");
 	SetGlobalVariable();
 	scale_ = *maxScale_;
-	color_ = { 1.0f,1.0f,0.3f,1.0f };
+	color_ = staticColor_;
 	isActive_ = true;
 }
 
@@ -38,6 +42,8 @@ void Item::StaticInitialize()
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
 	const Texture* tex = TextureManager::GetInstance()->LoadTexture("ground.png");
 	modelData_ = instancingManager_->GetDrawData({ modelData,tex,BlendMode::kBlendModeNormal });
+	itemManager_ = ItemManager::GetInstance();
+	staticColor_ = itemManager_->GetColor();
 
 	StaticSetGlobalVariable();
 }
@@ -51,6 +57,7 @@ void Item::Update(float deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
+	staticColor_ = itemManager_->GetColor();
 	if (stageEditor_) {
 		std::string tree = "アイテム" + std::to_string(no_);
 		int no = no_ / 10;
@@ -63,7 +70,7 @@ void Item::Update(float deltaTime, Camera* camera)
 			color_ = { 0.7f,0.6f,0.1f,1.0f };
 		}
 		else {
-			color_ = { 1.0f,1.0f,0.3f,1.0f };
+			color_ = staticColor_;
 		}
 	}
 #endif // _DEBUG
