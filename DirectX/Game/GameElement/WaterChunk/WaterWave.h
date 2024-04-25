@@ -5,11 +5,12 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <list>
 #include "GlobalVariables/GlobalVariableUser.h"
 
 class WaterWave {
 public:
-	WaterWave(const Vector3& velocity, const float& rotate, const bool& isDown);
+	WaterWave(const Vector3& velocity, const float& rotate, const bool& isDown, const int& no);
 
 	static void StaticInitialize();
 
@@ -20,6 +21,8 @@ public:
 	bool IsFinish() const;
 
 	float GetPower(const float& rotate) const;
+
+	const std::list<int>& GetNums() const { return nums_; }
 
 private:
 	static void SetGlobalVariable();
@@ -40,6 +43,7 @@ private:
 	static std::unique_ptr<GlobalVariableUser> globalVariable_;
 
 private:
+	std::list<int> nums_;
 	float power_;
 	float firstRotate_;
 	float lRotate_;
