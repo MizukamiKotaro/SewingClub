@@ -118,23 +118,6 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
-	isTree_ = false;
-	if (stageEditor_) {
-		scale_ = maxScale_;
-		std::string tree = "水" + std::to_string(no_);
-		int no = no_ / 10;
-		no = no * 10;
-		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
-		if (stageEditor_->IsTreeOpen(tree1, tree)) {
-			color_ = { 1.0f,0.3f,0.3f,1.0f };
-		}
-		else if (stageEditor_->IsTreeOpen(tree1)) {
-			color_ = { 0.8f,0.7f,0.1f,1.0f };
-		}
-		else {
-			color_ = { 1.0f,1.0f,1.0f,1.0f };
-		}
-	}
 #endif // _DEBUG
 
 	if (!isPlayer_ && preIsPlayer_ && !player_->GetPreInWater()) {
@@ -175,7 +158,7 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 			it = waves_.erase(it);
 		}
 		else {
-			/*std::unordered_map<int, std::unique_ptr<WaterChunk>> fullWater = waterManager_->GetWater();
+			/*std::unordered_map<int, std::unique_ptr<WaterChunk>>& fullWater = waterManager_->GetWater();
 			for (std::pair<const int, std::unique_ptr<WaterChunk>>& water : fullWater) {
 				if (water.first != no_ && water.second->isActive_) {
 
@@ -377,7 +360,7 @@ void WaterChunk::AddWave(const WaterChunk& water, WaterWave& wave)
 				theta = 6.28f - theta;
 			}
 
-			float power1 = wave.GetPower(rotate_);
+			float power1 = wave.GetPower(theta);
 
 			pos = postion2 - water.position_;
 			vect = { pos.x,pos.y };
@@ -387,11 +370,12 @@ void WaterChunk::AddWave(const WaterChunk& water, WaterWave& wave)
 				theta = 6.28f - theta;
 			}
 
-			float power2 = wave.GetPower(rotate_);
+			float power2 = wave.GetPower(theta);
 
 
 			if (power1 != 0.0f && power2 != 0.0f) {
 				wave.AddNum(no_);
+				float next = wave.GetNextMaxRotate();
 
 				pos = postion1 - position_;
 				vect = { pos.x,pos.y };
@@ -400,16 +384,57 @@ void WaterChunk::AddWave(const WaterChunk& water, WaterWave& wave)
 				if (vect.y < 0) {
 					theta = 6.28f - theta;
 				}
-
+				std::list<int> nums = wave.GetNums();
+				waves_.push_back(std::make_unique<WaterWave>(std::abs(power1), theta, power1 < 0, next));
+				waves_.back()->Update(0.005f);
+				for (const int& no : nums) {
+					waves_.back()->AddNum(no);
+				}
 				
+				pos = postion2 - position_;
+				vect = { pos.x,pos.y };
+				vect = vect.Normalize();
+				theta = std::acosf(vect.x);
+				if (vect.y < 0) {
+					theta = 6.28f - theta;
+				}
+				waves_.push_back(std::make_unique<WaterWave>(std::abs(power2), theta, power2 < 0, next));
+				waves_.back()->Update(0.005f);
+				for (const int& no : nums) {
+					waves_.back()->AddNum(no);
+				}
 			}
 			else if (power1 != 0.0f) {
 				wave.AddNum(no_);
-
+				pos = postion1 - position_;
+				vect = { pos.x,pos.y };
+				vect = vect.Normalize();
+				theta = std::acosf(vect.x);
+				if (vect.y < 0) {
+					theta = 6.28f - theta;
+				}
+				std::list<int> nums = wave.GetNums();
+				waves_.push_back(std::make_unique<WaterWave>(std::abs(power1), theta, power1 < 0, wave.GetNextMaxRotate()));
+				waves_.back()->Update(0.005f);
+				for (const int& no : nums) {
+					waves_.back()->AddNum(no);
+				}
 			}
 			else if (power2 != 0.0f) {
 				wave.AddNum(no_);
-
+				pos = postion2 - position_;
+				vect = { pos.x,pos.y };
+				vect = vect.Normalize();
+				theta = std::acosf(vect.x);
+				if (vect.y < 0) {
+					theta = 6.28f - theta;
+				}
+				waves_.push_back(std::make_unique<WaterWave>(std::abs(power2), theta, power2 < 0, wave.GetNextMaxRotate()));
+				waves_.back()->Update(0.005f);
+				std::list<int> nums = wave.GetNums();
+				for (const int& no : nums) {
+					waves_.back()->AddNum(no);
+				}
 			}
 		}
 	}
