@@ -443,38 +443,6 @@ void WaterChunk::AddWave(const WaterChunk& water, WaterWave& wave)
 	}
 }
 
-void WaterChunk::AddWave(const WaterChunk& water, WaterWave& wave)
-{
-	if ((position_ - water.position_).Length() <= scale_ + water.scale_) {
-
-		Vector3 pos = position_ - water.position_;
-		Vector2 vect = { pos.x,pos.y };
-		vect = vect.Normalize();
-		float theta = std::acosf(vect.x);
-		if (vect.y < 0) {
-			theta = 6.28f - theta;
-		}
-		float length = (position_ - water.position_).Length();
-		if (length != 0.0f) {
-			float x = (water.scale_ * water.scale_ - scale_ * scale_ + length * length) / length;
-
-			float s = (water.scale_ + scale_ + length) / 2;
-
-			float y = 2 * std::sqrtf(s * (s - scale_) * (s - water.scale_) * (s - length)) / length;
-
-			Vector2 pos1 = { x,y };
-			Vector2 pos2 = { x,-y };
-
-			wave.IsFinish();
-
-			// ここから角度求めて範囲内にあったら角度求めて波の生成とナンバーの追加
-
-
-
-		}
-	}
-}
-
 void WaterChunk::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::PLAYER) {
