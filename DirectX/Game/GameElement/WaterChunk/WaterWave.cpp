@@ -34,6 +34,22 @@ WaterWave::WaterWave(const Vector3& velocity, const float& rotate, const bool& i
 	nums_.push_back(no);
 }
 
+WaterWave::WaterWave(const float& power, const float& rotate, const bool& isDown, const float& max)
+{
+	power_ = power;
+	firstRotate_ = rotate;
+	lRotate_ = rotate;
+	rRotate_ = rotate;
+	time_ = 0.0f;
+	preLRotate_ = rotate;
+	preRRotate_ = rotate;
+	maxRotate_ = max;
+
+	if (isDown) {
+		power_ *= -1;
+	}
+}
+
 void WaterWave::StaticInitialize()
 {
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Water", "Wave");
@@ -84,6 +100,11 @@ float WaterWave::GetPower(const float& rotate) const
 	}
 
 	return 0.0f;
+}
+
+const float WaterWave::GetNextMaxRotate() const
+{
+	return maxRotate_ - lRotate_ + firstRotate_;
 }
 
 void WaterWave::SetGlobalVariable()

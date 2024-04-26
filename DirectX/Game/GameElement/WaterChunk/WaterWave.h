@@ -12,6 +12,8 @@ class WaterWave {
 public:
 	WaterWave(const Vector3& velocity, const float& rotate, const bool& isDown, const int& no);
 
+	WaterWave(const float& power, const float& rotate, const bool& isDown, const float& max);
+
 	static void StaticInitialize();
 
 	void Update(const float& deltaTime);
@@ -22,7 +24,11 @@ public:
 
 	float GetPower(const float& rotate) const;
 
+	const float GetNextMaxRotate() const;
+
 	const std::list<int>& GetNums() const { return nums_; }
+
+	void AddNum(const int& no) { nums_.push_back(no); }
 
 private:
 	static void SetGlobalVariable();
