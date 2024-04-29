@@ -864,6 +864,9 @@
     <ClCompile Include="Game\GameElement\WaterChunk\WaterWave.cpp">
       <Filter>Game\GameElement\WaterChunk</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\EffectGoalGuidance.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1363,6 +1366,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\EffectUIEnterWater.h">
       <Filter>Game\GameElement\Effects\EffectUIEnterWater</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
