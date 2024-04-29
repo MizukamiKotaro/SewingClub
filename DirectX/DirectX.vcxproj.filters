@@ -882,6 +882,9 @@
     <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\CopyGraphicsPipeline\CopyGraphicsPipeline.cpp">
       <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\CopyGraphicsPipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\Enemy\FollowEnemy.cpp">
+      <Filter>Game\GameElement\Charactor\Enemy</Filter>
+    </ClCompile>
     <ClCompile Include="Game\GameElement\Effects\EffectGoalGuidance.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -1405,6 +1408,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\EffectUIEnterWater.h">
       <Filter>Game\GameElement\Effects\EffectUIEnterWater</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Enemy\FollowEnemy.h">
+      <Filter>Game\GameElement\Charactor\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h">
       <Filter>ヘッダー ファイル</Filter>
