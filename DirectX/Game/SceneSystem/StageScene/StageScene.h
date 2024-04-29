@@ -21,6 +21,7 @@ class ClientManager;
 class ItemManager;
 class ParticleManager;
 class EnemyManager;
+class BackGroundObjectManager;
 
 
 class StageScene : public IScene
@@ -72,4 +73,5 @@ private:
 
 	// 背景
 	std::unique_ptr<BackGround> bg_;
+	BackGroundObjectManager* backGroundObjectManager_;
 };

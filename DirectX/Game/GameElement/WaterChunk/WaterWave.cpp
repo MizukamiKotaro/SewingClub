@@ -15,7 +15,7 @@ std::vector<float> WaterWave::fParas_ = {
 	1,1,1,1,
 };
 
-WaterWave::WaterWave(const Vector3& velocity, const float& rotate, const bool& isDown)
+WaterWave::WaterWave(const Vector3& velocity, const float& rotate, const bool& isDown, const int& no)
 {
 	float speed = std::clamp(velocity.Length(), 0.0f, fParas_[kMaxSpeed]);
 
@@ -27,6 +27,23 @@ WaterWave::WaterWave(const Vector3& velocity, const float& rotate, const bool& i
 	preLRotate_ = rotate;
 	preRRotate_ = rotate;
 	maxRotate_ = fParas_[kConvertingMagnification] * power_ / fParas_[kMaxPower];
+
+	if (isDown) {
+		power_ *= -1;
+	}
+	nums_.push_back(no);
+}
+
+WaterWave::WaterWave(const float& power, const float& rotate, const bool& isDown, const float& max)
+{
+	power_ = power;
+	firstRotate_ = rotate;
+	lRotate_ = rotate;
+	rRotate_ = rotate;
+	time_ = 0.0f;
+	preLRotate_ = rotate;
+	preRRotate_ = rotate;
+	maxRotate_ = max;
 
 	if (isDown) {
 		power_ *= -1;
@@ -78,11 +95,16 @@ float WaterWave::GetPower(const float& rotate) const
 	else if (preLRotate_ <= rotate + 6.28f && rotate + 6.28f <= lRotate_) {
 		return power_ * (maxRotate_ - std::abs(rotate + 6.28f - firstRotate_)) / maxRotate_;
 	}
-	else if (preLRotate_ >= rotate - 6.28f && rotate - 6.28f >= lRotate_) {
+	else if (preRRotate_ >= rotate - 6.28f && rotate - 6.28f >= rRotate_) {
 		return power_ * (maxRotate_ - std::abs(rotate - 6.28f - firstRotate_)) / maxRotate_;
 	}
 
 	return 0.0f;
+}
+
+const float WaterWave::GetNextMaxRotate() const
+{
+	return maxRotate_ - lRotate_ + firstRotate_;
 }
 
 void WaterWave::SetGlobalVariable()

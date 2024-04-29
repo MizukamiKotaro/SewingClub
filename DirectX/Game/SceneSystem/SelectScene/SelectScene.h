@@ -4,6 +4,7 @@
 #include"GameElement/BackGround/BackGround.h"
 #include "Model.h"
 #include"Audio.h"
+#include "GameElement/Animation/Animation2D.h"
 
 class SelectScene : public IScene
 {
@@ -64,7 +65,7 @@ private:
 	Audio bgm_;
 	float bgmVolume_ = 0.15f;
 
-	class Animation2D* animation_ = nullptr;
+	std::unique_ptr<Animation2D> animation_;
 
 	// 背景
 	std::unique_ptr<BackGround> bg_;

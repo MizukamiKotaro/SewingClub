@@ -81,6 +81,7 @@ void WaterEffect::SetGlobalVariable()
 	global_->AddItem("密度", noise_->noiseData_->density);
 	global_->AddItem("カメラの影響の受けにくさ", noise_->noiseData_->moveScale);
 	global_->AddItem("うねうねの動きにくさ", uneune_);
+	global_->AddItem("映り込む背景の修正", noise_->noiseData_->correctionUV);
 
 	if (stageEditor_) {
 		stageEditor_->AddItem("水の色", Vector3{ 0.3f,1.0f,0.8f });
@@ -117,4 +118,6 @@ void WaterEffect::ApplyGlobalVariable()
 	}
 
 	outline_->color_ = noise_->noiseData_->lightningColor;
+
+	noise_->noiseData_->correctionUV = global_->GetVector2Value("映り込む背景の修正");
 }

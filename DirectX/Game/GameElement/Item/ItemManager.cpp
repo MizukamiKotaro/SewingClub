@@ -16,6 +16,7 @@ void ItemManager::InitializeGlobalVariables()
 {
 	stageEditor_ = std::make_unique<StageEditor>("アイテムの配置");
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Item", "StaticItem");
+	color_ = { 1.0f,1.0f,1.0f,1.0f };
 	itemNum_ = 1;
 	scale_ = 0.5f;
 	SetGlobalVariable();
@@ -63,6 +64,7 @@ void ItemManager::SetGlobalVariable()
 {
 	stageEditor_->AddItem("アイテムの数", itemNum_);
 	globalVariable_->AddItem("アイテムのスケール", scale_);
+	globalVariable_->AddItem("アイテムの色", Vector3{ 1.0f,1.0f,1.0f });
 	ApplyGlobalVariable();
 }
 
@@ -70,6 +72,8 @@ void ItemManager::ApplyGlobalVariable()
 {
 	itemNum_ = stageEditor_->GetIntValue("アイテムの数");
 	scale_ = globalVariable_->GetFloatValue("アイテムのスケール");
+	Vector3 color = globalVariable_->GetVector3Value("アイテムの色");
+	color_ = { color.x,color.y,color.z,1.0f };
 	if (itemNum_ <= 0) {
 		itemNum_ = 1;
 	}

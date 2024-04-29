@@ -9,6 +9,7 @@
 
 class Camera;
 class Player;
+class WaterManager;
 
 class WaterChunk : public Collider
 {
@@ -46,6 +47,8 @@ private:
 
 	void AddWave(const bool& isDown);
 
+	void AddWave(const WaterChunk& water, WaterWave& wave);
+
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
@@ -69,6 +72,8 @@ private:
 	std::unique_ptr<StageEditor> stageEditor_;
 
 	static float minScale_;
+
+	static WaterManager* waterManager_;
 
 public:
 	

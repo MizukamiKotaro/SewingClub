@@ -13,6 +13,7 @@
 #include"GameElement/Effects/EffectOutWater.h"
 #include"GameElement/Effects/EffectEnterWater.h"
 #include"GameElement/Effects/EffectUIEnterWater.h"
+#include "GameElement/Animation/Animation2D.h"
 
 class Input;
 class WaterManager;
@@ -239,7 +240,7 @@ private:
 	std::unique_ptr<EffectExtraJump>effeExtraJump_;
 
 	// アニメーション
-	class Animation2D* animation_ = nullptr;
+	std::unique_ptr<Animation2D> animation_;
 
 
 	//水しぶきエフェクト

@@ -37,6 +37,7 @@ public:
 		Vector4 waterColor; // 水の靄の色
 		Vector4 lightningColor; // 水の白のうねうねの色
 		Vector2 cameraPos;
+		Vector2 correctionUV;
 		float moveScale; // 大きいほどカメラの影響を受けない
 		int type;
 		int isNormal; // NormalBlendかどうか

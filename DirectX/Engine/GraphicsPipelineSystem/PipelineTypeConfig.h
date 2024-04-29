@@ -1,6 +1,7 @@
 #pragma once
 enum class PipelineType {
 	SPRITE,
+	COPY,
 	MODEL,
 	PARTICLE,
 	POINT_LIGHT,

@@ -26,8 +26,8 @@ void AnimationManager::Update() {
 	ImGuiProcess();
 	if (isEditor_) {
 		if (animation_) {
-			animation_->Update();
-			model_->SetUVParam(animation_->GetUVTrans());
+			//animation_->Update();
+			//model_->SetUVParam(animation_->GetUVTrans());
 		}
 		model_->Update();
 		spritesheet_->Update();
@@ -43,10 +43,10 @@ void AnimationManager::Draw(const Camera* camera) {
 	}
 }
 
-Animation2D* AnimationManager::AddAnimation(const std::string& groupName) {
+Animation2DData* AnimationManager::AddAnimation(const std::string& groupName) {
 	// 追加されていなければ追加する
 	if (container_.find(groupName) == container_.end()) {
-		container_.emplace(std::make_pair(groupName, std::make_unique<Animation2D>()));
+		container_.emplace(std::make_pair(groupName, std::make_unique<Animation2DData>()));
 		container_.at(groupName).get()->Initialize(groupName);
 	}
 	return container_.at(groupName).get();
@@ -111,7 +111,7 @@ void AnimationManager::ImGuiProcess() {
 				}
 
 				if (ImGui::Button("Play")) {
-					animation_->Play();
+					//animation_->Play(!animation_->isPlay_);
 				}
 				if (ImGui::Button("Load")) {
 					animation_.release();

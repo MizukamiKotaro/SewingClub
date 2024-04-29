@@ -20,7 +20,7 @@ public:
 
 	void Draw(const Camera* camera);
 
-	Animation2D* AddAnimation(const std::string& groupName);
+	Animation2DData* AddAnimation(const std::string& groupName);
 
 private:
 	void Initialize();
@@ -30,8 +30,8 @@ private:
 	char nameHandle_[256]{};
 	char textureName_[256]{};
 	std::unique_ptr<GlobalVariableUser> global_;
-	std::unordered_map<std::string, std::unique_ptr<Animation2D>> container_;
-	std::unique_ptr<Animation2D> animation_;
+	std::unordered_map<std::string, std::unique_ptr<Animation2DData>> container_;
+	std::unique_ptr<Animation2DData> animation_;
 
 	// 分割数
 	uint32_t divisionWidth = 1u;

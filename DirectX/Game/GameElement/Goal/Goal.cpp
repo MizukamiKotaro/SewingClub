@@ -10,7 +10,7 @@ Goal::Goal()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
-	const Texture* tex = TextureManager::GetInstance()->LoadTexture("ground.png");
+	const Texture* tex = TextureManager::GetInstance()->LoadTexture("goal_1.png");
 	modelData_ = instancingManager_->GetDrawData({ modelData,tex,BlendMode::kBlendModeNormal });
 
 	isHit_ = false;
@@ -26,9 +26,9 @@ Goal::Goal()
 	stageEditor_ = std::make_unique<StageEditor>("ゴールの配置");
 	SetGlobalVariable();
 	scale_ = maxScale_;
-	color_ = { 0.2f,0.3f,0.3f,1.0f };
 
 	seGoal_.LoadWave("SE/goal.wav");
+	color_ = { 1.0f,1.0f,1.0f,1.0f };
 }
 
 void Goal::Initialize()
@@ -45,11 +45,6 @@ void Goal::Update(float deltaTime)
 	ApplyGlobalVariable();
 	if (stageEditor_) {
 		scale_ = maxScale_;
-		if (stageEditor_->IsTreeOpen()) {
-			color_ = { 1.0f,0.3f,0.3f,1.0f };
-		}else {
-			color_ = { 0.2f,0.3f,0.3f,1.0f };
-		}
 		if (stageEditor_->IsChangedStage()) {
 			Initialize();
 		}
@@ -72,6 +67,7 @@ void Goal::SetGlobalVariable()
 	if (stageEditor_) {
 		stageEditor_->AddItem("ポジション", position_);
 		stageEditor_->AddItem("スケール", maxScale_);
+		stageEditor_->AddItem("カラー", Vector3{ 1.0f,1.0f,1.0f });
 	}
 	ApplyGlobalVariable();
 }
@@ -81,6 +77,8 @@ void Goal::ApplyGlobalVariable()
 	if (stageEditor_) {
 		position_ = stageEditor_->GetVector3Value("ポジション");
 		maxScale_ = stageEditor_->GetFloatValue("スケール");
+		Vector3 color = stageEditor_->GetVector3Value("カラー");
+		color_ = { color.x,color.y,color.z,1.0f };
 	}
 }
 
@@ -98,4 +96,8 @@ void Goal::SetCollider()
 		Collider::SetCircle({ position_.x,position_.y }, scale_);
 		collisionManager_->SetCollider(this);
 	}
+}
+
+void Goal::UpDownScale() {
+
 }

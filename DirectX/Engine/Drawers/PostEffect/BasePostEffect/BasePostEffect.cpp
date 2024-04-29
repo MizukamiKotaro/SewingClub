@@ -21,8 +21,6 @@ ID3D12Device* BasePostEffect::device_ = nullptr;
 
 BasePostEffect::~BasePostEffect()
 {
-	vertexResource_->Release();
-	transformResource_->Release();
 	materialResource_->Release();
 	srvHeap_->DeleteDescriptor(srvHandles_);
 	rtvHeap_->DeleteDescriptor(rtvHandles_);
@@ -45,35 +43,27 @@ void BasePostEffect::Initialize()
 
 void BasePostEffect::Update()
 {
-	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, Vector3{ 0.0f,0.0f,rotate_ }, { pos_.x,pos_.y,0.0f });
-	TransferSize();
+	
 }
 
 void BasePostEffect::Draw(BlendMode blendMode)
 {
 
-	if (isInvisible_) {
-		return;
-	}
-
 	PreDraw();
-
-	transformData_->WVP = worldMat_ * Camera::GetOrthographicMat();
-	materialData_->uvTransform = Matrix4x4::MakeAffinMatrix({ uvScale_.x,uvScale_.y,0.0f }, Vector3{ 0.0f,0.0f,uvRotate_ }, { uvTranslate_.x,uvTranslate_.y,0.0f });
 
 	psoManager_->SetBlendMode(piplineType_, blendMode);
 
 	//Spriteの描画。変更に必要なものだけ変更する
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_); // VBVを設定
+	//commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_); // VBVを設定
 	//マテリアルCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	//TransformationMatrixCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(1, transformResource_->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(1, transformResource_->GetGPUVirtualAddress());
 
-	commandList_->SetGraphicsRootDescriptorTable(2, srvHandles_->gpuHandle);
+	commandList_->SetGraphicsRootDescriptorTable(1, srvHandles_->gpuHandle);
 
 	//描画!!!!（DrawCall/ドローコール）
-	commandList_->DrawInstanced(6, 1, 0, 0);
+	commandList_->DrawInstanced(3, 1, 0, 0);
 
 }
 
@@ -116,79 +106,6 @@ void BasePostEffect::PostDrawScene()
 	commandList_->ResourceBarrier(1, &barrier);
 }
 
-void BasePostEffect::SetAnchorPoint(const Vector2& anchorpoint)
-{
-	anchorPoint_ = anchorpoint;
-
-	TransferSize();
-}
-
-void BasePostEffect::SetColor(const Vector4& color)
-{
-	color_.x = std::clamp<float>(color.x, 0.0f, 1.0f);
-	color_.y = std::clamp<float>(color.y, 0.0f, 1.0f);
-	color_.z = std::clamp<float>(color.z, 0.0f, 1.0f);
-	color_.w = std::clamp<float>(color.w, 0.0f, 1.0f);
-
-	materialData_->color = color;
-}
-
-void BasePostEffect::SetTextureTopLeft(const Vector2& texTopLeft)
-{
-	textureLeftTop_ = texTopLeft;
-
-	TransferUV();
-}
-
-void BasePostEffect::SetTextureSize(const Vector2& texSize)
-{
-	textureSize_ = texSize;
-
-	TransferUV();
-}
-
-void BasePostEffect::TransferSize()
-{
-	float left = (0.0f - anchorPoint_.x) * size_.x;
-	float right = (1.0f - anchorPoint_.x) * size_.x;
-	float top = (0.0f - anchorPoint_.y) * size_.y;
-	float bottom = (1.0f - anchorPoint_.y) * size_.y;
-
-	vertexData_[0].vertexPos = { left,bottom,0.0f,1.0f }; // 左下
-	vertexData_[1].vertexPos = { left,top,0.0f,1.0f }; // 左上
-	vertexData_[2].vertexPos = { right,bottom,0.0f,1.0f }; // 右下
-
-	vertexData_[3].vertexPos = { left,top,0.0f,1.0f }; // 左上
-	vertexData_[4].vertexPos = { right,top,0.0f,1.0f }; // 右上
-	vertexData_[5].vertexPos = { right,bottom,0.0f,1.0f }; // 右下
-}
-
-void BasePostEffect::TransferUV()
-{
-	vertexData_[0].texcoord = { textureLeftTop_.x,textureLeftTop_.y + textureSize_.y }; // 左下
-	vertexData_[1].texcoord = textureLeftTop_; // 左上
-	vertexData_[2].texcoord = textureLeftTop_ + textureSize_; // 右下
-
-	vertexData_[3].texcoord = textureLeftTop_; // 左上
-	vertexData_[4].texcoord = { textureLeftTop_.x + textureSize_.x,textureLeftTop_.y }; // 右上
-	vertexData_[5].texcoord = textureLeftTop_ + textureSize_; // 右下
-}
-
-void BasePostEffect::CreateVertexRes()
-{
-	//Sprite用の頂点リソースを作る
-	vertexResource_ = DirectXBase::CreateBufferResource(sizeof(VertexData) * 6);
-	//頂点バッファーを作成する
-	//リソースの先頭アドレスから使う
-	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	//使用するリソースのサイズは頂点6つ分のサイズ
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 6;
-	//1頂点あたりのサイズ
-	vertexBufferView_.StrideInBytes = sizeof(VertexData);
-
-	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
-}
-
 void BasePostEffect::CreateMaterialRes()
 {
 	//マテリアル用のリソースを作る。今回はcolor1つ分を用意する
@@ -198,21 +115,9 @@ void BasePostEffect::CreateMaterialRes()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	//今回は赤を書き込んでいる
 	materialData_->color = { 1.0f,1.0f,1.0f,1.0f };
-	//*materialData_ = { Vector4(1.0f, 1.0f, 1.0f, 1.0f) , false };
-	materialData_->uvTransform = Matrix4x4::MakeIdentity4x4();
+	color_ = { 1.0f,1.0f,1.0f,1.0f };
 }
 
-void BasePostEffect::CreateTranformRes()
-{
-	//Sprite用のTransformationMatrix用のリソースを作る。Matrix4x4　1つ分のサイズを用意する
-	transformResource_ = DirectXBase::CreateBufferResource(sizeof(TransformationMatrix));
-	//データを書き込む
-	//書き込むためのアドレスを取得
-	transformResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformData_));
-	//単位行列を書き込んでいく
-	transformData_->WVP = { Matrix4x4::MakeIdentity4x4() };
-	//*transformationMatrixData_ = { Matrix4x4::MakeIdentity4x4() ,Matrix4x4::MakeIdentity4x4() };
-}
 
 void BasePostEffect::CreateTexRes()
 {
@@ -318,11 +223,7 @@ void BasePostEffect::PreDraw() const
 
 void BasePostEffect::CreateResources()
 {
-	CreateVertexRes();
-
 	CreateMaterialRes();
-
-	CreateTranformRes();
 
 	CreateTexRes();
 
@@ -341,24 +242,6 @@ void BasePostEffect::CreatePostEffect()
 	size_ = WindowsInfo::GetInstance()->GetWindowSize();
 
 	CreateResources();
-
-	rotate_ = 0.0f;
-	pos_ = { 0.0f,0.0f };
-
-	worldMat_ = Matrix4x4::MakeAffinMatrix({ 1.0f,1.0f,0.0f }, Vector3{ 0.0f,0.0f,rotate_ }, { pos_.x,pos_.y,0.0f });
-
-	anchorPoint_ = { 0.0f,0.0f };
-	textureLeftTop_ = { 0.0f,0.0f };
-	textureSize_ = { 1.0f,1.0f };
-
-	TransferSize();
-	TransferUV();
-
-	uvTranslate_ = {};
-	uvScale_ = { 1.0f,1.0f };
-	uvRotate_ = 0.0f;
-
-	SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
 	Update();
 }

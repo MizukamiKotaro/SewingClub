@@ -8,6 +8,7 @@
 
 class Camera;
 class Wave;
+class ItemManager;
 
 class Item : public Collider
 {
@@ -39,6 +40,9 @@ private:
 private:
 	static InstancingModelManager* instancingManager_;
 	static const InstancingMeshTexData* modelData_;
+
+	static ItemManager* itemManager_;
+	static Vector4 staticColor_;
 
 	static std::unique_ptr<GlobalVariableUser> staticGlobalVariable_;
 	std::unique_ptr<StageEditor> stageEditor_;

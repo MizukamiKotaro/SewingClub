@@ -20,6 +20,8 @@ public:
 
 	void Draw();
 
+	const Vector4& GetColor() const { return color_; }
+
 private:
 	ItemManager() = default;
 	~ItemManager() = default;
@@ -38,4 +40,5 @@ private:
 
 	float scale_;
 	int itemNum_;
+	Vector4 color_;
 };
