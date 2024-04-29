@@ -17,6 +17,9 @@ public:
 
 	void Draw();
 
+	//シーン変更時処理
+	void Finalize();
+
 	void IsEffectActive(bool isActive) { isActive_ = isActive; };
 
 private:
@@ -38,6 +41,9 @@ private:
 
 	//泡データ
 	std::list<std::unique_ptr<BubbleData>>datas_;
+
+	//データの量
+	int dataNum_ = 20;
 
 	//出現間隔
 	int spawnCount_ = 0;

@@ -36,14 +36,10 @@ void EffectGoalGuidance::Update()
 		isDraw_ = false;
 	}
 
-
-
 	if (isDraw_) {
 		//向きベクトル
 		Vector3 direction = *goalPos_ - *playerPos_;
 	}
-
-
 }
 
 void EffectGoalGuidance::Draw(const Camera* camera)
