@@ -18,10 +18,11 @@ void EnemyManager::Initialize(Player* pplayer)
 	if (!stageEditor_) {
 		IEnemy::StaticInitialize();
 		DoesNotWorkEnemy::StaticInitialize();
-		FollowEnemy::StaticInitialize(player_ptr->GetPositionPtr());
+		FollowEnemy::StaticInitialize();
 		stageEditor_ = std::make_unique<StageEditor>("敵の設置");
 		SetGlobalVariable();
 	}
+	FollowEnemy::SetPlayerPtr(player_ptr->GetPositionPtr());
 	Clear();
 	GenerateEnemies();
 }
