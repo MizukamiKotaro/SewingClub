@@ -12,6 +12,7 @@
 #include "GameElement/DeadLine/DeadLine.h"
 #include "GameElement/WaterEffect/WaterEffect.h"
 #include "GameElement/BackGround/BackGround.h"
+#include"GameElement/Effects/EffectGoalGuidance.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -63,6 +64,7 @@ private:
 	//�G�t�F�N�g�֘A�̃f�[�^
 	ParticleManager* particleManager_;
 	EnemyManager* enemyManager_;
+	std::unique_ptr<EffectGoalGuidance>effeGoalGuid_;
 
 	Audio bgm_;
 	Audio seDead_;

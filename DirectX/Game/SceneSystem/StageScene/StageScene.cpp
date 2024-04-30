@@ -41,6 +41,7 @@ StageScene::StageScene()
 	itemManager_ = ItemManager::GetInstance();
 	particleManager_ = ParticleManager::GetInstance();
 	enemyManager_ = EnemyManager::GetInstance();
+	effeGoalGuid_ = std::make_unique<EffectGoalGuidance>();
 	backGroundObjectManager_ = BackGroundObjectManager::GetInstance();
 
 	waterManager_->InitializeGlobalVariables();
@@ -87,6 +88,8 @@ void StageScene::Initialize()
 
 	deadLine_->Initialize();
 	enemyManager_->Initialize();
+	effeGoalGuid_->Initialize();
+
 
 	bgm_.Play(true);
 	backGroundObjectManager_->Initialize();
@@ -178,6 +181,7 @@ void StageScene::Update()
 	SceneChange();
 
 	waterEffect_->Update(deltaTime);
+	effeGoalGuid_->Update(player_->GetPosition(),goal_->GetPosition(),10.0f,*camera_.get());
 }
 
 void StageScene::Draw()
@@ -215,7 +219,11 @@ void StageScene::Draw()
 
 	player_->DrawClient();
 
+	effeGoalGuid_->Draw(camera_.get());
+
 	player_->DrawUI();
+
+	
 
 	BlackDraw();
 

@@ -22,6 +22,7 @@ public:
 
 	const bool IsClear() const { return isHit_; }
 
+	const Vector3& GetPosition()const { return position_; }
 private:
 	void SetGlobalVariable();
 
