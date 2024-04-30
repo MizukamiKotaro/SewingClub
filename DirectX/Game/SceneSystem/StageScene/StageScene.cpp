@@ -89,6 +89,7 @@ void StageScene::Initialize()
 	deadLine_->Initialize();
 	enemyManager_->Initialize();
 	effeGoalGuid_->Initialize();
+	enemyManager_->Initialize(player_.get());
 
 
 	bgm_.Play(true);

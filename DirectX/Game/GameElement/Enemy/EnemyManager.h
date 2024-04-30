@@ -3,6 +3,7 @@
 #include <memory>
 #include "IEnemy.h"
 
+class Player;
 
 class EnemyManager {
 public:
@@ -10,7 +11,7 @@ public:
 
 	void Clear() { enemies_.clear(); }
 
-	void Initialize();
+	void Initialize(Player* pplayer);
 
 	void Update(const float& deltaTime, Camera* camera);
 
@@ -33,4 +34,8 @@ private:
 
 	std::unique_ptr<StageEditor> stageEditor_;
 	int doesNotWorkEnemyNum_ = 0;
+	int followEnemyNum_ = 0;
+
+	Player* player_ptr = nullptr; // playerのポインタ
+
 };
