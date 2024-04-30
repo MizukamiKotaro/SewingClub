@@ -87,7 +87,6 @@ void StageScene::Initialize()
 	goal_->Initialize();
 
 	deadLine_->Initialize();
-	enemyManager_->Initialize();
 	effeGoalGuid_->Initialize();
 	enemyManager_->Initialize(player_.get());
 
