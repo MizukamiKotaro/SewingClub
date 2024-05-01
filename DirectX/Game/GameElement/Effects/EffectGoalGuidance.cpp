@@ -7,13 +7,15 @@ UIGoalGuidance::UIGoalGuidance()
 {
 	model_ = std::make_unique<Sprite>("pause_arrow.png");
 
-	gVUser_= new GlobalVariableUser("Effects", "UIGoalGuidance", "effe");
+	gVUser_= new GlobalVariableUser("Effects", "UIGoalGuidance");
 
 
 	gVUser_->AddItem(keys[SpriteSize], scale_);
 	gVUser_->AddItem(keys[SphereAreaSize], sphereAreaSize_);
 	gVUser_->AddItem(keys[BoxAreaSize], area_);
 	gVUser_->AddItem(keys[AreaType], areaType_);
+	gVUser_->AddItem(keys[DirectionGoal], goalSize_);
+
 
 }
 
@@ -21,9 +23,17 @@ UIGoalGuidance::~UIGoalGuidance()
 {
 }
 
-void UIGoalGuidance::Initialize()
+void UIGoalGuidance::Initialize(const Vector3* playerPos, const Vector3* goalPos, const Camera* camera)
 {
+	camera_ = camera;
+
+	playerPos_ = playerPos;
+
+	goalPos_ = goalPos;
+
 	model_->Initialize();
+	
+	Update();
 }
 
 //ビューポート変換
@@ -77,19 +87,19 @@ float GetYRotate(const Vector2& v) {
 
 }
 
-void UIGoalGuidance::Update(const Vector3& playerPos, const Vector3& goalPos, const float& goalSize, const Camera& camera)
+void UIGoalGuidance::Update()
 {
 	Debug();
 
 	//向きベクトル
-	Vector3 direction = goalPos-playerPos;
+	Vector3 direction = *goalPos_-*playerPos_;
 
 	//スプライト配置領域
-	Vector3 spritePos = goalPos-(direction.Normalize() * goalSize);
+	Vector3 spritePos = *goalPos_-(direction.Normalize() * goalSize_);
 	
 
 	Vector2 windowSize = WindowsInfo::GetInstance()->GetWindowSize();
-	Matrix4x4 cameraVPV = camera.GetViewProjection() * MakeViewPortMatrix(0, 0, windowSize.x, windowSize.y, 0, 1);
+	Matrix4x4 cameraVPV = camera_->GetViewProjection() * MakeViewPortMatrix(0, 0, windowSize.x, windowSize.y, 0, 1);
 	
 	
 
@@ -114,7 +124,7 @@ void UIGoalGuidance::Update(const Vector3& playerPos, const Vector3& goalPos, co
 	else if (areaType_ == AreaType::Sphere) {
 		
 		//エリアのサイズに落とし込み
-		spritePos = (direction.Normalize() * sphereAreaSize_) +playerPos ;
+		spritePos = (direction.Normalize() * sphereAreaSize_) + *playerPos_ ;
 		spritePos = TransformPosition(spritePos, cameraVPV);
 
 
@@ -145,5 +155,5 @@ void UIGoalGuidance::Debug()
 	sphereAreaSize_ = gVUser_->GetFloatValue(keys[SphereAreaSize]);
 	area_ = gVUser_->GetVector2Value(keys[BoxAreaSize]);
 	areaType_ = gVUser_->GetIntValue(keys[AreaType]);
-
+	goalSize_ = gVUser_->GetFloatValue(keys[DirectionGoal]);
 }

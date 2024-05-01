@@ -11,7 +11,7 @@ EffectExtraJump::EffectExtraJump()
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("plane");
 	modelData_ = instancingManager_->GetDrawData({ modelData, TextureManager::GetInstance()->LoadTexture("whiteStar.png"), BlendMode::kBlendModeNormal });
 
-	gVU_= new GlobalVariableUser("Effects", "EffectExtraJump", "effe");
+	gVU_= new GlobalVariableUser("Effects", "EffectExtraJump");
 
 	gVU_->AddItem(keys[SpawnAreaSize], spawnAreaSize_);
 	gVU_->AddItem(keys[DustMaxScale], maxScale);

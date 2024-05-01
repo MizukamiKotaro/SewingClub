@@ -17,7 +17,7 @@ EffectUIEnterWater::EffectUIEnterWater()
 
 	}
 
-	 gVariUser_ = new GlobalVariableUser("Effects", "EffectUIEnterWater", "effe");
+	 gVariUser_ = new GlobalVariableUser("Effects", "EffectUIEnterWater");
 
 	 gVariUser_->AddItem(keys[SpawnCount], maxSpawnCount_);
 	 gVariUser_->AddItem(keys[SpawnDiff], spawnXDiff_);

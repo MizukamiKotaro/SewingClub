@@ -87,7 +87,7 @@ void StageScene::Initialize()
 	goal_->Initialize();
 
 	deadLine_->Initialize();
-	effeGoalGuid_->Initialize();
+	effeGoalGuid_->Initialize(player_->GetPositionPtr(),&goal_->GetPosition(),camera_.get());
 	enemyManager_->Initialize(player_.get());
 
 
@@ -181,7 +181,7 @@ void StageScene::Update()
 	SceneChange();
 
 	waterEffect_->Update(deltaTime);
-	effeGoalGuid_->Update(player_->GetPosition(),goal_->GetPosition(),10.0f,*camera_.get());
+	effeGoalGuid_->Update();
 }
 
 void StageScene::Draw()
