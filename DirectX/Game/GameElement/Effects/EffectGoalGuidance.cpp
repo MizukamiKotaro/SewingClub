@@ -3,16 +3,25 @@
 #include"Math/calc.h"
 #include<numbers>
 
-EffectGoalGuidance::EffectGoalGuidance()
+UIGoalGuidance::UIGoalGuidance()
 {
 	model_ = std::make_unique<Sprite>("pause_arrow.png");
+
+	gVUser_= new GlobalVariableUser("Effects", "UIGoalGuidance", "effe");
+
+
+	gVUser_->AddItem(keys[SpriteSize], scale_);
+	gVUser_->AddItem(keys[SphereAreaSize], sphereAreaSize_);
+	gVUser_->AddItem(keys[BoxAreaSize], area_);
+	gVUser_->AddItem(keys[AreaType], areaType_);
+
 }
 
-EffectGoalGuidance::~EffectGoalGuidance()
+UIGoalGuidance::~UIGoalGuidance()
 {
 }
 
-void EffectGoalGuidance::Initialize()
+void UIGoalGuidance::Initialize()
 {
 	model_->Initialize();
 }
@@ -68,8 +77,10 @@ float GetYRotate(const Vector2& v) {
 
 }
 
-void EffectGoalGuidance::Update(const Vector3& playerPos, const Vector3& goalPos, const float& goalSize, const Camera& camera)
+void UIGoalGuidance::Update(const Vector3& playerPos, const Vector3& goalPos, const float& goalSize, const Camera& camera)
 {
+	Debug();
+
 	//向きベクトル
 	Vector3 direction = goalPos-playerPos;
 
@@ -80,11 +91,12 @@ void EffectGoalGuidance::Update(const Vector3& playerPos, const Vector3& goalPos
 	Vector2 windowSize = WindowsInfo::GetInstance()->GetWindowSize();
 	Matrix4x4 cameraVPV = camera.GetViewProjection() * MakeViewPortMatrix(0, 0, windowSize.x, windowSize.y, 0, 1);
 	
-	spritePos = TransformPosition(spritePos, cameraVPV);
-
+	
 
 	//画面外なら寄せる
 	if (areaType_ == AreaType::Squea) {
+		spritePos = TransformPosition(spritePos, cameraVPV);
+
 		if (spritePos.x + scale_.x > area_.x) {
 			spritePos.x = area_.x - scale_.x;
 		}
@@ -99,6 +111,16 @@ void EffectGoalGuidance::Update(const Vector3& playerPos, const Vector3& goalPos
 			spritePos.y = scale_.y;
 		}
 	}
+	else if (areaType_ == AreaType::Sphere) {
+		
+		//エリアのサイズに落とし込み
+		spritePos = (direction.Normalize() * sphereAreaSize_) +playerPos ;
+		spritePos = TransformPosition(spritePos, cameraVPV);
+
+
+	}
+
+	model_->size_ = scale_;
 	
 	model_->rotate_ = GetYRotate(Vector2{ direction.x,direction.y })-((1.0f/2.0f)*(float)std::numbers::pi);
 
@@ -107,11 +129,21 @@ void EffectGoalGuidance::Update(const Vector3& playerPos, const Vector3& goalPos
 	model_->Update();
 }
 
-void EffectGoalGuidance::Draw(const Camera* camera)
+void UIGoalGuidance::Draw(const Camera* camera)
 {
 
 	if (isDraw_) {
 		model_->Draw(*camera);
 	}
+
+}
+
+void UIGoalGuidance::Debug()
+{
+
+	scale_=gVUser_->GetVector2Value(keys[SpriteSize]);
+	sphereAreaSize_ = gVUser_->GetFloatValue(keys[SphereAreaSize]);
+	area_ = gVUser_->GetVector2Value(keys[BoxAreaSize]);
+	areaType_ = gVUser_->GetIntValue(keys[AreaType]);
 
 }

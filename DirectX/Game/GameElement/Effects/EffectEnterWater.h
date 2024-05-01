@@ -26,8 +26,7 @@ public:
 	/// </summary>
 	void Draw();
 
-	void Debug();
-
+	
 
 	/// <summary>
 /// エフェクト発生処理
@@ -39,6 +38,7 @@ public:
 
 
 private:
+	void Debug();
 
 	//ベクトル回転
 	Vector2 RotateVelo(const Vector2& velo, float theta);

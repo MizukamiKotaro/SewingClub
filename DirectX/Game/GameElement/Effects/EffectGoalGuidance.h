@@ -3,13 +3,14 @@
 #include<iostream>
 #include<Vector3.h>
 #include"Camera.h"
+#include"GlobalVariables/GlobalVariableUser.h"
 
-class EffectGoalGuidance {
+class UIGoalGuidance {
 
 public:
 
-	EffectGoalGuidance();
-	~EffectGoalGuidance();
+	UIGoalGuidance();
+	~UIGoalGuidance();
 
 	//初期化
 	void Initialize();
@@ -30,11 +31,31 @@ public:
 	void Draw(const Camera* camera);
 
 private:
+
+	void Debug();
+
 	//画像
 	std::unique_ptr<Sprite>model_;
 
+	GlobalVariableUser* gVUser_;
+
+	enum Key {
+		SpriteSize,
+		SphereAreaSize,
+		BoxAreaSize,
+		AreaType,
+		_count
+	};
+
+	std::string keys[_count]={
+		"スプライトサイズ",
+		"円領域でのサイズ",
+		"箱領域でのサイズ",
+		"領域のタイプ"
+	};
+
 	//画像のサイズ
-	Vector2 scale_ = { 1.0f,1.0f };
+	Vector2 scale_ = { 64.0f,64.0f };
 
 	//描画フラグ
 	bool isDraw_=true;
@@ -53,5 +74,5 @@ private:
 	};
 
 	//制限エリアのタイプ
-	AreaType areaType_ = Squea;
+	int areaType_ = Squea;
 };

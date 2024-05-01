@@ -41,7 +41,7 @@ StageScene::StageScene()
 	itemManager_ = ItemManager::GetInstance();
 	particleManager_ = ParticleManager::GetInstance();
 	enemyManager_ = EnemyManager::GetInstance();
-	effeGoalGuid_ = std::make_unique<EffectGoalGuidance>();
+	effeGoalGuid_ = std::make_unique<UIGoalGuidance>();
 	backGroundObjectManager_ = BackGroundObjectManager::GetInstance();
 
 	waterManager_->InitializeGlobalVariables();

@@ -16,6 +16,16 @@ EffectUIEnterWater::EffectUIEnterWater()
 		data->sprite->SetAnchorPoint({ 0.5f,0.0f });
 
 	}
+
+	 gVariUser_ = new GlobalVariableUser("Effects", "EffectUIEnterWater", "effe");
+
+	 gVariUser_->AddItem(keys[SpawnCount], maxSpawnCount_);
+	 gVariUser_->AddItem(keys[SpawnDiff], spawnXDiff_);
+	 gVariUser_->AddItem(keys[Size], scale_);
+	 gVariUser_->AddItem(keys[SizeRondom], scaleDiff_);
+	 gVariUser_->AddItem(keys[RandomVelo], veloDiff);
+	 gVariUser_->AddItem(keys[DeadCount], maxDeadCount_);
+
 }
 
 EffectUIEnterWater::~EffectUIEnterWater()
@@ -126,6 +136,18 @@ void EffectUIEnterWater::Finalize()
 			data->isDead = true;
 		}
 	}
+}
+
+void EffectUIEnterWater::Debug()
+{
+
+	maxSpawnCount_ = gVariUser_->GetIntValue(keys[SpawnCount]);
+	spawnXDiff_ = gVariUser_->GetIntValue(keys[SpawnDiff]);
+	scale_ = gVariUser_->GetFloatValue(keys[Size]);
+	scaleDiff_ = gVariUser_->GetFloatValue(keys[SizeRondom]);
+	veloDiff = gVariUser_->GetVector2Value(keys[RandomVelo]);
+	maxDeadCount_ = gVariUser_->GetFloatValue(keys[DeadCount]);
+
 }
 
 

@@ -10,6 +10,16 @@ EffectExtraJump::EffectExtraJump()
 	instancingManager_ = InstancingModelManager::GetInstance();
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("plane");
 	modelData_ = instancingManager_->GetDrawData({ modelData, TextureManager::GetInstance()->LoadTexture("whiteStar.png"), BlendMode::kBlendModeNormal });
+
+	gVU_= new GlobalVariableUser("Effects", "EffectExtraJump", "effe");
+
+	gVU_->AddItem(keys[SpawnAreaSize], spawnAreaSize_);
+	gVU_->AddItem(keys[DustMaxScale], maxScale);
+	gVU_->AddItem(keys[RandVelo], randVelo_);
+	gVU_->AddItem(keys[SpawnInterval], spawnInterval_);
+	gVU_->AddItem(keys[DustDead], dustDeadCount_);
+	gVU_->AddItem(keys[Blinking], maxblinkingCount_);
+
 }
 
 EffectExtraJump::~EffectExtraJump()
@@ -46,13 +56,13 @@ void EffectExtraJump::Update()
 				};
 
 				//newData->translate = *playerPos_;
-				newData->velo = RandomGenerator::GetInstance()->RandVector3(-1, 1).Normalize() * RandomGenerator::GetInstance()->RandFloat(randVelo, randVelo);
+				newData->velo = RandomGenerator::GetInstance()->RandVector3(-1, 1).Normalize() * RandomGenerator::GetInstance()->RandFloat(randVelo_, randVelo_);
 				newData->velo.z = 0;
 				newData->maxCount_ = dustDeadCount_ / 2;
 
 				newData->maxScale = maxScale;
 
-				newData->maxTenmetu = maxTenmetuCount_;
+				newData->maxTenmetu = maxblinkingCount_;
 
 				//データ送信
 				datas_.emplace_back(std::move(newData));
@@ -133,14 +143,14 @@ void EffectExtraJump::Draw()
 
 void EffectExtraJump::Debug()
 {
-#ifdef _DEBUG
-	ImGui::Begin("ジャンプ時の演出");
-	ImGui::DragFloat2("エフェクト発生範囲", &spawnAreaSize_.x, 0.1f);
-	ImGui::DragFloat("エフェクトの最大サイズ", &maxScale, 0.01f);
-	ImGui::DragInt("エフェクト発生間隔", &spawnInterval_);
-	ImGui::DragInt("エフェクト拡縮ごとのカウント", &dustDeadCount_);
-	ImGui::End();
-#endif // _DEBUG
+
+	spawnAreaSize_ = gVU_->GetVector2Value(keys[SpawnAreaSize]);
+	maxScale = gVU_->GetFloatValue(keys[DustMaxScale]);
+	randVelo_ = gVU_->GetFloatValue(keys[RandVelo]);
+	spawnInterval_ = gVU_->GetIntValue(keys[SpawnInterval]);
+	dustDeadCount_ = gVU_->GetIntValue(keys[DustDead]);
+	maxblinkingCount_ = gVU_->GetIntValue(keys[Blinking]);
+
 
 }
 

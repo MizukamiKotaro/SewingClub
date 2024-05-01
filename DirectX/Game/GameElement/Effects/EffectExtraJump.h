@@ -1,5 +1,6 @@
 #pragma once
 #include"InstancingModelManager.h"
+#include"GlobalVariables/GlobalVariableUser.h"
 
 class  EffectExtraJump {
 
@@ -36,6 +37,8 @@ public:
 	void SpawnEffect(bool isAllive);
 
 private:
+
+
 	//インスタンシングに必要
 	InstancingModelManager* instancingManager_ = nullptr;
 	const InstancingMeshTexData* modelData_ = nullptr;
@@ -80,7 +83,7 @@ private:
 	float maxScale = 0.25f;
 
 	//ランダム速度
-	float randVelo =0.01f;
+	float randVelo_ =0.01f;
 
 	//湧き間隔
 	int spawnInterval_=5;
@@ -91,5 +94,28 @@ private:
 	int dustDeadCount_ = 20;
 
 	//点滅量
-	int maxTenmetuCount_ = 2;
+	int maxblinkingCount_ = 2;
+
+
+	GlobalVariableUser* gVU_;
+
+	enum Key {
+		SpawnAreaSize,
+		DustMaxScale,
+		RandVelo,
+		SpawnInterval,
+		DustDead,
+		Blinking,
+		_count
+	};
+
+	std::string keys[_count] = {
+		"出現範囲",
+		"塵の最大サイズ",
+		"ランダム速度",
+		"出現間隔",
+		"点滅一回までのカウント",
+		"点滅量"
+	};
+
 };

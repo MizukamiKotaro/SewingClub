@@ -64,7 +64,7 @@ private:
 	//�G�t�F�N�g�֘A�̃f�[�^
 	ParticleManager* particleManager_;
 	EnemyManager* enemyManager_;
-	std::unique_ptr<EffectGoalGuidance>effeGoalGuid_;
+	std::unique_ptr<UIGoalGuidance>effeGoalGuid_;
 
 	Audio bgm_;
 	Audio seDead_;

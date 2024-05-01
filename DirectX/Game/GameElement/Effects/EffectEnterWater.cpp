@@ -43,18 +43,8 @@ void EffectEnterWater::Initialize()
 
 void EffectEnterWater::Update()
 {
-	diffusion_ = gVariUser->GetFloatValue(keys[diffsion]);
-	scale_ = gVariUser->GetFloatValue(keys[scale]);
-	startVelo_ = gVariUser->GetVector2Value(keys[startVelo]);
-	bendNum_ = gVariUser->GetFloatValue(keys[bendNum]);
-	maxSpped_ = gVariUser->GetFloatValue(keys[maxSPD]);
-	rateScaling_ = gVariUser->GetFloatValue(keys[rateScaling]);
-	spawnDustCount_ = gVariUser->GetIntValue(keys[spawnDustCount]);
-	acceSpd_ = gVariUser->GetFloatValue(keys[acceSPD]);
-	alliveLeverage_ = gVariUser->GetFloatValue(keys[alliveLeverage]);
-	setEqualSpace_ = gVariUser->GetBoolValue(keys[setEqualSpace]);
-	isVeloRandom_ = gVariUser->GetBoolValue(keys[isRandomVelo]);
-	spawnNum_ = gVariUser->GetIntValue(keys[SpawnNum]);
+	
+	Debug();
 
 	//更新処理
 	for (auto& data : datas_) {
@@ -155,7 +145,20 @@ void EffectEnterWater::Draw()
 
 void EffectEnterWater::Debug()
 {
-	
+
+	diffusion_ = gVariUser->GetFloatValue(keys[diffsion]);
+	scale_ = gVariUser->GetFloatValue(keys[scale]);
+	startVelo_ = gVariUser->GetVector2Value(keys[startVelo]);
+	bendNum_ = gVariUser->GetFloatValue(keys[bendNum]);
+	maxSpped_ = gVariUser->GetFloatValue(keys[maxSPD]);
+	rateScaling_ = gVariUser->GetFloatValue(keys[rateScaling]);
+	spawnDustCount_ = gVariUser->GetIntValue(keys[spawnDustCount]);
+	acceSpd_ = gVariUser->GetFloatValue(keys[acceSPD]);
+	alliveLeverage_ = gVariUser->GetFloatValue(keys[alliveLeverage]);
+	setEqualSpace_ = gVariUser->GetBoolValue(keys[setEqualSpace]);
+	isVeloRandom_ = gVariUser->GetBoolValue(keys[isRandomVelo]);
+	spawnNum_ = gVariUser->GetIntValue(keys[SpawnNum]);
+
 }
 
 void EffectEnterWater::SpawnEffect(const Vector2& translate, const Vector2& velo, const Vector2& gpos)

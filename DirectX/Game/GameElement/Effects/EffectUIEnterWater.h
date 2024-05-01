@@ -1,5 +1,7 @@
 #pragma once
 #include"Sprite.h"
+#include"GlobalVariables/GlobalVariableUser.h"
+
 #include<list>
 #include<iostream>
 
@@ -23,6 +25,7 @@ public:
 	void IsEffectActive(bool isActive) { isActive_ = isActive; };
 
 private:
+	void Debug();
 
 	bool isActive_ = false;
 
@@ -41,6 +44,30 @@ private:
 
 	//泡データ
 	std::list<std::unique_ptr<BubbleData>>datas_;
+
+	GlobalVariableUser* gVariUser_;
+
+
+	enum KeyTags
+	{
+		SpawnCount,//出現頻度
+		SpawnDiff,//左右の出現範囲
+		Size,//サイズ
+		SizeRondom,//サイズのランダム度
+		RandomVelo,//速度の最小最大
+		DeadCount, //死亡までのカウント
+		_count
+	};
+
+
+	std::string keys[_count]{
+		"出現頻度",
+		"左右の出現範囲",
+		"サイズ",
+		"サイズのランダム度",
+		"速度のランダム",
+		"死亡までのカウント"
+	};
 
 	//データの量
 	int dataNum_ = 20;
