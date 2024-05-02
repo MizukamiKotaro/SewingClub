@@ -22,8 +22,8 @@ Baby::Baby(Player* player)
 	isFollowWater_ = false;
 	speed_ = 0.0f;
 
-	waterPos_ = {};
-	waterGravityPos_ = {};
+	waterPos_ = { model_->transform_.translate_.x,model_->transform_.translate_.y };
+	waterGravityPos_ = waterPos_;
 	waterRadius_ = 0.0f;
 	
 	SetGlobalVariable();
@@ -36,11 +36,11 @@ void Baby::Initialize()
 	isFollowWater_ = false;
 	speed_ = 0.0f;
 
-	waterPos_ = {};
-	waterGravityPos_ = {};
 	waterRadius_ = 0.0f;
 	model_->transform_.translate_ = player_->GetPosition();
 	model_->Update();
+	waterPos_ = { model_->transform_.translate_.x,model_->transform_.translate_.y };
+	waterGravityPos_ = waterPos_;
 }
 
 void Baby::Update(float deltaTime)
