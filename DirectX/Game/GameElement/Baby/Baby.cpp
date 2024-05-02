@@ -1,62 +1,247 @@
 #include "Baby.h"
-#include "ModelDataManager.h"
-#include "GameElement/Planet/PlanetTypeColor.h"
+#include "GameElement/Player/Player.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
+#include "calc.h"
 
-Baby::Baby(const Vector3& pos, const Vector3& velocity)
+Baby::Baby(Player* player)
 {
-	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::UNKNOWN, ColliderMask::BABY);
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::BABY);
 	Collider::AddTargetMask(ColliderMask::WATER);
-	Collider::AddTargetMask(ColliderMask::PLANET);
-	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA);
-	Collider::AddTargetMask(ColliderMask::PLAYER);
+	//Collider::AddTargetMask(ColliderMask::PLAYER);
 
-	position_ = pos;
-	rotate_ = 0.0f;
-	velocity_ = velocity;
+	CreateGlobalVariable("Baby");
+
+	player_ = player;
+
+	//gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
+	model_ = std::make_unique<Model>("plane");
+	model_->transform_.translate_ = player_->GetPosition();
+
+	velocity_ = {};
+	isInWater_ = true;
+	isFollowWater_ = false;
+	speed_ = 0.0f;
+
+	waterPos_ = {};
+	waterGravityPos_ = {};
+	waterRadius_ = 0.0f;
 	
+	SetGlobalVariable();
 }
 
 void Baby::Initialize()
 {
+	velocity_ = {};
+	isInWater_ = true;
+	isFollowWater_ = false;
+	speed_ = 0.0f;
 
+	waterPos_ = {};
+	waterGravityPos_ = {};
+	waterRadius_ = 0.0f;
+	model_->transform_.translate_ = player_->GetPosition();
+	model_->Update();
 }
 
 void Baby::Update(float deltaTime)
 {
-	deltaTime = deltaTime;
+#ifdef _DEBUG
+	ApplyGlobalVariable();
+#endif // _DEBUG
+
+	if (isInWater_) {
+		InWaterUpdate(deltaTime);
+		isInWater_ = false;
+		waterGravityPos_ = {};
+	}
+	else {
+		OutWaterUpdate(deltaTime);
+	}
+
+	model_->Update();
+	SetCollider();
+	//gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
 }
 
-void Baby::Draw() const
+void Baby::Draw(const Camera* camera)
 {
-	/*Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-	instancingManager_->AddBox(modelData_, InstancingModel{ matrix,PlanetTypeColor::GetColor(type_) });*/
+	model_->Draw(*camera);
 }
+
 
 void Baby::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER) {
+		isInWater_ = true;
+		isFollowWater_ = false;
+		ShapeCircle* circle = collider.GetCircle();
+		waterPos_ = circle->position_;
+		waterRadius_ = circle->radius_.x;
+		if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
+			waterGravityPos_ = circle->position_;
+		}
+		else {
+			waterGravityPos_ = (circle->position_ + waterGravityPos_) * 0.5f;
 
+		}
 	}
 }
 
 void Baby::SetCollider()
 {
-	Collider::SetCircle({ position_.x,position_.y }, scale_);
+	Collider::SetCircle({ model_->transform_.translate_.x,model_->transform_.translate_.y }, 0.0f);
 	collisionManager_->SetCollider(this);
 }
 
 void Baby::SetGlobalVariable()
 {
-	/*globalVariable_->AddItem("重力加速度", gravitySpeed_);
-	globalVariable_->AddItem("スケール", scale_);
-	globalVariable_->AddItem("水や惑星内の重力加速度", planetGravitySpeed_);
-	ApplyGlobalVariable();*/
+	InitializeGlobalVariable();
+
+	globalVariable_->AddItem("スケール", Vector2{ 1.0f,1.0f });
+
+	for (int i = 0; i < kFloatEnd; i++) {
+		globalVariable_->AddItem(fNames[i], fParas_[i]);
+	}
+
+	ApplyGlobalVariable();
 }
 
 void Baby::ApplyGlobalVariable()
 {
-	/*gravitySpeed_ = globalVariable_->GetFloatValue("重力加速度");
-	scale_ = globalVariable_->GetFloatValue("スケール");
-	planetGravitySpeed_ = globalVariable_->GetFloatValue("水や惑星内の重力加速度");*/
+	for (int i = 0; i < kFloatEnd; i++) {
+		fParas_[i] = globalVariable_->GetFloatValue(fNames[i]);
+	}
+
+	if (fParas_[FloatParamater::kMaxPlayerLength] == 0.0f) {
+		fParas_[FloatParamater::kMaxPlayerLength] = 0.01f;
+	}
+
+	Vector2 scale = globalVariable_->GetVector2Value("スケール");
+	model_->transform_.scale_ = { scale.x,scale.y,1.0f };
+	model_->transform_.UpdateMatrix();
+}
+
+void Baby::OutWaterUpdate(const float& deltaTime)
+{
+	Vector3 vect = player_->GetPosition() - model_->transform_.translate_;
+	vect.z = 0.0f;
+
+	float length = vect.Length();
+
+	if (length >= fParas_[FloatParamater::kLimitePlayerLength]) {
+		// 無理やり引っ張る処理
+
+	}
+	else {
+		length = std::clamp(length, 0.0f, fParas_[FloatParamater::kMaxPlayerLength]);
+		float t = length / fParas_[FloatParamater::kMaxPlayerLength];
+
+		if (isFollowWater_) {
+			Vector2 vect1 = { vect.x,vect.y };
+			vect1 = vect1.Normalize();
+
+			Vector2 vect2 = waterPos_ - Vector2{model_->transform_.translate_.x,model_->transform_.translate_.y};
+			vect2 = vect2.Normalize();
+
+			float outer = Calc::Outer(vect2, vect1);
+
+			float angle = 0.85f;
+			if (std::abs(outer) >= angle) {
+				isFollowWater_ = false;
+
+				velocity_ = {};
+				if (outer > 0.0f) {
+					outer = 1.0f - outer;
+				}
+				else {
+					outer = 1.0f + outer;
+					outer = -outer;
+				}
+				velocity_.x = vect1.x * std::cosf(outer) - vect1.y * std::sinf(outer);
+				velocity_.y = vect1.y * std::cosf(outer) + vect1.x * std::sinf(outer);
+
+				speed_ = t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
+				velocity_ *= speed_;
+				model_->transform_.translate_ += velocity_;
+			}
+			else {
+				outer = -outer / angle;
+				outer = fParas_[FloatParamater::kMaxSlide] * outer * t * deltaTime;
+
+				speed_ = 0.0f;
+				velocity_ = {};
+
+				vect2 *= -1;
+				Vector3 pos = {};
+				pos.x = vect2.x * std::cosf(outer) - vect2.y * std::sinf(outer);
+				pos.y = vect2.y * std::cosf(outer) + vect2.x * std::sinf(outer);
+				model_->transform_.translate_ = Vector3{ waterPos_.x,waterPos_.y,model_->transform_.translate_.z } + pos * (waterRadius_ + 0.01f);
+			}
+		}
+		else {
+			float speed = t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
+			velocity_ += vect.Normalize() * speed;
+			speed_ = std::clamp(velocity_.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
+			velocity_ = velocity_.Normalize() * speed_;
+			model_->transform_.translate_ += velocity_;
+		}
+	}
+}
+
+void Baby::InWaterUpdate(const float& deltaTime)
+{
+	Vector3 vect = player_->GetPosition() - model_->transform_.translate_;
+	vect.z = 0.0f;
+
+	float length = vect.Length();
+
+	if (length >= fParas_[FloatParamater::kLimitePlayerLength]) {
+		// 無理やり引っ張る処理
+
+	}
+	else {
+		length = std::clamp(length, 0.0f, fParas_[FloatParamater::kMaxPlayerLength]);
+		float t = length / fParas_[FloatParamater::kMaxPlayerLength];
+
+		Vector3 vect2 = model_->transform_.translate_ - Vector3{ waterGravityPos_.x,waterGravityPos_.y,model_->transform_.translate_.z };
+		vect2 = vect2.Normalize();
+
+		velocity_ += vect.Normalize() * t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
+		velocity_ += vect2 * fParas_[kBuoyancy] * deltaTime;
+
+		speed_ = std::clamp(velocity_.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
+		velocity_ = velocity_.Normalize() * speed_;
+		model_->transform_.translate_ += velocity_;
+
+		vect2 = Vector3{ waterGravityPos_.x,waterGravityPos_.y,model_->transform_.translate_.z } - model_->transform_.translate_;
+		if (vect2.Length() >= waterRadius_) {
+			vect = player_->GetPosition() - model_->transform_.translate_;
+			vect.z = 0.0f;
+
+			vect2 = vect2.Normalize();
+			vect = vect.Normalize();
+
+			if (Calc::Dot(Vector2{ vect.x,vect.y }, Vector2{ vect2.x,vect2.y }) > 0.0f) {
+				isFollowWater_ = true;
+				vect2 *= -1;
+				model_->transform_.translate_ = Vector3{ waterGravityPos_.x,waterGravityPos_.y,model_->transform_.translate_.z } + vect2 * (waterRadius_ + 0.01f);
+			}
+		}
+	}
+}
+
+void Baby::InitializeGlobalVariable()
+{
+	fParas_.resize(kFloatEnd);
+
+	fNames.resize(kFloatEnd);
+	fNames = {
+		"加速度が最大になるときのプレイヤーとの距離",
+		"プレイヤーとの限界距離",
+		"加速度の最大",
+		"最大速度",
+		"最低速度",
+		"水の浮力",
+		"加速度が最大の時の移動角度",
+	};
 }

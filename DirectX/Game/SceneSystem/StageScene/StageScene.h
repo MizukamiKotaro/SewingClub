@@ -13,6 +13,7 @@
 #include "GameElement/WaterEffect/WaterEffect.h"
 #include "GameElement/BackGround/BackGround.h"
 #include"GameElement/Effects/EffectGoalGuidance.h"
+#include "GameElement/Baby/Baby.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -46,6 +47,7 @@ private:
 private:
 
 	std::unique_ptr<Player> player_;
+	std::unique_ptr<Baby> baby_;
 	std::unique_ptr<WaveFloor> waveFloor_;
 	std::list<std::unique_ptr<Wave>> waves_;
 	std::unique_ptr<Goal> goal_;

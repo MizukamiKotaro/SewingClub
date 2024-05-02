@@ -49,6 +49,7 @@ StageScene::StageScene()
 	backGroundObjectManager_->InitializeGlobalVariables();
 
 	player_ = std::make_unique<Player>();
+	baby_ = std::make_unique<Baby>(player_.get());
 	camera_->transform_.translate_.z = -50.0f;
 	camera_->Update();
 
@@ -76,6 +77,7 @@ void StageScene::Initialize()
 	AudioManager::GetInstance()->AllStop();
 
 	player_->Initialize();
+	baby_->Initialize();
 	camera_->transform_.translate_.x = player_->GetPosition().x;
 	camera_->transform_.translate_.y = player_->GetPosition().y;
 	camera_->Update();
@@ -145,6 +147,7 @@ void StageScene::Update()
 	//planetManager_->Update(deltaTime);
 
 	player_->Update(deltaTime);
+	baby_->Update(deltaTime);
 
 	enemyManager_->Update(deltaTime, camera_.get());
 
@@ -197,6 +200,7 @@ void StageScene::Draw()
 	waterEffect_->Draw();
 
 	player_->Draw(camera_.get());
+	baby_->Draw(camera_.get());
 
 	//waveFloor_->Draw();
 
