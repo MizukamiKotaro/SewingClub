@@ -15,6 +15,7 @@ UIGoalGuidance::UIGoalGuidance()
 	gVUser_->AddItem(keys[BoxAreaSize], area_);
 	gVUser_->AddItem(keys[AreaType], areaType_);
 	gVUser_->AddItem(keys[DirectionGoal], goalSize_);
+	gVUser_->AddItem(keys[FadeOutUI],maxFadeoutGoalCount_);
 
 
 }
@@ -101,7 +102,10 @@ void UIGoalGuidance::Update()
 	Vector2 windowSize = WindowsInfo::GetInstance()->GetWindowSize();
 	Matrix4x4 cameraVPV = camera_->GetViewProjection() * MakeViewPortMatrix(0, 0, windowSize.x, windowSize.y, 0, 1);
 	
-	
+	//領域内チェック
+	bool isGoalinScreenX = true;
+	bool isGoalinScreenY = true;
+
 
 	//画面外なら寄せる
 	if (areaType_ == AreaType::Squea) {
@@ -109,16 +113,20 @@ void UIGoalGuidance::Update()
 
 		if (spritePos.x + scale_.x > area_.x) {
 			spritePos.x = area_.x - scale_.x;
+			isGoalinScreenX = false;
 		}
 		else if (spritePos.x - scale_.x < 0) {
 			spritePos.x = scale_.x;
+			isGoalinScreenX = false;
 		}
 
 		if (spritePos.y + scale_.y > area_.y) {
 			spritePos.y =- scale_.y + area_.y;
+			isGoalinScreenY = false;
 		}
 		else if (spritePos.y - scale_.y < 0) {
 			spritePos.y = scale_.y;
+			isGoalinScreenY = false;
 		}
 	}
 	else if (areaType_ == AreaType::Sphere) {
@@ -128,7 +136,32 @@ void UIGoalGuidance::Update()
 		spritePos = TransformPosition(spritePos, cameraVPV);
 
 
+		if (direction.Length() > sphereAreaSize_) {
+			isGoalinScreenX = false;
+			isGoalinScreenY = false;
+		}
 	}
+
+	//ゴールが画面内での透明処理
+	if (isGoalinScreenX && isGoalinScreenY) {
+		fadeoutGoalCount_++;
+		if (fadeoutGoalCount_ > maxFadeoutGoalCount_) {
+			fadeoutGoalCount_ = maxFadeoutGoalCount_;
+		}
+	}
+	else {
+		fadeoutGoalCount_--;
+		if (fadeoutGoalCount_ < 0) {
+			fadeoutGoalCount_ = 0;
+		}
+
+	}
+
+	float t = (float)fadeoutGoalCount_ / (float)maxFadeoutGoalCount_;
+
+	float alpha =  Calc::Lerp(1, 0, t);
+
+	model_->SetColor(Vector4{1,1,1,alpha});
 
 	model_->size_ = scale_;
 	
@@ -156,4 +189,5 @@ void UIGoalGuidance::Debug()
 	area_ = gVUser_->GetVector2Value(keys[BoxAreaSize]);
 	areaType_ = gVUser_->GetIntValue(keys[AreaType]);
 	goalSize_ = gVUser_->GetFloatValue(keys[DirectionGoal]);
+	maxFadeoutGoalCount_ = gVUser_->GetIntValue(keys[FadeOutUI]);
 }

@@ -52,6 +52,7 @@ private:
 		BoxAreaSize,
 		AreaType,
 		DirectionGoal,
+		FadeOutUI,
 		_count
 	};
 
@@ -59,8 +60,9 @@ private:
 		"スプライトサイズ",
 		"円領域でのサイズ",
 		"箱領域でのサイズ",
-		"領域のタイプ",
-		"ガイドのゴールとの最短距離"
+		"領域のタイプ(0で四角、1で円)",
+		"ガイドのゴールとの最短距離",
+		"ゴールが消えるまでのカウント"
 	};
 
 	//画像のサイズ
@@ -87,4 +89,8 @@ private:
 
 	//制限エリアのタイプ
 	int areaType_ = Squea;
+
+	int fadeoutGoalCount_ = 0;
+	//消えるまでのカウント
+	int maxFadeoutGoalCount_ = 30;
 };
