@@ -23,7 +23,10 @@ private:
 	std::string groupName_ = "title";
 
 	std::unique_ptr<Sprite> buttonA_;
-	std::unique_ptr<Sprite>titleLogo_;
+	std::unique_ptr<Sprite>titleLogo_[5];
+
+	Vector2 logoPos_ = { 640,360 };
+	Vector2 logos_[5];
 
 	std::unique_ptr<Sprite>startWord_;
 	// 背景
