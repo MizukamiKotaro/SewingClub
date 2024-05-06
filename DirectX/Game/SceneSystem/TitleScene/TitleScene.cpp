@@ -3,6 +3,7 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include"Audio/AudioManager/AudioManager.h"
 #include"GlobalVariables/GlobalVariables.h"
+#include"RandomGenerator/RandomGenerator.h"
 
 TitleScene::TitleScene()
 {
@@ -22,6 +23,9 @@ TitleScene::TitleScene()
 
 		titleLogo_[i]->pos_ = logos_[i] + logoPos_;
 		titleLogo_[i]->Update();
+
+
+		logoCenters_[i] = logos_[i] + logoPos_;
 	}
 
 	startWord_ = std::make_unique<Sprite>("title_startUI.png");
@@ -37,17 +41,14 @@ TitleScene::TitleScene()
 	
 	gVari->CreateGroup(groupName_);
 
-	gVari->AddItem(groupName_, "タイトルロゴ座標", logoPos_);
+	gVari->AddItem(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)", logoPos_);
 	gVari->AddItem(groupName_,"ボタン座標", buttonA_->pos_);
 	gVari->AddItem(groupName_, "ボタンサイズ", buttonA_->size_);
 	gVari->AddItem(groupName_, "スタート文字座標", startWord_->pos_);
 	gVari->AddItem(groupName_, "スタート文字サイズ", startWord_->size_);
 
-	logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標");
-	buttonA_->pos_ = gVari->GetVector2Value(groupName_, "ボタン座標");
-	buttonA_->size_ = gVari->GetVector2Value(groupName_, "ボタンサイズ");
-	startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
-	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
+	gVari->AddItem(groupName_, "ロゴのランダム速度(min/max)", randVelo_);
+	gVari->AddItem(groupName_, "ロゴが移動できる範囲", logoMoveArea_);
 
 }
 
@@ -57,16 +58,25 @@ void TitleScene::Initialize()
 	
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
 
-	logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標");
+	logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)");
 	buttonA_->pos_ = gVari->GetVector2Value(groupName_, "ボタン座標");
 	buttonA_->size_ = gVari->GetVector2Value(groupName_, "ボタンサイズ");
 	startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
 	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
+	randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
+	logoMoveArea_ = gVari->GetFloatValue(groupName_, "ロゴが移動できる範囲");
+
 	buttonA_->Update();
 	int i = 0;
 	for (auto& logo : titleLogo_) {
 		logo->pos_ = logos_[i] + logoPos_;
 		logo->Update();
+
+
+		//以下速度
+		logoVelo_[i] = RandomGenerator::GetInstance()->RandVector2(-1, 1);
+		logoVelo_[i] = logoVelo_[i].Normalize() * RandomGenerator::GetInstance()->RandFloat(randVelo_.x, randVelo_.y);
+
 
 		i++;
 	}
@@ -79,23 +89,20 @@ void TitleScene::Initialize()
 void TitleScene::Update()
 {
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
-	logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標");
+	logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)");
 	buttonA_->pos_ = gVari->GetVector2Value(groupName_, "ボタン座標");
 	buttonA_->size_ = gVari->GetVector2Value(groupName_, "ボタンサイズ");
 	startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
 	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
+	randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
+	logoMoveArea_ = gVari->GetFloatValue(groupName_, "ロゴが移動できる範囲");
 
+	LogoAnimation();
 
 	bg_->Update(camera_.get());
 
 	buttonA_->Update();
-	int i = 0;
-	for (auto& logo : titleLogo_) {
-		logo->pos_ = logos_[i] + logoPos_;
-		logo->Update();
-
-		i++;
-	}
+	
 	startWord_->Update();
 
 	SceneChange();
@@ -123,6 +130,31 @@ void TitleScene::Draw()
 void TitleScene::WrightPostEffect()
 {
 	
+}
+
+void TitleScene::LogoAnimation()
+{
+	int i = 0;
+	for (auto& logo : titleLogo_) {
+		logo->pos_ +=logoVelo_[i];
+
+		//ロゴ移動範囲外で速度リセット
+		Vector2 direction = logo->pos_-logoCenters_[i];
+		if (logoMoveArea_ <= direction.Length()) {
+			Vector2 newpos =logoCenters_[i]+ direction.Normalize() * logoMoveArea_;
+			logo->pos_ = newpos;
+
+			logoVelo_[i] = RandomGenerator::GetInstance()->RandVector2(-1, 1);
+			logoVelo_[i] = logoVelo_[i].Normalize() * RandomGenerator::GetInstance()->RandFloat(randVelo_.x, randVelo_.y);
+
+			logo->pos_ += logoVelo_[i];
+		}
+
+		logo->Update();
+
+		i++;
+	}
+
 }
 
 void TitleScene::SceneChange()

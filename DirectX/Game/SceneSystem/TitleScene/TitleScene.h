@@ -15,6 +15,7 @@ public:
 	void WrightPostEffect();
 
 private:
+	void LogoAnimation();
 
 	//シーン変更処理
 	void SceneChange();
@@ -23,10 +24,21 @@ private:
 	std::string groupName_ = "title";
 
 	std::unique_ptr<Sprite> buttonA_;
+
+#pragma region ロゴ関係
 	std::unique_ptr<Sprite>titleLogo_[5];
 
 	Vector2 logoPos_ = { 640,360 };
 	Vector2 logos_[5];
+
+	Vector2 logoCenters_[5];
+	float logoMoveArea_ = 5.0f;
+
+	Vector2 logoVelo_[5];
+	Vector2 randVelo_ = {0.01f,0.05f};
+#pragma endregion
+
+	
 
 	std::unique_ptr<Sprite>startWord_;
 	// 背景
@@ -34,5 +46,8 @@ private:
 
 	Audio bgm_;
 	float bgmVolume_ = 0.15f;
+
+	//水の玉の円
+	float waterWide_ = 10;
 };
 
