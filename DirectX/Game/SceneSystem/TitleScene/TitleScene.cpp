@@ -12,14 +12,14 @@ TitleScene::TitleScene()
 	buttonA_ = std::make_unique<Sprite>("controler_UI_A1.png");
 	buttonA_->pos_.y = 500.0f;
 	buttonA_->size_ = { 123.0f,123.0f };
-	
+
 	for (int i = 0; i < 5; i++) {
 		titleLogo_[i] = std::make_unique<Sprite>("titlelogo.png");
-		titleLogo_[i]->SetTextureSize({128,300});
-		titleLogo_[i]->SetTextureTopLeft({128.0f*(float)i,0});
-		titleLogo_[i]->size_ = {120,300};
+		titleLogo_[i]->SetTextureSize({ 128,300 });
+		titleLogo_[i]->SetTextureTopLeft({ 128.0f * (float)i,0 });
+		titleLogo_[i]->size_ = { 120,300 };
 
-		logos_[i] = {(-128.0f * 2) + 128.0f * i,0};
+		logos_[i] = { (-128.0f * 2) + 128.0f * i,0 };
 
 		titleLogo_[i]->pos_ = logos_[i] + logoPos_;
 		titleLogo_[i]->Update();
@@ -34,15 +34,16 @@ TitleScene::TitleScene()
 
 	bg_ = std::make_unique<BackGround>();
 
-	bgm_.LoadWave("Music/title.wav","TitleBGM",bgmVolume_);
+	bgm_.LoadWave("Music/title.wav", "TitleBGM", bgmVolume_);
 
+	effeUIEnterW_ = std::make_unique<EffectUIEnterWater>("TitleBubbleUI");
 
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
-	
+
 	gVari->CreateGroup(groupName_);
 
 	gVari->AddItem(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)", logoPos_);
-	gVari->AddItem(groupName_,"ボタン座標", buttonA_->pos_);
+	gVari->AddItem(groupName_, "ボタン座標", buttonA_->pos_);
 	gVari->AddItem(groupName_, "ボタンサイズ", buttonA_->size_);
 	gVari->AddItem(groupName_, "スタート文字座標", startWord_->pos_);
 	gVari->AddItem(groupName_, "スタート文字サイズ", startWord_->size_);
@@ -55,7 +56,7 @@ TitleScene::TitleScene()
 void TitleScene::Initialize()
 {
 	AudioManager::GetInstance()->AllStop();
-	
+
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
 
 	logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)");
@@ -64,7 +65,7 @@ void TitleScene::Initialize()
 	startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
 	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
 	randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
-	logoMoveArea_ = gVari->GetFloatValue(groupName_, "ロゴが移動できる範囲");
+	logoMoveArea_ = gVari->GetVector2Value(groupName_, "ロゴが移動できる範囲");
 
 	buttonA_->Update();
 	int i = 0;
@@ -77,13 +78,16 @@ void TitleScene::Initialize()
 		logoVelo_[i] = RandomGenerator::GetInstance()->RandVector2(-1, 1);
 		logoVelo_[i] = logoVelo_[i].Normalize() * RandomGenerator::GetInstance()->RandFloat(randVelo_.x, randVelo_.y);
 
-
+		logoCenters_[i] = logos_[i] + logoPos_;
 		i++;
 	}
 	startWord_->Update();
 
 
 	bgm_.Play(true);
+
+	effeUIEnterW_->Initialize();
+	effeUIEnterW_->IsEffectActive(true);
 }
 
 void TitleScene::Update()
@@ -95,17 +99,20 @@ void TitleScene::Update()
 	startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
 	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
 	randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
-	logoMoveArea_ = gVari->GetFloatValue(groupName_, "ロゴが移動できる範囲");
+	logoMoveArea_ = gVari->GetVector2Value(groupName_, "ロゴが移動できる範囲");
+
 
 	LogoAnimation();
 
 	bg_->Update(camera_.get());
 
 	buttonA_->Update();
-	
+
 	startWord_->Update();
 
 	SceneChange();
+
+	effeUIEnterW_->Update();
 }
 
 void TitleScene::Draw()
@@ -122,6 +129,9 @@ void TitleScene::Draw()
 	for (auto& logo : titleLogo_) {
 		logo->Draw();
 	}
+
+	effeUIEnterW_->Draw();
+
 	BlackDraw();
 
 	Kyoko::Engine::PostDraw();
@@ -129,29 +139,42 @@ void TitleScene::Draw()
 
 void TitleScene::WrightPostEffect()
 {
-	
+
 }
 
 void TitleScene::LogoAnimation()
 {
 	int i = 0;
 	for (auto& logo : titleLogo_) {
-		logo->pos_ +=logoVelo_[i];
+		logo->pos_ += logoVelo_[i];
 
 		//ロゴ移動範囲外で速度リセット
-		Vector2 direction = logo->pos_-logoCenters_[i];
-		if (logoMoveArea_ <= direction.Length()) {
-			Vector2 newpos =logoCenters_[i]+ direction.Normalize() * logoMoveArea_;
-			logo->pos_ = newpos;
+		Vector2 direction = logo->pos_;
+		bool isAreaOut = false;
+		if (logoMoveArea_.x + logoCenters_[i].x <= (direction.x)) {
+			logo->pos_.x = logoCenters_[i].x + logoMoveArea_.x;
+			isAreaOut = true;
+		}
+		else if (-logoMoveArea_.x + logoCenters_[i].x >= direction.x) {
+			logo->pos_.x = logoCenters_[i].x - logoMoveArea_.x;
+			isAreaOut = true;
+		}
+		if (logoMoveArea_.y + logoCenters_[i].y <= direction.y) {
+			logo->pos_.y = logoCenters_[i].y + logoMoveArea_.y;
+			isAreaOut = true;
+		}
+		else if (-logoMoveArea_.y + logoCenters_[i].y >= direction.y) {
+			logo->pos_.y = logoCenters_[i].y - logoMoveArea_.y;
+			isAreaOut = true;
+		}
 
+		if (isAreaOut) {
 			logoVelo_[i] = RandomGenerator::GetInstance()->RandVector2(-1, 1);
 			logoVelo_[i] = logoVelo_[i].Normalize() * RandomGenerator::GetInstance()->RandFloat(randVelo_.x, randVelo_.y);
-
-			logo->pos_ += logoVelo_[i];
+			//logo->pos_ += logoVelo_[i];
 		}
 
 		logo->Update();
-
 		i++;
 	}
 

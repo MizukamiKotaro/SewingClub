@@ -90,7 +90,7 @@ Player::Player()
 	effeExtraJump_ = std::make_unique<EffectExtraJump>();
 	effectOutWater_ = std::make_unique<EffectOutWater>();
 	effeEnterWater_ = std::make_unique<EffectEnterWater>();
-	effeUIEnterWater_ = std::make_unique<EffectUIEnterWater>();
+	effeUIEnterWater_ = std::make_unique<EffectUIEnterWater>("IngameUIEnterWater");
 	
 	// アニメーションの初期化とモデルのセット
 	animation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("playermove"));

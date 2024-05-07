@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneSystem/IScene/IScene.h"
 #include "GameElement/BackGround/BackGround.h"
+#include"GameElement/Effects/EffectUIEnterWater.h"
 #include"Audio.h"
 
 class TitleScene : public IScene
@@ -32,7 +33,7 @@ private:
 	Vector2 logos_[5];
 
 	Vector2 logoCenters_[5];
-	float logoMoveArea_ = 5.0f;
+	Vector2 logoMoveArea_ = { 5.0f,5.0f };
 
 	Vector2 logoVelo_[5];
 	Vector2 randVelo_ = {0.01f,0.05f};
@@ -49,5 +50,7 @@ private:
 
 	//水の玉の円
 	float waterWide_ = 10;
+
+	std::unique_ptr<EffectUIEnterWater>effeUIEnterW_;
 };
 

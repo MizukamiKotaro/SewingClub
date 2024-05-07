@@ -2,7 +2,7 @@
 #include"RandomGenerator/RandomGenerator.h"
 #include"Ease/Ease.h"
 
-EffectUIEnterWater::EffectUIEnterWater()
+EffectUIEnterWater::EffectUIEnterWater(std::string treename)
 {
 
 	datas_.resize(dataNum_);
@@ -17,7 +17,7 @@ EffectUIEnterWater::EffectUIEnterWater()
 
 	}
 
-	 gVariUser_ = new GlobalVariableUser("Effects", "EffectUIEnterWater");
+	 gVariUser_ = new GlobalVariableUser("Effects", treename);
 
 	 gVariUser_->AddItem(keys[SpawnCount], maxSpawnCount_);
 	 gVariUser_->AddItem(keys[SpawnDiff], spawnXDiff_);
@@ -45,6 +45,7 @@ void EffectUIEnterWater::Initialize()
 
 void EffectUIEnterWater::Update()
 {
+	Debug();
 
 	if (isActive_) {
 		//出現処理

@@ -10,7 +10,7 @@ class EffectUIEnterWater
 
 public:
 
-	EffectUIEnterWater();
+	EffectUIEnterWater(std::string treename);
 	~EffectUIEnterWater();
 
 	void Initialize();
@@ -70,7 +70,7 @@ private:
 	};
 
 	//データの量
-	int dataNum_ = 20;
+	int dataNum_ = 60;
 
 	//出現間隔
 	int spawnCount_ = 0;
