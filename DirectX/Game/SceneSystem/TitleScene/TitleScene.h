@@ -2,6 +2,7 @@
 #include "SceneSystem/IScene/IScene.h"
 #include "GameElement/BackGround/BackGround.h"
 #include"GameElement/Effects/EffectUIEnterWater.h"
+#include"GameElement/WaterEffect/WaterEffect.h"
 #include"Audio.h"
 
 class TitleScene : public IScene
@@ -52,5 +53,10 @@ private:
 	float waterWide_ = 10;
 
 	std::unique_ptr<EffectUIEnterWater>effeUIEnterW_;
+
+	std::unique_ptr<WaterEffect>waterE_;
+	Vector3 color_;
+
+	std::unique_ptr<Sprite>whiteS_;
 };
 

@@ -37,11 +37,13 @@ TitleScene::TitleScene()
 	bgm_.LoadWave("Music/title.wav", "TitleBGM", bgmVolume_);
 
 	effeUIEnterW_ = std::make_unique<EffectUIEnterWater>("TitleBubbleUI");
+	waterE_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
+	
+	whiteS_ = std::make_unique<Sprite>();
+
 
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
-
 	gVari->CreateGroup(groupName_);
-
 	gVari->AddItem(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)", logoPos_);
 	gVari->AddItem(groupName_, "ボタン座標", buttonA_->pos_);
 	gVari->AddItem(groupName_, "ボタンサイズ", buttonA_->size_);
@@ -50,7 +52,7 @@ TitleScene::TitleScene()
 
 	gVari->AddItem(groupName_, "ロゴのランダム速度(min/max)", randVelo_);
 	gVari->AddItem(groupName_, "ロゴが移動できる範囲", logoMoveArea_);
-
+	
 }
 
 void TitleScene::Initialize()
@@ -66,6 +68,8 @@ void TitleScene::Initialize()
 	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
 	randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
 	logoMoveArea_ = gVari->GetVector2Value(groupName_, "ロゴが移動できる範囲");
+	
+
 
 	buttonA_->Update();
 	int i = 0;
@@ -88,6 +92,10 @@ void TitleScene::Initialize()
 
 	effeUIEnterW_->Initialize();
 	effeUIEnterW_->IsEffectActive(true);
+
+	whiteS_->Initialize();
+	whiteS_->size_ = { 1280,720 };
+	whiteS_->Update();
 }
 
 void TitleScene::Update()
@@ -100,6 +108,7 @@ void TitleScene::Update()
 	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
 	randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
 	logoMoveArea_ = gVari->GetVector2Value(groupName_, "ロゴが移動できる範囲");
+	
 
 
 	LogoAnimation();
@@ -113,24 +122,32 @@ void TitleScene::Update()
 	SceneChange();
 
 	effeUIEnterW_->Update();
+
+	waterE_->Update(0.1f);
 }
 
 void TitleScene::Draw()
 {
 	WrightPostEffect();
 
+
 	Kyoko::Engine::PreDraw();
 
-	bg_->Draw();
-
-	startWord_->Draw();
-
-	buttonA_->Draw();
+	//ポストエフェ
+	waterE_->Draw();
+	
 	for (auto& logo : titleLogo_) {
 		logo->Draw();
 	}
+	
+	startWord_->Draw();
+
+	buttonA_->Draw();
+	
 
 	effeUIEnterW_->Draw();
+
+	
 
 	BlackDraw();
 
@@ -139,7 +156,19 @@ void TitleScene::Draw()
 
 void TitleScene::WrightPostEffect()
 {
+	waterE_->PreDrawBackGround();
 
+	bg_->Draw();
+
+	waterE_->PostDrawBackGround();
+
+	waterE_->PreDrawWaterArea();
+
+	//
+	//bg_->Draw();
+	whiteS_->Draw();
+
+	waterE_->PostDrawWaterArea();
 }
 
 void TitleScene::LogoAnimation()
