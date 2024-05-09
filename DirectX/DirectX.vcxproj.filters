@@ -894,6 +894,9 @@
     <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
       <Filter>Game\GameElement\OptionUI</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\Item\RequiredObject.cpp">
+      <Filter>Game\GameElement\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1423,6 +1426,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
       <Filter>Game\GameElement\OptionUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Item\RequiredObject.h">
+      <Filter>Game\GameElement\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

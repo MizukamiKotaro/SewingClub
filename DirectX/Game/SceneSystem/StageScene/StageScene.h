@@ -42,7 +42,6 @@ private:
 
 	void MakePostEffect();
 
-	//�V�[���ύX
 	void SceneChange();
 private:
 
@@ -63,7 +62,7 @@ private:
 	ClientManager* clientManager_;
 	ItemManager* itemManager_;
 
-	//�G�t�F�N�g�֘A�̃f�[�^
+	//
 	ParticleManager* particleManager_;
 	EnemyManager* enemyManager_;
 	std::unique_ptr<UIGoalGuidance>effeGoalGuid_;
@@ -74,6 +73,8 @@ private:
 
 	//ステージ最大数
 	int maxStageNo_ = 3;
+
+	bool isCanGoal_ = false; // ゴールできるか
 
 	// 背景
 	std::unique_ptr<BackGround> bg_;

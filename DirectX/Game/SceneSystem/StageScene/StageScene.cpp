@@ -30,6 +30,7 @@ StageScene::StageScene()
 	Client::StaticInitialize();
 	Planet::StaticInitialize();
 	Item::StaticInitialize();
+	RequiredObject::StaticInitialize();
 	WaterWave::StaticInitialize();
 	BackGroundObject::StaticInitialize();
 
@@ -97,6 +98,8 @@ void StageScene::Initialize()
 	backGroundObjectManager_->Initialize();
 	waterEffect_->Initialize();
 	bg_->Initialize();
+
+	isCanGoal_ = false;
 }
 
 void StageScene::Update()
@@ -158,10 +161,13 @@ void StageScene::Update()
 	waterManager_->Update(deltaTime, camera_.get());
 
 	itemManager_->Update(deltaTime, camera_.get());
+	isCanGoal_ = itemManager_->GetIsCanGoal();
 
 	backGroundObjectManager_->Update(deltaTime);
 
-	goal_->Update(deltaTime);
+	if (isCanGoal_) {
+		goal_->Update(deltaTime);
+	}
 
 	debugCamera_->Update();
 	if (debugCamera_->IsDebug()) {
@@ -184,7 +190,9 @@ void StageScene::Update()
 	SceneChange();
 
 	waterEffect_->Update(deltaTime);
-	effeGoalGuid_->Update();
+	if (isCanGoal_) {
+		effeGoalGuid_->Update();
+	}
 }
 
 void StageScene::Draw()
@@ -206,7 +214,9 @@ void StageScene::Draw()
 
 	itemManager_->Draw();
 
-	goal_->Draw();
+	if (isCanGoal_) {
+		goal_->Draw();
+	}
 
 	enemyManager_->Draw();
 
@@ -223,7 +233,9 @@ void StageScene::Draw()
 
 	player_->DrawClient();
 
-	effeGoalGuid_->Draw(camera_.get());
+	if (isCanGoal_) {
+		effeGoalGuid_->Draw(camera_.get());
+	}
 
 	player_->DrawUI();
 
