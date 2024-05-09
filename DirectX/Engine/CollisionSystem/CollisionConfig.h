@@ -11,6 +11,7 @@ enum class ColliderShape
     CIRCLE,
     BOX2D,
     MAPCHIP2D,
+    QUADRANGLE2D,
 };
 
 enum class ColliderMask {

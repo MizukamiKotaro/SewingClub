@@ -38,12 +38,20 @@ private:
 	bool isInWater_;
 	bool isFollowWater_;
 
+	bool isCircleWater_;
+
 	Vector3 velocity_;
 	float speed_;
 
 	Vector2 waterPos_;
 	Vector2 waterGravityPos_;
 	float waterRadius_;
+
+	Vector2 startPos_;
+	Vector2 endPos_;
+	float startScale_;
+	float endScale_;
+	float waterRotate_;
 
 	enum FloatParamater {
 		kMaxPlayerLength, // 加速度が最大になるときのプレイヤーとの距離
@@ -53,6 +61,7 @@ private:
 		kMinSpeed, // 最低速度
 		kBuoyancy, // 水の浮力
 		kMaxSlide, // 加速度が最大の時の水の移動角度
+		kMaxSlideLength, // 加速度が最大の時の水の移動距離
 		kFloatEnd,
 	};
 

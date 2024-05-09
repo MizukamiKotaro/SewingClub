@@ -817,32 +817,72 @@ void Player::InitializeGlobalVariable()
 void Player::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER || collider.GetMask() == ColliderMask::PLANET) {
-		isInWater_ = true;
-		if (bParas_[kIsBuoyancy]) {
-			ShapeCircle* circle = collider.GetCircle();
-			gravityPos_ = circle->position_;;
-			if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
-				waterGravityPos_ = circle->position_;
+		if (collider.GetShape() == ColliderShape::CIRCLE) {
+			isInWater_ = true;
+			if (bParas_[kIsBuoyancy]) {
+				ShapeCircle* circle = collider.GetCircle();
+				gravityPos_ = circle->position_;;
+				if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
+					waterGravityPos_ = circle->position_;
+				}
+				else {
+					waterGravityPos_ = (circle->position_ + waterGravityPos_) * 0.5f;
+				}
 			}
-			else {
-				waterGravityPos_ = (circle->position_ + waterGravityPos_) * 0.5f;
+		}
+		else if (collider.GetShape() == ColliderShape::QUADRANGLE2D) {
+			isInWater_ = true;
+			if (bParas_[kIsBuoyancy]) {
+				ShapeQuadrangle* quadrangle = collider.GetQuadrangle();
+				Vector2 startPos = (quadrangle->leftTop_ + quadrangle->leftBottom_) / 2;
+				Vector2 endPos = (quadrangle->rightTop_ + quadrangle->rightBottom_) / 2;
+				Vector3 vect = { endPos.x - startPos.x, endPos.y - startPos.y, 0.0f };
+				Vector3 project = Calc::Project({ model_->transform_.translate_.x - startPos.x,model_->transform_.translate_.y - startPos.y,0.0f }, vect);
+				Vector2 position = { startPos.x + project.x,startPos.y + project.y };
+				gravityPos_ = position;
+				if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
+					waterGravityPos_ = position;
+				}
+				else {
+					waterGravityPos_ = (position + waterGravityPos_) * 0.5f;
+				}
 			}
 		}
 	}
 	else if (collider.GetMask() == ColliderMask::GRAVITY_AREA) {
+		if (collider.GetShape() == ColliderShape::CIRCLE) {
+			ShapeCircle* circle = collider.GetCircle();
+			Vector2 pos = { model_->transform_.translate_.x,model_->transform_.translate_.y };
+			if (!isGravity_) {
+				gravityPos_ = circle->position_;
+				isGravity_ = true;
+			}
+			if ((gravityPos_ - pos).Length() > (circle->position_ - pos).Length()) {
+				gravityPos_ = circle->position_;
+			}
 
-		ShapeCircle* circle = collider.GetCircle();
-		Vector2 pos = { model_->transform_.translate_.x,model_->transform_.translate_.y };
-		if (!isGravity_) {
-			gravityPos_ = circle->position_;
-			isGravity_ = true;
+			Vector2 vector = circle->position_ - pos;
+			gravityVelocity_ += vector.Normalize() * fParas_[kGravityWater];
 		}
-		if ((gravityPos_ - pos).Length() > (circle->position_ - pos).Length()) {
-			gravityPos_ = circle->position_;
+		else if (collider.GetShape() == ColliderShape::QUADRANGLE2D) {
+			ShapeQuadrangle* quadrangle = collider.GetQuadrangle();
+			Vector2 pos = { model_->transform_.translate_.x,model_->transform_.translate_.y };
+			Vector2 startPos = (quadrangle->leftTop_ + quadrangle->leftBottom_) / 2;
+			Vector2 endPos = (quadrangle->rightTop_ + quadrangle->rightBottom_) / 2;
+			Vector3 vect = { endPos.x - startPos.x, endPos.y - startPos.y, 0.0f };
+			Vector3 point = Calc::ClosestPoint({ model_->transform_.translate_.x,model_->transform_.translate_.y,0.0f }, Segment{ {startPos.x,startPos.y,0.0f},vect });
+			Vector2 position = { point.x,point.y };
+			if (!isGravity_) {
+				gravityPos_ = position;
+				isGravity_ = true;
+			}
+			if ((gravityPos_ - pos).Length() > (position - pos).Length()) {
+				gravityPos_ = position;
+			}
+
+			Vector2 vector = position - pos;
+			gravityVelocity_ += vector.Normalize() * fParas_[kGravityWater];
 		}
-		
-		Vector2 vector = circle->position_ - pos;
-		gravityVelocity_ += vector.Normalize() * fParas_[kGravityWater];
 	}
 	else if (collider.GetMask() == ColliderMask::CLIENT) {
 		if (kMaxPutClient_ > int(clients_.size())) {

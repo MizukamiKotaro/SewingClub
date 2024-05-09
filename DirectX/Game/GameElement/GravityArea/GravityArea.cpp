@@ -11,11 +11,9 @@ const InstancingMeshTexData* GravityArea::modelData_ = nullptr;
 std::unique_ptr<GlobalVariableUser> GravityArea::globalVariable_;
 float GravityArea::scale_ = 1.0f;
 
-GravityArea::GravityArea()
+GravityArea::GravityArea(const ColliderShape& shape)
 {
-	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::GRAVITY_AREA);
-	Collider::AddTargetMask(ColliderMask::PLAYER);
-	Collider::AddTargetMask(ColliderMask::GRAVITY_AREA_SEARCH);
+	Collider::CreateCollider(shape, ColliderType::COLLIDER, ColliderMask::GRAVITY_AREA);
 }
 
 void GravityArea::StaticInitialize()
@@ -48,6 +46,11 @@ void GravityArea::Update(const Vector2& pos, const Vector2& radius, bool isSame,
 	collisionManager_->SetCollider(this);
 }
 
+void GravityArea::Update(const Vector3& leftTop, const Vector3& rightTop, const Vector3& leftBottom, const Vector3& rightBottom, const Vector3& startPos, const Vector3& endPos)
+{
+	Collider::SetQuadrangle((leftTop - startPos) * scale_ + startPos, (rightTop - endPos) * scale_ + endPos, (leftBottom - startPos) * scale_ + startPos, (rightBottom - endPos) * scale_ + endPos);
+	collisionManager_->SetCollider(this);
+}
 
 #ifdef _DEBUG
 void GravityArea::Draw(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate)

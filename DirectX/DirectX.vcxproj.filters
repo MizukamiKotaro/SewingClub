@@ -424,6 +424,15 @@
     <Filter Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\CopyGraphicsPipeline">
       <UniqueIdentifier>{93453654-139a-490e-8f46-9a9633554101}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Drawer\DrawQuadrangle">
+      <UniqueIdentifier>{c19a344f-8164-47f3-bc0a-855d0234bf09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\CollisionSystem\ColliderShapes\ShapeQuadrangle">
+      <UniqueIdentifier>{d1f24eee-68cb-4aa8-b2d3-ac667a78d3d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleQuadrangle">
+      <UniqueIdentifier>{5f87694e-e801-4019-864d-c119fe4d0135}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game\GameElement\BackGroundObject">
       <UniqueIdentifier>{87718630-63f4-4223-8a8b-1ff36a660d90}</UniqueIdentifier>
     </Filter>
@@ -884,6 +893,21 @@
     </ClCompile>
     <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\CopyGraphicsPipeline\CopyGraphicsPipeline.cpp">
       <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\CopyGraphicsPipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\DrawQuadrangle\DrawQuadrangle.cpp">
+      <Filter>Engine\Drawer\DrawQuadrangle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\DrawQuadrangle\DrawQuadrangleManager.cpp">
+      <Filter>Engine\Drawer\DrawQuadrangle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\CollisionSystem\ColliderShapes\ShapeQuadrangle\ShapeQuadrangle.cpp">
+      <Filter>Engine\CollisionSystem\ColliderShapes\ShapeQuadrangle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleQuadrangle\CollisionCircleQuadrangle.cpp">
+      <Filter>Engine\CollisionSystem\CollisionProcesses\CollisionCircleQuadrangle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\WaterChunk\WaterChunkQuadrangle.cpp">
+      <Filter>Game\GameElement\WaterChunk</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Enemy\FollowEnemy.cpp">
       <Filter>Game\GameElement\Charactor\Enemy</Filter>
@@ -1408,6 +1432,21 @@
     </ClInclude>
     <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\CopyGraphicsPipeline\CopyGraphicsPipeline.h">
       <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\CopyGraphicsPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\DrawQuadrangle\DrawQuadrangle.h">
+      <Filter>Engine\Drawer\DrawQuadrangle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\DrawQuadrangle\DrawQuadrangleManager.h">
+      <Filter>Engine\Drawer\DrawQuadrangle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\CollisionSystem\ColliderShapes\ShapeQuadrangle\ShapeQuadrangle.h">
+      <Filter>Engine\CollisionSystem\ColliderShapes\ShapeQuadrangle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleQuadrangle\CollisionCircleQuadrangle.h">
+      <Filter>Engine\CollisionSystem\CollisionProcesses\CollisionCircleQuadrangle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\WaterChunk\WaterChunkQuadrangle.h">
+      <Filter>Game\GameElement\WaterChunk</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\BackGroundObject\BackGroundObjectManager.h">
       <Filter>Game\GameElement\BackGroundObject</Filter>

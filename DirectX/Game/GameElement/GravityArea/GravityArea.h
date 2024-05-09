@@ -9,13 +9,14 @@
 class GravityArea : public Collider
 {
 public:
-	GravityArea();
+	GravityArea(const ColliderShape& shape = ColliderShape::CIRCLE);
 
 	static void StaticInitialize();
 
 	static void StaticUpdate();
 
 	void Update(const Vector2& pos, const Vector2& radius, bool isSame = false, const float& rotate = 0.0f, const Vector2& velcity = {});
+	void Update(const Vector3& leftTop, const Vector3& rightTop, const Vector3& leftBottom, const Vector3& rightBottom, const Vector3& startPos, const Vector3& endPos);
 
 #ifdef _DEBUG
 	void Draw(const Vector2& pos, const Vector2& radius, bool isSame = false, const float& rotate = 0.0f);

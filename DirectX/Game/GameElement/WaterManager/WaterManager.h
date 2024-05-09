@@ -19,11 +19,12 @@ public:
 
 	void Update(const float& deltaTime, Camera* camera);
 
-	void Draw();
+	void Draw(Camera* camera);
 
 	void CreateWater(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall = true);
 
 	std::unordered_map<int, std::unique_ptr<WaterChunk>>& GetWater() { return stageWater_; }
+	const WaterChunk* GetWater(const int& no);
 
 private:
 	WaterManager() = default;
