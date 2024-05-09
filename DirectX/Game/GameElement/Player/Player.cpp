@@ -775,7 +775,7 @@ void Player::OnCollision(const Collider& collider)
 			Vector2 startPos = (quadrangle->leftTop_ + quadrangle->leftBottom_) / 2;
 			Vector2 endPos = (quadrangle->rightTop_ + quadrangle->rightBottom_) / 2;
 			Vector3 vect = { endPos.x - startPos.x, endPos.y - startPos.y, 0.0f };
-			Vector3 point = Calc::ClosestPoint({ GetCircle()->position_.x,GetCircle()->position_.y,0.0f }, Segment{ {startPos.x,startPos.y,0.0f},vect });
+			Vector3 point = Calc::ClosestPoint({ model_->transform_.translate_.x,model_->transform_.translate_.y,0.0f }, Segment{ {startPos.x,startPos.y,0.0f},vect });
 			Vector2 position = { point.x,point.y };
 			if (!isGravity_) {
 				gravityPos_ = position;
