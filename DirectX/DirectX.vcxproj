@@ -213,6 +213,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\HitSystem\HitSystem.cpp" />
     <ClCompile Include="Game\GameElement\Item\Item.cpp" />
     <ClCompile Include="Game\GameElement\Item\ItemManager.cpp" />
+    <ClCompile Include="Game\GameElement\Item\RequiredObject.cpp" />
     <ClCompile Include="Game\GameElement\Live\Dome\Dome.cpp" />
     <ClCompile Include="Game\GameElement\Live\Live.cpp" />
     <ClCompile Include="Game\GameElement\Live\Screen\Screen.cpp" />
@@ -403,6 +404,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\HitSystem\HitSystem.h" />
     <ClInclude Include="Game\GameElement\Item\Item.h" />
     <ClInclude Include="Game\GameElement\Item\ItemManager.h" />
+    <ClInclude Include="Game\GameElement\Item\RequiredObject.h" />
     <ClInclude Include="Game\GameElement\Live\Dome\Dome.h" />
     <ClInclude Include="Game\GameElement\Live\Live.h" />
     <ClInclude Include="Game\GameElement\Live\Screen\Screen.h" />
