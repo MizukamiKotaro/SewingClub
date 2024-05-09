@@ -41,6 +41,8 @@ TitleScene::TitleScene()
 	
 	whiteS_ = std::make_unique<Sprite>();
 
+	optionUI_ = std::make_unique<OptionUI>();
+
 
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
 	gVari->CreateGroup(groupName_);
@@ -96,34 +98,45 @@ void TitleScene::Initialize()
 	whiteS_->Initialize();
 	whiteS_->size_ = { 1280,720 };
 	whiteS_->Update();
+
+	optionUI_->Initialize();
+	optionUI_->Update();
 }
 
 void TitleScene::Update()
 {
-	GlobalVariables* gVari = GlobalVariables::GetInstance();
-	logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)");
-	buttonA_->pos_ = gVari->GetVector2Value(groupName_, "ボタン座標");
-	buttonA_->size_ = gVari->GetVector2Value(groupName_, "ボタンサイズ");
-	startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
-	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
-	randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
-	logoMoveArea_ = gVari->GetVector2Value(groupName_, "ロゴが移動できる範囲");
-	
+
+	if (!isOptionActive_) {
+
+		GlobalVariables* gVari = GlobalVariables::GetInstance();
+		logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)");
+		buttonA_->pos_ = gVari->GetVector2Value(groupName_, "ボタン座標");
+		buttonA_->size_ = gVari->GetVector2Value(groupName_, "ボタンサイズ");
+		startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
+		startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
+		randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
+		logoMoveArea_ = gVari->GetVector2Value(groupName_, "ロゴが移動できる範囲");
 
 
-	LogoAnimation();
 
-	bg_->Update(camera_.get());
+		LogoAnimation();
 
-	buttonA_->Update();
+		bg_->Update(camera_.get());
 
-	startWord_->Update();
+		buttonA_->Update();
 
-	SceneChange();
+		startWord_->Update();
 
-	effeUIEnterW_->Update();
+		SceneChange();
 
-	waterE_->Update(0.1f);
+		effeUIEnterW_->Update();
+
+		waterE_->Update(0.1f);
+
+	}
+	else {
+		isOptionActive_ = optionUI_->Update();
+	}
 }
 
 void TitleScene::Draw()
@@ -147,7 +160,9 @@ void TitleScene::Draw()
 
 	effeUIEnterW_->Draw();
 
-	
+	if (isOptionActive_) {
+		optionUI_->Draw();
+	}
 
 	BlackDraw();
 
@@ -212,11 +227,15 @@ void TitleScene::LogoAnimation()
 void TitleScene::SceneChange()
 {
 	//
-	if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
+	if (input_->PressedGamePadButton(Input::GamePadButton::A)&&!isOptionActive_) {
 		// シーン切り替え
 		stageNo_ = 0;
 		ChangeScene(SELECT);
 		bgm_.Stop();
+	}
+
+	if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
+		isOptionActive_ = true;
 	}
 }
 

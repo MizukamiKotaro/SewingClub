@@ -433,6 +433,9 @@
     <Filter Include="Game\GameElement\Effects\EffectUIEnterWater">
       <UniqueIdentifier>{f65a0944-23e5-48f5-9a07-6d00f14f8536}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\OptionUI">
+      <UniqueIdentifier>{f66103be-125b-4f5a-8479-1731ffc6deea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -886,7 +889,10 @@
       <Filter>Game\GameElement\Charactor\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Effects\EffectGoalGuidance.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\GameElement\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
+      <Filter>Game\GameElement\OptionUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1413,7 +1419,10 @@
       <Filter>Game\GameElement\Charactor\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>Game\GameElement\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
+      <Filter>Game\GameElement\OptionUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

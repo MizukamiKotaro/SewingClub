@@ -3,6 +3,7 @@
 #include "GameElement/BackGround/BackGround.h"
 #include"GameElement/Effects/EffectUIEnterWater.h"
 #include"GameElement/WaterEffect/WaterEffect.h"
+#include"GameElement/OptionUI/OptionUI.h"
 #include"Audio.h"
 
 class TitleScene : public IScene
@@ -58,5 +59,11 @@ private:
 	Vector3 color_;
 
 	std::unique_ptr<Sprite>whiteS_;
+
+#pragma region オプション関係
+	std::unique_ptr<OptionUI>optionUI_;
+	bool isOptionActive_ = false;
+#pragma endregion
+
 };
 

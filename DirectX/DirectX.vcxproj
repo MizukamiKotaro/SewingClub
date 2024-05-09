@@ -220,6 +220,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Live\StageLights\StageLights.cpp" />
     <ClCompile Include="Game\GameElement\Live\Stage\Stage.cpp" />
     <ClCompile Include="Game\GameElement\Notes\Notes.cpp" />
+    <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp" />
     <ClCompile Include="Game\GameElement\Pause\Pause.cpp" />
     <ClCompile Include="Game\GameElement\Planet\Planet.cpp" />
     <ClCompile Include="Game\GameElement\Planet\PlanetManager.cpp" />
@@ -410,6 +411,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Live\StageLights\StageLights.h" />
     <ClInclude Include="Game\GameElement\Live\Stage\Stage.h" />
     <ClInclude Include="Game\GameElement\Notes\Notes.h" />
+    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h" />
     <ClInclude Include="Game\GameElement\Pause\Pause.h" />
     <ClInclude Include="Game\GameElement\Planet\Planet.h" />
     <ClInclude Include="Game\GameElement\Planet\PlanetManager.h" />
