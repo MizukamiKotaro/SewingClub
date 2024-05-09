@@ -43,6 +43,8 @@ void Baby::Initialize()
 	model_->Update();
 	waterPos_ = { model_->transform_.translate_.x,model_->transform_.translate_.y };
 	waterGravityPos_ = waterPos_;
+
+	isCircleWater_ = true;
 }
 
 void Baby::Update(float deltaTime)
