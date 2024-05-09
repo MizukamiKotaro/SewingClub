@@ -1,5 +1,6 @@
 #include "CollisionManager.h"
 #include "CollisionSystem/CollisionProcesses/CollisionCircleCircle/CollisionCircleCircle.h"
+#include "CollisionSystem/CollisionProcesses/CollisionCircleQuadrangle/CollisionCircleQuadrangle.h"
 
 CollisionManager* CollisionManager::GetInstance()
 {
@@ -39,6 +40,8 @@ void CollisionManager::CheckCollision()
 					colliderB->SetIsHit(true);
 					colliderA->OnCollision(*colliderB);
 					colliderB->OnCollision(*colliderA);
+					colliderA->SetIsHit(false);
+					colliderB->SetIsHit(false);
 				}
 			}
 		}
@@ -77,6 +80,19 @@ bool CollisionManager::IsCollision(Collider* a, Collider* b)
 	if (a->GetShape() == ColliderShape::CIRCLE && b->GetShape() == ColliderShape::CIRCLE) {
 		if (CollisionCircleCircle::IsCollision(a,b)) {
 			return true;
+		}
+		return false;
+	}
+	else if (a->GetShape() == ColliderShape::CIRCLE && b->GetShape() == ColliderShape::QUADRANGLE2D || a->GetShape() == ColliderShape::QUADRANGLE2D && b->GetShape() == ColliderShape::CIRCLE) {
+		if (a->GetShape() == ColliderShape::CIRCLE) {
+			if (CollisionCircleQuadrangle::IsCollision(a, b)) {
+				return true;
+			}
+		}
+		else {
+			if (CollisionCircleQuadrangle::IsCollision(b, a)) {
+				return true;
+			}
 		}
 		return false;
 	}

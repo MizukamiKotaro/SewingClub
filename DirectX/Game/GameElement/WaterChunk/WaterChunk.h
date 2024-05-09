@@ -5,7 +5,7 @@
 #include "GameElement/GravityArea/GravityArea.h"
 #include "StageEditor/StageEditor.h"
 #include "WaterWave.h"
-
+#include "WaterChunkQuadrangle.h"
 
 class Camera;
 class Player;
@@ -25,13 +25,16 @@ public:
 
 	void Update(const float& deltaTime, Camera* camera);
 
-	void Draw() const;
+	void Draw(Camera* camera) const;
 
 	static void StaticUpdate();
 
 	const bool IsDelete() const { return deleteTime_ <= time_; }
 
 	static void SetPlayer(const Player* player);
+	static const float& GetMinScale() { return minScale_; }
+
+	void CreateQuadrangle();
 
 private:
 	void SetGlobalVariable();
@@ -54,20 +57,9 @@ private:
 	void SetCollider();
 
 private:
-	//enum FloatParamater {
-	//	kAttenuation, // 減衰率
-	//	kMinSpeed, // 最低速度
-	//	kInterpolationMaxLange, // 間の長さ
-	//	kScale, // スケール
-	//	kFloatEnd,
-	//};
-	//const std::string fNames[kFloatEnd];
-	//float fParas_[kFloatEnd];
-
 	static InstancingModelManager* instancingManager_;
 	static const InstancingMeshTexData* modelData_;
 
-	//static Vector3 scale_;
 	static std::unique_ptr<GlobalVariableUser> staticGlobalVariable_;
 	std::unique_ptr<StageEditor> stageEditor_;
 
@@ -102,4 +94,9 @@ private:
 	bool isActive_;
 	std::unique_ptr<GravityArea> gravityArea_;
 	int no_;
+
+	std::unique_ptr<WaterChunkQuadrangle> quadrangle_;
+	bool isTarget_;
+	bool isQuadrangleActive_;
+	int endNo_;
 };

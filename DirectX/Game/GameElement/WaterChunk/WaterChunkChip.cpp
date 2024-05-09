@@ -19,14 +19,20 @@ float WaterChunkChip::fParas_[kFloatEnd] = { 1.0f };
 
 Vector3 WaterChunkChip::scale_ = { WaterChunkChip::fParas_[WaterChunkChip::kScale],WaterChunkChip::fParas_[WaterChunkChip::kScale] ,0.0001f };
 
-WaterChunkChip::WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate, const float& scale)
+WaterChunkChip::WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate, const float& scale, const bool& isCircle)
 {
 	center_ = center;
 	position_ = position;
 	ganeratePosition_ = position;
 	velocity_ = {};
-	myScale_ = { scale,scale_.y,0.0001f };
 	rotate_ = { 0.0f,0.0f,rotate };
+	isCircle_ = isCircle;
+	if (isCircle_) {
+		myScale_ = { scale,scale_.y,0.0001f };
+	}
+	else {
+		myScale_ = { scale_.x,scale,0.0001f };
+	}
 }
 
 void WaterChunkChip::StaticInitialize()
@@ -49,7 +55,12 @@ void WaterChunkChip::Initialize()
 void WaterChunkChip::Update(const float& deltaTime)
 {
 #ifdef _DEBUG
-	myScale_.y = scale_.y;
+	if (isCircle_) {
+		myScale_.y = scale_.y;
+	}
+	else {
+		myScale_.x = scale_.x;
+	}
 #endif // _DEBUG
 
 

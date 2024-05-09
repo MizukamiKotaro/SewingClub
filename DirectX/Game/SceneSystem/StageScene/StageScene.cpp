@@ -29,6 +29,7 @@ StageScene::StageScene()
 	Item::StaticInitialize();
 	WaterWave::StaticInitialize();
 	BackGroundObject::StaticInitialize();
+	WaterChunkQuadrangle::StaticInitialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
@@ -50,6 +51,7 @@ StageScene::StageScene()
 	camera_->Update();
 
 	WaterChunk::SetPlayer(player_.get());
+	WaterChunkQuadrangle::SetPlayer(player_.get());
 
 	goal_ = std::make_unique<Goal>();
 
@@ -256,7 +258,7 @@ void StageScene::MakePostEffect()
 
 	waterEffect_->PreDrawWaterArea();
 	// 水のエリアの描画
-	waterManager_->Draw();
+	waterManager_->Draw(camera_.get());
 
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());

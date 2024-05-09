@@ -72,17 +72,38 @@ void Baby::Draw(const Camera* camera)
 void Baby::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER) {
-		isInWater_ = true;
-		isFollowWater_ = false;
-		ShapeCircle* circle = collider.GetCircle();
-		waterPos_ = circle->position_;
-		waterRadius_ = circle->radius_.x;
-		if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
-			waterGravityPos_ = circle->position_;
-		}
-		else {
-			waterGravityPos_ = (circle->position_ + waterGravityPos_) * 0.5f;
+		if (collider.GetShape() == ColliderShape::CIRCLE) {
+			isInWater_ = true;
+			isFollowWater_ = false;
+			ShapeCircle* circle = collider.GetCircle();
+			waterPos_ = circle->position_;
+			waterRadius_ = circle->radius_.x;
+			if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
+				waterGravityPos_ = circle->position_;
+			}
+			else {
+				waterGravityPos_ = (circle->position_ + waterGravityPos_) * 0.5f;
 
+			}
+		}
+		else if (collider.GetShape() == ColliderShape::QUADRANGLE2D) {
+			/*isInWater_ = true;
+			isFollowWater_ = false;
+			ShapeQuadrangle* quadrangle = collider.GetQuadrangle();
+			Vector2 startPos = (quadrangle->leftTop_ + quadrangle->leftBottom_) / 2;
+			Vector2 endPos = (quadrangle->rightTop_ + quadrangle->rightBottom_) / 2;
+			Vector3 vect = { endPos.x - startPos.x, endPos.y - startPos.y, 0.0f };
+			Vector3 point = Calc::ClosestPoint({ GetCircle()->position_.x,GetCircle()->position_.y,0.0f }, Segment{ {startPos.x,startPos.y,0.0f},vect });
+			Vector2 position = { point.x,point.y };
+			waterPos_ = position;
+			waterRadius_ = circle->radius_.x;
+			if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
+				waterGravityPos_ = position;
+			}
+			else {
+				waterGravityPos_ = (position + waterGravityPos_) * 0.5f;
+
+			}*/
 		}
 	}
 }

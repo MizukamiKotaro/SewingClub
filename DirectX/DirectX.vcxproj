@@ -123,9 +123,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Base\DirectXBase\DirectXBase.cpp" />
     <ClCompile Include="Engine\Base\WindowsInfo\WindowsInfo.cpp" />
     <ClCompile Include="Engine\CollisionSystem\ColliderShapes\ShapeCircle\ShapeCircle.cpp" />
+    <ClCompile Include="Engine\CollisionSystem\ColliderShapes\ShapeQuadrangle\ShapeQuadrangle.cpp" />
     <ClCompile Include="Engine\CollisionSystem\Collider\Collider.cpp" />
     <ClCompile Include="Engine\CollisionSystem\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleCircle\CollisionCircleCircle.cpp" />
+    <ClCompile Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleQuadrangle\CollisionCircleQuadrangle.cpp" />
+    <ClCompile Include="Engine\Drawers\DrawQuadrangle\DrawQuadrangle.cpp" />
+    <ClCompile Include="Engine\Drawers\DrawQuadrangle\DrawQuadrangleManager.cpp" />
     <ClCompile Include="Engine\Drawers\IDrawer\IDrawer.cpp" />
     <ClCompile Include="Engine\Drawers\InstancingModel\InstancingModelList\InstancingModelList.cpp" />
     <ClCompile Include="Engine\Drawers\InstancingModel\InstancingModelManager.cpp" />
@@ -221,6 +225,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\StageUI\StageUI.cpp" />
     <ClCompile Include="Game\GameElement\WaterChunk\WaterChunk.cpp" />
     <ClCompile Include="Game\GameElement\WaterChunk\WaterChunkChip.cpp" />
+    <ClCompile Include="Game\GameElement\WaterChunk\WaterChunkQuadrangle.cpp" />
     <ClCompile Include="Game\GameElement\WaterChunk\WaterWave.cpp" />
     <ClCompile Include="Game\GameElement\WaterEffect\WaterEffect.cpp" />
     <ClCompile Include="Game\GameElement\WaterManager\WaterManager.cpp" />
@@ -271,10 +276,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Base\ResourceLeakChecker.h" />
     <ClInclude Include="Engine\Base\WindowsInfo\WindowsInfo.h" />
     <ClInclude Include="Engine\CollisionSystem\ColliderShapes\ShapeCircle\ShapeCircle.h" />
+    <ClInclude Include="Engine\CollisionSystem\ColliderShapes\ShapeQuadrangle\ShapeQuadrangle.h" />
     <ClInclude Include="Engine\CollisionSystem\Collider\Collider.h" />
     <ClInclude Include="Engine\CollisionSystem\CollisionConfig.h" />
     <ClInclude Include="Engine\CollisionSystem\CollisionManager\CollisionManager.h" />
     <ClInclude Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleCircle\CollisionCircleCircle.h" />
+    <ClInclude Include="Engine\CollisionSystem\CollisionProcesses\CollisionCircleQuadrangle\CollisionCircleQuadrangle.h" />
+    <ClInclude Include="Engine\Drawers\DrawQuadrangle\DrawQuadrangle.h" />
+    <ClInclude Include="Engine\Drawers\DrawQuadrangle\DrawQuadrangleManager.h" />
     <ClInclude Include="Engine\Drawers\IDrawer\IDrawer.h" />
     <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelData.h" />
     <ClInclude Include="Engine\Drawers\InstancingModel\InstancingModelList\InstancingModelList.h" />
@@ -402,6 +411,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\StageUI\StageUI.h" />
     <ClInclude Include="Game\GameElement\WaterChunk\WaterChunk.h" />
     <ClInclude Include="Game\GameElement\WaterChunk\WaterChunkChip.h" />
+    <ClInclude Include="Game\GameElement\WaterChunk\WaterChunkQuadrangle.h" />
     <ClInclude Include="Game\GameElement\WaterChunk\WaterWave.h" />
     <ClInclude Include="Game\GameElement\WaterEffect\WaterEffect.h" />
     <ClInclude Include="Game\GameElement\WaterManager\WaterManager.h" />

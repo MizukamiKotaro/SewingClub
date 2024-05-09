@@ -48,6 +48,10 @@ WaterChunk::WaterChunk()
 	isWave_ = false;
 	isPlayer_ = false;
 	preIsPlayer_ = false;
+
+	isTarget_ = false;
+	isQuadrangleActive_ = false;
+	endNo_ = 0;
 }
 
 WaterChunk::WaterChunk(int no)
@@ -74,6 +78,13 @@ WaterChunk::WaterChunk(int no)
 	preIsPlayer_ = false;
 	CreateChips();
 	isWave_ = false;
+
+	isTarget_ = false;
+	isQuadrangleActive_ = false;
+	endNo_ = no_ - 1;
+	if (endNo_ < 0) {
+		endNo_ = 0;
+	}
 }
 
 WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
@@ -96,6 +107,10 @@ WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, c
 	isWave_ = false;
 	isPlayer_ = false;
 	preIsPlayer_ = false;
+
+	isTarget_ = false;
+	isQuadrangleActive_ = false;
+	endNo_ = 0;
 }
 
 void WaterChunk::StaticInitialize()
@@ -118,6 +133,13 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
+	CreateQuadrangle();
+	if (!isSmall_) {
+		if (scale_ != maxScale_ || position_ != chips_.front()->GetCenter()) {
+			CreateChips();
+			scale_ = maxScale_;
+		}
+	}
 #endif // _DEBUG
 
 	if (!isPlayer_ && preIsPlayer_ && !player_->GetPreInWater()) {
@@ -179,6 +201,7 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 			it++;
 		}
 	}
+
 	ActiveCheck(camera);
 	preIsPlayer_ = isPlayer_;
 	isPlayer_ = false;
@@ -186,9 +209,13 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 		gravityArea_->Update({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 		SetCollider();
 	}
+
+	if (isQuadrangleActive_) {
+		quadrangle_->Update(deltaTime, camera);
+	}
 }
 
-void WaterChunk::Draw() const
+void WaterChunk::Draw(Camera* camera) const
 {
 	if (isActive_) {
 		/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
@@ -208,6 +235,9 @@ void WaterChunk::Draw() const
 			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
 			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
 		}
+		if (isQuadrangleActive_) {
+			quadrangle_->Draw(camera);
+		}
 	}
 }
 
@@ -223,6 +253,29 @@ void WaterChunk::SetPlayer(const Player* player)
 	player_ = player;
 }
 
+void WaterChunk::CreateQuadrangle()
+{
+	bool is = false;
+	if (isTarget_) {
+		if (endNo_ >= 0 && endNo_ != no_) {
+			if (!quadrangle_) {
+				quadrangle_ = std::make_unique<WaterChunkQuadrangle>();
+			}
+			const WaterChunk* water = waterManager_->GetWater(endNo_);
+			if (water) {
+				is = true;
+				quadrangle_->CreateQuadrangle(position_, scale_, water->position_, water->scale_);
+			}
+		}
+	}
+	if (is) {
+		isQuadrangleActive_ = true;
+	}
+	else {
+		isQuadrangleActive_ = false;
+	}
+}
+
 void WaterChunk::SetGlobalVariable()
 {
 	if (stageEditor_) {
@@ -232,6 +285,8 @@ void WaterChunk::SetGlobalVariable()
 		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
 		stageEditor_->AddItem("ポジション", position_, tree1, tree);
 		stageEditor_->AddItem("スケール", maxScale_, tree1, tree);
+		stageEditor_->AddItem("四角形を作るか", isTarget_, tree1, tree);
+		stageEditor_->AddItem("四角形を生成するもう一方の水のナンバー", endNo_, tree1, tree);
 	}
 	ApplyGlobalVariable();
 }
@@ -245,6 +300,8 @@ void WaterChunk::ApplyGlobalVariable()
 		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
 		position_ = stageEditor_->GetVector3Value("ポジション", tree1, tree);
 		maxScale_ = stageEditor_->GetFloatValue("スケール", tree1, tree);
+		isTarget_ = stageEditor_->GetBoolValue("四角形を作るか", tree1, tree);
+		endNo_ = stageEditor_->GetIntValue("四角形を生成するもう一方の水のナンバー", tree1, tree);
 	}
 }
 
@@ -290,7 +347,7 @@ void WaterChunk::CreateChips()
 
 	float scale = scale_ / 2;
 	float rad = scale;
-
+	chips_.clear();
 	for (int i = 0; i < 180; i++) {
 
 		Vector3 pos{};

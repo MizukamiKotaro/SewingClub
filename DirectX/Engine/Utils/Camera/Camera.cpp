@@ -3,6 +3,7 @@
 #include "DirectXBase/DirectXBase.h"
 
 Matrix4x4 Camera::orthographicMat_ = Matrix4x4::MakeOrthographicMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f);
+Matrix4x4 Camera::viewportMat_ = Matrix4x4::MakeViewportMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 1.0f);
 
 Camera::Camera()
 {
@@ -20,6 +21,7 @@ Camera::Camera()
 	viewProjectionMatrix_ = viewMatrix * projectionMatrix_;
 
 	orthographicMat_ = Matrix4x4::MakeOrthographicMatrix(0.0f, 0.0f, windowSize.x, windowSize.y, 0.0f, 1.0f);
+	viewportMat_ = Matrix4x4::MakeViewportMatrix(0.0f, 0.0f, windowSize.x, windowSize.y, 0.0f, 1.0f);
 }
 
 Camera::~Camera()

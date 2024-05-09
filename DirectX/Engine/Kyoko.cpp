@@ -22,6 +22,7 @@
 #include "GlobalVariables/GlobalVariableUser.h"
 #include "ParticleManager.h"
 #include "InstancingModelManager.h"
+#include "Drawers/DrawQuadrangle/DrawQuadrangleManager.h"
 
 static ResourceLeackChecker leakCheck;
 
@@ -32,6 +33,7 @@ AudioManager* audioManager;
 Input* inputManager;
 GlobalVariables* globalVariables;
 VolumeManager* volumeManager;
+DrawQuadrangleManager* drawQuadrangleManager;
 
 void Kyoko::Engine::Initialize(const char* windowName, int width, int height)
 {
@@ -62,6 +64,8 @@ void Kyoko::Engine::Initialize(const char* windowName, int width, int height)
 	BasePostEffect::StaticInitialize();
 	ParticleManager::GetInstance()->FirstInitialize();
 	InstancingModelManager::GetInstance()->FirstInitialize();
+	drawQuadrangleManager = DrawQuadrangleManager::GetInstance();
+	drawQuadrangleManager->Initialize();
 
 	audioManager = AudioManager::GetInstance();
 	audioManager->Initialize();
@@ -118,6 +122,7 @@ void Kyoko::Engine::FirstUpdateInLoop()
 	ImGuiManager::Begin();
 	inputManager->Update();
 	audioManager->Update();
+	drawQuadrangleManager->Clear();
 #ifdef _DEBUG
 	volumeManager->Update();
 	globalVariables->Update();

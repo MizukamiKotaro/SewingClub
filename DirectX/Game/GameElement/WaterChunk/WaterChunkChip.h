@@ -14,7 +14,7 @@ class Camera;
 class WaterChunkChip {
 public:
 
-	WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate, const float& scale);
+	WaterChunkChip(const Vector3& center, const Vector3& position, const float& rotate, const float& scale, const bool& isCircle = true);
 
 	static void StaticInitialize();
 
@@ -31,6 +31,7 @@ public:
 	void AddOutPower(const float& power, const bool& isDown);
 
 	const Vector3& GetPosition() const { return position_; }
+	const Vector3& GetCenter() const { return center_; }
 
 	bool IsWave() const { return wavePowers_.size() > 0; }
 
@@ -76,4 +77,5 @@ private:
 	Vector3 myScale_;
 
 	Vector3 ganeratePosition_;
+	bool isCircle_;
 };

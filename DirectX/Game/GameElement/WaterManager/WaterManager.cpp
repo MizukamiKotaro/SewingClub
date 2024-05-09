@@ -28,6 +28,9 @@ void WaterManager::Initialize()
 	for (int i = 0; i < waterNum_; i++) {
 		stageWater_[i] = std::make_unique<WaterChunk>(i);
 	}
+	for (int i = 0; i < waterNum_; i++) {
+		stageWater_[i]->CreateQuadrangle();
+	}
 }
 
 void WaterManager::Update(const float& deltaTime, Camera* camera)
@@ -63,19 +66,28 @@ void WaterManager::Update(const float& deltaTime, Camera* camera)
 
 }
 
-void WaterManager::Draw()
+void WaterManager::Draw(Camera* camera)
 {
 	for (std::unique_ptr<WaterChunk>& water : fullWater_) {
-		water->Draw();
+		water->Draw(camera);
 	}
 	for (int i = 0; i < waterNum_; i++) {
-		stageWater_[i]->Draw();
+		stageWater_[i]->Draw(camera);
 	}
 }
 
 void WaterManager::CreateWater(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
 {
 	fullWater_.push_back(std::make_unique<WaterChunk>(pos, radius, isSame, rotate, isSmall));
+}
+
+const WaterChunk* WaterManager::GetWater(const int& no)
+{
+	if (stageWater_.find(no) != stageWater_.end()) {
+		return stageWater_[no].get();
+	}
+
+	return nullptr;
 }
 
 void WaterManager::SetGlobalVariable()
