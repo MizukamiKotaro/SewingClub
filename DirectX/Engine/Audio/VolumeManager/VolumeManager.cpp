@@ -17,7 +17,6 @@ void VolumeManager::Initialize()
 
 	globalVariables_ = GlobalVariables::GetInstance();
 
-	globalVariables_->CreateChunk("Audio");
 	globalVariables_->CreateGroup("Audio", "Master");
 
 	globalVariables_->AddItem("Audio", "Master", "SE全体のボリューム", seVolume_);
@@ -25,6 +24,11 @@ void VolumeManager::Initialize()
 
 	seVolume_ = globalVariables_->GetFloatValue("Audio", "Master", "SE全体のボリューム");
 	musicVolume_ = globalVariables_->GetFloatValue("Audio", "Master", "Music全体のボリューム");
+
+	globalVariables_->AddItemDontTouchImGui("SE全体のプレイヤー設定", seVolumeStage_);
+	globalVariables_->AddItemDontTouchImGui("Music全体のプレイヤー設定", musicVolumeStage_);
+
+	ResetVolumeStage();
 }
 
 void VolumeManager::Clear()
@@ -51,4 +55,24 @@ void VolumeManager::Update()
 		audio.second->Update();
 	}
 #endif // _DEBUG
+}
+
+void VolumeManager::ResetDefalutVolumeStage()
+{
+	seVolumeStage_ = 0.7f;
+	musicVolumeStage_ = 0.7f;
+}
+
+void VolumeManager::ResetVolumeStage()
+{
+	seVolumeStage_ = globalVariables_->GetFloatValueDontTouchImGui("SE全体のプレイヤー設定");
+	musicVolumeStage_ = globalVariables_->GetFloatValueDontTouchImGui("Music全体のプレイヤー設定");
+}
+
+void VolumeManager::SaveVolumeStage(const float& seVolumeStage, const float& musicVolumeStage)
+{
+	seVolumeStage_ = seVolumeStage;
+	musicVolumeStage_ = musicVolumeStage;
+	globalVariables_->SaveAndSetVariableDontTouchImGui("SE全体のプレイヤー設定", seVolumeStage_);
+	globalVariables_->SaveAndSetVariableDontTouchImGui("Music全体のプレイヤー設定", musicVolumeStage_);
 }

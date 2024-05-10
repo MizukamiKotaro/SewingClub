@@ -19,6 +19,20 @@ void GlobalVariables::Initialize()
 	}
 }
 
+void GlobalVariables::Finalize()
+{
+	for (std::map<std::string, Chunk>::iterator itChunk = datas_.begin();
+		itChunk != datas_.end(); ++itChunk) {
+		const std::string& chunkName = itChunk->first;
+		Chunk& chunk = itChunk->second;
+		for (std::map<std::string, Group>::iterator itGroup = chunk.begin();
+			itGroup != chunk.end(); ++itGroup) {
+			const std::string& groupName = itGroup->first;
+			SaveFile(chunkName, groupName, true);
+		}
+	}
+}
+
 void GlobalVariables::Update() {
 #ifdef _DEBUG
 	for (std::map<std::string, Chunk>::iterator itChunk = isTreeOpen_.begin(); itChunk != isTreeOpen_.end(); itChunk++) {
@@ -35,6 +49,10 @@ void GlobalVariables::Update() {
 		itChunk != datas_.end(); ++itChunk) {
 
 		const std::string& chunkName = itChunk->first;
+
+		/*if (chunkName == "aaDontTouchPlayData") {
+			continue;
+		}*/
 
 		Chunk& chunk = itChunk->second;
 
@@ -517,52 +535,64 @@ void GlobalVariables::SetValue(const std::string& chunkName, const std::string& 
 
 	if (tree2 == "_") {
 		std::string name = kTreeName_[0] + tree1 + "_" + key;
+		if (group.find(name) == group.end()) {
+			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+		}
 		group[name] = newItem;
-		isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
 	}
 	else {
 		if (tree3 == "_") {
 			std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + key;
+			if (group.find(name) == group.end()) {
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+			}
 			group[name] = newItem;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
 		}
 		else {
 			if (tree4 == "_") {
 				std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + key;
+				if (group.find(name) == group.end()) {
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+				}
 				group[name] = newItem;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
 			}
 			else {
 				if (tree5 == "_") {
 					std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + key;
+					if (group.find(name) == group.end()) {
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+					}
 					group[name] = newItem;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
 				}
 				else {
 					if (tree6 == "_") {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
 					}
 					else {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
 					}
 				}
 			}
@@ -579,52 +609,64 @@ void GlobalVariables::SetValue(const std::string& chunkName, const std::string& 
 
 	if (tree2 == "_") {
 		std::string name = kTreeName_[0] + tree1 + "_" + key;
+		if (group.find(name) == group.end()) {
+			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+		}
 		group[name] = newItem;
-		isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
 	}
 	else {
 		if (tree3 == "_") {
 			std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + key;
+			if (group.find(name) == group.end()) {
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+			}
 			group[name] = newItem;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
 		}
 		else {
 			if (tree4 == "_") {
 				std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + key;
+				if (group.find(name) == group.end()) {
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+				}
 				group[name] = newItem;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
 			}
 			else {
 				if (tree5 == "_") {
 					std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + key;
+					if (group.find(name) == group.end()) {
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+					}
 					group[name] = newItem;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
 				}
 				else {
 					if (tree6 == "_") {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
 					}
 					else {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
 					}
 				}
 			}
@@ -641,52 +683,64 @@ void GlobalVariables::SetValue(const std::string& chunkName, const std::string& 
 
 	if (tree2 == "_") {
 		std::string name = kTreeName_[0] + tree1 + "_" + key;
+		if (group.find(name) == group.end()) {
+			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+		}
 		group[name] = newItem;
-		isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
 	}
 	else {
 		if (tree3 == "_") {
 			std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + key;
+			if (group.find(name) == group.end()) {
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+			}
 			group[name] = newItem;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
 		}
 		else {
 			if (tree4 == "_") {
 				std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + key;
+				if (group.find(name) == group.end()) {
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+				}
 				group[name] = newItem;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
 			}
 			else {
 				if (tree5 == "_") {
 					std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + key;
+					if (group.find(name) == group.end()) {
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+					}
 					group[name] = newItem;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
 				}
 				else {
 					if (tree6 == "_") {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
 					}
 					else {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
 					}
 				}
 			}
@@ -703,52 +757,64 @@ void GlobalVariables::SetValue(const std::string& chunkName, const std::string& 
 
 	if (tree2 == "_") {
 		std::string name = kTreeName_[0] + tree1 + "_" + key;
+		if (group.find(name) == group.end()) {
+			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+		}
 		group[name] = newItem;
-		isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
 	}
 	else {
 		if (tree3 == "_") {
 			std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + key;
+			if (group.find(name) == group.end()) {
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+			}
 			group[name] = newItem;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
 		}
 		else {
 			if (tree4 == "_") {
 				std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + key;
+				if (group.find(name) == group.end()) {
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+				}
 				group[name] = newItem;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
 			}
 			else {
 				if (tree5 == "_") {
 					std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + key;
+					if (group.find(name) == group.end()) {
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+					}
 					group[name] = newItem;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
 				}
 				else {
 					if (tree6 == "_") {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
 					}
 					else {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
 					}
 				}
 			}
@@ -765,52 +831,64 @@ void GlobalVariables::SetValue(const std::string& chunkName, const std::string& 
 
 	if (tree2 == "_") {
 		std::string name = kTreeName_[0] + tree1 + "_" + key;
+		if (group.find(name) == group.end()) {
+			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+		}
 		group[name] = newItem;
-		isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
 	}
 	else {
 		if (tree3 == "_") {
 			std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + key;
+			if (group.find(name) == group.end()) {
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+			}
 			group[name] = newItem;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
 		}
 		else {
 			if (tree4 == "_") {
 				std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + key;
+				if (group.find(name) == group.end()) {
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+				}
 				group[name] = newItem;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
 			}
 			else {
 				if (tree5 == "_") {
 					std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + key;
+					if (group.find(name) == group.end()) {
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+					}
 					group[name] = newItem;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
 				}
 				else {
 					if (tree6 == "_") {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
 					}
 					else {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
 					}
 				}
 			}
@@ -827,52 +905,64 @@ void GlobalVariables::SetValue(const std::string& chunkName, const std::string& 
 
 	if (tree2 == "_") {
 		std::string name = kTreeName_[0] + tree1 + "_" + key;
+		if (group.find(name) == group.end()) {
+			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+		}
 		group[name] = newItem;
-		isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
 	}
 	else {
 		if (tree3 == "_") {
 			std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + key;
+			if (group.find(name) == group.end()) {
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+			}
 			group[name] = newItem;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-			isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
 		}
 		else {
 			if (tree4 == "_") {
 				std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + key;
+				if (group.find(name) == group.end()) {
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+				}
 				group[name] = newItem;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-				isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
 			}
 			else {
 				if (tree5 == "_") {
 					std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + key;
+					if (group.find(name) == group.end()) {
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+					}
 					group[name] = newItem;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-					isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
 				}
 				else {
 					if (tree6 == "_") {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
 					}
 					else {
 						std::string name = kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6 + "_" + key;
+						if (group.find(name) == group.end()) {
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
+							isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
+						}
 						group[name] = newItem;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5] = false;
-						isTreeOpen_[chunkName][groupName][kTreeName_[0] + tree1 + "_" + kTreeName_[1] + tree2 + "_" + kTreeName_[2] + tree3 + "_" + kTreeName_[3] + tree4 + "_" + kTreeName_[4] + tree5 + "_" + kTreeName_[5] + tree6] = false;
 					}
 				}
 			}
@@ -2344,6 +2434,252 @@ const std::string& GlobalVariables::GetStringValue(const std::string& groupName,
 	}
 }
 
+void GlobalVariables::SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const int32_t& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+}
+
+void GlobalVariables::SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const float& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+}
+
+void GlobalVariables::SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector2& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+}
+
+void GlobalVariables::SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector3& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+}
+
+void GlobalVariables::SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const bool& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+}
+
+void GlobalVariables::SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const std::string& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+}
+
+void GlobalVariables::SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const int32_t& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+
+	SaveFile(chunkName, groupName);
+}
+
+void GlobalVariables::SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const float& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+
+	SaveFile(chunkName, groupName);
+}
+
+void GlobalVariables::SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector2& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+
+	SaveFile(chunkName, groupName);
+}
+
+void GlobalVariables::SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector3& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+
+	SaveFile(chunkName, groupName);
+}
+
+void GlobalVariables::SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const bool& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+
+	SaveFile(chunkName, groupName);
+}
+
+void GlobalVariables::SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const std::string& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree1 == "_") {
+		SetValue(chunkName, groupName, key, value);
+	}
+	else {
+		SetValue(chunkName, groupName, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+
+	SaveFile(chunkName, groupName);
+}
+
+void GlobalVariables::AddItemDontTouchImGui(const std::string& key, const int32_t& value)
+{
+	Group& group = datas_["aaDontTouchPlayData"]["DontTouch"];
+	if (group.find(key) == group.end()) {
+		SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	}
+}
+
+void GlobalVariables::AddItemDontTouchImGui(const std::string& key, const float& value)
+{
+	Group& group = datas_["aaDontTouchPlayData"]["DontTouch"];
+	if (group.find(key) == group.end()) {
+		SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	}
+}
+
+void GlobalVariables::AddItemDontTouchImGui(const std::string& key, const Vector2& value)
+{
+	Group& group = datas_["aaDontTouchPlayData"]["DontTouch"];
+	if (group.find(key) == group.end()) {
+		SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	}
+}
+
+void GlobalVariables::AddItemDontTouchImGui(const std::string& key, const Vector3& value)
+{
+	Group& group = datas_["aaDontTouchPlayData"]["DontTouch"];
+	if (group.find(key) == group.end()) {
+		SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	}
+}
+
+void GlobalVariables::AddItemDontTouchImGui(const std::string& key, const bool& value)
+{
+	Group& group = datas_["aaDontTouchPlayData"]["DontTouch"];
+	if (group.find(key) == group.end()) {
+		SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	}
+}
+
+void GlobalVariables::AddItemDontTouchImGui(const std::string& key, const std::string& value)
+{
+	Group& group = datas_["aaDontTouchPlayData"]["DontTouch"];
+	if (group.find(key) == group.end()) {
+		SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	}
+}
+
+const int32_t& GlobalVariables::GetIntValueDontTouchImGui(const std::string& key) const
+{
+	return GetIntValue("aaDontTouchPlayData", "DontTouch", key);
+}
+
+const float& GlobalVariables::GetFloatValueDontTouchImGui(const std::string& key) const
+{
+	return GetFloatValue("aaDontTouchPlayData", "DontTouch", key);
+}
+
+const Vector2& GlobalVariables::GetVector2ValueDontTouchImGui(const std::string& key) const
+{
+	return GetVector2Value("aaDontTouchPlayData", "DontTouch", key);
+}
+
+const Vector3& GlobalVariables::GetVector3ValueDontTouchImGui(const std::string& key) const
+{
+	return GetVector3Value("aaDontTouchPlayData", "DontTouch", key);
+}
+
+const bool& GlobalVariables::GetBoolValueDontTouchImGui(const std::string& key) const
+{
+	return GetBoolValue("aaDontTouchPlayData", "DontTouch", key);
+}
+
+const std::string& GlobalVariables::GetStringValueDontTouchImGui(const std::string& key) const
+{
+	return GetStringValue("aaDontTouchPlayData", "DontTouch", key);
+}
+
+void GlobalVariables::SaveAndSetVariableDontTouchImGui(const std::string& key, const int32_t& value)
+{
+	SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	SaveFile("aaDontTouchPlayData", "DontTouch");
+}
+
+void GlobalVariables::SaveAndSetVariableDontTouchImGui(const std::string& key, const float& value)
+{
+	SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	SaveFile("aaDontTouchPlayData", "DontTouch");
+}
+
+void GlobalVariables::SaveAndSetVariableDontTouchImGui(const std::string& key, const Vector2& value)
+{
+	SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	SaveFile("aaDontTouchPlayData", "DontTouch");
+}
+
+void GlobalVariables::SaveAndSetVariableDontTouchImGui(const std::string& key, const Vector3& value)
+{
+	SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	SaveFile("aaDontTouchPlayData", "DontTouch");
+}
+
+void GlobalVariables::SaveAndSetVariableDontTouchImGui(const std::string& key, const bool& value)
+{
+	SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	SaveFile("aaDontTouchPlayData", "DontTouch");
+}
+
+void GlobalVariables::SaveAndSetVariableDontTouchImGui(const std::string& key, const std::string& value)
+{
+	SetValue("aaDontTouchPlayData", "DontTouch", key, value);
+	SaveFile("aaDontTouchPlayData", "DontTouch");
+}
+
 bool GlobalVariables::IsTreeOpen(const std::string& chunkName, const std::string& groupName, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
 {
 	if (isTreeOpen_.find(chunkName) == isTreeOpen_.end()) {
@@ -2408,7 +2744,7 @@ bool GlobalVariables::IsTreeOpen(const std::string& chunkName, const std::string
 	}
 }
 
-void GlobalVariables::SaveFile(const std::string& chunkName, const std::string& groupName) {
+void GlobalVariables::SaveFile(const std::string& chunkName, const std::string& groupName, const bool& isFin) {
 
 	std::map<std::string, Chunk>::iterator itChunk = datas_.find(chunkName);
 
@@ -2461,7 +2797,13 @@ void GlobalVariables::SaveFile(const std::string& chunkName, const std::string& 
 		std::filesystem::create_directories(dir);
 	}
 
-	std::string filePath = kDirectoryPath + chunkName + "_" + groupName + ".json";
+	std::string filePath;
+	if (isFin) {
+		filePath = kDirectoryPath + "zzESC_" + chunkName + "_" + groupName + ".json";
+	}
+	else {
+		filePath = kDirectoryPath + chunkName + "_" + groupName + ".json";
+	}
 
 	std::ofstream ofs;
 
@@ -2510,6 +2852,10 @@ void GlobalVariables::LoadFiles() {
 }
 
 void GlobalVariables::LoadFile(const std::string& chunkName, const std::string& groupName) {
+
+	if (chunkName == "zzESC") {
+		return;
+	}
 
 	std::string filePath = kDirectoryPath + chunkName + "_" + groupName + ".json";
 
