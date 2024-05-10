@@ -377,6 +377,228 @@ const std::string& GlobalVariableUser::GetStringValue(const std::string& key, co
 	}
 }
 
+void GlobalVariableUser::SetVariable(const std::string& key, const int32_t& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree_.size() == 0) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+	else if (tree_.size() == 1) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree1, tree2, tree3, tree4, tree5);
+	}
+	else if (tree_.size() == 2) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree1, tree2, tree3, tree4);
+	}
+	else if (tree_.size() == 3) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree1, tree2, tree3);
+	}
+	else if (tree_.size() == 4) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree1, tree2);
+	}
+	else if (tree_.size() == 5) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree_[4], tree1);
+	}
+}
+
+void GlobalVariableUser::SetVariable(const std::string& key, const float& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree_.size() == 0) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+	else if (tree_.size() == 1) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree1, tree2, tree3, tree4, tree5);
+	}
+	else if (tree_.size() == 2) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree1, tree2, tree3, tree4);
+	}
+	else if (tree_.size() == 3) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree1, tree2, tree3);
+	}
+	else if (tree_.size() == 4) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree1, tree2);
+	}
+	else if (tree_.size() == 5) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree_[4], tree1);
+	}
+}
+
+void GlobalVariableUser::SetVariable(const std::string& key, const Vector2& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree_.size() == 0) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+	else if (tree_.size() == 1) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree1, tree2, tree3, tree4, tree5);
+	}
+	else if (tree_.size() == 2) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree1, tree2, tree3, tree4);
+	}
+	else if (tree_.size() == 3) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree1, tree2, tree3);
+	}
+	else if (tree_.size() == 4) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree1, tree2);
+	}
+	else if (tree_.size() == 5) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree_[4], tree1);
+	}
+}
+
+void GlobalVariableUser::SetVariable(const std::string& key, const Vector3& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree_.size() == 0) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+	else if (tree_.size() == 1) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree1, tree2, tree3, tree4, tree5);
+	}
+	else if (tree_.size() == 2) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree1, tree2, tree3, tree4);
+	}
+	else if (tree_.size() == 3) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree1, tree2, tree3);
+	}
+	else if (tree_.size() == 4) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree1, tree2);
+	}
+	else if (tree_.size() == 5) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree_[4], tree1);
+	}
+}
+
+void GlobalVariableUser::SetVariable(const std::string& key, const bool& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree_.size() == 0) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+	else if (tree_.size() == 1) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree1, tree2, tree3, tree4, tree5);
+	}
+	else if (tree_.size() == 2) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree1, tree2, tree3, tree4);
+	}
+	else if (tree_.size() == 3) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree1, tree2, tree3);
+	}
+	else if (tree_.size() == 4) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree1, tree2);
+	}
+	else if (tree_.size() == 5) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree_[4], tree1);
+	}
+}
+
+void GlobalVariableUser::SetVariable(const std::string& key, const std::string& value, const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	if (tree_.size() == 0) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree1, tree2, tree3, tree4, tree5, tree6);
+	}
+	else if (tree_.size() == 1) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree1, tree2, tree3, tree4, tree5);
+	}
+	else if (tree_.size() == 2) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree1, tree2, tree3, tree4);
+	}
+	else if (tree_.size() == 3) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree1, tree2, tree3);
+	}
+	else if (tree_.size() == 4) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree1, tree2);
+	}
+	else if (tree_.size() == 5) {
+		global_->SetVariable(chunkName_, groupName_, key, value, tree_[0], tree_[1], tree_[2], tree_[3], tree_[4], tree1);
+	}
+}
+
+void GlobalVariableUser::AddItemDontTouchImGui(const std::string& key, const int32_t& value)
+{
+	global_->AddItemDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::AddItemDontTouchImGui(const std::string& key, const float& value)
+{
+	global_->AddItemDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::AddItemDontTouchImGui(const std::string& key, const Vector2& value)
+{
+	global_->AddItemDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::AddItemDontTouchImGui(const std::string& key, const Vector3& value)
+{
+	global_->AddItemDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::AddItemDontTouchImGui(const std::string& key, const bool& value)
+{
+	global_->AddItemDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::AddItemDontTouchImGui(const std::string& key, const std::string& value)
+{
+	global_->AddItemDontTouchImGui(key, value);
+}
+
+const int32_t& GlobalVariableUser::GetIntValueDontTouchImGui(const std::string& key) const
+{
+	return global_->GetIntValueDontTouchImGui(key);
+}
+
+const float& GlobalVariableUser::GetFloatValueDontTouchImGui(const std::string& key) const
+{
+	return global_->GetFloatValueDontTouchImGui(key);
+}
+
+const Vector2& GlobalVariableUser::GetVector2ValueDontTouchImGui(const std::string& key) const
+{
+	return global_->GetVector2ValueDontTouchImGui(key);
+}
+
+const Vector3& GlobalVariableUser::GetVector3ValueDontTouchImGui(const std::string& key) const
+{
+	return global_->GetVector3ValueDontTouchImGui(key);
+}
+
+const bool& GlobalVariableUser::GetBoolValueDontTouchImGui(const std::string& key) const
+{
+	return global_->GetBoolValueDontTouchImGui(key);
+}
+
+const std::string& GlobalVariableUser::GetStringValueDontTouchImGui(const std::string& key) const
+{
+	return global_->GetStringValueDontTouchImGui(key);
+}
+
+void GlobalVariableUser::SaveDontTouchImGui(const std::string& key, const int32_t& value)
+{
+	global_->SaveAndSetVariableDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::SaveDontTouchImGui(const std::string& key, const float& value)
+{
+	global_->SaveAndSetVariableDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::SaveDontTouchImGui(const std::string& key, const Vector2& value)
+{
+	global_->SaveAndSetVariableDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::SaveDontTouchImGui(const std::string& key, const Vector3& value)
+{
+	global_->SaveAndSetVariableDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::SaveDontTouchImGui(const std::string& key, const bool& value)
+{
+	global_->SaveAndSetVariableDontTouchImGui(key, value);
+}
+
+void GlobalVariableUser::SaveDontTouchImGui(const std::string& key, const std::string& value)
+{
+	global_->SaveAndSetVariableDontTouchImGui(key, value);
+}
+
 bool GlobalVariableUser::IsTreeOpen(const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
 {
 	if (tree_.size() == 1) {

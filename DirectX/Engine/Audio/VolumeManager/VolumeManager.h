@@ -21,11 +21,16 @@ public:
 
 	void Update();
 
-	const float GetSEVolume() const { return seVolume_; }
-	const float GetMusicVolume() const { return musicVolume_; }
+	const float GetSEVolume() const { return seVolume_ * seVolumeStage_; }
+	const float GetMusicVolume() const { return musicVolume_ * musicVolumeStage_; }
 
-	void SetSEVolume(float volume) { seVolume_ = volume; }
-	void SetMusicVolume(float volume) { musicVolume_ = volume; }
+	void ResetDefalutVolumeStage();
+	const float GetSEVolumeStage() const { return seVolumeStage_; }
+	const float GetMusicVolumeStage() const { return musicVolumeStage_; }
+	void SetSEVolumeStage(const float& volume) { seVolumeStage_ = volume; }
+	void SetMusicVolumeStage(const float& volume) { musicVolumeStage_ = volume; }
+	void ResetVolumeStage();
+	void SaveVolumeStage(const float& seVolumeStage, const float& musicVolumeStage);
 
 private:
 	VolumeManager() = default;
@@ -38,4 +43,7 @@ private:
 	
 	float seVolume_ = 0.7f;
 	float musicVolume_ = 0.7f;
+
+	float seVolumeStage_ = 0.7f;
+	float musicVolumeStage_ = 0.7f;
 };
