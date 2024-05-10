@@ -28,35 +28,20 @@ public:
 	void CreateGroup(const std::string& chunkName, const std::string& groupName);
 	void CreateGroup(const std::string& groupName);
 
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const int32_t& value);
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const float& value);
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector2& value);
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector3& value);
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const bool& value);
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const std::string& value);
+	template<typename T>
+	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const T& value);
 
-	void AddItem(const std::string& groupName, const std::string& key, const int32_t& value);
-	void AddItem(const std::string& groupName, const std::string& key, const float& value);
-	void AddItem(const std::string& groupName, const std::string& key, const Vector2& value);
-	void AddItem(const std::string& groupName, const std::string& key, const Vector3& value);
-	void AddItem(const std::string& groupName, const std::string& key, const bool& value);
-	void AddItem(const std::string& groupName, const std::string& key, const std::string& value);
+	template<typename T>
+	void AddItem(const std::string& groupName, const std::string& key, const T& value);
 
-
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const int32_t& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const float& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector2& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector3& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const bool& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const std::string& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-
-	void AddItem(const std::string& groupName, const std::string& key, const int32_t& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& groupName, const std::string& key, const float& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& groupName, const std::string& key, const Vector2& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& groupName, const std::string& key, const Vector3& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& groupName, const std::string& key, const bool& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void AddItem(const std::string& groupName, const std::string& key, const std::string& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-
+	template<typename T>
+	void AddItem(const std::string& chunkName, const std::string& groupName, const std::string& key, const T& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
+	
+	template<typename T>
+	void AddItem(const std::string& groupName, const std::string& key, const T& value, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
+	
+	template<typename T>
+	void GetValue(T& value, const std::string& chunkName, const std::string& groupName, const std::string& key) const;
 
 	const int32_t& GetIntValue(const std::string& chunkName, const std::string& groupName, const std::string& key) const;
 	const float& GetFloatValue(const std::string& chunkName, const std::string& groupName, const std::string& key) const;
@@ -65,6 +50,9 @@ public:
 	const bool& GetBoolValue(const std::string& chunkName, const std::string& groupName, const std::string& key) const;
 	const std::string& GetStringValue(const std::string& chunkName, const std::string& groupName, const std::string& key) const;
 
+	template<typename T>
+	void GetValue(T& value, const std::string& groupName, const std::string& key) const;
+
 	const int32_t& GetIntValue(const std::string& groupName, const std::string& key) const;
 	const float& GetFloatValue(const std::string& groupName, const std::string& key) const;
 	const Vector2& GetVector2Value(const std::string& groupName, const std::string& key) const;
@@ -72,6 +60,8 @@ public:
 	const bool& GetBoolValue(const std::string& groupName, const std::string& key) const;
 	const std::string& GetStringValue(const std::string& groupName, const std::string& key) const;
 
+	template<typename T>
+	void GetValue(T& value, const std::string& chunkName, const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 
 	const int32_t& GetIntValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 	const float& GetFloatValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
@@ -80,6 +70,9 @@ public:
 	const bool& GetBoolValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 	const std::string& GetStringValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 
+	template<typename T>
+	void GetValue(T& value, const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
+
 	const int32_t& GetIntValue(const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 	const float& GetFloatValue(const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 	const Vector2& GetVector2Value(const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
@@ -87,26 +80,14 @@ public:
 	const bool& GetBoolValue(const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 	const std::string& GetStringValue(const std::string& groupName, const std::string& key, const int& treeNum, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_") const;
 
-	void SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const int32_t& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const float& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector2& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector3& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const bool& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const std::string& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
+	template<typename T>
+	void SetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const T& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
 
-	void SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const int32_t& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const float& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector2& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector3& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const bool& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const std::string& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-
-	void AddItemDontTouchImGui(const std::string& key, const int32_t& value);
-	void AddItemDontTouchImGui(const std::string& key, const float& value);
-	void AddItemDontTouchImGui(const std::string& key, const Vector2& value);
-	void AddItemDontTouchImGui(const std::string& key, const Vector3& value);
-	void AddItemDontTouchImGui(const std::string& key, const bool& value);
-	void AddItemDontTouchImGui(const std::string& key, const std::string& value);
+	template<typename T>
+	void SaveAndSetVariable(const std::string& chunkName, const std::string& groupName, const std::string& key, const T& value, const std::string& tree1 = "_", const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
+	
+	template<typename T>
+	void AddItemDontTouchImGui(const std::string& key, const T& value);
 
 	const int32_t& GetIntValueDontTouchImGui(const std::string& key) const;
 	const float& GetFloatValueDontTouchImGui(const std::string& key) const;
@@ -115,12 +96,8 @@ public:
 	const bool& GetBoolValueDontTouchImGui(const std::string& key) const;
 	const std::string& GetStringValueDontTouchImGui(const std::string& key) const;
 
-	void SaveAndSetVariableDontTouchImGui(const std::string& key, const int32_t& value);
-	void SaveAndSetVariableDontTouchImGui(const std::string& key, const float& value);
-	void SaveAndSetVariableDontTouchImGui(const std::string& key, const Vector2& value);
-	void SaveAndSetVariableDontTouchImGui(const std::string& key, const Vector3& value);
-	void SaveAndSetVariableDontTouchImGui(const std::string& key, const bool& value);
-	void SaveAndSetVariableDontTouchImGui(const std::string& key, const std::string& value);
+	template<typename T>
+	void SaveAndSetVariableDontTouchImGui(const std::string& key, const T& value);
 
 	bool IsTreeOpen(const std::string& chunkName, const std::string& groupName, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
 
@@ -136,28 +113,21 @@ private:
 	GlobalVariables(const GlobalVariables& obj) = delete;
 	GlobalVariables& operator=(const GlobalVariables& obj) = delete;
 
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const int32_t& value);
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const float& value);
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector2& value);
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector3& value);
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const bool& value);
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const std::string& value);
-
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const int32_t& value, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const float& value, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector2& value, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector3& value, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const bool& value, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const std::string& value, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
-
-private:
-
 	using Item = std::variant<int32_t, float, Vector2, Vector3, bool, std::string>;
 
 	using Group = std::map<std::string, Item>;
 	using GroupPtr = std::map<std::string, Item*>;
 
 	using Chunk = std::map<std::string, Group>;
+
+	template<typename T>
+	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const T& value);
+
+	template<typename T>
+	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const T& value, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
+
+	void PreparationImGui(const std::string& itemName, Item& item);
+private:
 
 	std::map<std::string, Chunk> datas_;
 	std::map<std::string, Chunk> isTreeOpen_;
