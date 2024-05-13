@@ -192,9 +192,9 @@ void StageScene::Update()
 	SceneChange();
 
 	waterEffect_->Update(deltaTime);
-	if (isCanGoal_) {
+	//if (isCanGoal_) {
 		effeGoalGuid_->Update();
-	}
+	//}
 }
 
 void StageScene::Draw()
@@ -235,9 +235,9 @@ void StageScene::Draw()
 
 	player_->DrawClient();
 
-	if (isCanGoal_) {
+	//if (isCanGoal_) {
 		effeGoalGuid_->Draw(camera_.get());
-	}
+	//}
 
 	player_->DrawUI();
 

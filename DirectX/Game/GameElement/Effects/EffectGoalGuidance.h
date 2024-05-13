@@ -1,9 +1,12 @@
 #pragma once
 #include"Sprite.h"
-#include<iostream>
-#include<Vector3.h>
+
 #include"Camera.h"
 #include"GlobalVariables/GlobalVariableUser.h"
+
+#include<iostream>
+#include<Vector3.h>
+#include<list>
 
 class UIGoalGuidance {
 
@@ -29,6 +32,9 @@ public:
 	/// <param name="camera"></param>
 	void Draw(const Camera* camera);
 
+
+	//ノルマの設定
+	void SetQuota(const Vector3& position, const float size, bool* isdead);
 private:
 
 	void Debug();
@@ -93,4 +99,20 @@ private:
 	int fadeoutGoalCount_ = 0;
 	//消えるまでのカウント
 	int maxFadeoutGoalCount_ = 30;
+
+	//ノルマ達成したか
+	bool isQuota_;
+
+	Vector2 quotaUISize_ = { 32,32 };
+
+	struct QuotaData {
+		std::unique_ptr<Sprite> sprite_;
+		
+		const Vector3* position_;
+		float size_;
+		const bool* isDead_;
+	};
+
+	//ノルマデータ
+	std::list<QuotaData>quota_;
 };
