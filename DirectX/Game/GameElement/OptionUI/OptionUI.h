@@ -54,6 +54,8 @@ private:
 	std::unique_ptr<Sprite>spSoundText_[_countOption];
 	//ゲージ上の数字
 	std::unique_ptr<Sprite>spSoundGageNum_[_countOption];
+	//現在選択しているものの表示
+	std::unique_ptr<Sprite>spNowSelectOption_;
 
 
 	//ゲージの元サイズ保存

@@ -14,10 +14,16 @@ OptionUI::OptionUI()
 	for (int i = 0; i < _countOption; i++) {
 		spSoundGageFrame_[i] = std::make_unique<Sprite>("soundGageFrame.png");
 		spSoundGageBar_[i] = std::make_unique<Sprite>("soundGageBar.png");
-		spSoundText_[i] = std::make_unique<Sprite>("soundGageText.png");
+		if (i == (int)BGMVolume) {
+			spSoundText_[i] = std::make_unique<Sprite>("soundGageText.png");
+		}
+		else if (i == (int)SEVolume) {
+			spSoundText_[i] = std::make_unique<Sprite>("SEsoundGageText.png");
+		}
 		spSoundGageNum_[i] = std::make_unique<Sprite>("soundGageFrameNum.png");
 	}
 
+	spNowSelectOption_ = std::make_unique<Sprite>("OptionSelect.png");
 }
 
 OptionUI::~OptionUI()
@@ -47,6 +53,8 @@ void OptionUI::Initialize()
 
 
 	}
+
+	spNowSelectOption_->Initialize();
 #pragma endregion
 
 }
@@ -56,10 +64,23 @@ bool OptionUI::Update()
 	backSprite_->Update();
 	backSprite_->Update();
 
+	Vector2 input = input_->GetGamePadLStick();
+	if (input.y <= -0.9f) {
+		if (nowSelect == BGMVolume) {
+			nowSelect = SEVolume;
+			
+		}
+	}else if (input.y >= 0.9f) {
+		if (nowSelect == SEVolume) {
+			nowSelect = BGMVolume;
+		}
+	}
+
+	spNowSelectOption_->pos_ = spSoundGageFrame_[(int)nowSelect]->pos_;
 
 	AudioBarUpdate();
 
-
+	spNowSelectOption_->Update();
 
 	if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
 
@@ -83,6 +104,8 @@ void OptionUI::Draw()
 		spSoundText_[i]->Draw();
 		spSoundGageNum_[i]->Draw();
 	}
+
+	spNowSelectOption_->Draw();
 }
 
 void OptionUI::AudioBarUpdate()
