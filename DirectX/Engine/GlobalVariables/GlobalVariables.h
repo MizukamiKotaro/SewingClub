@@ -126,7 +126,10 @@ private:
 	template<typename T>
 	void SetValue(const std::string& chunkName, const std::string& groupName, const std::string& key, const T& value, const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
 
+#ifdef _DEBUG
 	void PreparationImGui(const std::string& itemName, Item& item);
+#endif // _DEBUG
+
 private:
 
 	std::map<std::string, Chunk> datas_;
