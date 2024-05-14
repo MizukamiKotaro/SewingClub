@@ -155,16 +155,38 @@ void UIGoalGuidance::Update()
 			}
 			else if (quotaAreaType_ == AreaType::Sphere) {
 
-				//エリアのサイズに落とし込み
-				spritePos = (direction.Normalize() * sphereAreaSize_) + *playerPos_;
-				spritePos = TransformPosition(spritePos, cameraVPV);
+				if (direction.Length() >= sphereAreaSize_) {
+					//エリアのサイズに落とし込み
+					spritePos = (direction.Normalize() * sphereAreaSize_) + *playerPos_;
+					spritePos = TransformPosition(spritePos, cameraVPV);
 
-
-				if (direction.Length() > sphereAreaSize_) {
 					isGoalinScreenX = false;
 					isGoalinScreenY = false;
 				}
+				else {
+					
+				}
 			}
+
+			//ゴールが画面内での透明処理
+			if (isGoalinScreenX && isGoalinScreenY) {
+				quotaFadeoutGoalCount_++;
+				if (quotaFadeoutGoalCount_ > maxquotaFadeoutGoalCount_) {
+					quotaFadeoutGoalCount_ = maxquotaFadeoutGoalCount_;
+				}
+			}
+			else {
+				quotaFadeoutGoalCount_--;
+				if (quotaFadeoutGoalCount_ < 0) {
+					quotaFadeoutGoalCount_ = 0;
+				}
+
+			}
+			float t = (float)quotaFadeoutGoalCount_ / (float)maxquotaFadeoutGoalCount_;
+
+			float alpha = Calc::Lerp(1, 0, t);
+
+			data.sprite_->SetColor(Vector4{ 1,1,1,alpha });
 
 			data.sprite_->size_ = quotaUISize_;
 
