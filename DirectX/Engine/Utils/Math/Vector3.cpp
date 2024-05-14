@@ -11,7 +11,7 @@ float Vector3::Length(const Vector3& pos) const {
 	return result;
 }
 
-Vector3 Vector3::Normalize() {
+Vector3 Vector3::Normalize() const {
 	float len = Length();
 
 	Vector3 result = {};
