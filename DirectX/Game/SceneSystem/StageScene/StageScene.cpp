@@ -216,6 +216,7 @@ void StageScene::Draw()
 
 	player_->Draw(camera_.get());
 	baby_->Draw(camera_.get());
+	waterEffect_->WaterAreaDraw();
 
 	//waveFloor_->Draw();
 
