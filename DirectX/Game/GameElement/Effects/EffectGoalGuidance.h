@@ -34,7 +34,7 @@ public:
 
 
 	//ノルマの設定
-	void SetQuota(const Vector3& position, const float size, bool* isdead);
+	void SetQuota(const Vector3* position, const float size,const bool* isdead);
 private:
 
 	void Debug();
@@ -59,6 +59,9 @@ private:
 		AreaType,
 		DirectionGoal,
 		FadeOutUI,
+		QuotaUIDirection,
+		QuotaUISize,
+		QuotaUIType,
 		_count
 	};
 
@@ -68,7 +71,10 @@ private:
 		"箱領域でのサイズ",
 		"領域のタイプ(0で四角、1で円)",
 		"ガイドのゴールとの最短距離",
-		"ゴールが消えるまでのカウント"
+		"ゴールが消えるまでのカウント",
+		"ノルマとUIとの距離",
+		"ノルマガイドUIのサイズ",
+		"ノルマガイドUIのタイプ"
 	};
 
 	//画像のサイズ
@@ -115,4 +121,8 @@ private:
 
 	//ノルマデータ
 	std::list<QuotaData>quota_;
+
+	//norma
+	float quotaDirection_ = 10;
+	int quotaAreaType_ = Sphere;
 };

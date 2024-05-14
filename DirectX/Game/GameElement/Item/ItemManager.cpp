@@ -88,6 +88,18 @@ void ItemManager::Draw()
 	}
 }
 
+std::list<QuotaSendData> ItemManager::GetQuotaData()
+{
+	std::list<QuotaSendData>datas;
+
+	for (auto& data : reqItemMap_) {
+		QuotaSendData newdata;
+		newdata = data.second->GetQuotaData();
+		datas.push_back(newdata);
+	}
+	return datas;
+}
+
 void ItemManager::SetGlobalVariable()
 {
 	stageEditor_->AddItem("アイテムの数", itemNum_);

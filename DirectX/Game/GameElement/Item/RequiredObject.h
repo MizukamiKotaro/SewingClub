@@ -10,6 +10,12 @@ class Camera;
 class Wave;
 class ItemManager;
 
+struct QuotaSendData {
+	const Vector3* pos;
+	const float* size;
+	const bool* isHit;
+};
+
 class RequiredObject : public Collider {
 public:
 	RequiredObject() = default;
@@ -21,6 +27,14 @@ public:
 	bool Update(float deltaTime, Camera* camera);
 
 	void Draw() const;
+
+	QuotaSendData GetQuotaData() {
+		return{
+			&position_,
+			&scale_,
+			&isHit_
+		};
+	}
 
 private:
 	void SetGlobalVariable();

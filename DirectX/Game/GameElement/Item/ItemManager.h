@@ -24,6 +24,7 @@ public:
 	const Vector4& GetColor() const { return color_; }
 	const bool& GetIsCanGoal() const { return isCanGoal_; }
 
+	std::list<QuotaSendData>GetQuotaData();
 private:
 	ItemManager() = default;
 	~ItemManager() = default;

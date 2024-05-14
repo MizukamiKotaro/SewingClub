@@ -93,6 +93,11 @@ void StageScene::Initialize()
 
 	deadLine_->Initialize();
 	effeGoalGuid_->Initialize(player_->GetPositionPtr(),&goal_->GetPosition(),camera_.get());
+	std::list<QuotaSendData>datas = itemManager_->GetQuotaData();
+	for (auto& data : datas) {
+		effeGoalGuid_->SetQuota(data.pos, *data.size, data.isHit);
+	}
+
 	enemyManager_->Initialize(player_.get());
 
 
