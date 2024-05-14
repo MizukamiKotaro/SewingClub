@@ -117,6 +117,9 @@ private:
 		const Vector3* position_;
 		float size_;
 		const bool* isDead_;
+
+		int quotaFadeoutGoalCount_ = 0;
+		
 	};
 
 	//ノルマデータ
@@ -125,8 +128,7 @@ private:
 	//norma
 	float quotaDirection_ = 10;
 	int quotaAreaType_ = Sphere;
-
-	int quotaFadeoutGoalCount_ = 0;
 	//消えるまでのカウント
 	int maxquotaFadeoutGoalCount_ = 30;
+	
 };

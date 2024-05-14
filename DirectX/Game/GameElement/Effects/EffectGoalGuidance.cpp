@@ -170,19 +170,19 @@ void UIGoalGuidance::Update()
 
 			//ゴールが画面内での透明処理
 			if (isGoalinScreenX && isGoalinScreenY) {
-				quotaFadeoutGoalCount_++;
-				if (quotaFadeoutGoalCount_ > maxquotaFadeoutGoalCount_) {
-					quotaFadeoutGoalCount_ = maxquotaFadeoutGoalCount_;
+				data.quotaFadeoutGoalCount_++;
+				if (data.quotaFadeoutGoalCount_ > maxquotaFadeoutGoalCount_) {
+					data.quotaFadeoutGoalCount_ = maxquotaFadeoutGoalCount_;
 				}
 			}
 			else {
-				quotaFadeoutGoalCount_--;
-				if (quotaFadeoutGoalCount_ < 0) {
-					quotaFadeoutGoalCount_ = 0;
+				data.quotaFadeoutGoalCount_--;
+				if (data.quotaFadeoutGoalCount_ < 0) {
+					data.quotaFadeoutGoalCount_ = 0;
 				}
 
 			}
-			float t = (float)quotaFadeoutGoalCount_ / (float)maxquotaFadeoutGoalCount_;
+			float t = (float)data.quotaFadeoutGoalCount_ / (float)maxquotaFadeoutGoalCount_;
 
 			float alpha = Calc::Lerp(1, 0, t);
 
