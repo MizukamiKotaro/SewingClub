@@ -27,6 +27,8 @@ Baby::Baby(Player* player)
 	waterRadius_ = 0.0f;
 
 	isCircleWater_ = true;
+	yarn_ = std::make_unique<Model>("Cube");
+	yarn_->transform_.scale_ = { 0.1f,0.1f,0.1f };
 	
 	SetGlobalVariable();
 }
@@ -34,6 +36,7 @@ Baby::Baby(Player* player)
 void Baby::Initialize()
 {
 	velocity_ = {};
+	preIsInWater_ = true;
 	isInWater_ = true;
 	isFollowWater_ = false;
 	speed_ = 0.0f;
@@ -43,6 +46,10 @@ void Baby::Initialize()
 	model_->Update();
 	waterPos_ = { model_->transform_.translate_.x,model_->transform_.translate_.y };
 	waterGravityPos_ = waterPos_;
+	prePosition_ = model_->transform_.translate_;
+	yarn_->transform_.translate_ = { model_->transform_.translate_.x, model_->transform_.translate_.y, model_->transform_.translate_.z + 0.06f };
+	yarn_->transform_.rotate_ = {};
+	yarn_->transform_.scale_ = { 0.05f,0.05f,0.05f };
 
 	isCircleWater_ = true;
 }
@@ -52,6 +59,8 @@ void Baby::Update(float deltaTime)
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
+	prePosition_ = model_->transform_.translate_;
+	preIsInWater_ = isInWater_;
 
 	if (isInWater_) {
 		InWaterUpdate(deltaTime);
@@ -70,12 +79,19 @@ void Baby::Update(float deltaTime)
 void Baby::Draw(const Camera* camera)
 {
 	model_->Draw(*camera);
+	YarnUpdate();
+	yarn_->Draw(*camera);
 }
 
 
 void Baby::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER) {
+		if (preIsInWater_ && isFollowWater_) {
+			model_->transform_.translate_ = prePosition_;
+			model_->Update();
+		}
+
 		if (collider.GetShape() == ColliderShape::CIRCLE) {
 			isCircleWater_ = true;
 			isInWater_ = true;
@@ -173,7 +189,7 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 
 	if (length >= fParas_[FloatParamater::kLimitePlayerLength]) {
 		// 無理やり引っ張る処理
-
+		PulledUpdate(vect, length);
 	}
 	else {
 		length = std::clamp(length, 0.0f, fParas_[FloatParamater::kMaxPlayerLength]);
@@ -315,7 +331,7 @@ void Baby::InWaterUpdate(const float& deltaTime)
 
 	if (length >= fParas_[FloatParamater::kLimitePlayerLength]) {
 		// 無理やり引っ張る処理
-
+		PulledUpdate(vect, length);
 	}
 	else {
 		if (isCircleWater_) {
@@ -403,4 +419,28 @@ void Baby::InitializeGlobalVariable()
 		"加速度が最大の時の移動角度",
 		"加速度が最大の時の水の移動距離",
 	};
+}
+
+void Baby::YarnUpdate()
+{
+	Vector3 vect = player_->GetPosition() - model_->transform_.translate_;
+	vect.z = 0.0f;
+
+	float length = vect.Length();
+	vect = vect.Normalize();
+	yarn_->transform_.scale_.x = length / 2;
+	yarn_->transform_.rotate_.z = std::acos(vect.x);
+	if (vect.y < 0.0f) {
+		yarn_->transform_.rotate_.z = 6.28f - yarn_->transform_.rotate_.z;
+	}
+	vect = (player_->GetPosition() + model_->transform_.translate_) / 2;
+	yarn_->transform_.translate_.x = vect.x;
+	yarn_->transform_.translate_.y = vect.y;
+	yarn_->Update();
+}
+
+void Baby::PulledUpdate(const Vector3& vect, const float& length)
+{
+	velocity_ = vect.Normalize() * (length - fParas_[FloatParamater::kLimitePlayerLength] + 0.01f);
+	model_->transform_.translate_ += velocity_;
 }

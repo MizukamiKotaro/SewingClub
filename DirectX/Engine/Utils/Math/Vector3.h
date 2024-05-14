@@ -59,7 +59,7 @@ public:
 
 	float Length(const Vector3& pos) const;
 
-	Vector3 Normalize();
+	Vector3 Normalize() const;
 
 public:
 	float x;
