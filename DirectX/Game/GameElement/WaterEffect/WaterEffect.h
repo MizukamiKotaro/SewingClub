@@ -19,6 +19,8 @@ public:
 
 	void Draw();
 
+	void WaterAreaDraw();
+
 	void PreDrawBackGround();
 
 	void PostDrawBackGround();
@@ -40,6 +42,7 @@ private:
 	std::unique_ptr<HighLumi> highLumi_;
 	std::unique_ptr<WaterOutline> outline_;
 	std::unique_ptr<PostEffect> post_;
+	std::unique_ptr<HighLumi> waterArea_;
 
 	std::unique_ptr<GlobalVariableUser> global_;
 	std::unique_ptr<StageEditor> stageEditor_;

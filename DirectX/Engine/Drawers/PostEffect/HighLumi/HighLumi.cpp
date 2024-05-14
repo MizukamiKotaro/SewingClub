@@ -23,6 +23,8 @@ void HighLumi::Draw(BlendMode blendMode)
 {
 	PreDraw();
 
+	materialData_->color = color_;
+
 	psoManager_->SetBlendMode(piplineType_, blendMode);
 
 	ID3D12GraphicsCommandList* commandList = DirectXBase::GetInstance()->GetCommandList();

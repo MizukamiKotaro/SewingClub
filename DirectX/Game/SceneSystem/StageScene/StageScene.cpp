@@ -214,6 +214,10 @@ void StageScene::Draw()
 	
 	waterEffect_->Draw();
 
+	player_->Draw(camera_.get());
+	baby_->Draw(camera_.get());
+	waterEffect_->WaterAreaDraw();
+
 	//waveFloor_->Draw();
 
 	itemManager_->Draw();
@@ -321,8 +325,6 @@ void StageScene::MakePostEffect()
 	waterEffect_->PreDrawBackGround();
 	// 背景の描画
 	bg_->Draw();
-	player_->Draw(camera_.get());
-	baby_->Draw(camera_.get());
 	backGroundObjectManager_->Draw();
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
