@@ -24,17 +24,11 @@ OptionUI::OptionUI()
 	}
 
 	spNowSelectOption_ = std::make_unique<Sprite>("OptionSelect.png");
-}
 
-OptionUI::~OptionUI()
-{
-}
+	pauseButton_ = std::make_unique<Sprite>("controler_UI_=-.png");
+	backButton_ = std::make_unique<Sprite>("spBack.png");
 
-void OptionUI::Initialize()
-{
-	backSprite_->SetColor({ 0, 0, 0, backalpha_ });
 
-#pragma region 音関係
 	for (int i = 0; i < _countOption; i++) {
 
 		spSoundGageFrame_[i]->pos_.y += 100.0f * i;
@@ -54,6 +48,48 @@ void OptionUI::Initialize()
 
 	}
 
+#pragma region ImGui設定
+	gVUser_ = new GlobalVariableUser("Option", "actionHelpUI");
+
+	gVUser_->AddItem(keys[BGMGageFramePos], spSoundGageFrame_[BGMVolume]->pos_);
+	gVUser_->AddItem(keys[BGMGageFrameSize], spSoundGageFrame_[BGMVolume]->size_);
+	gVUser_->AddItem(keys[BGMGageBarPos], spSoundGageBar_[BGMVolume]->pos_);
+	gVUser_->AddItem(keys[BGMGageBarSize], gageBarMaxScale_[BGMVolume]);
+	gVUser_->AddItem(keys[BGMGageTextPos], spSoundText_[BGMVolume]->pos_);
+	gVUser_->AddItem(keys[BGMGageTextSize], spSoundText_[BGMVolume]->size_);
+	gVUser_->AddItem(keys[BGMGageNumPos], spSoundGageNum_[BGMVolume]->pos_);
+	gVUser_->AddItem(keys[BGMGageNumSize], spSoundGageNum_[BGMVolume]->size_);
+
+	gVUser_->AddItem(keys[SEGageFramePos], spSoundGageFrame_[SEVolume]->pos_);
+	gVUser_->AddItem(keys[SEGageFrameSize], spSoundGageFrame_[SEVolume]->size_);
+	gVUser_->AddItem(keys[SEGageBarPos], spSoundGageBar_[SEVolume]->pos_);
+	gVUser_->AddItem(keys[SEGageBarSize], gageBarMaxScale_[SEVolume]);
+	gVUser_->AddItem(keys[SEGageTextPos], spSoundText_[SEVolume]->pos_);
+	gVUser_->AddItem(keys[SEGageTextSize], spSoundText_[SEVolume]->size_);
+	gVUser_->AddItem(keys[SEGageNumPos], spSoundGageNum_[SEVolume]->pos_);
+	gVUser_->AddItem(keys[SEGageNumSize], spSoundGageNum_[SEVolume]->size_);
+
+	gVUser_->AddItem(keys[PauseButtonPos], pauseButton_->pos_);
+	gVUser_->AddItem(keys[PauseButtonSize], pauseButton_->size_);
+	gVUser_->AddItem(keys[backTextPos], backButton_->pos_);
+	gVUser_->AddItem(keys[backTextSize], backButton_->size_);
+#pragma endregion
+
+}
+
+OptionUI::~OptionUI()
+{
+}
+
+void OptionUI::Initialize()
+{
+	SetGlobalVData();
+	backSprite_->SetColor({ 0, 0, 0, backalpha_ });
+
+
+#pragma region 音関係
+
+
 	spNowSelectOption_->Initialize();
 #pragma endregion
 
@@ -61,6 +97,8 @@ void OptionUI::Initialize()
 
 bool OptionUI::Update()
 {
+	SetGlobalVData();
+
 	backSprite_->Update();
 	backSprite_->Update();
 
@@ -81,6 +119,9 @@ bool OptionUI::Update()
 	AudioBarUpdate();
 
 	spNowSelectOption_->Update();
+
+	pauseButton_->Update();
+	backSprite_->Update();
 
 	if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
 
@@ -106,6 +147,35 @@ void OptionUI::Draw()
 	}
 
 	spNowSelectOption_->Draw();
+
+	pauseButton_->Draw();
+	backSprite_->Draw();
+}
+
+void OptionUI::SetGlobalVData()
+{
+	spSoundGageFrame_[BGMVolume]->pos_ = gVUser_->GetVector2Value(keys[BGMGageFramePos]);
+	spSoundGageFrame_[BGMVolume]->size_ = gVUser_->GetVector2Value(keys[BGMGageFrameSize]);
+	spSoundGageBar_[BGMVolume]->pos_ = gVUser_->GetVector2Value(keys[BGMGageBarPos]);
+	gageBarMaxScale_[BGMVolume] = gVUser_->GetFloatValue(keys[BGMGageBarSize]);
+	spSoundText_[BGMVolume]->pos_ = gVUser_->GetVector2Value(keys[BGMGageTextPos]);
+	spSoundText_[BGMVolume]->size_ = gVUser_->GetVector2Value(keys[BGMGageTextSize]);
+	spSoundGageNum_[BGMVolume]->pos_ = gVUser_->GetVector2Value(keys[BGMGageNumPos]);
+	spSoundGageNum_[BGMVolume]->size_ = gVUser_->GetVector2Value(keys[BGMGageNumSize]);
+
+	spSoundGageFrame_[SEVolume]->pos_ = gVUser_->GetVector2Value(keys[SEGageFramePos]);
+	spSoundGageFrame_[SEVolume]->size_ = gVUser_->GetVector2Value(keys[SEGageFrameSize]);
+	spSoundGageBar_[SEVolume]->pos_ = gVUser_->GetVector2Value(keys[SEGageBarPos]);
+	gageBarMaxScale_[SEVolume] = gVUser_->GetFloatValue(keys[SEGageBarSize]);
+	spSoundText_[SEVolume]->pos_ = gVUser_->GetVector2Value(keys[SEGageTextPos]);
+	spSoundText_[SEVolume]->size_ = gVUser_->GetVector2Value(keys[SEGageTextSize]);
+	spSoundGageNum_[SEVolume]->pos_ = gVUser_->GetVector2Value(keys[SEGageNumPos]);
+	spSoundGageNum_[SEVolume]->size_ = gVUser_->GetVector2Value(keys[SEGageNumSize]);
+
+	pauseButton_->pos_ = gVUser_->GetVector2Value(keys[PauseButtonPos]);
+	pauseButton_->size_ = gVUser_->GetVector2Value(keys[PauseButtonSize]);
+	backButton_->pos_ = gVUser_->GetVector2Value(keys[backTextPos]);
+	backButton_->size_ = gVUser_->GetVector2Value(keys[backTextSize]);
 }
 
 void OptionUI::AudioBarUpdate()

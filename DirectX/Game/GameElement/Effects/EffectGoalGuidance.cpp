@@ -21,6 +21,7 @@ UIGoalGuidance::UIGoalGuidance()
 	gVUser_->AddItem(keys[QuotaUISize], quotaUISize_);
 	gVUser_->AddItem(keys[QuotaUIType], quotaAreaType_);
 
+
 }
 
 UIGoalGuidance::~UIGoalGuidance()
