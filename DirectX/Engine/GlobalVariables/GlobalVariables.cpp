@@ -1788,6 +1788,7 @@ void GlobalVariables::LoadFile(const std::string& chunkName, const std::string& 
 	}
 }
 
+#ifdef _DEBUG
 void GlobalVariables::PreparationImGui(const std::string& itemName, Item& item)
 {
 	if (std::holds_alternative<int32_t>(item)) {
@@ -1811,3 +1812,4 @@ void GlobalVariables::PreparationImGui(const std::string& itemName, Item& item)
 		ImGui::Checkbox(itemName.c_str(), ptr);
 	}
 }
+#endif // _DEBUG
