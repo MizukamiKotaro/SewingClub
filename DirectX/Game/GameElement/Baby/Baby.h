@@ -31,10 +31,16 @@ private:
 
 	void InitializeGlobalVariable();
 
+	void YarnUpdate();
+	void PulledUpdate(const Vector3& vect, const float& length);
+
 private:
 	Player* player_;
 	//std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 
+	Vector3 prePosition_;
+
+	bool preIsInWater_;
 	bool isInWater_;
 	bool isFollowWater_;
 
@@ -67,4 +73,6 @@ private:
 
 	std::vector<const char*> fNames;
 	std::vector<float> fParas_;
+
+	std::unique_ptr<Model> yarn_;
 };
