@@ -14,6 +14,7 @@
 #include "GameElement/BackGround/BackGround.h"
 #include"GameElement/Effects/EffectGoalGuidance.h"
 #include "GameElement/Baby/Baby.h"
+#include"GameElement/OptionUI/OptionUI.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -79,4 +80,8 @@ private:
 	// 背景
 	std::unique_ptr<BackGround> bg_;
 	BackGroundObjectManager* backGroundObjectManager_;
+
+	//option関係
+	std::unique_ptr<OptionUI>optionUI_;
+	bool isOptionOpen_ = false;
 };

@@ -5,6 +5,7 @@
 #include "Model.h"
 #include"Audio.h"
 #include "GameElement/Animation/Animation2D.h"
+#include"GameElement/OptionUI/OptionUI.h"
 
 class SelectScene : public IScene
 {
@@ -98,5 +99,8 @@ private:
 		"右矢印サイズ"
 	};
 
+
+	std::unique_ptr<OptionUI>optionUI_;
+	bool isOptionActive_ = false;
 };
 

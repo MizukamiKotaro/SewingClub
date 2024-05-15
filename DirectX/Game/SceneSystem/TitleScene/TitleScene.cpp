@@ -234,7 +234,7 @@ void TitleScene::SceneChange()
 		bgm_.Stop();
 	}
 
-	if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
+	if (input_->PressedGamePadButton(Input::GamePadButton::START) &&!isOptionActive_) {
 		isOptionActive_ = true;
 	}
 }

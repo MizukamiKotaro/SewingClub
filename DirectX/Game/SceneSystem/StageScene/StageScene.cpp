@@ -72,6 +72,8 @@ StageScene::StageScene()
 	bgm_.LoadWave("Music/ingame.wav", "StageBGM", bgmVolume_);
 	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);
 	waterEffect_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
+
+	optionUI_ = std::make_unique<OptionUI>();
 }
 
 void StageScene::Initialize()
@@ -107,6 +109,9 @@ void StageScene::Initialize()
 	bg_->Initialize();
 
 	isCanGoal_ = false;
+
+	optionUI_->Initialize();
+	isOptionOpen_ = false;
 }
 
 void StageScene::Update()
@@ -194,13 +199,21 @@ void StageScene::Update()
 
 	collisionManager_->CheckCollision();
 
-	SceneChange();
-
+	
 	waterEffect_->Update(deltaTime);
 	//if (isCanGoal_) {
 		effeGoalGuid_->Update();
 	//}
+
+	if (isOptionOpen_) {
+		isOptionOpen_ = optionUI_->Update();
+	}
+	else {
+		SceneChange();
+	}
 }
+
+
 
 void StageScene::Draw()
 {
@@ -247,7 +260,9 @@ void StageScene::Draw()
 
 	player_->DrawUI();
 
-	
+	if (isOptionOpen_) {
+		optionUI_->Draw();
+	}
 
 	BlackDraw();
 
@@ -317,6 +332,11 @@ void StageScene::SceneChange()
 		bgm_.Stop();
 		player_->Finalize();
 		seDead_.Play();
+	}
+
+	//optionを開く
+	if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
+		isOptionOpen_ = true;
 	}
 }
 

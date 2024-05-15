@@ -33,6 +33,7 @@ SelectScene::SelectScene()
 	left_->SetIsFlipX(true);
 	right_ = std::make_unique<Sprite>("pause_arrow.png");
 
+	optionUI_ = std::make_unique<OptionUI>();
 
 	GlobalVariables* GV = GlobalVariables::GetInstance();
 	GV->CreateGroup(groupName_);
@@ -98,6 +99,7 @@ void SelectScene::Initialize()
 	left_->Update();
 	right_->Update();
 
+	optionUI_->Initialize();
 }
 
 void SelectScene::Update()
@@ -110,23 +112,30 @@ void SelectScene::Update()
 
 	bg_->Update(camera_.get());
 
+	if (isOptionActive_) {
+		isOptionActive_= optionUI_->Update();
+	}
+	else {
+		//ステージを選ぶ処理
+		SelectStage();
 
+		//optionを見てるときにステージ変更処理入らない＆いれたらバグる
+		//シーン変更関係処理
+		SceneChange();
+	}
 
 	buttonA_->Update();
 	left_->Update();
 	right_->Update();
 
-
-	//ステージを選ぶ処理
-	SelectStage();
-
-	//シーン変更関係処理
-	SceneChange();
+	//ステージ箱の更新
+	for (auto& box : stageBoxes_) {
+		box->Update();
+	}
 }
 
 void SelectScene::Draw()
 {
-
 	//必須
 	Kyoko::Engine::PreDraw();
 
@@ -141,6 +150,13 @@ void SelectScene::Draw()
 	left_->Draw();
 	right_->Draw();
 
+	if (isOptionActive_) {
+		optionUI_->Draw();
+	}
+
+	if (isOptionActive_) {
+		optionUI_->Draw();
+	}
 	//シーン転換時のフェードインアウト
 	BlackDraw();
 	//必須
@@ -183,6 +199,11 @@ void SelectScene::SceneChange()
 		// シーン切り替え
 		ChangeScene(TITLE);
 		bgm_.Stop();
+	}
+
+	//オプション開く処理
+	if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionActive_) {
+		isOptionActive_ = true;
 	}
 }
 
@@ -253,9 +274,6 @@ void SelectScene::SelectStage()
 
 
 
-	//ステージ箱の更新
-	for (auto& box : stageBoxes_) {
-		box->Update();
-	}
+	
 }
 
