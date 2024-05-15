@@ -2,6 +2,8 @@
 #include "GameElement/Player/Player.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "calc.h"
+#include "GameElement/Animation/AnimationManager.h"
+#include "TextureManager.h"
 
 Baby::Baby(Player* player)
 {
@@ -31,6 +33,15 @@ Baby::Baby(Player* player)
 	yarn_->transform_.scale_ = { 0.1f,0.1f,0.1f };
 	
 	SetGlobalVariable();
+
+	// アニメーションの初期化とモデルのセット
+	animation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("babynormal"));
+	// UV座標のセット
+	Transform handle = animation_->GetSceneUV(0u);
+	model_->SetUVParam(handle);
+	model_->SetTexture(TextureManager::GetInstance()->LoadTexture("baby_normal.png"));
+	animation_->Play(true);
+
 }
 
 void Baby::Initialize()
@@ -74,6 +85,11 @@ void Baby::Update(float deltaTime)
 	model_->Update();
 	SetCollider();
 	//gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
+
+	if (animation_->Update("babynormal")) {
+		// modelにuvのセット
+		model_->SetUVParam(animation_->GetUVTrans());
+	}
 }
 
 void Baby::Draw(const Camera* camera)

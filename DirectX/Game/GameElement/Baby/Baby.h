@@ -5,6 +5,7 @@
 #include "GlobalVariables/GlobalVariableUser.h"
 //#include "GameElement/Player/GravityAreaSearch.h"
 #include "GameElement/Charactor/Charactor.h"
+#include "GameElement/Animation/Animation2D.h"
 
 class Player;
 
@@ -75,4 +76,7 @@ private:
 	std::vector<float> fParas_;
 
 	std::unique_ptr<Model> yarn_;
+	// アニメーション
+	std::unique_ptr<Animation2D> animation_;
+
 };
