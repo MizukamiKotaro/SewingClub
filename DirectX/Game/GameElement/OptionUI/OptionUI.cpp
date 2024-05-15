@@ -100,7 +100,7 @@ bool OptionUI::Update()
 	SetGlobalVData();
 
 	backSprite_->Update();
-	backSprite_->Update();
+	
 
 	Vector2 input = input_->GetGamePadLStick();
 	if (input.y <= -0.9f) {
@@ -121,7 +121,7 @@ bool OptionUI::Update()
 	spNowSelectOption_->Update();
 
 	pauseButton_->Update();
-	backSprite_->Update();
+	backButton_->Update();
 
 	if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
 
@@ -149,7 +149,7 @@ void OptionUI::Draw()
 	spNowSelectOption_->Draw();
 
 	pauseButton_->Draw();
-	backSprite_->Draw();
+	backButton_->Draw();
 }
 
 void OptionUI::SetGlobalVData()
