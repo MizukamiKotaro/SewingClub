@@ -101,6 +101,9 @@ void TitleScene::Initialize()
 
 	optionUI_->Initialize();
 	optionUI_->Update();
+
+	//いい感じの演出になったので消します
+	//waterE_->Initialize();
 }
 
 void TitleScene::Update()
