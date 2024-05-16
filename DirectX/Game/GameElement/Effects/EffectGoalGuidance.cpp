@@ -306,7 +306,7 @@ void UIGoalGuidance::SetQuota(const Vector3* position,const float size,const boo
 {
 	
 	QuotaData newdata;
-	newdata.sprite_ = std::make_unique<Sprite>("pause_arrow.png");
+	newdata.sprite_ = std::make_unique<Sprite>("HUD_arrow.png");
 	newdata.sprite_->Initialize();
 	newdata.position_=position;
 	newdata.size_ = size;
