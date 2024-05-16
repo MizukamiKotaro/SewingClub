@@ -34,7 +34,7 @@ TitleScene::TitleScene()
 
 	bg_ = std::make_unique<BackGround>();
 
-	bgm_.LoadWave("Music/title.wav", "TitleBGM", bgmVolume_);
+	bgm_.LoadMP3("Music/title.mp3", "TitleBGM", bgmVolume_);
 
 	effeUIEnterW_ = std::make_unique<EffectUIEnterWater>("TitleBubbleUI");
 	waterE_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);

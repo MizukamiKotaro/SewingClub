@@ -69,7 +69,7 @@ StageScene::StageScene()
 	bg_ = std::make_unique<BackGround>();
 	bg_->Update(camera_.get());
 
-	bgm_.LoadWave("Music/ingame.wav", "StageBGM", bgmVolume_);
+	bgm_.LoadMP3("Music/ingame.mp3", "StageBGM", bgmVolume_);
 	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);
 	waterEffect_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
 

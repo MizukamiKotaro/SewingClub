@@ -23,7 +23,7 @@ SelectScene::SelectScene()
 		
 	}
 
-	bgm_.LoadWave("Music/stageSelect.wav","SelectBGM",bgmVolume_);
+	bgm_.LoadMP3("Music/stageSelect.mp3","SelectBGM",bgmVolume_);
 
 	bg_ = std::make_unique<BackGround>();
 	bg_->Update(camera_.get());
