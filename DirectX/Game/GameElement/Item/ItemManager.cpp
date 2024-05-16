@@ -21,7 +21,7 @@ void ItemManager::InitializeGlobalVariables()
 	itemNum_ = 1;
 	scale_ = 0.5f;
 	reqItemNum_ = 1;
-	reqScale_ = 1.0f;
+	reqScale_ = 0.8f;
 	SetGlobalVariable();
 }
 
