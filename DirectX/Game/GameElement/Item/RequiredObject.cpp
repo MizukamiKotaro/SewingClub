@@ -12,7 +12,7 @@ InstancingModelManager* RequiredObject::instancingManager_ = nullptr;
 const InstancingMeshTexData* RequiredObject::modelData_ = nullptr;
 
 ItemManager* RequiredObject::itemManager_ = nullptr;
-Vector4 RequiredObject::staticColor_ = { 1.0f,0.0f,0.0f,1.0f };
+Vector4 RequiredObject::staticColor_ = { 1.0f,1.0f,1.0f,1.0f };
 
 
 RequiredObject::RequiredObject(const int& no, const float& scale) {
@@ -35,8 +35,8 @@ RequiredObject::RequiredObject(const int& no, const float& scale) {
 
 void RequiredObject::StaticInitialize() {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
-	const Texture* tex = TextureManager::GetInstance()->LoadTexture("coin_1.png");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("plane");
+	const Texture* tex = TextureManager::GetInstance()->LoadTexture("item_speaker.png");
 	modelData_ = instancingManager_->GetDrawData({ modelData,tex,BlendMode::kBlendModeNormal });
 	itemManager_ = ItemManager::GetInstance();
 	//staticColor_ = itemManager_->GetColor();
