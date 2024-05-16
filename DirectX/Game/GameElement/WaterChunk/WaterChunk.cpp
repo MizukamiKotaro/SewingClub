@@ -69,6 +69,11 @@ WaterChunk::WaterChunk(int no)
 	no_ = no;
 	isSmall_ = false;
 	stageEditor_ = std::make_unique<StageEditor>("水の配置");
+	endNo_ = no_ - 1;
+	if (endNo_ < 0) {
+		endNo_ = 0;
+	}
+	isTarget_ = false;
 	SetGlobalVariable();
 	scale_ = maxScale_;
 	isSmaeGravitySize_ = false;
@@ -79,12 +84,7 @@ WaterChunk::WaterChunk(int no)
 	CreateChips();
 	isWave_ = false;
 
-	isTarget_ = false;
 	isQuadrangleActive_ = false;
-	endNo_ = no_ - 1;
-	if (endNo_ < 0) {
-		endNo_ = 0;
-	}
 }
 
 WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
