@@ -19,6 +19,9 @@ Baby::Baby(Player* player)
 	model_ = std::make_unique<Model>("plane");
 	model_->transform_.translate_ = player_->GetPosition();
 
+	baby_ = std::make_unique<Model>("plane");
+	baby_->transform_.parent_ = &model_->transform_;
+
 	velocity_ = {};
 	isInWater_ = true;
 	isFollowWater_ = false;
@@ -38,8 +41,8 @@ Baby::Baby(Player* player)
 	animation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("babynormal"));
 	// UV座標のセット
 	Transform handle = animation_->GetSceneUV(0u);
-	model_->SetUVParam(handle);
-	model_->SetTexture(TextureManager::GetInstance()->LoadTexture("baby_normal.png"));
+	baby_->SetUVParam(handle);
+	baby_->SetTexture(TextureManager::GetInstance()->LoadTexture("baby_normal.png"));
 	animation_->Play(true);
 
 	effeEnterW_ = std::make_unique<EffectEnterWater>();
@@ -57,6 +60,7 @@ void Baby::Initialize()
 	model_->transform_.translate_ = player_->GetPosition();
 	model_->transform_.rotate_ = {};
 	model_->Update();
+	baby_->Update();
 	waterPos_ = { model_->transform_.translate_.x,model_->transform_.translate_.y };
 	waterGravityPos_ = waterPos_;
 	prePosition_ = model_->transform_.translate_;
@@ -133,12 +137,14 @@ void Baby::Update(float deltaTime)
 		model_->transform_.rotate_.z += 6.28f;
 	}
 	model_->Update();
+	baby_->Update();
 	SetCollider();
 	//gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
 
 	if (animation_->Update("babynormal")) {
 		// modelにuvのセット
-		model_->SetUVParam(animation_->GetUVTrans());
+		baby_->SetUVParam(animation_->GetUVTrans());
+
 	}
 
 	if (spawnWaitCount_-- <= 0) {
@@ -149,7 +155,7 @@ void Baby::Update(float deltaTime)
 
 void Baby::Draw(const Camera* camera)
 {
-	model_->Draw(*camera);
+	baby_->Draw(*camera);
 	YarnUpdate();
 	yarn_->Draw(*camera);
 
@@ -188,7 +194,7 @@ void Baby::OnCollision(const Collider& collider)
 				model_->transform_.rotate_.z += 6.28f;
 			}
 			model_->Update();
-
+			baby_->Update();
 		}
 
 		
@@ -276,6 +282,7 @@ void Baby::SetGlobalVariable()
 	for (int i = 0; i < kFloatEnd; i++) {
 		globalVariable_->AddItem(fNames[i], fParas_[i]);
 	}
+	globalVariable_->AddItem("浮き具合", float(0.0f));
 
 	ApplyGlobalVariable();
 }
@@ -294,6 +301,8 @@ void Baby::ApplyGlobalVariable()
 	model_->transform_.scale_ = { scale.x,scale.y,1.0f };
 	model_->transform_.UpdateMatrix();
 
+	baby_->transform_.translate_.y = globalVariable_->GetFloatValue("浮き具合");
+	baby_->Update();
 	//spawnEffectVelo_ = fParas_[kEffectEnterWaterVelo];
 	//maxSpawnWaitCount_ = fParas_[kEffectSpawwnInterval];
 }
@@ -538,6 +547,7 @@ void Baby::InitializeGlobalVariable()
 		"加速度が最大の時の水の移動距離",
 		"エフェクトの初速度への微調整用乗算",
 		"エフェクトの発生間隔",
+
 	};
 }
 

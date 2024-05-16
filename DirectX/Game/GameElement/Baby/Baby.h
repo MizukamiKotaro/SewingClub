@@ -38,6 +38,7 @@ private:
 	void PulledUpdate(const Vector3& vect, const float& length);
 
 private:
+	std::unique_ptr<Model> baby_;
 	Player* player_;
 	//std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 
