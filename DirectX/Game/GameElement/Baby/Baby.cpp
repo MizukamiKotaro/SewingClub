@@ -91,7 +91,7 @@ void Baby::Update(float deltaTime)
 		rotate = 6.28f - rotate;
 	}
 
-	model_->transform_.rotate_.z = rotate;
+	model_->transform_.rotate_.z = rotate + 1.56f;
 	model_->Update();
 	SetCollider();
 	//gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
@@ -123,7 +123,7 @@ void Baby::OnCollision(const Collider& collider)
 				rotate = 6.28f - rotate;
 			}
 
-			model_->transform_.rotate_.z = rotate;
+			model_->transform_.rotate_.z = rotate + 1.56f;
 			model_->Update();
 		}
 
