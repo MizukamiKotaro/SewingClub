@@ -71,6 +71,8 @@ private:
 		kBuoyancy, // 水の浮力
 		kMaxSlide, // 加速度が最大の時の水の移動角度
 		kMaxSlideLength, // 加速度が最大の時の水の移動距離
+		kEffectEnterWaterVelo,//エフェクト発生時の速度に対する乗算
+		kEffectSpawwnInterval,//エフェクト発生の間隔
 		kFloatEnd,
 	};
 
@@ -82,7 +84,8 @@ private:
 	std::unique_ptr<Animation2D> animation_;
 
 	std::unique_ptr<EffectEnterWater>effeEnterW_;
-	int spawnWaitCount_ = 0;
-	int maxSpawnWaitCount_ = 10;
+	float spawnEffectVelo_=0.1f;
+	float spawnWaitCount_ = 0;
+	float maxSpawnWaitCount_ = 10;
 	bool isSpawnEffect_ = false;
 };

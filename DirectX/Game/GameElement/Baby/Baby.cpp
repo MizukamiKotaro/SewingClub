@@ -201,12 +201,12 @@ void Baby::OnCollision(const Collider& collider)
 
 			if (isSpawnEffect_) {
 				isSpawnEffect_ = false;
-				spawnWaitCount_ = maxSpawnWaitCount_;
+				spawnWaitCount_ = (float)maxSpawnWaitCount_;
 
 				Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
 
 				Vector2 playerV2 = { model_->transform_.translate_.x,model_->transform_.translate_.y };
-				effeEnterW_->SpawnEffect(playerV2, Vector2{ pos.x, pos.y } *0.1f, { player_->GetPosition().x,player_->GetPosition().y });
+				effeEnterW_->SpawnEffect(playerV2, Vector2{ pos.x, pos.y } *spawnEffectVelo_, { player_->GetPosition().x,player_->GetPosition().y });
 			}
 		}
 	}
@@ -245,7 +245,8 @@ void Baby::ApplyGlobalVariable()
 	model_->transform_.scale_ = { scale.x,scale.y,1.0f };
 	model_->transform_.UpdateMatrix();
 
-	
+	//spawnEffectVelo_ = fParas_[kEffectEnterWaterVelo];
+	//maxSpawnWaitCount_ = fParas_[kEffectSpawwnInterval];
 }
 
 void Baby::OutWaterUpdate(const float& deltaTime)
@@ -486,6 +487,8 @@ void Baby::InitializeGlobalVariable()
 		"水の浮力",
 		"加速度が最大の時の移動角度",
 		"加速度が最大の時の水の移動距離",
+		"エフェクトの初速度への微調整用乗算",
+		"エフェクトの発生間隔",
 	};
 }
 
