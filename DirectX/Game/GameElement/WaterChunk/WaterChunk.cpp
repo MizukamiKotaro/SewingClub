@@ -238,9 +238,9 @@ void WaterChunk::Draw(Camera* camera) const
 			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
 			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
 		}
-		if (isQuadrangleActive_) {
-			quadrangle_->Draw(camera);
-		}
+	}
+	if (isQuadrangleActive_) {
+		quadrangle_->Draw(camera);
 	}
 }
 
