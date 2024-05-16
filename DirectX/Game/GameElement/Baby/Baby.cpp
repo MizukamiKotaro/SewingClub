@@ -86,15 +86,52 @@ void Baby::Update(float deltaTime)
 		OutWaterUpdate(deltaTime);
 	}
 
-	Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
-	Vector2 vect = { pos.x,pos.y };
-	vect = vect.Normalize();
-	float rotate = std::acosf(vect.x);
-	if (vect.y < 0) {
-		rotate = 6.28f - rotate;
+	Vector2 vect;
+	if (!preIsInWater_ && !isFollowWater_) {
+		Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
+		vect = { pos.x,pos.y };
+		vect = vect.Normalize();
+		float rotate = std::acosf(vect.x);
+		if (vect.y < 0) {
+			rotate = 6.28f - rotate;
+		}
+		rotate = std::fmod(rotate + 1.57f, 6.28f);
+		if (model_->transform_.rotate_.z >= 4.71f && rotate <= 1.57f) {
+			model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate + 6.28f, 0.05f);
+		}
+		else if (model_->transform_.rotate_.z <= 1.57f && rotate >= 4.71f){
+			model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate - 6.28f, 0.05f);
+		}
+		else {
+			model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate, 0.05f);
+		}
 	}
+	else {
+		vect = Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y } - waterPos_;
+		vect = vect.Normalize();
+		float rotate = std::acosf(vect.x);
+		if (vect.y < 0) {
+			rotate = 6.28f - rotate;
+		}
+		rotate -= 1.57f;
+		if (rotate < 0.0f) {
+			rotate = 6.28f + rotate;
+		}
 
-	model_->transform_.rotate_.z = rotate + 1.56f;
+		if (model_->transform_.rotate_.z >= 4.71f && rotate <= 1.57f) {
+			model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate + 6.28f, 0.05f);
+		}
+		else if (model_->transform_.rotate_.z <= 1.57f && rotate >= 4.71f) {
+			model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate - 6.28f, 0.05f);
+		}
+		else {
+			model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate, 0.05f);
+		}
+	}
+	model_->transform_.rotate_.z = std::fmod(model_->transform_.rotate_.z, 6.28f);
+	if (model_->transform_.rotate_.z < 0.0f) {
+		model_->transform_.rotate_.z += 6.28f;
+	}
 	model_->Update();
 	SetCollider();
 	//gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
@@ -127,7 +164,7 @@ void Baby::EffectDraw()
 void Baby::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER) {
-		if (preIsInWater_ && isFollowWater_) {
+		if (!preIsInWater_ && isFollowWater_) {
 			model_->transform_.translate_ = prePosition_;
 			Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
 			Vector2 vect = { pos.x,pos.y };
@@ -136,8 +173,20 @@ void Baby::OnCollision(const Collider& collider)
 			if (vect.y < 0) {
 				rotate = 6.28f - rotate;
 			}
-
-			model_->transform_.rotate_.z = rotate + 1.56f;
+			rotate = std::fmod(rotate + 1.57f, 6.28f);
+			if (model_->transform_.rotate_.z >= 4.71f && rotate <= 1.57f) {
+				model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate + 6.28f, 0.01f);
+			}
+			else if (model_->transform_.rotate_.z <= 1.57f && rotate >= 4.71f) {
+				model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate - 6.28f, 0.01f);
+			}
+			else {
+				model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate, 0.01f);
+			}
+			model_->transform_.rotate_.z = std::fmod(model_->transform_.rotate_.z, 6.28f);
+			if (model_->transform_.rotate_.z < 0.0f) {
+				model_->transform_.rotate_.z += 6.28f;
+			}
 			model_->Update();
 
 		}
