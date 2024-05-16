@@ -12,6 +12,7 @@
 #include "GameElement/Enemy/EnemyManager.h"
 #include "GameElement/WaterChunk/WaterWave.h"
 #include "GameElement/BackGroundObject/BackGroundObjectManager.h"
+#include "GameElement/WaterChunk/WaterChunkChip.h"
 
 #include "GameElement/Animation/AnimationManager.h"
 #include"Audio/AudioManager/AudioManager.h"
@@ -167,9 +168,9 @@ void StageScene::Update()
 
 	enemyManager_->Update(deltaTime, camera_.get());
 
-	deadLine_->Update(deltaTime);
+	//deadLine_->Update(deltaTime);
 
-	clientManager_->Update(deltaTime);
+	//clientManager_->Update(deltaTime);
 
 	waterManager_->Update(deltaTime, camera_.get());
 
@@ -222,15 +223,22 @@ void StageScene::Draw()
 	particleManager_->Clear();
 
 	// ポストエフェクトの用の描画
-	MakePostEffect();
+	//MakePostEffect();
 
 	Kyoko::Engine::PreDraw();
-	
-	waterEffect_->Draw();
+	// 背景の描画
+	bg_->Draw();
+	backGroundObjectManager_->Draw();
+
+	// 水のエリアの描画
+	waterManager_->Draw(camera_.get());
+
+	player_->EffectDraw();
+
+	baby_->EffectDraw();
 
 	player_->Draw(camera_.get());
 	baby_->Draw(camera_.get());
-	waterEffect_->WaterAreaDraw();
 
 	//waveFloor_->Draw();
 
@@ -244,16 +252,16 @@ void StageScene::Draw()
 
 	//planetManager_->Draw();
 
-	clientManager_->Draw();
+	//clientManager_->Draw();
 
-	deadLine_->Draw();
+	//deadLine_->Draw();
 
 	
 	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
 
-	player_->DrawClient();
+	//player_->DrawClient();
 
 	//if (isCanGoal_) {
 		effeGoalGuid_->Draw(camera_.get());

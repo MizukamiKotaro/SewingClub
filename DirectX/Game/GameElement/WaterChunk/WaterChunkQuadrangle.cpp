@@ -40,54 +40,8 @@ void WaterChunkQuadrangle::Update(const float& deltaTime, Camera* camera)
 #ifdef _DEBUG
 	
 #endif // _DEBUG
-
-	if (!isPlayer_ && preIsPlayer_ && !player_->GetPreInWater()) {
-		AddWave(false);
-	}
-
-	for (std::list<std::unique_ptr<WaterWave>>::iterator it = waves_.begin(); it != waves_.end();) {
-		(*it)->Update(deltaTime);
-		it++;
-	}
-
-	isWave_ = false;
-	for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
-
-		for (std::unique_ptr<WaterWave>& wave : waves_) {
-			float power = wave->GetPower(chip->GetRotate());
-			if (power != 0.0f) {
-				chip->AddOutPower(std::abs(power), power < 0);
-			}
-		}
-
-		chip->Update(deltaTime);
-		if (chip->IsWave()) {
-			isWave_ = true;
-		}
-	}
-	for (std::unique_ptr<WaterChunkChip>& chip : chips2_) {
-
-		for (std::unique_ptr<WaterWave>& wave : waves_) {
-			float power = wave->GetPower(chip->GetRotate());
-			if (power != 0.0f) {
-				chip->AddOutPower(std::abs(power), power < 0);
-			}
-		}
-
-		chip->Update(deltaTime);
-		if (chip->IsWave()) {
-			isWave_ = true;
-		}
-	}
-
-	for (std::list<std::unique_ptr<WaterWave>>::iterator it = waves_.begin(); it != waves_.end();) {
-		if ((*it)->IsFinish()) {
-			it = waves_.erase(it);
-		}
-		else {
-			it++;
-		}
-	}
+	float a = deltaTime;
+	a = 0.0f;
 	ActiveCheck(camera);
 	preIsPlayer_ = isPlayer_;
 	isPlayer_ = false;
@@ -103,22 +57,7 @@ void WaterChunkQuadrangle::Draw(Camera* camera) const
 #ifdef _DEBUG
 		//gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 #endif // _DEBUG
-		if (isWave_) {
-			/*for (const std::unique_ptr<WaterChunkChip>& chip : chips_) {
-				chip->Draw();
-			}
-			for (const std::unique_ptr<WaterChunkChip>& chip : chips2_) {
-				chip->Draw();
-			}
-			float scale = WaterChunk::GetMinScale();
-			quadrangleManager_->Draw(*camera,
-				(leftTop_ - startPos_) * scale + startPos_, (rightTop_ - endPos_) * scale + endPos_,
-				(leftBottom_ - startPos_) * scale + startPos_, (rightBottom_ - endPos_) * scale + endPos_);*/
-			quadrangleManager_->Draw(*camera, leftTop_, rightTop_, leftBottom_, rightBottom_);
-		}
-		else {
-			quadrangleManager_->Draw(*camera, leftTop_, rightTop_, leftBottom_, rightBottom_);
-		}
+		quadrangleManager_->Draw(*camera, leftTop_, rightTop_, leftBottom_, rightBottom_);
 	}
 }
 
@@ -163,8 +102,6 @@ void WaterChunkQuadrangle::CreateQuadrangle(const Vector3& pos1, const float& sc
 
 	rightBottom_.x = endScale_ * std::sinf(rotate_) + endPos_.x;
 	rightBottom_.y = -endScale_ * std::cosf(rotate_) + endPos_.y;
-
-	CreateChips();
 }
 
 void WaterChunkQuadrangle::ActiveCheck(Camera* camera)
@@ -184,73 +121,6 @@ void WaterChunkQuadrangle::ActiveCheck(Camera* camera)
 	else {
 		isActive_ = true;
 	}
-}
-
-void WaterChunkQuadrangle::CreateChips()
-{
-	chips_.clear();
-	chips2_.clear();
-
-	float posAdd_ = WaterChunkChip::GetScale();
-	float pos = posAdd_ / 2;
-
-	float scale = 0.0f;
-
-	bool isEnd = false;
-	float rotate1 = rotate_;
-	float rotate2 = rotate_;
-	if (rotate1 >= 3.14f) {
-		rotate2 -= 3.14f;
-	}
-	rotate1 += 1.57f;
-	rotate2 += 1.57f;
-	if (rotate1 >= 6.28f) {
-		rotate1 -= 6.28f;
-	}
-	if (rotate2 >= 6.28f) {
-		rotate2 -= 6.28f;
-	}
-
-	while (true) {
-		if (pos >= length_ - posAdd_ / 2) {
-			pos = length_ - posAdd_ / 2;
-			isEnd = true;
-		}
-
-		scale = Ease::UseEase(startScale_, endScale_, pos, length_, Ease::Constant) / 2;
-
-
-		Vector3 center{};
-		center.x = pos * std::cosf(rotate_);
-		center.y = pos * std::sinf(rotate_);
-		center += startPos_;
-
-		Vector3 position{};
-		position.x = -scale * std::sinf(rotate_);
-		position.y = scale * std::cosf(rotate_);
-
-		chips_.push_back(std::make_unique<WaterChunkChip>(center, center + position, rotate1, scale, false));
-		chips2_.push_back(std::make_unique<WaterChunkChip>(center, center - position, rotate2, scale, false));
-
-		if (isEnd) {
-			break;
-		}
-		pos += posAdd_;
-	}
-}
-
-void WaterChunkQuadrangle::AddWave(const bool& isDown)
-{
-	// 波発生
-	Vector3 pos = player_->GetPosition() - position_;
-	Vector2 vect = { pos.x,pos.y };
-	vect = vect.Normalize();
-	float rotate = std::acosf(vect.x);
-	if (vect.y < 0) {
-		rotate = 6.28f - rotate;
-	}
-	waves_.push_back(std::make_unique<WaterWave>(player_->GetVelocity(), rotate, isDown, 0));
-	waves_.back()->Update(0.005f);
 }
 
 void WaterChunkQuadrangle::OnCollision(const Collider& collider)

@@ -83,7 +83,6 @@ WaterChunk::WaterChunk(int no)
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 	isPlayer_ = false;
 	preIsPlayer_ = false;
-	CreateChips();
 	isWave_ = false;
 
 	isQuadrangleActive_ = false;
@@ -138,16 +137,11 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 	ApplyGlobalVariable();
 	CreateQuadrangle();
 	if (!isSmall_) {
-		if (scale_ != maxScale_ || position_ != chips_.front()->GetCenter()) {
-			CreateChips();
+		if (scale_ != maxScale_) {
 			scale_ = maxScale_;
 		}
 	}
 #endif // _DEBUG
-
-	if (!isPlayer_ && preIsPlayer_ && !player_->GetPreInWater()) {
-		AddWave(false);
-	}
 
 
 	if (isSmall_) {
@@ -155,54 +149,6 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 
 		time_ = std::clamp(time_, 0.0f, deleteTime_);
 		scale_ = (1.0f - time_ / deleteTime_) * maxScale_;
-	}
-
-	for (std::list<std::unique_ptr<WaterWave>>::iterator it = waves_.begin(); it != waves_.end();) {
-		(*it)->Update(deltaTime);
-		it++;
-	}
-
-	isWave_ = false;
-	for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
-
-		for (std::unique_ptr<WaterWave>& wave : waves_) {
-			float power = wave->GetPower(chip->GetRotate());
-			if (power != 0.0f) {
-				chip->AddOutPower(std::abs(power), power < 0);
-			}
-		}
-
-		chip->Update(deltaTime);
-		if (chip->IsWave()) {
-			isWave_ = true;
-		}
-	}
-
-	for (std::list<std::unique_ptr<WaterWave>>::iterator it = waves_.begin(); it != waves_.end();) {
-		if ((*it)->IsFinish()) {
-			it = waves_.erase(it);
-		}
-		else {
-			/*std::unordered_map<int, std::unique_ptr<WaterChunk>>& fullWater = waterManager_->GetWater();
-			for (std::pair<const int, std::unique_ptr<WaterChunk>>& water : fullWater) {
-				if (water.first != no_ && water.second->isActive_) {
-
-					const std::list<int> nums = (*it)->GetNums();
-					bool same = false;
-					for (const int& num : nums) {
-						if (water.first == num) {
-							same = true;
-							break;
-						}
-					}
-					if (!same) {
-						water.second->AddWave(*this, *(*it));
-					}
-				}
-			}*/
-
-			it++;
-		}
 	}
 
 	ActiveCheck(camera);
@@ -227,20 +173,11 @@ void WaterChunk::Draw(Camera* camera) const
 #ifdef _DEBUG
 		//gravityArea_->Draw({ position_.x,position_.y }, { scale_,scale_ }, isSmaeGravitySize_, rotate_);
 #endif // _DEBUG
-		if (isWave_) {
-			for (const std::unique_ptr<WaterChunkChip>& chip : chips_) {
-				chip->Draw();
-			}
-			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_ * minScale_,scale_ * minScale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
-		}
-		else {
-			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
-		}
-		if (isQuadrangleActive_) {
-			quadrangle_->Draw(camera);
-		}
+		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
+		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix, Matrix4x4::MakeIdentity4x4(), color_ });
+	}
+	if (isQuadrangleActive_) {
+		quadrangle_->Draw(camera);
 	}
 }
 
@@ -343,170 +280,13 @@ void WaterChunk::ActiveCheck(Camera* camera)
 	}
 }
 
-void WaterChunk::CreateChips()
-{
-	float rotateAdd = 3.1415f / 90;
-	float rotate = 0.0f;
-
-	float scale = scale_ / 2;
-	float rad = scale;
-	chips_.clear();
-	for (int i = 0; i < 180; i++) {
-
-		Vector3 pos{};
-		pos.x = rad * std::cosf(rotate);
-		pos.y = rad * std::sinf(rotate);
-
-		pos += position_;
-
-		chips_.push_back(std::make_unique<WaterChunkChip>(position_, pos, rotate, scale));
-
-		rotate += rotateAdd;
-	}
-
-}
-
-void WaterChunk::AddWave(const bool& isDown)
-{
-	// 波発生
-	Vector3 pos = player_->GetPosition() - position_;
-	Vector2 vect = { pos.x,pos.y };
-	vect = vect.Normalize();
-	float rotate = std::acosf(vect.x);
-	if (vect.y < 0) {
-		rotate = 6.28f - rotate;
-	}
-	waves_.push_back(std::make_unique<WaterWave>(player_->GetVelocity(), rotate, isDown, no_));
-	waves_.back()->Update(0.005f);
-}
-
-void WaterChunk::AddWave(const WaterChunk& water, WaterWave& wave)
-{
-	if ((position_ - water.position_).Length() <= scale_ + water.scale_) {
-
-		Vector3 pos = position_ - water.position_;
-		Vector2 vect = { pos.x,pos.y };
-		vect = vect.Normalize();
-		float theta = std::acosf(vect.x);
-		if (vect.y < 0) {
-			theta = 6.28f - theta;
-		}
-		float length = (position_ - water.position_).Length();
-		if (length != 0.0f) {
-			float x = (water.scale_ * water.scale_ - scale_ * scale_ + length * length) / length;
-
-			float s = (water.scale_ + scale_ + length) / 2;
-
-			float y = 2 * std::sqrtf(s * (s - scale_) * (s - water.scale_) * (s - length)) / length;
-
-			Vector2 pos1 = { x,y };
-			Vector2 pos2 = { x,-y };
-
-			// ここから角度求めて範囲内にあったら角度求めて波の生成とナンバーの追加
-			Vector3 postion1 = { 0.0f,0.0f,position_.z };
-			postion1.x = pos1.x * std::cosf(theta) - pos1.y * std::sinf(theta);
-			postion1.y = pos1.x * std::sinf(theta) + pos1.y * std::cosf(theta);
-
-			Vector3 postion2 = { 0.0f,0.0f,position_.z };
-			postion2.x = pos2.x * std::cosf(theta) - pos2.y * std::sinf(theta);
-			postion2.y = pos2.x * std::sinf(theta) + pos2.y * std::cosf(theta);
-
-
-			pos = postion1 - water.position_;
-			vect = { pos.x,pos.y };
-			vect = vect.Normalize();
-			theta = std::acosf(vect.x);
-			if (vect.y < 0) {
-				theta = 6.28f - theta;
-			}
-
-			float power1 = wave.GetPower(theta);
-
-			pos = postion2 - water.position_;
-			vect = { pos.x,pos.y };
-			vect = vect.Normalize();
-			theta = std::acosf(vect.x);
-			if (vect.y < 0) {
-				theta = 6.28f - theta;
-			}
-
-			float power2 = wave.GetPower(theta);
-
-
-			if (power1 != 0.0f && power2 != 0.0f) {
-				wave.AddNum(no_);
-				float next = wave.GetNextMaxRotate();
-
-				pos = postion1 - position_;
-				vect = { pos.x,pos.y };
-				vect = vect.Normalize();
-				theta = std::acosf(vect.x);
-				if (vect.y < 0) {
-					theta = 6.28f - theta;
-				}
-				std::list<int> nums = wave.GetNums();
-				waves_.push_back(std::make_unique<WaterWave>(std::abs(power1), theta, power1 < 0, next));
-				waves_.back()->Update(0.005f);
-				for (const int& no : nums) {
-					waves_.back()->AddNum(no);
-				}
-				
-				pos = postion2 - position_;
-				vect = { pos.x,pos.y };
-				vect = vect.Normalize();
-				theta = std::acosf(vect.x);
-				if (vect.y < 0) {
-					theta = 6.28f - theta;
-				}
-				waves_.push_back(std::make_unique<WaterWave>(std::abs(power2), theta, power2 < 0, next));
-				waves_.back()->Update(0.005f);
-				for (const int& no : nums) {
-					waves_.back()->AddNum(no);
-				}
-			}
-			else if (power1 != 0.0f) {
-				wave.AddNum(no_);
-				pos = postion1 - position_;
-				vect = { pos.x,pos.y };
-				vect = vect.Normalize();
-				theta = std::acosf(vect.x);
-				if (vect.y < 0) {
-					theta = 6.28f - theta;
-				}
-				std::list<int> nums = wave.GetNums();
-				waves_.push_back(std::make_unique<WaterWave>(std::abs(power1), theta, power1 < 0, wave.GetNextMaxRotate()));
-				waves_.back()->Update(0.005f);
-				for (const int& no : nums) {
-					waves_.back()->AddNum(no);
-				}
-			}
-			else if (power2 != 0.0f) {
-				wave.AddNum(no_);
-				pos = postion2 - position_;
-				vect = { pos.x,pos.y };
-				vect = vect.Normalize();
-				theta = std::acosf(vect.x);
-				if (vect.y < 0) {
-					theta = 6.28f - theta;
-				}
-				waves_.push_back(std::make_unique<WaterWave>(std::abs(power2), theta, power2 < 0, wave.GetNextMaxRotate()));
-				waves_.back()->Update(0.005f);
-				std::list<int> nums = wave.GetNums();
-				for (const int& no : nums) {
-					waves_.back()->AddNum(no);
-				}
-			}
-		}
-	}
-}
-
 void WaterChunk::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::PLAYER) {
 		isPlayer_ = true;
 		if (!player_->GetPreInWater()) {
 			// 波発生
-			AddWave(true);
+			//AddWave(true);
 		}
 	}
 }
@@ -516,41 +296,3 @@ void WaterChunk::SetCollider()
 	Collider::SetCircle({ position_.x,position_.y }, scale_);
 	collisionManager_->SetCollider(this);
 }
-
-//void WaterChunk::HitTest(const Wave& wave)
-//{
-//	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
-//		const Vector3 pos = chip->GetPosition();
-//		if (IsHitCircle(pos, wave.position_, wave.radius_) && !IsHitCircle(pos, wave.position_, wave.preRadius_)) {
-//			float t = (pos - wave.position_).Length() / wave.maxRadius_;
-//			chip->AddOutPower(wave.power_ * (1.0f - t));
-//		}
-//	}*/
-//}
-
-//void WaterChunk::SetGlobalVariable()
-//{
-//	for (int i = 0; i < kFloatEnd; i++) {
-//		globalVariable_->AddItem(fNames[i], fParas_[i]);
-//	}
-//
-//	ApplyGlobalVariable();
-//}
-
-//void WaterChunk::ApplyGlobalVariable()
-//{
-//	for (int i = 0; i < kFloatEnd; i++) {
-//		fParas_[i] = globalVariable_->GetFloatValue(fNames[i]);
-//
-//		if (i == FloatParamater::kAttenuation) {
-//			fParas_[i] = std::clamp(fParas_[i], 0.0001f, 1.0f);
-//		}
-//		else {
-//			if (fParas_[i] < 0.0001f) {
-//				fParas_[i] = 0.0001f;
-//			}
-//		}
-//	}
-//
-//	scale_ = { fParas_[kScale],fParas_[kScale] ,fParas_[kScale] };
-//}

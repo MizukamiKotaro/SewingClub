@@ -1,9 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "WaterChunkChip.h"
 #include "GameElement/GravityArea/GravityArea.h"
-#include "WaterWave.h"
 
 class Camera;
 class Player;
@@ -30,10 +28,6 @@ public:
 private:
 	void ActiveCheck(Camera* camera);
 
-	void CreateChips();
-
-	void AddWave(const bool& isDown);
-
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
@@ -42,15 +36,8 @@ private:
 
 	static DrawQuadrangleManager* quadrangleManager_;
 
-public:
-	
-	std::list<std::unique_ptr<WaterChunkChip>> chips_;
-	std::list<std::unique_ptr<WaterChunkChip>> chips2_;
-
 private:
 	static const Player* player_;
-
-	std::list<std::unique_ptr<WaterWave>> waves_;
 	bool isWave_;
 
 	bool isPlayer_;
