@@ -141,7 +141,7 @@ void WaterChunkQuadrangle::CreateQuadrangle(const Vector3& pos1, const float& sc
 	endScale_ = scale2;
 
 	length_ = (endPos_ - startPos_).Length();
-	position_ = (endPos_ - startPos_) / 2;
+	position_ = (endPos_ + startPos_) / 2;
 	position_.z = startPos_.z;
 
 	Vector3 pos = endPos_ - startPos_;

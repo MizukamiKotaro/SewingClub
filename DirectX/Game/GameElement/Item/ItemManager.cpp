@@ -18,9 +18,9 @@ void ItemManager::InitializeGlobalVariables()
 	stageEditor_ = std::make_unique<StageEditor>("アイテムの配置");
 	globalVariable_ = std::make_unique<GlobalVariableUser>("Item", "StaticItem");
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
-	itemNum_ = 1;
+	itemNum_ = 0;
 	scale_ = 0.5f;
-	reqItemNum_ = 1;
+	reqItemNum_ = 0;
 	reqScale_ = 0.8f;
 	SetGlobalVariable();
 }
@@ -29,8 +29,8 @@ void ItemManager::Initialize()
 {
 	Clear();
 	stageEditor_->Initialize();
-	itemNum_ = 1;
-	reqItemNum_ = 1;
+	itemNum_ = 0;
+	reqItemNum_ = 0;
 	SetGlobalVariable();
 	for (int i = 0; i < itemNum_; i++) {
 		itemMap_[i] = std::make_unique<Item>(i, &scale_);
@@ -117,13 +117,13 @@ void ItemManager::ApplyGlobalVariable()
 	scale_ = globalVariable_->GetFloatValue("アイテムのスケール");
 	Vector3 color = globalVariable_->GetVector3Value("アイテムの色");
 	color_ = { color.x,color.y,color.z,1.0f };
-	if (itemNum_ <= 0) {
-		itemNum_ = 1;
+	if (itemNum_ < 0) {
+		itemNum_ = 0;
 	}
 
 	reqItemNum_ = stageEditor_->GetIntValue("必須アイテムの数");
 	reqScale_ = globalVariable_->GetFloatValue("必須アイテムのスケール");
-	if (reqItemNum_ <= 0) {
-		reqItemNum_ = 1;
+	if (reqItemNum_ < 0) {
+		reqItemNum_ = 0;
 	}
 }
