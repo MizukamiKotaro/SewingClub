@@ -42,6 +42,7 @@ Baby::Baby(Player* player)
 	model_->SetTexture(TextureManager::GetInstance()->LoadTexture("baby_normal.png"));
 	animation_->Play(true);
 
+	effeEnterW_ = std::make_unique<EffectEnterWater>();
 }
 
 void Baby::Initialize()
@@ -64,6 +65,8 @@ void Baby::Initialize()
 	yarn_->transform_.scale_ = { 0.05f,0.05f,0.05f };
 
 	isCircleWater_ = true;
+
+	effeEnterW_->Initialize();
 }
 
 void Baby::Update(float deltaTime)
@@ -100,6 +103,11 @@ void Baby::Update(float deltaTime)
 		// modelにuvのセット
 		model_->SetUVParam(animation_->GetUVTrans());
 	}
+
+	if (spawnWaitCount_-- <= 0) {
+		isSpawnEffect_ = true;
+	}
+	effeEnterW_->Update();
 }
 
 void Baby::Draw(const Camera* camera)
@@ -107,6 +115,12 @@ void Baby::Draw(const Camera* camera)
 	model_->Draw(*camera);
 	YarnUpdate();
 	yarn_->Draw(*camera);
+
+}
+
+void Baby::EffectDraw()
+{
+	effeEnterW_->Draw();
 }
 
 
@@ -125,7 +139,10 @@ void Baby::OnCollision(const Collider& collider)
 
 			model_->transform_.rotate_.z = rotate + 1.56f;
 			model_->Update();
+
 		}
+
+		
 
 		if (collider.GetShape() == ColliderShape::CIRCLE) {
 			isCircleWater_ = true;
@@ -178,6 +195,20 @@ void Baby::OnCollision(const Collider& collider)
 
 			}
 		}
+
+		//水にはいいた瞬間の処理
+		if (!preIsInWater_&& isInWater_ && !isFollowWater_) {
+
+			if (isSpawnEffect_) {
+				isSpawnEffect_ = false;
+				spawnWaitCount_ = maxSpawnWaitCount_;
+
+				Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
+
+				Vector2 playerV2 = { model_->transform_.translate_.x,model_->transform_.translate_.y };
+				effeEnterW_->SpawnEffect(playerV2, Vector2{ pos.x, pos.y } *0.1f, { player_->GetPosition().x,player_->GetPosition().y });
+			}
+		}
 	}
 }
 
@@ -213,6 +244,8 @@ void Baby::ApplyGlobalVariable()
 	Vector2 scale = globalVariable_->GetVector2Value("スケール");
 	model_->transform_.scale_ = { scale.x,scale.y,1.0f };
 	model_->transform_.UpdateMatrix();
+
+	
 }
 
 void Baby::OutWaterUpdate(const float& deltaTime)

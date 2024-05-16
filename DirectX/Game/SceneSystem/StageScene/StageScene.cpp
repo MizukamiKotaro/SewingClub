@@ -99,6 +99,7 @@ void StageScene::Initialize()
 	for (auto& data : datas) {
 		effeGoalGuid_->SetQuota(data.pos, *data.size, data.isHit);
 	}
+	effeGoalGuid_->Update();
 
 	enemyManager_->Initialize(player_.get());
 
@@ -359,6 +360,8 @@ void StageScene::MakePostEffect()
 	waterManager_->Draw(camera_.get());
 
 	player_->EffectDraw();
+
+	baby_->EffectDraw();
 
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());

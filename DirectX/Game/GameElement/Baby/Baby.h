@@ -6,6 +6,7 @@
 //#include "GameElement/Player/GravityAreaSearch.h"
 #include "GameElement/Charactor/Charactor.h"
 #include "GameElement/Animation/Animation2D.h"
+#include "GameElement/Effects/EffectEnterWater.h"
 
 class Player;
 
@@ -20,6 +21,7 @@ public:
 
 	void Draw(const Camera* camera) override;
 
+	void EffectDraw();
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
@@ -79,4 +81,8 @@ private:
 	// アニメーション
 	std::unique_ptr<Animation2D> animation_;
 
+	std::unique_ptr<EffectEnterWater>effeEnterW_;
+	int spawnWaitCount_ = 0;
+	int maxSpawnWaitCount_ = 10;
+	bool isSpawnEffect_ = false;
 };
