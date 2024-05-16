@@ -90,20 +90,22 @@ void WaterEffect::PostDrawWaterArea()
 
 void WaterEffect::SetGlobalVariable()
 {
-	global_->AddItem("密度", noise_->noiseData_->density);
 	global_->AddItem("カメラの影響の受けにくさ", noise_->noiseData_->moveScale);
-	global_->AddItem("うねうねの動きにくさ", uneune_);
 	global_->AddItem("映り込む背景の修正", noise_->noiseData_->correctionUV);
 
 	if (stageEditor_) {
 		stageEditor_->AddItem("水の色", Vector3{ 0.3f,1.0f,0.8f });
 		stageEditor_->AddItem("うねうねの色", Vector3{ 0.8f,0.8f,0.8f });
+		stageEditor_->AddItem("密度", noise_->noiseData_->density);
+		stageEditor_->AddItem("うねうねの動きにくさ", uneune_);
 		stageEditor_->AddItem("プレイヤーに重ねる色", Vector3{ 0.8f,0.8f,0.8f });
 		stageEditor_->AddItem("プレイヤーに重ねる色の透明度", float(0.5f));
 	}
 	else {
 		global_->AddItem("水の色", Vector3{ 0.3f,1.0f,0.8f });
 		global_->AddItem("うねうねの色", Vector3{ 0.8f,0.8f,0.8f });
+		global_->AddItem("密度", noise_->noiseData_->density);
+		global_->AddItem("うねうねの動きにくさ", uneune_);
 		global_->AddItem("プレイヤーに重ねる色", Vector3{ 0.8f,0.8f,0.8f });
 		global_->AddItem("プレイヤーに重ねる色の透明度", float(0.5f));
 	}
@@ -113,12 +115,7 @@ void WaterEffect::SetGlobalVariable()
 
 void WaterEffect::ApplyGlobalVariable()
 {
-	noise_->noiseData_->density = global_->GetFloatValue("密度");
 	noise_->noiseData_->moveScale = global_->GetFloatValue("カメラの影響の受けにくさ");
-	uneune_ = global_->GetIntValue("うねうねの動きにくさ");
-	if (uneune_ <= 0) {
-		uneune_ = 1;
-	}
 
 	if (stageEditor_) {
 		Vector3 waterColor = stageEditor_->GetVector3Value("水の色");
@@ -127,6 +124,8 @@ void WaterEffect::ApplyGlobalVariable()
 		noise_->noiseData_->lightningColor = { waterColor.x,waterColor.y,waterColor.z,1.0f };
 		waterColor = stageEditor_->GetVector3Value("プレイヤーに重ねる色");
 		waterArea_->color_ = { waterColor.x,waterColor.y,waterColor.z,stageEditor_->GetFloatValue("プレイヤーに重ねる色の透明度") };
+		noise_->noiseData_->density = stageEditor_->GetFloatValue("密度");
+		uneune_ = stageEditor_->GetIntValue("うねうねの動きにくさ");
 	}
 	else {
 		Vector3 waterColor = global_->GetVector3Value("水の色");
@@ -135,6 +134,11 @@ void WaterEffect::ApplyGlobalVariable()
 		noise_->noiseData_->lightningColor = { waterColor.x,waterColor.y,waterColor.z,1.0f };
 		waterColor = global_->GetVector3Value("プレイヤーに重ねる色");
 		waterArea_->color_ = { waterColor.x,waterColor.y,waterColor.z,global_->GetFloatValue("プレイヤーに重ねる色の透明度") };
+		noise_->noiseData_->density = global_->GetFloatValue("密度");
+		uneune_ = global_->GetIntValue("うねうねの動きにくさ");
+	}
+	if (uneune_ <= 0) {
+		uneune_ = 1;
 	}
 
 	outline_->color_ = noise_->noiseData_->lightningColor;
