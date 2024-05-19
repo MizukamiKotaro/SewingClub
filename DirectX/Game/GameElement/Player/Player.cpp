@@ -91,6 +91,7 @@ Player::Player()
 	effectOutWater_ = std::make_unique<EffectOutWater>();
 	effeEnterWater_ = std::make_unique<EffectEnterWater>();
 	effeUIEnterWater_ = std::make_unique<EffectUIEnterWater>("IngameUIEnterWater");
+	particleScceleration_ = std::make_unique<ParticleAcceleration>();
 	
 	// アニメーションの初期化とモデルのセット
 	animation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("playermove"));
@@ -110,6 +111,9 @@ void Player::Initialize()
 	effectOutWater_->Initialize();
 	effeEnterWater_->Initialize();
 	effeUIEnterWater_->Initialize();
+	particleScceleration_->Initialze(&model_->transform_.translate_);
+	//debugyou
+	//particleScceleration_->IsActive(true);
 
 	//水の中のUI演出を実行
 	effeUIEnterWater_->IsEffectActive(true);
@@ -189,11 +193,13 @@ void Player::Update(float deltaTime)
 	effectOutWater_->Update();
 	effeEnterWater_->Update();
 	effeUIEnterWater_->Update();
+	particleScceleration_->Update();
 }
 
 void Player::Draw(const Camera* camera)
 {
 	effeExtraJump_->Draw();
+	particleScceleration_->Draw();
 	model_->Draw(*camera);
 	//yarn_->Draw();
 }

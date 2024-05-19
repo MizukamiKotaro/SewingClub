@@ -271,6 +271,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Utils\Shape\Sphere.cpp" />
     <ClCompile Include="Engine\Utils\Shape\Triangle.cpp" />
     <ClCompile Include="Engine\Utils\Transform\Transform.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\particleAcceleration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h" />
@@ -452,6 +453,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\SceneSystem\SelectScene\SelectScene.h" />
     <ClInclude Include="Game\SceneSystem\StageScene\StageScene.h" />
     <ClInclude Include="Game\SceneSystem\TitleScene\TitleScene.h" />
+    <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
