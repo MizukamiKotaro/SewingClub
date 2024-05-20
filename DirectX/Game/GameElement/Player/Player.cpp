@@ -113,7 +113,7 @@ void Player::Initialize()
 	effeUIEnterWater_->Initialize();
 	particleScceleration_->Initialze(&model_->transform_.translate_);
 	//debugyou
-	//particleScceleration_->IsActive(true);
+	particleScceleration_->IsActive(true);
 
 	//水の中のUI演出を実行
 	effeUIEnterWater_->IsEffectActive(true);

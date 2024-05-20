@@ -19,6 +19,8 @@ public:
 
 private:
 
+	void SetGlobalV();
+
 	//インスタンシングに必要
 	InstancingModelManager* instancingManager_ = nullptr;
 	const InstancingMeshTexData* modelData_ = nullptr;
@@ -52,12 +54,10 @@ private:
 	Vector2 spawnAreaSize_ = { 10,5 };
 
 	//透明度
-	float stAlpha_ = 0;
-	float edAlpha_ = 1;
+	Vector2 stedAlpha_ = { 1,1 };
 
 	//サイズ
-	float stScale_ = 1;
-	float edScale_ = 0;
+	Vector2 stedScale_ = { 1,0 };
 
 	//生存カウント
 	int maxDeadCount_ = 60;
@@ -68,6 +68,28 @@ private:
 
 	//ランダム速度
 	Vector2 randSpd_ = { 0.1f,0.5f };
+
+	GlobalVariableUser* gVUser_=nullptr;
+	//デバッグ用
+	enum tags
+	{
+		SpawnCount,
+		SpawnArea,
+		StEdAlpha,
+		StEdScale,
+		DeadCount,
+		randSpd,
+		_countNum
+	};
+
+	std::string keys[_countNum] = {
+		"出現頻度",
+		"出現エリアサイズ",
+		"最初と最後の透明度",
+		"最初と最後のサイズ",
+		"死亡カウント",
+		"ランダム速度",
+	};
 #pragma endregion
 
 
