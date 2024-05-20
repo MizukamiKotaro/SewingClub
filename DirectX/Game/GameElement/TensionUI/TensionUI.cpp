@@ -15,8 +15,6 @@ TensionUI::TensionUI() {
 
 void TensionUI::Initialize() {
 	SetGlobalVariable();
-	//sprites_.at(static_cast<uint32_t>(Type::Gauge))->transform_.parent_ = &sprites_.at(static_cast<uint32_t>(Type::Frame))->transform_;
-	sprites_.at(static_cast<uint32_t>(Type::Frame))->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
 void TensionUI::Update(const float& tension) {
@@ -42,15 +40,15 @@ void TensionUI::Update(const float& tension) {
 	// uv座標を求める 1.0f - テンション率
 	float uvTrans = 1.0f - tensionPercent_;
 	// spriteSizeを求める 最大サイズ * uvScale
-	float spriteSize = kMaxSize_ * uvScale;
+	float spriteSize = kMaxSize_.x * uvScale;
 	// spriteの位置を求める (最大サイズ - 今のサイズ) / 2 + 定位置
-	float spritePos = (kMaxSize_ - spriteSize) * 0.5f;
-	spritePos += fixedPosition_;
+	float spritePos = (kMaxSize_.x - spriteSize) * 0.5f;
+	spritePos += fixedPosition_.x;
 
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetTextureTopLeft(Vector2(uvTrans,0.0f));
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetTextureSize(Vector2(uvScale, 1.0f));
-	sprites_.at(static_cast<uint32_t>(Type::Gauge))->pos_.x = spritePos;
-	sprites_.at(static_cast<uint32_t>(Type::Gauge))->size_.x = spriteSize;
+	sprites_.at(static_cast<uint32_t>(Type::Gauge))->pos_ = Vector2(spritePos, fixedPosition_.y);
+	sprites_.at(static_cast<uint32_t>(Type::Gauge))->size_ = Vector2(spriteSize, kMaxSize_.y);
 	for (auto& sprite : sprites_) {
 		sprite->Update();
 	}
@@ -63,20 +61,32 @@ void TensionUI::Draw() {
 }
 
 void TensionUI::SetGlobalVariable() {
+	global_->AddItem("定位置", fixedPosition_);
+	global_->AddItem("最大サイズ", kMaxSize_);
+
 	uint32_t index = 0u;
 	for (auto& sprite : sprites_) {
 		global_->AddItem("size", sprite->size_, tree.at(index));
 		global_->AddItem("pos", sprite->pos_, tree.at(index));
+		global_->AddItem("color", Vector3(colors_.at(index).x, colors_.at(index).y, colors_.at(index).z), tree.at(index));
+		global_->AddItem("透明度a", colors_.at(index).w, tree.at(index));
 		index++;
 	}
 	ApplyGlobalVariable();
 }
 
 void TensionUI::ApplyGlobalVariable() {
+	fixedPosition_ = global_->GetVector2Value("定位置");
+	kMaxSize_ = global_->GetVector2Value("最大サイズ");
+
 	uint32_t index = 0u;
 	for (auto& sprite : sprites_) {
 		sprite->size_ = global_->GetVector2Value("size", tree.at(index));
 		sprite->pos_ = global_->GetVector2Value("pos", tree.at(index));
+		Vector3 colorHandle = global_->GetVector3Value("color", tree.at(index));
+		float alphaHandle = global_->GetFloatValue("透明度a", tree.at(index));
+		colors_.at(index) = Vector4(colorHandle.x, colorHandle.y, colorHandle.z, alphaHandle);
+		sprite->SetColor(colors_.at(index));
 		index++;
 	}
 }

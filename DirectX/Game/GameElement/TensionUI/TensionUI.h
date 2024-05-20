@@ -30,10 +30,10 @@ private:
 
 
 	std::array<std::unique_ptr<Sprite>, static_cast<uint32_t>(Type::kMaxNum)> sprites_;
-	std::array<Transform, static_cast<uint32_t>(Type::kMaxNum)> trans_;
+	std::array<Vector4, static_cast<uint32_t>(Type::kMaxNum)> colors_;
 
-	float fixedPosition_ = 1060.f; // 定位置
-	float kMaxSize_ = 350.0f; // 最大サイズx
+	Vector2 fixedPosition_ = Vector2(1060.f, 650.0f); // 定位置
+	Vector2 kMaxSize_ = Vector2(350.0f, 87.5f); // 最大サイズx
 	float tensionPercent_ = 0.2f; // テンション率。1を最大とする
 
 
