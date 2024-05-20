@@ -74,6 +74,8 @@ StageScene::StageScene()
 	waterEffect_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
 
 	optionUI_ = std::make_unique<OptionUI>();
+
+	tensionUI_ = std::make_unique<TensionUI>();
 }
 
 void StageScene::Initialize()
@@ -113,6 +115,8 @@ void StageScene::Initialize()
 
 	optionUI_->Initialize();
 	isOptionOpen_ = false;
+
+	tensionUI_->Initialize();
 }
 
 void StageScene::Update()
@@ -192,6 +196,8 @@ void StageScene::Update()
 		camera_->transform_.translate_.y = player_->GetPosition().y;
 		camera_->Update();
 	}
+	// テンション関係
+	tensionUI_->Update();
 
 	// 背景更新
 	bg_->Update(camera_.get());
@@ -264,6 +270,7 @@ void StageScene::Draw()
 	if (isOptionOpen_) {
 		optionUI_->Draw();
 	}
+	tensionUI_->Draw();
 
 	BlackDraw();
 

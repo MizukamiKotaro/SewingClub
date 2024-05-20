@@ -235,6 +235,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\ScoreManager\ScoreManager.cpp" />
     <ClCompile Include="Game\GameElement\Score\Score.cpp" />
     <ClCompile Include="Game\GameElement\StageUI\StageUI.cpp" />
+    <ClCompile Include="Game\GameElement\TensionUI\TensionUI.cpp" />
     <ClCompile Include="Game\GameElement\WaterChunk\WaterChunk.cpp" />
     <ClCompile Include="Game\GameElement\WaterChunk\WaterChunkChip.cpp" />
     <ClCompile Include="Game\GameElement\WaterChunk\WaterChunkQuadrangle.cpp" />
@@ -434,6 +435,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\ScoreManager\ScoreManager.h" />
     <ClInclude Include="Game\GameElement\Score\Score.h" />
     <ClInclude Include="Game\GameElement\StageUI\StageUI.h" />
+    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h" />
     <ClInclude Include="Game\GameElement\WaterChunk\WaterChunk.h" />
     <ClInclude Include="Game\GameElement\WaterChunk\WaterChunkChip.h" />
     <ClInclude Include="Game\GameElement\WaterChunk\WaterChunkQuadrangle.h" />
