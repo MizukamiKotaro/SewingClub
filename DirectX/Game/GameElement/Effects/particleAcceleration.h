@@ -26,7 +26,7 @@ private:
 	const InstancingMeshTexData* modelData_ = nullptr;
 
 	//プレイヤー座標のポインタ
-	const Vector3* playerPos_;
+	const Vector3* playerPos_ = nullptr;
 
 	//パーティクル関係
 	struct ParticleData
@@ -36,15 +36,30 @@ private:
 		Vector3 velo;
 		bool isDead = false;
 		int count = 0;
+		int dustSpawnCount = 0;
 		int maxCount_;
 		float alpha_;
 	};
 
 	std::list<ParticleData>datas_;
 
+	//残像エフェクト
+	struct Dust
+	{
+		int count_ = 0;	//生存カウント
+		
+		Vector3 pos;
+		Vector3 scale;
+		bool isDead = false;
+		float alpha;
+	};
+
+	std::list<Dust>dDatas_;
+
+
 #pragma region 各ImGuiデータ
 	//処理のONOFF
-	bool isActive_;
+	bool isActive_ = false;
 
 	//発生間隔
 	int spawnCount_ = 0;
@@ -69,6 +84,13 @@ private:
 	//ランダム速度
 	Vector2 randSpd_ = { 0.1f,0.5f };
 
+	Vector3 color_ = { 1,1,1 };
+
+	//残像エフェクト生成頻度
+	int maxDustSpawnCount_ = 1;
+
+	
+
 	GlobalVariableUser* gVUser_=nullptr;
 	//デバッグ用
 	enum tags
@@ -79,6 +101,8 @@ private:
 		StEdScale,
 		DeadCount,
 		randSpd,
+		color,
+		DustSpawnCount,
 		_countNum
 	};
 
@@ -89,6 +113,8 @@ private:
 		"最初と最後のサイズ",
 		"死亡カウント",
 		"ランダム速度",
+		"色",
+		"塵の発生間隔",
 	};
 #pragma endregion
 

@@ -19,6 +19,8 @@ ParticleAcceleration::ParticleAcceleration()
 	gVUser_->AddItem(keys[StEdScale], stedScale_);
 	gVUser_->AddItem(keys[DeadCount], maxDeadCount_);
 	gVUser_->AddItem(keys[randSpd], randSpd_);
+	gVUser_->AddItem(keys[color], color_);
+	gVUser_->AddItem(keys[DustSpawnCount], maxDustSpawnCount_);
 
 
 }
@@ -92,6 +94,34 @@ void ParticleAcceleration::Update()
 			float scale = Calc::Lerp(stedScale_.x, stedScale_.y, t);
 			data.scale = { scale,scale,scale };
 			data.alpha_ = Calc::Lerp(stedAlpha_.x, stedAlpha_.y, t);
+
+			//塵沸き処理
+			if (data.dustSpawnCount++ >= maxDustSpawnCount_) {
+				data.dustSpawnCount = 0;
+
+				Dust newDust;
+				newDust.count_ = data.count;
+				newDust.pos = data.pos;
+				newDust.scale = data.scale;
+				newDust.alpha = data.alpha_;
+
+				dDatas_.emplace_back(newDust);
+			}
+		}
+	}
+
+	//塵更新
+	for (auto& data : dDatas_) {
+		if (data.count_++ >= maxDeadCount_) {
+			data.isDead = true;
+			continue;
+		}
+		else {
+			float t = (float)data.count_ / (float)maxDeadCount_;
+
+			float scale = Calc::Lerp(stedScale_.x, stedScale_.y, t);
+			data.scale = { scale,scale,scale };
+			data.alpha = Calc::Lerp(stedAlpha_.x, stedAlpha_.y, t);
 		}
 	}
 
@@ -105,14 +135,27 @@ void ParticleAcceleration::Update()
 		}
 		});
 
+	//削除処理
+	dDatas_.remove_if([](Dust& data) {
+		if (data.isDead) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		});
+
 }
 
 void ParticleAcceleration::Draw()
 {
-
 	for (auto& data : datas_) {
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(data.scale, Vector3{ 0,0,0 }, data.pos);
-		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix ,Matrix4x4::MakeIdentity4x4(), {1,1,1,data.alpha_} });
+		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix ,Matrix4x4::MakeIdentity4x4(), {color_.x,color_.y,color_.z,data.alpha_} });
+	}
+	for (auto& data : dDatas_) {
+		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(data.scale, Vector3{ 0,0,0 }, data.pos);
+		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix ,Matrix4x4::MakeIdentity4x4(), {color_.x,color_.y,color_.z,data.alpha} });
 	}
 
 }
@@ -136,5 +179,6 @@ void ParticleAcceleration::SetGlobalV()
 	stedScale_ = gVUser_->GetVector2Value(keys[StEdScale]);
 	maxDeadCount_ = gVUser_->GetIntValue(keys[DeadCount]);
 	randSpd_ = gVUser_->GetVector2Value(keys[randSpd]);
-
+	color_ = gVUser_->GetVector3Value(keys[color]);
+	maxDustSpawnCount_ = gVUser_->GetIntValue(keys[DustSpawnCount]);
 }
