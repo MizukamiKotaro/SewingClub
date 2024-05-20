@@ -197,7 +197,7 @@ void StageScene::Update()
 		camera_->Update();
 	}
 	// テンション関係
-	tensionUI_->Update();
+	tensionUI_->Update(baby_->GetTension());
 
 	// 背景更新
 	bg_->Update(camera_.get());

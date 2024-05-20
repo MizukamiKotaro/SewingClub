@@ -11,7 +11,7 @@ public:
 	~TensionUI() = default;
 
 	void Initialize();
-	void Update();
+	void Update(const float& tension);
 	void Draw();
 
 private:

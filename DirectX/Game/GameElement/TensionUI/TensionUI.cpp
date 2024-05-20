@@ -19,7 +19,7 @@ void TensionUI::Initialize() {
 	sprites_.at(static_cast<uint32_t>(Type::Frame))->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
-void TensionUI::Update() {
+void TensionUI::Update(const float& tension) {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 	ImGui::Begin("テンション");
@@ -27,23 +27,25 @@ void TensionUI::Update() {
 	ImGui::End();
 #endif // _DEBUG
 
+	// ここで0 ~ 100 なのを 0 ~ 1でもらうようにしている
+	tensionPercent_ = tension * 0.01f;
+
 	/*
 	* pos,size,uvScale,uvTrans
 	* 初期値 1060.0f,350.0f,1.0f,1.0f
 	* 1097.5f,280.0f,0.8f,0.2fだった場合
 	*/
 
-	// uvを求める zのみでyはかならず1.0f
-	// uv座標を求める
-	float uvTrans = tensionPercent_;
-	// uvScaleを求める。1.0f - uvTrans
-	float uvScale = 1.0f - tensionPercent_;
+	// uvを求める xのみでyはかならず固定
+	// uvScaleを求める テンション率
+	float uvScale = tensionPercent_;
+	// uv座標を求める 1.0f - テンション率
+	float uvTrans = 1.0f - tensionPercent_;
 	// spriteSizeを求める 最大サイズ * uvScale
 	float spriteSize = kMaxSize_ * uvScale;
 	// spriteの位置を求める (最大サイズ - 今のサイズ) / 2 + 定位置
 	float spritePos = (kMaxSize_ - spriteSize) * 0.5f;
 	spritePos += fixedPosition_;
-
 
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetTextureTopLeft(Vector2(uvTrans,0.0f));
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetTextureSize(Vector2(uvScale, 1.0f));
@@ -55,11 +57,9 @@ void TensionUI::Update() {
 }
 
 void TensionUI::Draw() {
-	
 	for (auto& sprite : sprites_) {
 		sprite->Draw();
 	}
-	//sprites_.at(static_cast<uint32_t>(Type::Gauge))->Draw();
 }
 
 void TensionUI::SetGlobalVariable() {
