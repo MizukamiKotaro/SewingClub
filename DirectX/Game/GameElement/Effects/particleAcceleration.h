@@ -15,7 +15,7 @@ public:
 
 	void Draw();
 
-	void IsActive(bool active);
+	void IsActive(bool active,float spd);
 
 private:
 
@@ -62,8 +62,14 @@ private:
 	bool isActive_ = false;
 
 	//発生間隔
-	int spawnCount_ = 0;
+	float spawnCount_ = 0;
 	int maxSpawnCount_ = 5;
+
+	//プレイヤー速度に準じた沸き量
+	float valueSpawnCount_ = 0;
+
+	//影響度
+	float pSpdpower_ = 1.0f;
 
 	//パーティクル発生エリアサイズ
 	Vector2 spawnAreaSize_ = { 10,5 };
@@ -103,6 +109,7 @@ private:
 		randSpd,
 		color,
 		DustSpawnCount,
+		EffectivePspd,
 		_countNum
 	};
 
@@ -115,6 +122,8 @@ private:
 		"ランダム速度",
 		"色",
 		"塵の発生間隔",
+		"プレイヤー速度影響度",
+
 	};
 #pragma endregion
 

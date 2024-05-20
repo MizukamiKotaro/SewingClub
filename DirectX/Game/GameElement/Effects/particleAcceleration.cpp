@@ -21,7 +21,7 @@ ParticleAcceleration::ParticleAcceleration()
 	gVUser_->AddItem(keys[randSpd], randSpd_);
 	gVUser_->AddItem(keys[color], color_);
 	gVUser_->AddItem(keys[DustSpawnCount], maxDustSpawnCount_);
-
+	gVUser_->AddItem(keys[EffectivePspd], pSpdpower_);
 
 }
 
@@ -47,7 +47,7 @@ void ParticleAcceleration::Update()
 	//Onの時のパーティクル発生処理
 	if (isActive_) {
 		//カウント一定量で処理
-		if (spawnCount_++ >= maxSpawnCount_) {
+		if ((spawnCount_+=valueSpawnCount_*pSpdpower_) >= (float)maxSpawnCount_) {
 			spawnCount_ = 0;
 			ParticleData newData{};
 
@@ -160,10 +160,11 @@ void ParticleAcceleration::Draw()
 
 }
 
-void ParticleAcceleration::IsActive(bool active)
+void ParticleAcceleration::IsActive(bool active,float spd)
 {
 	if (active) {
 		isActive_ = true;
+		valueSpawnCount_ = spd;
 	}
 	else {
 		isActive_ = false;
@@ -181,4 +182,5 @@ void ParticleAcceleration::SetGlobalV()
 	randSpd_ = gVUser_->GetVector2Value(keys[randSpd]);
 	color_ = gVUser_->GetVector3Value(keys[color]);
 	maxDustSpawnCount_ = gVUser_->GetIntValue(keys[DustSpawnCount]);
+	pSpdpower_ = gVUser_->GetFloatValue(keys[EffectivePspd]);
 }
