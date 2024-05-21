@@ -13,6 +13,7 @@ public:
 	~Animation2DData() = default;
 
 	void Initialize(std::string fileName, const uint32_t& hDivNum = 1u, const uint32_t& wDivNum = 1u);
+	void Initialize(const uint32_t& hDivNum, const uint32_t& wDivNum);
 
 private:
 	// アニメーションNo.の格納

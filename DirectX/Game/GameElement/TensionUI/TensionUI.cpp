@@ -3,25 +3,31 @@
 #include "TextureManager/TextureManager.h"
 
 TensionUI::TensionUI() {
-	for (auto& model : sprites_) {
-		model = std::make_unique<Sprite>(TextureManager::GetInstance()->LoadTexture("baby_UI_gageDown.png"));
+	for (auto& sprite : sprites_) {
+		sprite = std::make_unique<Sprite>(TextureManager::GetInstance()->LoadTexture("baby_UI_gageDown.png"));
 	}
+	sprites_.at(static_cast<uint32_t>(Type::Face))->LoadTexture("baby_face.png");
 	global_ = std::make_unique<GlobalVariableUser>("UI", "TensionUI");
 	tree = {
 	   "Frame",
 	   "Gauge",
+	   "Face",
 	};
+	animationData_ = std::make_unique<Animation2DData>();
+	animationData_->Initialize(1u, 9u);
+	animation_ = std::make_unique<Animation2D>(animationData_.get());
 }
 
 void TensionUI::Initialize() {
 	SetGlobalVariable();
 }
 
-void TensionUI::Update(const float& tension) {
+void TensionUI::Update(const float& tension, const int& faceParam) {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 	ImGui::Begin("テンション");
 	ImGui::DragFloat("テンション率", &tensionPercent_, 0.01f, 0.0f, 1.0f);
+	ImGui::Text("Face %d", faceParam);
 	ImGui::End();
 #endif // _DEBUG
 
@@ -49,6 +55,12 @@ void TensionUI::Update(const float& tension) {
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetTextureSize(Vector2(uvScale, 1.0f));
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->pos_ = Vector2(spritePos, fixedPosition_.y);
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->size_ = Vector2(spriteSize, kMaxSize_.y);
+
+	auto handle = animation_->GetSceneUV(faceParam);
+	sprites_.at(static_cast<uint32_t>(Type::Face))->SetTextureTopLeft(Vector2(handle.translate_.x, handle.translate_.y));
+	sprites_.at(static_cast<uint32_t>(Type::Face))->SetTextureSize(Vector2(handle.scale_.x, handle.scale_.y));
+
+
 	for (auto& sprite : sprites_) {
 		sprite->Update();
 	}
