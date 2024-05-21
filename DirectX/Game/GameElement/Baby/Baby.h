@@ -78,7 +78,6 @@ private:
 		kSuperSmile,
 		kAnxiety,
 		kCry,
-		kSuperSuperSmile = 7,
 		kFaceEnd,
 	};
 
