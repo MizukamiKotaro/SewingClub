@@ -11,7 +11,7 @@ public:
 
 	void Initialze(const Vector3*playerP);
 
-	void Update();
+	void Update(const Vector2& playerdirection);
 
 	void Draw();
 
@@ -65,11 +65,16 @@ private:
 	float spawnCount_ = 0;
 	int maxSpawnCount_ = 5;
 
+	//中心からどれだけ離れた点から出すか
+	float directionCenter_ =1.0f;
+
 	//プレイヤー速度に準じた沸き量
 	float valueSpawnCount_ = 0;
 
 	//影響度
 	float pSpdpower_ = 1.0f;
+
+	int dustDeadCount_ = 30;
 
 	//パーティクル発生エリアサイズ
 	Vector2 spawnAreaSize_ = { 10,5 };
@@ -102,6 +107,7 @@ private:
 	enum tags
 	{
 		SpawnCount,
+		DirectionCenter,
 		SpawnArea,
 		StEdAlpha,
 		StEdScale,
@@ -115,6 +121,7 @@ private:
 
 	std::string keys[_countNum] = {
 		"出現頻度",
+		"沸き場所の中央からの差",
 		"出現エリアサイズ",
 		"最初と最後の透明度",
 		"最初と最後のサイズ",

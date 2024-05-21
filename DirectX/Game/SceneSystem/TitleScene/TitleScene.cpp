@@ -99,7 +99,7 @@ void TitleScene::Initialize()
 	whiteS_->size_ = { 1280,720 };
 	whiteS_->Update();
 
-	optionUI_->Initialize();
+	optionUI_->Initialize(OptionUI::kTitle);
 	optionUI_->Update();
 
 	//いい感じの演出になったので消します

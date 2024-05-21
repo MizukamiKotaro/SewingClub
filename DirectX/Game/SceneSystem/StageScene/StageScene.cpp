@@ -111,7 +111,7 @@ void StageScene::Initialize()
 
 	isCanGoal_ = false;
 
-	optionUI_->Initialize();
+	optionUI_->Initialize(OptionUI::kStage);
 	isOptionOpen_ = false;
 }
 

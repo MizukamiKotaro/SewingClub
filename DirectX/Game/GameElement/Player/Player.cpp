@@ -113,7 +113,7 @@ void Player::Initialize()
 	effeUIEnterWater_->Initialize();
 	particleScceleration_->Initialze(&model_->transform_.translate_);
 	//debugyou
-	//particleScceleration_->IsActive(true);
+	particleScceleration_->IsActive(true,10.0f);
 
 	//水の中のUI演出を実行
 	effeUIEnterWater_->IsEffectActive(true);
@@ -193,7 +193,7 @@ void Player::Update(float deltaTime)
 	effectOutWater_->Update();
 	effeEnterWater_->Update();
 	effeUIEnterWater_->Update();
-	particleScceleration_->Update();
+	particleScceleration_->Update(vector_);
 }
 
 void Player::Draw(const Camera* camera)
@@ -300,7 +300,7 @@ void Player::Move(float deltaTime)
 			effectActive = true;
 		}
 
-		particleScceleration_->IsActive(effectActive, velocity_.Length());
+		//particleScceleration_->IsActive(effectActive, velocity_.Length());
 	}
 	else {
 		// 入力がなかった時の処理
@@ -316,7 +316,7 @@ void Player::Move(float deltaTime)
 			speed_ = 0.0f;
 		}
 
-		particleScceleration_->IsActive(false,0);
+		//particleScceleration_->IsActive(false,0);
 	}
 
 	Naminami(deltaTime);

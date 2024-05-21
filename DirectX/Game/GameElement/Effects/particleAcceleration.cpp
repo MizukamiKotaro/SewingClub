@@ -14,6 +14,7 @@ ParticleAcceleration::ParticleAcceleration()
 	gVUser_ = new GlobalVariableUser("Effects", "ParticleAcceleration");
 
 	gVUser_->AddItem(keys[SpawnCount], maxSpawnCount_);
+	gVUser_->AddItem(keys[DirectionCenter], directionCenter_);
 	gVUser_->AddItem(keys[SpawnArea], spawnAreaSize_);
 	gVUser_->AddItem(keys[StEdAlpha], stedAlpha_);
 	gVUser_->AddItem(keys[StEdScale], stedScale_);
@@ -40,7 +41,7 @@ void ParticleAcceleration::Initialze(const Vector3* playerP)
 	SetGlobalV();
 }
 
-void ParticleAcceleration::Update()
+void ParticleAcceleration::Update(const Vector2&playerdirection)
 {
 	SetGlobalV();
 
@@ -52,12 +53,16 @@ void ParticleAcceleration::Update()
 			ParticleData newData{};
 
 			//プレイヤー座標を中心に発生位置を設定
-			newData.pos = *playerPos_;
+			//差の距離算出
+			Vector3 direc = { playerdirection.x,playerdirection.y,0 };
+			direc = direc.Normalize() * directionCenter_;
+
+			newData.pos = *playerPos_ + direc;
 			newData.pos.x += RandomGenerator::GetInstance()->RandFloat(-spawnAreaSize_.x, spawnAreaSize_.x);
 			newData.pos.y += RandomGenerator::GetInstance()->RandFloat(-spawnAreaSize_.y, spawnAreaSize_.y);
 
-			//速度設定
-			newData.velo = RandomGenerator::GetInstance()->RandVector3(minVelo_, maxVelo_) * RandomGenerator::GetInstance()->RandFloat(randSpd_.x, randSpd_.y);
+			//移動方向設定
+			newData.velo = -direc.Normalize()*RandomGenerator::GetInstance()->RandFloat(randSpd_.x,randSpd_.y);
 
 			//初期サイズ設定
 			newData.scale = { stedScale_.x,stedScale_.x,stedScale_.x };
@@ -100,7 +105,7 @@ void ParticleAcceleration::Update()
 				data.dustSpawnCount = 0;
 
 				Dust newDust;
-				newDust.count_ = data.count;
+				newDust.count_ = dustDeadCount_;
 				newDust.pos = data.pos;
 				newDust.scale = data.scale;
 				newDust.alpha = data.alpha_;
@@ -175,6 +180,7 @@ void ParticleAcceleration::IsActive(bool active,float spd)
 void ParticleAcceleration::SetGlobalV()
 {
 	maxSpawnCount_ = gVUser_->GetIntValue(keys[SpawnCount]);
+	directionCenter_ = gVUser_->GetFloatValue(keys[DirectionCenter]);
 	spawnAreaSize_ = gVUser_->GetVector2Value(keys[SpawnArea]);
 	stedAlpha_ = gVUser_->GetVector2Value(keys[StEdAlpha]);
 	stedScale_ = gVUser_->GetVector2Value(keys[StEdScale]);
