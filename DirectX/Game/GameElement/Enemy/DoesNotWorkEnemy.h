@@ -10,7 +10,7 @@ public:
 
 	void Initialize() override;
 
-	void Update(const float& deltaTime, Camera* camera) override;
+	void Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension) override;
 
 	void Draw() const override;
 

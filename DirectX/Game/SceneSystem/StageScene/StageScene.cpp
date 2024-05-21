@@ -117,6 +117,8 @@ void StageScene::Initialize()
 	isOptionOpen_ = false;
 
 	tensionUI_->Initialize();
+	// テンション関係
+	tensionUI_->Update(0.0f, 0);
 }
 
 void StageScene::Update()
@@ -169,7 +171,7 @@ void StageScene::Update()
 	player_->Update(deltaTime);
 	baby_->Update(deltaTime);
 
-	enemyManager_->Update(deltaTime, camera_.get());
+	enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
 
 	deadLine_->Update(deltaTime);
 

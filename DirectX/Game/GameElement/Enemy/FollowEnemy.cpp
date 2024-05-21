@@ -28,7 +28,7 @@ void FollowEnemy::Initialize() {
 
 }
 
-void FollowEnemy::Update(const float& deltaTime, Camera* camera) {
+void FollowEnemy::Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension) {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 
@@ -48,14 +48,11 @@ void FollowEnemy::Update(const float& deltaTime, Camera* camera) {
 
 	isActive_ = camera->InScreenCheck2D(position_, scale_);
 
-	if (deltaTime) {
-
-	}
 	// カメラ内か
 	if (isActive_) {
 		// 感知距離内か
 		bool flag = ChackDistance();
-		Move(flag);
+		Move(deltaTime, flag, babyTension);
 		SetCollider();
 	}
 }
@@ -81,6 +78,7 @@ void FollowEnemy::SetGlobalVariable() {
 	stageEditor_->AddItem("初期位置から一定範囲で追従する", isAreaMove_);
 	stageEditor_->AddItem("現在位置から一定範囲で追従する", isAutoMove_);
 	stageEditor_->AddItem("初期位置に戻るか", isReturn_);
+	stageEditor_->AddItem("泣いている時の速度倍率", criedVelocityMagnification_);
 
 	ApplyGlobalVariable();
 }
@@ -93,6 +91,7 @@ void FollowEnemy::ApplyGlobalVariable() {
 	isAreaMove_ = stageEditor_->GetBoolValue("初期位置から一定範囲で追従する");
 	isAutoMove_ = stageEditor_->GetBoolValue("現在位置から一定範囲で追従する");
 	isReturn_ = stageEditor_->GetBoolValue("初期位置に戻るか");
+	criedVelocityMagnification_ = stageEditor_->GetFloatValue("泣いている時の速度倍率");
 
 	// debug用処理
 	// 両方が同じにされた場合。現在位置から追従を優先する
@@ -120,16 +119,21 @@ bool FollowEnemy::ChackDistance() const {
 	return false;
 }
 
-void FollowEnemy::Move(bool isFollowing) {
+void FollowEnemy::Move(const float& deltaTime,bool isFollowing, const uint32_t& babyTension) {
 	// 敵からplayerのベクトルを求める
 	Vector3 vec{};
+	float speed = speed_ * deltaTime;
 	if (isFollowing) {
+		//Babyクラスの状態を取得。泣いていたら
+		if (babyTension == 4u) {
+			speed *= criedVelocityMagnification_;
+		}
 		// 追従時
-		vec = *player_ptr - position_;
+		vec = (*player_ptr - position_);
 	}
 	else if (isReturn_){
 		// それ以外なら、初期位置に戻る
-		if (initialPosition_.Length(position_) < speed_) {
+		if (initialPosition_.Length(position_) < speed) {
 			// 特例処理
 			vec = Vector3(0.0f, 0.0f, 0.0f);
 			position_ = initialPosition_;
@@ -139,5 +143,5 @@ void FollowEnemy::Move(bool isFollowing) {
 		}
 	}
 	// 純粋に足す
-	position_ += vec.Normalize() * speed_;
+	position_ += vec.Normalize() * speed;
 }

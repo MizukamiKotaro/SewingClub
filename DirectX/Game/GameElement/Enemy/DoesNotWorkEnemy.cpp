@@ -22,7 +22,7 @@ void DoesNotWorkEnemy::Initialize()
 {
 }
 
-void DoesNotWorkEnemy::Update(const float& deltaTime, Camera* camera)
+void DoesNotWorkEnemy::Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -43,7 +43,7 @@ void DoesNotWorkEnemy::Update(const float& deltaTime, Camera* camera)
 
 	isActive_ = camera->InScreenCheck2D(position_, scale_);
 
-	if (deltaTime) {
+	if (deltaTime || babyTension) {
 
 	}
 	if (isActive_) {
