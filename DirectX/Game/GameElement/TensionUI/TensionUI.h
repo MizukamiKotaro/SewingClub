@@ -18,6 +18,7 @@ public:
 private:
 	void SetGlobalVariable();
 	void ApplyGlobalVariable();
+	void GaugeColor(const float& tension);
 
 private:
 

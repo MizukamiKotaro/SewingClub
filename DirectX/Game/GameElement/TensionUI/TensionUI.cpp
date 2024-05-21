@@ -1,6 +1,7 @@
 #include "TensionUI.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "TextureManager/TextureManager.h"
+#include "calc.h"
 
 TensionUI::TensionUI() {
 	for (auto& sprite : sprites_) {
@@ -28,9 +29,9 @@ void TensionUI::Update(const float& tension, const int& faceParam) {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 	ImGui::Begin("テンション");
-	static Vector2 anchor = Vector2(0.5f, 0.56f);
+	static float anchor = 0.1f;
 	ImGui::DragFloat("テンション率", &tensionPercent_, 0.01f, 0.0f, 1.0f);
-	ImGui::DragFloat2("アンカーポイント", &anchor.x, 0.01f, 0.0f, 1.0f);
+	ImGui::DragFloat("アンカーポイント", &anchor, 0.01f, 0.0f, 1.0f);
 	ImGui::Text("Face %d", faceParam);
 	ImGui::End();
 #endif // _DEBUG
@@ -55,15 +56,21 @@ void TensionUI::Update(const float& tension, const int& faceParam) {
 	float spritePos = (kMaxSize_.x - spriteSize) * 0.5f;
 	spritePos += fixedPosition_.x;
 
+	spritePos = Calc::Lerp(sprites_.at(static_cast<uint32_t>(Type::Gauge))->pos_.x, spritePos, 0.1f);
+	spriteSize = Calc::Lerp(sprites_.at(static_cast<uint32_t>(Type::Gauge))->size_.x, spriteSize, 0.1f);
+
+	// 座標更新
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetTextureTopLeft(Vector2(uvTrans,0.0f));
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetTextureSize(Vector2(uvScale, 1.0f));
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->pos_ = Vector2(spritePos, fixedPosition_.y);
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->size_ = Vector2(spriteSize, kMaxSize_.y);
 
-
+	// 表情の更新
 	auto handle = animation_->GetSceneUV(faceParam);
 	sprites_.at(static_cast<uint32_t>(Type::Face))->SetTextureTopLeft(Vector2(handle.translate_.x, handle.translate_.y));
 	sprites_.at(static_cast<uint32_t>(Type::Face))->SetTextureSize(Vector2(handle.scale_.x, handle.scale_.y));
+	
+	GaugeColor(tension);
 
 	for (auto& sprite : sprites_) {
 		sprite->Update();
@@ -118,4 +125,18 @@ void TensionUI::ApplyGlobalVariable() {
 		}
 		index++;
 	}
+}
+
+void TensionUI::GaugeColor(const float& tension) {
+	Vector4 color{};
+	if (tension >= 90.0f) {
+		color = Vector4(0.88f, 0.38f, 0.20f, 1.0f);
+	}
+	else if (tension <= 30.0f) {
+		color = Vector4(0.20f, 0.89f, 0.20f, 1.0f);
+	}
+	else {
+		color = Vector4(0.89f, 0.76f, 0.20f, 1.0f);
+	}
+	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetColor(color);
 }
