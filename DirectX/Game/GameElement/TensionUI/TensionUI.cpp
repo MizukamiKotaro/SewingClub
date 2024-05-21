@@ -20,13 +20,17 @@ TensionUI::TensionUI() {
 
 void TensionUI::Initialize() {
 	SetGlobalVariable();
+
+	sprites_.at(static_cast<uint32_t>(Type::Frame))->SetAnchorPoint(Vector2(0.5f, 0.56f));
 }
 
 void TensionUI::Update(const float& tension, const int& faceParam) {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 	ImGui::Begin("テンション");
+	static Vector2 anchor = Vector2(0.5f, 0.56f);
 	ImGui::DragFloat("テンション率", &tensionPercent_, 0.01f, 0.0f, 1.0f);
+	ImGui::DragFloat2("アンカーポイント", &anchor.x, 0.01f, 0.0f, 1.0f);
 	ImGui::Text("Face %d", faceParam);
 	ImGui::End();
 #endif // _DEBUG
@@ -56,10 +60,10 @@ void TensionUI::Update(const float& tension, const int& faceParam) {
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->pos_ = Vector2(spritePos, fixedPosition_.y);
 	sprites_.at(static_cast<uint32_t>(Type::Gauge))->size_ = Vector2(spriteSize, kMaxSize_.y);
 
+
 	auto handle = animation_->GetSceneUV(faceParam);
 	sprites_.at(static_cast<uint32_t>(Type::Face))->SetTextureTopLeft(Vector2(handle.translate_.x, handle.translate_.y));
 	sprites_.at(static_cast<uint32_t>(Type::Face))->SetTextureSize(Vector2(handle.scale_.x, handle.scale_.y));
-
 
 	for (auto& sprite : sprites_) {
 		sprite->Update();
@@ -78,8 +82,10 @@ void TensionUI::SetGlobalVariable() {
 
 	uint32_t index = 0u;
 	for (auto& sprite : sprites_) {
-		global_->AddItem("size", sprite->size_, tree.at(index));
-		global_->AddItem("pos", sprite->pos_, tree.at(index));
+		if (index != static_cast<uint32_t>(Type::Gauge)) {
+			global_->AddItem("size", sprite->size_, tree.at(index));
+			global_->AddItem("pos", sprite->pos_, tree.at(index));
+		}
 		global_->AddItem("color", Vector3(colors_.at(index).x, colors_.at(index).y, colors_.at(index).z), tree.at(index));
 		global_->AddItem("透明度a", colors_.at(index).w, tree.at(index));
 		index++;
@@ -93,12 +99,23 @@ void TensionUI::ApplyGlobalVariable() {
 
 	uint32_t index = 0u;
 	for (auto& sprite : sprites_) {
-		sprite->size_ = global_->GetVector2Value("size", tree.at(index));
-		sprite->pos_ = global_->GetVector2Value("pos", tree.at(index));
+		if (index != static_cast<uint32_t>(Type::Gauge)) {
+			sprite->size_ = global_->GetVector2Value("size", tree.at(index));
+			sprite->pos_ = global_->GetVector2Value("pos", tree.at(index));
+		}
 		Vector3 colorHandle = global_->GetVector3Value("color", tree.at(index));
 		float alphaHandle = global_->GetFloatValue("透明度a", tree.at(index));
 		colors_.at(index) = Vector4(colorHandle.x, colorHandle.y, colorHandle.z, alphaHandle);
 		sprite->SetColor(colors_.at(index));
+		// フレームは全部親子関係結ぶ
+		if (index == static_cast<uint32_t>(Type::Frame)) {
+			sprite->size_ += kMaxSize_;
+			sprite->pos_ += fixedPosition_;
+		}
+		// 表情は座標だけ
+		else if (index == static_cast<uint32_t>(Type::Face)) {
+			sprite->pos_ += fixedPosition_;
+		}
 		index++;
 	}
 }
