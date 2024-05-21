@@ -413,12 +413,12 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 		else {
 			float speed = t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
 			velocity_ += vect.Normalize() * speed;
+			speed_ = std::clamp(velocity_.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
+			velocity_ = velocity_.Normalize() * speed_;
 			Vector2 vector = gravityAreaSearch_->GetNearPos() - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
 			vector = vector.Normalize() * fParas_[kGravityWater] * deltaTime;
 			velocity_.x += vector.x;
 			velocity_.y += vector.y;
-			speed_ = std::clamp(velocity_.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
-			velocity_ = velocity_.Normalize() * speed_;
 			model_->transform_.translate_ += velocity_;
 		}
 	}

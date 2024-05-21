@@ -21,6 +21,7 @@ public:
 #ifdef _DEBUG
 	void Draw(const Vector2& pos, const Vector2& radius, bool isSame = false, const float& rotate = 0.0f);
 #endif // _DEBUG
+	static float& GetScale() { return scale_; }
 
 private:
 	void OnCollision(const Collider& collider) override;

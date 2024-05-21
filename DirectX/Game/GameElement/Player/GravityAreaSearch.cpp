@@ -1,6 +1,7 @@
 #include "GravityAreaSearch.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "calc.h"
+#include "GameElement/GravityArea/GravityArea.h"
 
 GravityAreaSearch::GravityAreaSearch()
 {
@@ -27,8 +28,9 @@ void GravityAreaSearch::Update(const Vector3& pos, const Vector3& velocity)
 void GravityAreaSearch::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::GRAVITY_AREA) {
+		float scale = GravityArea::GetScale();
 		if (collider.GetShape() == ColliderShape::CIRCLE) {
-			float length = (collider.GetCircle()->position_ - GetCircle()->position_).Length();
+			float length = (collider.GetCircle()->position_ - GetCircle()->position_).Length() - collider.GetCircle()->radius_.x / scale;
 			if (length_ == 0.0f || length_ > length) {
 				nearPos_ = collider.GetCircle()->position_;
 				length_ = length;
@@ -41,13 +43,16 @@ void GravityAreaSearch::OnCollision(const Collider& collider)
 		}
 		else if (collider.GetShape() == ColliderShape::QUADRANGLE2D) {
 			ShapeQuadrangle* quadrangle = collider.GetQuadrangle();
-			Vector2 startPos = (quadrangle->leftTop_ + quadrangle->leftBottom_) / 2;
-			Vector2 endPos = (quadrangle->rightTop_ + quadrangle->rightBottom_) / 2;
+			Vector2 startPos = (quadrangle->leftTop_ + quadrangle->leftBottom_) * 0.5f;
+			Vector2 endPos = (quadrangle->rightTop_ + quadrangle->rightBottom_) * 0.5f;
 			Vector3 vect = { endPos.x - startPos.x, endPos.y - startPos.y, 0.0f };
 			Vector3 point = Calc::ClosestPoint({ GetCircle()->position_.x,GetCircle()->position_.y,0.0f }, Segment{ {startPos.x,startPos.y,0.0f},vect });
 			Vector2 position = { point.x,point.y };
 
-			float length = (position - GetCircle()->position_).Length();
+			float t = (position - startPos).Length() / vect.Length();
+			float rad = (1.0f - t) * (quadrangle->leftTop_ - quadrangle->leftBottom_).Length() * 0.5f + t * (quadrangle->rightTop_ - quadrangle->rightBottom_).Length() * 0.5f;
+
+			float length = (position - GetCircle()->position_).Length() - rad / scale;
 			if (length_ == 0.0f || length_ > length) {
 				nearPos_ = position;
 				length_ = length;
