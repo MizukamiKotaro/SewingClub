@@ -95,9 +95,6 @@ void Player::Update(float deltaTime)
 	UpdateInputAcceleration(deltaTime);
 
 	preIsInWater_ = isInWater_;
-	if (model_->transform_.GetWorldPosition().y <= fParas_[kMinPositionY]) {
-		Reset();
-	}
 	model_->Update();
 
 	isInWater_ = false;
