@@ -2,16 +2,13 @@
 #include "GameElement/Charactor/Charactor.h"
 #include "Vector2.h"
 #include "Vector3.h"
-#include "GameElement/Yarn/Yarn.h"
 #include <list>
-#include "GameElement/Client/Client.h"
 #include "GravityAreaSearch.h"
 #include <vector>
 #include "StageEditor/StageEditor.h"
 
 class Input;
 class WaterManager;
-class ClientManager;
 
 class Player : public Charactor
 {
@@ -24,12 +21,8 @@ public:
 	void Update(float deltaTime) override;
 	// 描画、model描画
 	void Draw(const Camera* camera) override;
-	// 左上の客の描画、Sprite描画
-	void DrawClient();
 
 public:
-	// 惑星と衝突したときの処理、惑星にPlayerのポインタを持たせて呼び出している
-	void OnCollisionPlanet(const PlanetType type, std::list<std::unique_ptr<Client>>& clients);
 	// ポジションの取得
 	const Vector3& GetPosition() const;
 
@@ -62,8 +55,6 @@ private:
 	void ComeToWater();
 	// 水や惑星の外での処理
 	void OutWater(float deltaTime);
-	// プレイヤーの軌跡に水を発生させる処理(気にしなくていい)
-	void UpdateDelayProcess(float deltaTime);
 	// 入力による加速の更新処理
 	void UpdateInputAcceleration(float deltaTime);
 	// リセット
@@ -72,19 +63,10 @@ private:
 	void InitializeFloating();
 	// プレイヤーのアニメーションの更新処理(気にしなくていい)
 	void UpdateFloating();
-	// 客を飛ばす処理
-	void FireClient(float deltaTime);
-	// 客を飛ばす内部的な処理
-	void FireClientProcess(float deltaTime);
-	// 自動で水や惑星に向かう挙動
-	void AutoMove(float deltaTime);
-
-	void Naminami(const float& deltaTime);
 
 private:
 	Input* input_ = nullptr;
 	WaterManager* waterManager_ = nullptr;
-	ClientManager* clientManager_ = nullptr;
 
 	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 	std::unique_ptr<StageEditor> stageEditor_;
@@ -114,17 +96,6 @@ private:
 		kInputAcceleration, // ボタン入力による加速度
 		kRecoveryInputTime, // ボタン加速のクールタイム
 		kInputAccelerationTime, // ボタン入力による加速させる時間
-		kClientFirstSpeed, // 客を飛ばしたときの客の初速
-		kClientMinSpeed, // 客を飛ばすために必要な速度
-		kClientFireAngle, // 客を飛ばす角度
-		kClientAbsoluteSpeed, // 客を飛ばすタイミングの速さの絶対値
-		kAutoAcceleration, // 自動の時の加速度
-		kAutoMaxSpeed, // 自動の時の最大速度
-		kAutoLerp, // 自動の時の補間
-		kNaminamiAcceleration, // なみなみの加速度
-		kNaminamiChangeDirectionTime, // 方向転換を許容する時間
-		kNaminamiAccelerationTime, // 加速するまでの継続時間
-		kNaminamiMaxAcceleration, // なみなみ加速の最大速度
 		kFloatEnd,
 	};
 	std::vector<const char*> fNames;
@@ -140,8 +111,6 @@ private:
 		kAccelerationInput, // ボタン入力で加速できるか
 		kAccelerationInJump, // ボタン入力でジャンプ中に加速できるか
 		kRecoveryInJump, // ボタン入力で加速後ジャンプしたときに加速ボタンが回復するか
-		kInputFireClient, // 入力で客を飛ばすか
-		kIsNaminami, // なみなみ加速するか
 		kBoolEnd,
 	};
 	std::vector<const char*> bNames;
@@ -152,9 +121,6 @@ private:
 		kTree1Gravity,
 		kTree1GenerationWater,
 		kTree1InputAcceleration,
-		kTree1Client,
-		kTree1AutoMove,
-		kTree1Naminami,
 		kTree1End,
 	};
 	std::vector<const char*> tree1Name_;
@@ -168,19 +134,10 @@ private:
 	Vector2 gravityVelocity_;
 	Vector2 gravityPos_;
 	bool isGravity_;
-	Vector2 dotTargetPos_;
-	bool isDotTarget_;
-	float addAutoAcceleration_;
 
 	Vector2 waterGravityPos_;
 
-	int kFireClientNum_;
-	int kMaxPutClient_;
-	int kMaxPutWaterNum_;
-	int putWaterNum_;
-
 	float memoOutWaterSpeed_;
-	bool isFireClients_;
 	bool isHitEnemy_;
 
 	float timeCount_;
@@ -194,21 +151,4 @@ private:
 	bool isInWater_;
 
 	float floatingParameter_;
-
-	std::unique_ptr<Yarn> yarn_;
-	std::list<std::unique_ptr<Client>> clients_;
-
-	struct DelayProcess
-	{
-		Vector2 position_;
-		float count_;
-	};
-
-	std::list<DelayProcess> delayProcess_;
-	bool isMemoryPos_;
-
-	float naminamiTimeCount_;
-	float outerNaminami_;
-	Vector2 preVector_;
-	float naminamiChangeDirectionTime_;
 };

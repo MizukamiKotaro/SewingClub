@@ -74,7 +74,6 @@ private:
 		kSuperSmile,
 		kAnxiety,
 		kCry,
-		kSuperSuperSmile,
 		kFaceEnd,
 	};
 
