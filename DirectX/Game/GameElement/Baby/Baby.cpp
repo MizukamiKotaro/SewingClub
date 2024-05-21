@@ -13,7 +13,7 @@ Baby::Baby(Player* player)
 
 	player_ = player;
 
-	//gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
+	gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
 	model_ = std::make_unique<Model>("plane");
 	model_->transform_.translate_ = player_->GetPosition();
 
@@ -124,7 +124,7 @@ void Baby::Update(float deltaTime)
 	SetCollider();
 
 	TensionUpdate(deltaTime);
-	//gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
+	gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
 }
 
 void Baby::Draw(const Camera* camera)
@@ -413,6 +413,10 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 		else {
 			float speed = t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
 			velocity_ += vect.Normalize() * speed;
+			Vector2 vector = gravityAreaSearch_->GetNearPos() - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
+			vector = vector.Normalize() * fParas_[kGravityWater] * deltaTime;
+			velocity_.x += vector.x;
+			velocity_.y += vector.y;
 			speed_ = std::clamp(velocity_.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
 			velocity_ = velocity_.Normalize() * speed_;
 			model_->transform_.translate_ += velocity_;
@@ -514,6 +518,7 @@ void Baby::InitializeGlobalVariable()
 		"最大速度",
 		"最低速度",
 		"水の浮力",
+		"重力加速度",
 		"加速度が最大の時の移動角度",
 		"加速度が最大の時の水の移動距離",
 		"空中のテンションアップするまで時間",

@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include "GlobalVariables/GlobalVariableUser.h"
-//#include "GameElement/Player/GravityAreaSearch.h"
+#include "GameElement/Player/GravityAreaSearch.h"
 #include "GameElement/Charactor/Charactor.h"
 
 class Player;
@@ -45,7 +45,7 @@ private:
 
 private:
 	Player* player_;
-	//std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
+	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 
 	Vector3 prePosition_;
 
@@ -97,6 +97,7 @@ private:
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
 		kBuoyancy, // 水の浮力
+		kGravityWater, // 重力加速度
 		kMaxSlide, // 加速度が最大の時の水の移動角度
 		kMaxSlideLength, // 加速度が最大の時の水の移動距離
 		kFlyTime, // 空中のテンションアップするまで時間
