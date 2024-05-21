@@ -15,6 +15,7 @@
 #include"GameElement/Effects/EffectGoalGuidance.h"
 #include "GameElement/Baby/Baby.h"
 #include"GameElement/OptionUI/OptionUI.h"
+#include "GameElement/TensionUI/TensionUI.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -84,4 +85,8 @@ private:
 	//option関係
 	std::unique_ptr<OptionUI>optionUI_;
 	bool isOptionOpen_ = false;
+
+	// テンション用UI
+	std::unique_ptr<TensionUI> tensionUI_;
+
 };

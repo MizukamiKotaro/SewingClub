@@ -13,6 +13,7 @@
 #include"GameElement/Effects/EffectOutWater.h"
 #include"GameElement/Effects/EffectEnterWater.h"
 #include"GameElement/Effects/EffectUIEnterWater.h"
+#include"GameElement/Effects/particleAcceleration.h"
 #include "GameElement/Animation/Animation2D.h"
 
 class Input;
@@ -103,6 +104,8 @@ private:
 	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 	std::unique_ptr<StageEditor> stageEditor_;
 
+#pragma region JＳＯＮ関係
+
 	enum FloatParamater {
 		kAcceleration, // 加速度
 		kAttenuation, // 減衰率
@@ -174,6 +177,7 @@ private:
 	std::vector<const char*> tree1Name_;
 	std::vector<std::pair<int, int>> fTree1;
 	std::vector<std::pair<int, int>> bTree1;
+#pragma endregion
 
 	Vector3 velocity_; // 速度
 	Vector2 vector_; // 移動方向ベクトル
@@ -247,4 +251,6 @@ private:
 	std::unique_ptr<EffectOutWater>effectOutWater_;
 	std::unique_ptr<EffectEnterWater>effeEnterWater_;
 	std::unique_ptr<EffectUIEnterWater>effeUIEnterWater_;
+	//加速時のパティ
+	std::unique_ptr<ParticleAcceleration>particleScceleration_;
 };

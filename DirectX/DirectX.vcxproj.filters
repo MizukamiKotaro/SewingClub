@@ -445,6 +445,9 @@
     <Filter Include="Game\GameElement\OptionUI">
       <UniqueIdentifier>{f66103be-125b-4f5a-8479-1731ffc6deea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\TensionUI">
+      <UniqueIdentifier>{e14b39a2-3ac9-4428-a444-2c7375a51ebd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -915,11 +918,17 @@
     <ClCompile Include="Game\GameElement\Effects\EffectGoalGuidance.cpp">
       <Filter>Game\GameElement\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
+    <ClCompile Include="Game\GameElement\OptionUI\AudioOptionUI.cpp">
       <Filter>Game\GameElement\OptionUI</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Item\RequiredObject.cpp">
       <Filter>Game\GameElement\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\particleAcceleration.cpp">
+      <Filter>Game\GameElement\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\TensionUI\TensionUI.cpp">
+      <Filter>Game\GameElement\TensionUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1463,11 +1472,14 @@
     <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h">
       <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
+    <ClInclude Include="Game\GameElement\OptionUI\AudioOptionUI.h">
       <Filter>Game\GameElement\OptionUI</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Item\RequiredObject.h">
       <Filter>Game\GameElement\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h">
+      <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
