@@ -41,7 +41,7 @@ TitleScene::TitleScene()
 	
 	whiteS_ = std::make_unique<Sprite>();
 
-	optionUI_ = std::make_unique<OptionUI>();
+	optionUI_ = std::make_unique<OptionUI>(OptionUI::kTitle);
 
 
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
@@ -99,7 +99,7 @@ void TitleScene::Initialize()
 	whiteS_->size_ = { 1280,720 };
 	whiteS_->Update();
 
-	optionUI_->Initialize(OptionUI::kTitle);
+	optionUI_->Initialize();
 	optionUI_->Update();
 
 	//いい感じの演出になったので消します
@@ -108,6 +108,8 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
+
+	ans_ = UpdateAnswer();
 
 	if (!isOptionActive_) {
 
@@ -130,16 +132,19 @@ void TitleScene::Update()
 
 		startWord_->Update();
 
-		SceneChange();
-
+		
 		effeUIEnterW_->Update();
 
 		waterE_->Update(0.1f);
 
 	}
 	else {
-		isOptionActive_ = optionUI_->Update();
+		ans_ = optionUI_->Update();
+		
 	}
+
+	SceneChange();
+
 }
 
 void TitleScene::Draw()
@@ -230,15 +235,22 @@ void TitleScene::LogoAnimation()
 void TitleScene::SceneChange()
 {
 	//
-	if (input_->PressedGamePadButton(Input::GamePadButton::A)&&!isOptionActive_) {
+	if (!isOptionActive_ && input_->PressedGamePadButton(Input::GamePadButton::A) && !isOptionActive_) {
 		// シーン切り替え
 		stageNo_ = 0;
 		ChangeScene(SELECT);
 		bgm_.Stop();
 	}
-
-	if (input_->PressedGamePadButton(Input::GamePadButton::START) &&!isOptionActive_) {
+	else if (!isOptionActive_&&input_->PressedGamePadButton(Input::GamePadButton::START) &&!isOptionActive_) {
 		isOptionActive_ = true;
+	}
+	else if (isOptionActive_ && ans_.backOption) {
+		//処理
+		isOptionActive_ = false;
+	}
+	else if (isOptionActive_ && ans_.leaveGame) {
+		//処理
+
 	}
 }
 
