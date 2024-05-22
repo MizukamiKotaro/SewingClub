@@ -5,7 +5,7 @@
 
 UIGoalGuidance::UIGoalGuidance()
 {
-	model_ = std::make_unique<Sprite>("pause_arrow.png");
+	model_ = std::make_unique<Sprite>("HUD_arrow.png");
 
 	gVUser_= new GlobalVariableUser("Effects", "UIGoalGuidance");
 
@@ -20,7 +20,8 @@ UIGoalGuidance::UIGoalGuidance()
 	gVUser_->AddItem(keys[QuotaUIDirection], quotaDirection_);
 	gVUser_->AddItem(keys[QuotaUISize], quotaUISize_);
 	gVUser_->AddItem(keys[QuotaUIType], quotaAreaType_);
-
+	gVUser_->AddItem(keys[QuotaColor], quotaColor_);
+	gVUser_->AddItem(keys[GoalColor], goalColor_);
 
 }
 
@@ -292,11 +293,13 @@ void UIGoalGuidance::Draw(const Camera* camera)
 	//ノルマ未達成ならノルマまでのガイド描画
 	if (!isQuota_) {
 		for (auto& data : quota_) {
+			data.sprite_->SetColor({ quotaColor_.x,quotaColor_.y,quotaColor_.z,1 });
 			data.sprite_->Draw();
 		}
 	}
 	else {
 		if (isDraw_) {
+			model_->SetColor({ goalColor_.x,goalColor_.y,goalColor_.z,1 });
 			model_->Draw(*camera);
 		}
 	}
@@ -329,4 +332,7 @@ void UIGoalGuidance::Debug()
 	quotaDirection_=gVUser_->GetFloatValue(keys[QuotaUIDirection]);
 	quotaUISize_= gVUser_->GetVector2Value(keys[QuotaUISize]);
 	quotaAreaType_=gVUser_->GetIntValue(keys[QuotaUIType]);
+
+	quotaColor_ = gVUser_->GetVector3Value(keys[QuotaColor]);
+	goalColor_ = gVUser_->GetVector3Value(keys[GoalColor]);
 }
