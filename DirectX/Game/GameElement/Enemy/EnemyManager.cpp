@@ -20,17 +20,17 @@ void EnemyManager::Initialize(Player* pplayer)
 		DoesNotWorkEnemy::StaticInitialize();
 		FollowEnemy::StaticInitialize();
 		stageEditor_ = std::make_unique<StageEditor>("敵の設置");
+		stageEditor_->Initialize();
 	}
 	doesNotWorkEnemyNum_ = 0;
 	followEnemyNum_ = 0;
-	stageEditor_->Initialize();
 	SetGlobalVariable();
 	FollowEnemy::SetPlayerPtr(player_ptr->GetPositionPtr());
 	Clear();
 	GenerateEnemies();
 }
 
-void EnemyManager::Update(const float& deltaTime, Camera* camera)
+void EnemyManager::Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension)
 {
 #ifdef _DEBUG
 	// 前情報取得
@@ -54,7 +54,7 @@ void EnemyManager::Update(const float& deltaTime, Camera* camera)
 #endif // _DEBUG
 
 	for (std::list<std::unique_ptr<IEnemy>>::iterator it = enemies_.begin(); it != enemies_.end();) {
-		(*it)->Update(deltaTime, camera);
+		(*it)->Update(deltaTime, camera, babyTension);
 		it++;
 	}
 }

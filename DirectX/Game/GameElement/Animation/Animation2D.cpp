@@ -13,9 +13,15 @@ void Animation2DData::Initialize(std::string fileName, const uint32_t& hDivNum, 
 	SceneEntry();
 }
 
+void Animation2DData::Initialize(const uint32_t& hDivNum, const uint32_t& wDivNum) {
+	texParam_.divisionNumber = Vector2(static_cast<float>(wDivNum), static_cast<float>(hDivNum));
+	SceneEntry();
+}
+
 void Animation2DData::SceneEntry() {
 	uint32_t handle = static_cast<uint32_t>(texParam_.divisionNumber.x) * static_cast<uint32_t>(texParam_.divisionNumber.y);
 	sceneNumberList_.resize(handle);
+	texParam_.uvScale = Vector3(1.0f / texParam_.divisionNumber.x, 1.0f / texParam_.divisionNumber.y, 1.0f);
 	handle = 0u;
 	for (uint32_t y = 0u; y < texParam_.divisionNumber.y; y++) {
 		for (uint32_t x = 0u; x < texParam_.divisionNumber.x; x++) {
@@ -28,7 +34,6 @@ void Animation2DData::SceneEntry() {
 		}
 	}
 	// uvScaleの設定
-	texParam_.uvScale = Vector3(1.0f / texParam_.divisionNumber.x, 1.0f / texParam_.divisionNumber.y, 1.0f);
 }
 
 void Animation2DData::SetGlobalVariable() {

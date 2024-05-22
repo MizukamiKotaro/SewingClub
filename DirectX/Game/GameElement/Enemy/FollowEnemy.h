@@ -10,7 +10,7 @@ public:
 
 	void Initialize() override;
 
-	void Update(const float& deltaTime, Camera* camera) override;
+	void Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension) override;
 
 	void Draw() const override;
 
@@ -30,7 +30,7 @@ private:
 	/// 移動処理
 	/// </summary>
 	/// <param name="isFollowing">true:player追従/false:初期位置に戻る</param>
-	void Move(bool isFollowing);
+	void Move(const float& deltaTime,bool isFollowing, const uint32_t& babyTension);
 
 private:
 	static const ParticleMeshTexData* modelData_;
@@ -38,6 +38,7 @@ private:
 	float kMaxDistance = 0.0f; // のちにstaticにしたい
 	float speed_ = 0.0f; // 追従速度
 	Vector3 initialPosition_; // 初期位置、positionは現在位置
+	float criedVelocityMagnification_ = 2.0f; // 泣いている時の速度倍率
 
 	// パターン用フラグ
 	bool isAreaMove_ = false; // 初期位置から一定範囲で追従

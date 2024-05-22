@@ -13,7 +13,7 @@ public:
 
 	void Initialize(Player* pplayer);
 
-	void Update(const float& deltaTime, Camera* camera);
+	void Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension);
 
 	void Draw() const;
 

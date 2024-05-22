@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include "GlobalVariables/GlobalVariableUser.h"
-//#include "GameElement/Player/GravityAreaSearch.h"
+#include "GameElement/Player/GravityAreaSearch.h"
 #include "GameElement/Charactor/Charactor.h"
 #include "GameElement/Animation/Animation2D.h"
 #include "GameElement/Effects/EffectEnterWater.h"
@@ -49,7 +49,7 @@ private:
 private:
 	std::unique_ptr<Model> baby_;
 	Player* player_;
-	//std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
+	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 
 	Vector3 prePosition_;
 
@@ -78,7 +78,6 @@ private:
 		kSuperSmile,
 		kAnxiety,
 		kCry,
-		kSuperSuperSmile,
 		kFaceEnd,
 	};
 
@@ -101,6 +100,7 @@ private:
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
 		kBuoyancy, // 水の浮力
+		kGravityWater, // 重力加速度
 		kMaxSlide, // 加速度が最大の時の水の移動角度
 		kMaxSlideLength, // 加速度が最大の時の水の移動距離
 		kEffectEnterWaterVelo,//エフェクト発生時の速度に対する乗算

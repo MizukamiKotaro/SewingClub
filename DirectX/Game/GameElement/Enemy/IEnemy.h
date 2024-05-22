@@ -15,7 +15,7 @@ public:
 
 	virtual void Initialize() = 0;
 
-	virtual void Update(const float& deltaTime, Camera* camera) = 0;
+	virtual void Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension) = 0;
 
 	virtual void Draw() const = 0;
 

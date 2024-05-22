@@ -5,8 +5,6 @@
 #include "GameElement/WaterManager/WaterManager.h"
 #include "InstancingModelManager.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
-#include "GameElement/Planet/PlanetManager.h"
-#include "GameElement/Client/ClientManager.h"
 #include "GameElement/Item/ItemManager.h"
 #include "ParticleManager.h"
 #include "GameElement/Enemy/EnemyManager.h"
@@ -20,15 +18,9 @@ StageScene::StageScene()
 {
 	FirstInit();
 
-	Yarn::StaticInitialize();
-	WaveFloorChip::StaticInitialize();
-	WaveFloor::StaticInitialize();
-	Wave::StaticInitialize();
 	WaterChunkChip::StaticInitialize();
 	WaterChunk::StaticInitialize();
 	GravityArea::StaticInitialize();
-	Client::StaticInitialize();
-	Planet::StaticInitialize();
 	Item::StaticInitialize();
 	RequiredObject::StaticInitialize();
 	WaterWave::StaticInitialize();
@@ -38,8 +30,6 @@ StageScene::StageScene()
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
 	waterManager_ = WaterManager::GetInstance();
-	planetManager_ = PlanetManager::GetInstance();
-	clientManager_ = ClientManager::GetInstance();
 	itemManager_ = ItemManager::GetInstance();
 	particleManager_ = ParticleManager::GetInstance();
 	enemyManager_ = EnemyManager::GetInstance();
@@ -59,12 +49,6 @@ StageScene::StageScene()
 	WaterChunkQuadrangle::SetPlayer(player_.get());
 
 	goal_ = std::make_unique<Goal>();
-
-	planetManager_->SetPlayer(player_.get());
-
-	waveFloor_ = std::make_unique<WaveFloor>();
-
-	deadLine_ = std::make_unique<DeadLine>(camera_.get(),player_->GetPositionPtr());
 
 	bg_ = std::make_unique<BackGround>();
 	bg_->Update(camera_.get());
@@ -88,14 +72,10 @@ void StageScene::Initialize()
 	camera_->transform_.translate_.x = player_->GetPosition().x;
 	camera_->transform_.translate_.y = player_->GetPosition().y;
 	camera_->Update();
-	waves_.clear();
 	waterManager_->Initialize();
-	//planetManager_->Initialize();
-	clientManager_->Clear();
 	itemManager_->Initialize();
 	goal_->Initialize();
 
-	deadLine_->Initialize();
 	effeGoalGuid_->Initialize(player_->GetPositionPtr(),&goal_->GetPosition(),camera_.get());
 	std::list<QuotaSendData>datas = itemManager_->GetQuotaData();
 	for (auto& data : datas) {
@@ -117,6 +97,8 @@ void StageScene::Initialize()
 	isOptionOpen_ = false;
 
 	tensionUI_->Initialize();
+	// テンション関係
+	tensionUI_->Update(0.0f, 0);
 }
 
 void StageScene::Update()
@@ -125,15 +107,9 @@ void StageScene::Update()
 	collisionManager_->Clear();
 
 #ifdef _DEBUG
-	Yarn::StaticUpdate();
-	WaveFloorChip::StaticUpdate();
-	WaveFloor::StaticUpdate();
-	Wave::StaticUpdate();
 	WaterChunkChip::StaticUpdate();
 	WaterChunk::StaticUpdate();
 	GravityArea::StaticUpdate();
-	Client::StaticUpdate();
-	Planet::StaticUpdate();
 	Item::StaticUpdate();
 	WaterWave::StaticUpdate();
 
@@ -159,6 +135,7 @@ void StageScene::Update()
 	}
 #endif // _DEBUG
 
+
 	ans_ = UpdateAnswer();
 
 	WaveUpdate();
@@ -170,11 +147,7 @@ void StageScene::Update()
 	player_->Update(deltaTime);
 	baby_->Update(deltaTime);
 
-	enemyManager_->Update(deltaTime, camera_.get());
-
-	deadLine_->Update(deltaTime);
-
-	clientManager_->Update(deltaTime);
+	enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
 
 	waterManager_->Update(deltaTime, camera_.get());
 
@@ -198,20 +171,18 @@ void StageScene::Update()
 		camera_->Update();
 	}
 	// テンション関係
-	tensionUI_->Update(baby_->GetTension());
+	tensionUI_->Update(baby_->GetTension(), baby_->GetFace());
 
 	// 背景更新
 	bg_->Update(camera_.get());
-
-	waveFloor_->Update();
 
 	collisionManager_->CheckCollision();
 
 	
 	waterEffect_->Update(deltaTime);
-	//if (isCanGoal_) {
-		effeGoalGuid_->Update();
-	//}
+	
+	effeGoalGuid_->Update();
+	
 
 	if (isOptionOpen_) {
 		ans_ = optionUI_->Update();
@@ -247,19 +218,10 @@ void StageScene::Draw()
 	}
 
 	enemyManager_->Draw();
-
-	//planetManager_->Draw();
-
-	clientManager_->Draw();
-
-	deadLine_->Draw();
-
 	
 	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
-
-	player_->DrawClient();
 
 	//if (isCanGoal_) {
 		effeGoalGuid_->Draw(camera_.get());
@@ -284,39 +246,6 @@ void StageScene::Draw()
 	Kyoko::Engine::PostDraw();
 }
 
-void StageScene::WaveUpdate()
-{
-	RandomGenerator* rand = RandomGenerator::GetInstance();
-
-	time_ += frameInfo_->GetDeltaTime();
-	if (time_ >= 5.0f) {
-		Vector3 pos = rand->RandVector3(-10.0f, 10.0f);
-		float power = rand->RandFloat(0.8f, 1.5f);
-		float radius = rand->RandFloat(0.01f, 2.0f);
-		waves_.push_back(std::make_unique<Wave>(pos, power, radius));
-		pos = rand->RandVector3(-10.0f, 10.0f);
-		power = rand->RandFloat(0.8f, 1.5f);
-		radius = rand->RandFloat(0.01f, 2.0f);
-		waves_.push_back(std::make_unique<Wave>(pos, power, radius));
-
-		time_ = 0.0f;
-	}
-
-	for (std::list<std::unique_ptr<Wave>>::iterator it = waves_.begin(); it != waves_.end(); ) {
-		(*it)->Update();
-
-		waveFloor_->HitTest(*(*it).get());
-
-		if ((*it)->IsFinish()) {
-			(*it).reset();
-			it = waves_.erase(it);
-		}
-		else {
-			it++;
-		}
-	}
-}
-
 void StageScene::SceneChange()
 {
 
@@ -339,18 +268,20 @@ void StageScene::SceneChange()
 			bgm_.Stop();
 			player_->Finalize();
 		}
-		if (deadLine_->IsPlayerDead() || player_->GetIsHitEnemy()) {
-			ChangeScene(SELECT);
-			bgm_.Stop();
-			player_->Finalize();
-			seDead_.Play();
-		}
 
+    if (player_->GetIsHitEnemy()) {
+		ChangeScene(SELECT);
+		bgm_.Stop();
+		player_->Finalize();
+		seDead_.Play();
+	  }
+    
 		//optionを開く
 		if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
 			isOptionOpen_ = true;
 		}
 	}
+
 	else {
 		if (ans_.backOption) {
 			isOptionOpen_ = false;
@@ -365,6 +296,7 @@ void StageScene::SceneChange()
 			bgm_.Stop();
 			player_->Finalize();
 		}
+
 	}
 }
 

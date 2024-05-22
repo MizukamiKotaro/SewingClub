@@ -15,7 +15,7 @@ Baby::Baby(Player* player)
 
 	player_ = player;
 
-	//gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
+	gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
 	model_ = std::make_unique<Model>("plane");
 	model_->transform_.translate_ = player_->GetPosition();
 
@@ -143,7 +143,7 @@ void Baby::Update(float deltaTime)
 	SetCollider();
 
 	TensionUpdate(deltaTime);
-	//gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
+	gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
 
 	if (animation_->Update("babynormal")) {
 		// modelにuvのセット
@@ -180,9 +180,6 @@ const bool Baby::GetIsCry() const
 
 const bool Baby::GetIsSuperSuperSmile() const
 {
-	if (tension_.face == Face::kSuperSuperSmile) {
-		return true;
-	}
 	return false;
 }
 
@@ -474,6 +471,10 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 			velocity_ += vect.Normalize() * speed;
 			speed_ = std::clamp(velocity_.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
 			velocity_ = velocity_.Normalize() * speed_;
+			Vector2 vector = gravityAreaSearch_->GetNearPos() - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
+			vector = vector.Normalize() * fParas_[kGravityWater] * deltaTime;
+			velocity_.x += vector.x;
+			velocity_.y += vector.y;
 			model_->transform_.translate_ += velocity_;
 		}
 	}
@@ -573,6 +574,7 @@ void Baby::InitializeGlobalVariable()
 		"最大速度",
 		"最低速度",
 		"水の浮力",
+		"重力加速度",
 		"加速度が最大の時の移動角度",
 		"加速度が最大の時の水の移動距離",
 		"エフェクトの初速度への微調整用乗算",
@@ -628,72 +630,59 @@ void Baby::TensionInitialize()
 
 void Baby::TensionUpdate(const float& deltaTime)
 {
-	if (tension_.face == Face::kSuperSuperSmile) {
-		tension_.superTime += deltaTime;
-		if (tension_.superTime >= fParas_[FloatParamater::kSuperSuperSmileTime]) {
-			tension_.superTime = 0.0f;
-			tension_.tension = fParas_[FloatParamater::kResetTensionFromSuper];
-			TensionFaceUpdate();
+	if (preIsInWater_) {
+		tension_.inWaterTime += deltaTime;
+		tension_.flyTime = 0.0f;
+	}
+	else {
+		if (tension_.tension > 0.0f && tension_.inWaterTime >= fParas_[FloatParamater::kInWaterTime]) {
+			tension_.tension += fParas_[FloatParamater::kUpTensionOutWater];
+		}
+		tension_.inWaterTime = 0.0f;
+
+		if (!isFollowWater_) {
+			tension_.flyTime += deltaTime;
+			if (tension_.flyTime >= fParas_[FloatParamater::kFlyTime] && tension_.tension > 0.0f) {
+				tension_.tension += fParas_[FloatParamater::kUpTensionToFly];
+				tension_.flyTime = std::fmodf(tension_.flyTime, fParas_[FloatParamater::kFlyTime]);
+			}
+		}
+		else {
+			tension_.flyTime = 0.0f;
+		}
+	}
+
+	if (player_->GetPreInWater()) {
+		tension_.playerInWaterTime += deltaTime;
+		if (tension_.playerInWaterTime >= fParas_[FloatParamater::kPlayerInWaterTime]) {
+			tension_.tension -= fParas_[FloatParamater::kDownTensionBePlayerInWater];
+			tension_.playerInWaterTime = std::fmodf(tension_.playerInWaterTime, fParas_[FloatParamater::kPlayerInWaterTime]);
 		}
 	}
 	else {
-		if (preIsInWater_) {
-			tension_.inWaterTime += deltaTime;
-			tension_.flyTime = 0.0f;
-		}
-		else {
-			if (tension_.tension > 0.0f && tension_.inWaterTime >= fParas_[FloatParamater::kInWaterTime]) {
-				tension_.tension += fParas_[FloatParamater::kUpTensionOutWater];
-			}
-			tension_.inWaterTime = 0.0f;
-
-			if (!isFollowWater_) {
-				tension_.flyTime += deltaTime;
-				if (tension_.flyTime >= fParas_[FloatParamater::kFlyTime] && tension_.tension > 0.0f) {
-					tension_.tension += fParas_[FloatParamater::kUpTensionToFly];
-					tension_.flyTime = std::fmodf(tension_.flyTime, fParas_[FloatParamater::kFlyTime]);
-				}
-			}
-			else {
-				tension_.flyTime = 0.0f;
-			}
-		}
-
-		if (player_->GetPreInWater()) {
-			tension_.playerInWaterTime += deltaTime;
-			if (tension_.playerInWaterTime >= fParas_[FloatParamater::kPlayerInWaterTime]) {
-				tension_.tension -= fParas_[FloatParamater::kDownTensionBePlayerInWater];
-				tension_.playerInWaterTime = std::fmodf(tension_.playerInWaterTime, fParas_[FloatParamater::kPlayerInWaterTime]);
-			}
-		}
-		else {
-			tension_.playerInWaterTime = 0.0f;
-		}
-
-		if (tension_.tension <= 0.0f) {
-			tension_.cryTime += deltaTime;
-			if (tension_.cryTime >= fParas_[FloatParamater::kCryTime]) {
-				tension_.cryTime = 0.0f;
-				tension_.tension = fParas_[FloatParamater::kResetTensionFromCry];
-			}
-		}
-		else {
-			tension_.cryTime = 0.0f;
-		}
-
-		TensionFaceUpdate();
-
-		tension_.tension = std::clamp(tension_.tension, 0.0f, 100.0f);
+		tension_.playerInWaterTime = 0.0f;
 	}
+
+	if (tension_.tension <= 0.0f) {
+		tension_.cryTime += deltaTime;
+		if (tension_.cryTime >= fParas_[FloatParamater::kCryTime]) {
+			tension_.cryTime = 0.0f;
+			tension_.tension = fParas_[FloatParamater::kResetTensionFromCry];
+		}
+	}
+	else {
+		tension_.cryTime = 0.0f;
+	}
+
+	TensionFaceUpdate();
+
+	tension_.tension = std::clamp(tension_.tension, 0.0f, 100.0f);
 	
 }
 
 void Baby::TensionFaceUpdate()
 {
-	if (tension_.tension >= 100.0f) {
-		tension_.face = Face::kSuperSuperSmile;
-	}
-	else if (tension_.tension <= 0.0f) {
+	if (tension_.tension <= 0.0f) {
 		tension_.face = Face::kCry;
 	}
 	else if (player_->GetPreInWater() || tension_.tension < 30.0f) {
