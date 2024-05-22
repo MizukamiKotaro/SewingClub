@@ -63,6 +63,7 @@ private:
 #pragma region オプション関係
 	std::unique_ptr<OptionUI>optionUI_;
 	bool isOptionActive_ = false;
+	UpdateAnswer ans_{};
 #pragma endregion
 
 };

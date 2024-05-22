@@ -20,10 +20,10 @@ SelectScene::SelectScene()
 
 		stageNumbers_[i] = std::make_unique<Model>("plane");
 		stageNumbers_[i]->Initialize();
-		
+
 	}
 
-	bgm_.LoadMP3("Music/stageSelect.mp3","SelectBGM",bgmVolume_);
+	bgm_.LoadMP3("Music/stageSelect.mp3", "SelectBGM", bgmVolume_);
 
 	bg_ = std::make_unique<BackGround>();
 	bg_->Update(camera_.get());
@@ -33,7 +33,7 @@ SelectScene::SelectScene()
 	left_->SetIsFlipX(true);
 	right_ = std::make_unique<Sprite>("pause_arrow.png");
 
-	optionUI_ = std::make_unique<OptionUI>();
+	optionUI_ = std::make_unique<OptionUI>(OptionUI::kSelect);
 
 	GlobalVariables* GV = GlobalVariables::GetInstance();
 	GV->CreateGroup(groupName_);
@@ -71,7 +71,7 @@ void SelectScene::Initialize()
 		//初期化と配置
 		box->Initialize();
 		box->transform_.translate_.x = -diff + diff * count;
-		
+
 		// UV座標のセット
 		Transform handle = animation_->GetSceneUV(static_cast<uint32_t>(count) + 1u);
 		box->SetUVParam(handle);
@@ -99,7 +99,7 @@ void SelectScene::Initialize()
 	left_->Update();
 	right_->Update();
 
-	optionUI_->Initialize(OptionUI::kSelect);
+	optionUI_->Initialize();
 }
 
 void SelectScene::Update()
@@ -113,16 +113,14 @@ void SelectScene::Update()
 	bg_->Update(camera_.get());
 
 	if (isOptionActive_) {
-		isOptionActive_= optionUI_->Update();
+		ans_ = optionUI_->Update();
 	}
 	else {
 		//ステージを選ぶ処理
 		SelectStage();
-
-		//optionを見てるときにステージ変更処理入らない＆いれたらバグる
-		//シーン変更関係処理
-		SceneChange();
 	}
+	//シーン変更関係処理
+	SceneChange();
 
 	buttonA_->Update();
 	left_->Update();
@@ -154,9 +152,7 @@ void SelectScene::Draw()
 		optionUI_->Draw();
 	}
 
-	if (isOptionActive_) {
-		optionUI_->Draw();
-	}
+
 	//シーン転換時のフェードインアウト
 	BlackDraw();
 	//必須
@@ -168,7 +164,7 @@ void SelectScene::Debug()
 {
 #ifdef _DEBUG
 	ImGui::Begin("debug");
-	ImGui::Text("flag : %d , pickedNum : %d", switchData_.changeReception,pickedNum_);
+	ImGui::Text("flag : %d , pickedNum : %d", switchData_.changeReception, pickedNum_);
 	ImGui::End();
 
 	GlobalVariables* GV = GlobalVariables::GetInstance();
@@ -188,23 +184,35 @@ void SelectScene::Debug()
 
 void SelectScene::SceneChange()
 {
-	if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
-		// シーン切り替え
-		stageNo_ = pickedNum_;
-		ChangeScene(STAGE);
-		bgm_.Stop();
+
+	if (isOptionActive_) {
+		if (ans_.backOption) {
+			isOptionActive_ = false;
+		}
+		else if (ans_.backtitle) {
+				// シーン切り替え
+				ChangeScene(TITLE);
+				bgm_.Stop();
+		}
+	}
+	else {
+		if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
+			// シーン切り替え
+			stageNo_ = pickedNum_;
+			ChangeScene(STAGE);
+			bgm_.Stop();
+		}//オプション開く処理
+		else if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
+			isOptionActive_ = true;
+		}
+
 	}
 
-	if (input_->PressedGamePadButton(Input::GamePadButton::B)) {
-		// シーン切り替え
-		ChangeScene(TITLE);
-		bgm_.Stop();
-	}
 
-	//オプション開く処理
-	if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionActive_) {
-		isOptionActive_ = true;
-	}
+
+
+
+
 }
 
 void SelectScene::SelectStage()
@@ -219,7 +227,7 @@ void SelectScene::SelectStage()
 		//入力をみて変更
 		if (lStick.x >= switchData_.moveLowerLimit) {
 			pickedNum_++;
-			switchData_.changeReception = false;			
+			switchData_.changeReception = false;
 		}
 		if (lStick.x <= -switchData_.moveLowerLimit) {
 			pickedNum_--;
@@ -242,8 +250,8 @@ void SelectScene::SelectStage()
 	}
 
 
-	
-		
+
+
 	//各更新処理
 	for (int i = 0; i < _countOfStageNumbers; i++) {
 		if (i == pickedNum_) {
@@ -274,6 +282,6 @@ void SelectScene::SelectStage()
 
 
 
-	
+
 }
 

@@ -73,6 +73,7 @@ private:
 	//option関係
 	std::unique_ptr<OptionUI>optionUI_;
 	bool isOptionOpen_ = false;
+	UpdateAnswer ans_;
 
 	// テンション用UI
 	std::unique_ptr<TensionUI> tensionUI_;

@@ -57,7 +57,7 @@ StageScene::StageScene()
 	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);
 	waterEffect_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
 
-	optionUI_ = std::make_unique<OptionUI>();
+	optionUI_ = std::make_unique<OptionUI>(OptionUI::kStage);
 
 	tensionUI_ = std::make_unique<TensionUI>();
 }
@@ -93,7 +93,7 @@ void StageScene::Initialize()
 
 	isCanGoal_ = false;
 
-	optionUI_->Initialize(OptionUI::kStage);
+	optionUI_->Initialize();
 	isOptionOpen_ = false;
 
 	tensionUI_->Initialize();
@@ -103,7 +103,6 @@ void StageScene::Initialize()
 
 void StageScene::Update()
 {
-	
 
 	collisionManager_->Clear();
 
@@ -135,6 +134,11 @@ void StageScene::Update()
 		Initialize();
 	}
 #endif // _DEBUG
+
+
+	ans_ = UpdateAnswer();
+
+	WaveUpdate();
 
 	float deltaTime = frameInfo_->GetDeltaTime();
 	
@@ -176,16 +180,15 @@ void StageScene::Update()
 
 	
 	waterEffect_->Update(deltaTime);
-	//if (isCanGoal_) {
-		effeGoalGuid_->Update();
-	//}
+	
+	effeGoalGuid_->Update();
+	
 
 	if (isOptionOpen_) {
-		isOptionOpen_ = optionUI_->Update();
+		ans_ = optionUI_->Update();
 	}
-	else {
-		SceneChange();
-	}
+	
+	SceneChange();
 }
 
 
@@ -226,10 +229,12 @@ void StageScene::Draw()
 
 	player_->DrawUI();
 
+	tensionUI_->Draw();
+
+	//option描画
 	if (isOptionOpen_) {
 		optionUI_->Draw();
 	}
-	tensionUI_->Draw();
 
 	BlackDraw();
 
@@ -243,34 +248,55 @@ void StageScene::Draw()
 
 void StageScene::SceneChange()
 {
-	if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
-		// シーン切り替え
-		ChangeScene(CLEAR);
-		bgm_.Stop();
-		player_->Finalize();
-	}
-	if (goal_->IsClear()) {
-		// シーン切り替え
-		if (stageNo_ + 1 == maxStageNo_) {
-			ChangeScene(SELECT);
+
+	if (!isOptionOpen_) {
+		if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
+			// シーン切り替え
+			ChangeScene(CLEAR);
+			bgm_.Stop();
+			player_->Finalize();
 		}
-		else {
-			stageNo_++;
-			ChangeScene(STAGE);
+		if (goal_->IsClear()) {
+			// シーン切り替え
+			if (stageNo_ + 1 == maxStageNo_) {
+				ChangeScene(SELECT);
+			}
+			else {
+				stageNo_++;
+				ChangeScene(STAGE);
+			}
+			bgm_.Stop();
+			player_->Finalize();
 		}
-		bgm_.Stop();
-		player_->Finalize();
-	}
-	if (player_->GetIsHitEnemy()) {
+
+    if (player_->GetIsHitEnemy()) {
 		ChangeScene(SELECT);
 		bgm_.Stop();
 		player_->Finalize();
 		seDead_.Play();
+	  }
+    
+		//optionを開く
+		if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
+			isOptionOpen_ = true;
+		}
 	}
 
-	//optionを開く
-	if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
-		isOptionOpen_ = true;
+	else {
+		if (ans_.backOption) {
+			isOptionOpen_ = false;
+		}
+		else if (ans_.backSelect) {
+			ChangeScene(SELECT);
+			bgm_.Stop();
+			player_->Finalize();
+		}
+		else if (ans_.backtitle) {
+			ChangeScene(TITLE);
+			bgm_.Stop();
+			player_->Finalize();
+		}
+
 	}
 }
 

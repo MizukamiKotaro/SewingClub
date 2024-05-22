@@ -102,5 +102,6 @@ private:
 
 	std::unique_ptr<OptionUI>optionUI_;
 	bool isOptionActive_ = false;
+	UpdateAnswer ans_;
 };
 
