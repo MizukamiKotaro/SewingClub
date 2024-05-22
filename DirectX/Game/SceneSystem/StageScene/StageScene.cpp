@@ -138,8 +138,6 @@ void StageScene::Update()
 
 	ans_ = UpdateAnswer();
 
-	WaveUpdate();
-
 	float deltaTime = frameInfo_->GetDeltaTime();
 	
 	//planetManager_->Update(deltaTime);

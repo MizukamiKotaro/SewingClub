@@ -55,7 +55,6 @@ private:
 		Vector3 translate;
 		Vector3 velo;
 		float scale;
-
 		bool isDead = false;;
 
 		float startScale;
