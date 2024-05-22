@@ -150,6 +150,19 @@ void Player::Update(float deltaTime)
 		model_->SetUVParam(animation_->GetUVTrans());
 	}
 
+
+#pragma region 加速エフェクトの表示
+	bool effectActive = false;
+	float leng = velocity_.Length();
+	if (leng >= 0.4f) {
+		effectActive = true;
+	}
+
+	particleScceleration_->IsActive(effectActive, velocity_.Length());
+#pragma endregion
+
+
+
 	model_->Update();
 
 	isInWater_ = false;
@@ -231,13 +244,7 @@ void Player::Move(float deltaTime)
 			model_->transform_.rotate_.z = -std::acosf(vector_.x) - 1.57f + kRotate;
 		}
 
-		bool effectActive = false;
-		float leng = velocity_.Length();
-		if (leng >= addAcceleration_) {
-			effectActive = true;
-		}
-
-		//particleScceleration_->IsActive(effectActive, velocity_.Length());
+		
 	}
 	else {
 		// 入力がなかった時の処理
@@ -253,7 +260,6 @@ void Player::Move(float deltaTime)
 			speed_ = 0.0f;
 		}
 
-		//particleScceleration_->IsActive(false,0);
 	}
 
 	if (timeCount_ >= fParas_[kKeepSpeedTime]) {

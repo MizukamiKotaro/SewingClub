@@ -34,6 +34,7 @@ private:
 		Vector3 pos;
 		Vector3 scale;
 		Vector3 velo;
+		float rotate;
 		bool isDead = false;
 		int count = 0;
 		int dustSpawnCount = 0;
@@ -50,6 +51,7 @@ private:
 		
 		Vector3 pos;
 		Vector3 scale;
+		float rotate;
 		bool isDead = false;
 		float alpha;
 	};
@@ -83,7 +85,9 @@ private:
 	Vector2 stedAlpha_ = { 1,1 };
 
 	//サイズ
-	Vector2 stedScale_ = { 1,0 };
+	Vector2 stScale_ = { 1,1 };
+	Vector2 edScale_ = { 0,0 };
+
 
 	//生存カウント
 	int maxDeadCount_ = 60;
@@ -110,7 +114,8 @@ private:
 		DirectionCenter,
 		SpawnArea,
 		StEdAlpha,
-		StEdScale,
+		StScale,
+		EdScale,
 		DeadCount,
 		randSpd,
 		color,
@@ -124,7 +129,8 @@ private:
 		"沸き場所の中央からの差",
 		"出現エリアサイズ",
 		"最初と最後の透明度",
-		"最初と最後のサイズ",
+		"最初のサイズ",
+		"最後のサイズ",
 		"死亡カウント",
 		"ランダム速度",
 		"色",
