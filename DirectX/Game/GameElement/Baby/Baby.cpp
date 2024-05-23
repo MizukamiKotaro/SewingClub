@@ -2,6 +2,9 @@
 #include "GameElement/Player/Player.h"
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "calc.h"
+#include "Input.h"
+
+Input* input = nullptr;
 
 Baby::Baby(Player* player)
 {
@@ -32,6 +35,8 @@ Baby::Baby(Player* player)
 	
 	TensionInitialize();
 	SetGlobalVariable();
+
+	input = Input::GetInstance();
 }
 
 void Baby::Initialize()
@@ -336,7 +341,7 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 			else {
 
 				float dot = Calc::Dot(vect2, vect1);
-				if (dot >= 0) {
+				if (dot <= 0) {
 					isFollowWater_ = false;
 					float speed = t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
 					velocity_ += vect.Normalize() * speed;
@@ -345,64 +350,58 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 					model_->transform_.translate_ += velocity_;
 				}
 				else {
+					float speed = t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
+					vect = velocity_ + vect.Normalize() * speed;
+					speed_ = std::clamp(vect.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
+					vect = vect.Normalize() * speed_;
+					
+					Vector3 po = Calc::ClosestPoint(vect, Line{ Vector3{startPos_.x,startPos_.y,0.0f},Vector3{endPos_.x - startPos_.x,endPos_.y - startPos_.y,0.0f} });
+					po.x += waterPos_.x;
+					po.y += waterPos_.y;
 
-					Vector2 vect3 = (startPos_ - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y }).Normalize();
-					float outer2 = Calc::Outer(vect2, vect3);
-
-					if ((outer >= 0.0f && outer2 >= 0.0f) || (outer <= 0.0f && outer2 <= 0.0f)) {
-
-						outer = std::fabsf(outer);
-						outer = fParas_[FloatParamater::kMaxSlideLength] * outer * t * deltaTime;
-
-						speed_ = 0.0f;
-						velocity_ = {};
-
-						float l1 = (waterPos_ - startPos_).Length();
-						l1 -= outer;
-
-						float t2 = l1 / (endPos_ - startPos_).Length();
-						Vector2 p = (1.0f - t2) * startPos_ + t2 * endPos_;
-
-						if (l1 <= 0.0f) {
-							waterPos_ = startPos_;
-							waterGravityPos_ = startPos_;
-							waterRadius_ = startScale_;
-						}
-						else {
-							waterPos_ = p;
-							waterGravityPos_ = p;
-							waterRadius_ = (1.0f - t2) * startScale_ + t2 * endScale_;
-						}
-
-						Vector3 v = { std::cosf(waterRotate_),std::sinf(waterRotate_), 0.0f };
-						model_->transform_.translate_ = Vector3{ p.x,p.y,model_->transform_.translate_.z } + v * (waterRadius_ + 0.01f);
+					if ((po.x > startPos_.x && po.x > endPos_.x) || (po.x < startPos_.x && po.x < endPos_.x)) {
+						isFollowWater_ = false;
+						velocity_ = vect;
+						model_->transform_.translate_ += velocity_;
 					}
 					else {
-						outer = std::fabsf(outer);
-						outer = fParas_[FloatParamater::kMaxSlideLength] * outer * t * deltaTime;
+						Vector3 ppo = Calc::ClosestPoint(Vector3{ player_->GetPosition().x - startPos_.x,player_->GetPosition().y - startPos_.y,0.0f }, Line{ Vector3{startPos_.x,startPos_.y,0.0f},Vector3{endPos_.x - startPos_.x,endPos_.y - startPos_.y,0.0f} });
+						ppo.x += startPos_.x;
+						ppo.y += startPos_.y;
+						if (((ppo.x > startPos_.x && waterPos_.x > ppo.x && po.x < ppo.x) || (ppo.x < startPos_.x && waterPos_.x < ppo.x && po.x > ppo.x) ||
+							(ppo.x > startPos_.x && waterPos_.x < ppo.x && po.x > ppo.x) || (ppo.x < startPos_.x && waterPos_.x > ppo.x && po.x < ppo.x)) && 
+							speed_ <= 0.05f) {
 
-						speed_ = 0.0f;
-						velocity_ = {};
+							waterPos_ = Vector2{ ppo.x,ppo.y };
+							waterGravityPos_ = waterPos_;
+							float l1 = (waterPos_ - startPos_).Length();
+							float t2 = l1 / (endPos_ - startPos_).Length();
+							waterRadius_ = (1.0f - t2) * startScale_ + t2 * endScale_;
 
-						float l1 = (waterPos_ - startPos_).Length();
-						l1 += outer;
-
-						float t2 = l1 / (endPos_ - startPos_).Length();
-						Vector2 p = (1.0f - t2) * startPos_ + t2 * endPos_;
-
-						if (l1 >= 1.0f) {
-							waterPos_ = endPos_;
-							waterGravityPos_ = endPos_;
-							waterRadius_ = endScale_;
+							Vector3 v = { std::cosf(waterRotate_),std::sinf(waterRotate_), 0.0f };
+							po = Vector3{ ppo.x,ppo.y,model_->transform_.translate_.z } + v * (waterRadius_ + 0.01f);
+							velocity_ = {};
+							speed_ = 0.0f;
+							model_->transform_.translate_ = po;
 						}
 						else {
-							waterPos_ = p;
-							waterGravityPos_ = p;
+							waterPos_ = Vector2{ po.x,po.y };
+							waterGravityPos_ = waterPos_;
+							float l1 = (waterPos_ - startPos_).Length();
+							float t2 = l1 / (endPos_ - startPos_).Length();
 							waterRadius_ = (1.0f - t2) * startScale_ + t2 * endScale_;
-						}
 
-						Vector3 v = { std::cosf(waterRotate_),std::sinf(waterRotate_), 0.0f };
-						model_->transform_.translate_ = Vector3{ p.x,p.y,model_->transform_.translate_.z } + v * (waterRadius_ + 0.01f);
+							Vector3 v = { std::cosf(waterRotate_),std::sinf(waterRotate_), 0.0f };
+							po = Vector3{ po.x,po.y,model_->transform_.translate_.z } + v * (waterRadius_ + 0.01f);
+							velocity_ = po - model_->transform_.translate_;
+							
+							Vector2 in = input->GetGamePadLStick();
+							if (in.x == 0.0f && in.y == 0.0f) {
+								velocity_ *= 0.8f;
+							}
+							speed_ = velocity_.Length();
+							model_->transform_.translate_ = po;
+						}
 					}
 				}
 			}
