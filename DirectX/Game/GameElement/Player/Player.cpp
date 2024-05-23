@@ -96,7 +96,7 @@ void Player::Initialize()
 	effectOutWater_->Initialize();
 	effeEnterWater_->Initialize();
 	effeUIEnterWater_->Initialize();
-	particleScceleration_->Initialze(&model_->transform_.translate_);
+	particleScceleration_->Initialze(&model_->transform_.translate_, fParas_[kMinSpeed],fParas_[kMaxSpeed]+fParas_[kMaxAddAcceleration]);
 	//debugyou
 	particleScceleration_->IsActive(true,10.0f);
 
@@ -154,11 +154,11 @@ void Player::Update(float deltaTime)
 #pragma region 加速エフェクトの表示
 	bool effectActive = false;
 	float leng = velocity_.Length();
-	if (leng >= 0.4f) {
+	if (leng > fParas_[kMinSpeed] * deltaTime) {
 		effectActive = true;
 	}
 
-	particleScceleration_->IsActive(effectActive, velocity_.Length());
+	particleScceleration_->IsActive(effectActive, leng);
 #pragma endregion
 
 
@@ -175,7 +175,7 @@ void Player::Update(float deltaTime)
 	effectOutWater_->Update();
 	effeEnterWater_->Update();
 	effeUIEnterWater_->Update();
-	particleScceleration_->Update(vector_);
+	particleScceleration_->Update(vector_,deltaTime);
 }
 
 void Player::Draw(const Camera* camera)

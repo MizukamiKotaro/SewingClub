@@ -27,7 +27,8 @@ ParticleAcceleration::ParticleAcceleration()
 	gVUser_->AddItem(keys[color], color_);
 	gVUser_->AddItem(keys[DustSpawnCount], maxDustSpawnCount_);
 	gVUser_->AddItem(keys[EffectivePspd], pSpdpower_);
-
+	gVUser_->AddItem(keys[MinSpdColor], minColor_);
+	gVUser_->AddItem(keys[MaxSpdColor], maxColor_);
 }
 
 ParticleAcceleration::~ParticleAcceleration()
@@ -35,9 +36,11 @@ ParticleAcceleration::~ParticleAcceleration()
 	datas_.clear();
 }
 
-void ParticleAcceleration::Initialze(const Vector3* playerP)
+void ParticleAcceleration::Initialze(const Vector3* playerP,const float normalSpd,const float maxSpd)
 {
 	playerPos_ = playerP;
+	pNormalMaxSpd_ = normalSpd;
+	pMaxSpd_ = maxSpd;
 	isActive_ = false;
 	spawnCount_ = 0;
 	datas_.clear();
@@ -45,7 +48,17 @@ void ParticleAcceleration::Initialze(const Vector3* playerP)
 	SetGlobalV();
 }
 
-void ParticleAcceleration::Update(const Vector2& playerdirection)
+float Clamp(float min, float max, float& t) {
+	if (min > t) {
+		t = min;
+	}
+	else if (max < t) {
+		t = max;
+	}
+	return t;
+}
+
+void ParticleAcceleration::Update(const Vector2& playerdirection,float deltaTime)
 {
 	SetGlobalV();
 
@@ -72,6 +85,17 @@ void ParticleAcceleration::Update(const Vector2& playerdirection)
 
 			//初期サイズ設定
 			newData.scale = { stScale_.x,stScale_.y,1 };
+
+			//初期色設定
+			//色の処理
+			float colorT = (valueSpawnCount_ - pNormalMaxSpd_ * deltaTime) / (pMaxSpd_ * deltaTime - pNormalMaxSpd_ * deltaTime);
+			if (colorT > 0) {
+				colorT = Clamp(0.0f, 1.0f, colorT);
+				newData.color = Calc::Lerp(minColor_, maxColor_, colorT);
+			}
+			else {
+				newData.color = minColor_;
+			}
 
 			Vector2 direcN = { direc.x,direc.y };
 			direcN = direcN.Normalize();
@@ -118,7 +142,8 @@ void ParticleAcceleration::Update(const Vector2& playerdirection)
 			Vector2 scale = Calc::Lerp(stScale_, edScale_, t);
 			data.scale = { scale.x,scale.y,1 };
 			data.alpha_ = Calc::Lerp(stedAlpha_.x, stedAlpha_.y, t);
-
+			
+			
 			//塵沸き処理
 			if (data.dustSpawnCount++ >= maxDustSpawnCount_) {
 				data.dustSpawnCount = 0;
@@ -176,7 +201,7 @@ void ParticleAcceleration::Draw()
 {
 	for (auto& data : datas_) {
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(data.scale, Vector3{ 0,0,data.rotate }, data.pos);
-		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix ,Matrix4x4::MakeIdentity4x4(), {color_.x,color_.y,color_.z,data.alpha_} });
+		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix ,Matrix4x4::MakeIdentity4x4(), {data.color.x,data.color.y,data.color.z,data.alpha_} });
 	}
 	for (auto& data : dDatas_) {
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(data.scale, Vector3{ 0,0,data.rotate }, data.pos);
@@ -211,6 +236,8 @@ void ParticleAcceleration::SetGlobalV()
 	color_ = gVUser_->GetVector3Value(keys[color]);
 	maxDustSpawnCount_ = gVUser_->GetIntValue(keys[DustSpawnCount]);
 	pSpdpower_ = gVUser_->GetFloatValue(keys[EffectivePspd]);
+	minColor_ = gVUser_->GetVector3Value(keys[MinSpdColor]);
+	maxColor_ = gVUser_->GetVector3Value(keys[MaxSpdColor]);
 
 #ifdef _DEBUG
 	ImGui::Begin("AcceSpawnCount");
