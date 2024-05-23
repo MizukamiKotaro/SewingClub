@@ -76,7 +76,7 @@ void StageScene::Initialize()
 	itemManager_->Initialize();
 	goal_->Initialize();
 
-	effeGoalGuid_->Initialize(player_->GetPositionPtr(),&goal_->GetPosition(),camera_.get());
+	effeGoalGuid_->Initialize(player_->GetPositionPtr(), &goal_->GetPosition(), camera_.get());
 	std::list<QuotaSendData>datas = itemManager_->GetQuotaData();
 	for (auto& data : datas) {
 		effeGoalGuid_->SetQuota(data.pos, *data.size, data.isHit);
@@ -139,53 +139,56 @@ void StageScene::Update()
 	ans_ = UpdateAnswer();
 
 	float deltaTime = frameInfo_->GetDeltaTime();
-	
+
 	//planetManager_->Update(deltaTime);
 
-	player_->Update(deltaTime);
-	baby_->Update(deltaTime);
 
-	enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
+	//optionが開かれていない場合
+	if (!isOptionOpen_) {
+		player_->Update(deltaTime);
+		baby_->Update(deltaTime);
 
-	waterManager_->Update(deltaTime, camera_.get());
+		enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
 
-	itemManager_->Update(deltaTime, camera_.get());
-	isCanGoal_ = itemManager_->GetIsCanGoal();
+		waterManager_->Update(deltaTime, camera_.get());
 
-	backGroundObjectManager_->Update(deltaTime);
+		itemManager_->Update(deltaTime, camera_.get());
+		isCanGoal_ = itemManager_->GetIsCanGoal();
 
-	if (isCanGoal_) {
-		goal_->Update(deltaTime);
-	}
+		backGroundObjectManager_->Update(deltaTime);
 
-	debugCamera_->Update();
-	if (debugCamera_->IsDebug()) {
-		debugCamera_->DebugUpdate();
+		if (isCanGoal_) {
+			goal_->Update(deltaTime);
+		}
+
+		debugCamera_->Update();
+		if (debugCamera_->IsDebug()) {
+			debugCamera_->DebugUpdate();
+		}
+		else {
+			// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
+			camera_->transform_.translate_.x = player_->GetPosition().x;
+			camera_->transform_.translate_.y = player_->GetPosition().y;
+			camera_->Update();
+		}
+		// テンション関係
+		tensionUI_->Update(baby_->GetTension(), baby_->GetFace());
+
+		// 背景更新
+		bg_->Update(camera_.get());
+
+		collisionManager_->CheckCollision();
+
+		//水のうねうね
+		waterEffect_->Update(deltaTime);
+
+
+		effeGoalGuid_->Update();
 	}
 	else {
-		// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
-		camera_->transform_.translate_.x = player_->GetPosition().x;
-		camera_->transform_.translate_.y = player_->GetPosition().y;
-		camera_->Update();
-	}
-	// テンション関係
-	tensionUI_->Update(baby_->GetTension(), baby_->GetFace());
-
-	// 背景更新
-	bg_->Update(camera_.get());
-
-	collisionManager_->CheckCollision();
-
-	
-	waterEffect_->Update(deltaTime);
-	
-	effeGoalGuid_->Update();
-	
-
-	if (isOptionOpen_) {
 		ans_ = optionUI_->Update();
 	}
-	
+
 	SceneChange();
 }
 
@@ -200,7 +203,7 @@ void StageScene::Draw()
 	MakePostEffect();
 
 	Kyoko::Engine::PreDraw();
-	
+
 	waterEffect_->Draw();
 
 	player_->Draw(camera_.get());
@@ -216,13 +219,13 @@ void StageScene::Draw()
 	}
 
 	enemyManager_->Draw();
-	
+
 	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
 
 	//if (isCanGoal_) {
-		effeGoalGuid_->Draw(camera_.get());
+	effeGoalGuid_->Draw(camera_.get());
 	//}
 
 	player_->DrawUI();
@@ -267,13 +270,13 @@ void StageScene::SceneChange()
 			player_->Finalize();
 		}
 
-    if (player_->GetIsHitEnemy()) {
-		ChangeScene(SELECT);
-		bgm_.Stop();
-		player_->Finalize();
-		seDead_.Play();
-	  }
-    
+		if (player_->GetIsHitEnemy()) {
+			ChangeScene(SELECT);
+			bgm_.Stop();
+			player_->Finalize();
+			seDead_.Play();
+		}
+
 		//optionを開く
 		if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
 			isOptionOpen_ = true;
