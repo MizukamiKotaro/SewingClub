@@ -29,6 +29,11 @@ void IEnemy::CreateStageEditor(const std::string& name, const int& no)
 void IEnemy::DrawDefault(const ParticleMeshTexData* data) const
 {
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, position_);
+	if (animation_) {
+		Matrix4x4 uvMatrix = animation_->GetUVTrans().worldMat_;
+		instancingManager_->AddParticle(ParticleData{ matrix,uvMatrix, color_ }, data);
+		return;
+	}
 	instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ }, data);
 }
 

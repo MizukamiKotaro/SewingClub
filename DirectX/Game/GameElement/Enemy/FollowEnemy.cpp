@@ -1,4 +1,5 @@
 #include "FollowEnemy.h"
+#include "GameElement/Animation/AnimationManager.h"
 
 const ParticleMeshTexData* FollowEnemy::modelData_ = nullptr;
 const Vector3* FollowEnemy::player_ptr = nullptr;
@@ -12,10 +13,12 @@ FollowEnemy::FollowEnemy(const int& no) {
 	CreateStageEditor("追従する敵", no);
 	SetGlobalVariable();
 	position_ = initialPosition_;
+	animation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("followEnemy"));
+	animation_->Play(true);
 }
 
 void FollowEnemy::StaticInitialize() {
-	modelData_ = CreateData("enemy_undead.png");
+	modelData_ = CreateData("enemy_anime.png");
 }
 
 void FollowEnemy::SetPlayerPtr(const Vector3* pplayer) {
@@ -47,13 +50,18 @@ void FollowEnemy::Update(const float& deltaTime, Camera* camera, const uint32_t&
 #endif // _DEBUG
 
 	isActive_ = camera->InScreenCheck2D(position_, scale_);
+	// 感知距離内か
+	bool flag = ChackDistance();
+	Move(deltaTime, flag, babyTension);
 
 	// カメラ内か
 	if (isActive_) {
-		// 感知距離内か
-		bool flag = ChackDistance();
-		Move(deltaTime, flag, babyTension);
 		SetCollider();
+	}
+
+	// アニメーション
+	if (animation_->Update("followEnemy")) {
+
 	}
 }
 
