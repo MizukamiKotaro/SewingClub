@@ -50,12 +50,12 @@ void FollowEnemy::Update(const float& deltaTime, Camera* camera, const uint32_t&
 #endif // _DEBUG
 
 	isActive_ = camera->InScreenCheck2D(position_, scale_);
+	// 感知距離内か
+	bool flag = ChackDistance();
+	Move(deltaTime, flag, babyTension);
 
 	// カメラ内か
 	if (isActive_) {
-		// 感知距離内か
-		bool flag = ChackDistance();
-		Move(deltaTime, flag, babyTension);
 		SetCollider();
 	}
 
