@@ -5,6 +5,7 @@
 #include "ParticleManager.h"
 #include "StageEditor/StageEditor.h"
 #include "Camera.h"
+#include "GameElement/Animation/Animation2D.h"
 
 class IEnemy : public Collider
 {
@@ -40,4 +41,6 @@ protected:
 	Vector3 position_;
 	bool isActive_;
 	Vector4 color_;
+
+	std::unique_ptr<Animation2D> animation_;
 };
