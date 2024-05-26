@@ -103,7 +103,7 @@ void StageScene::Initialize()
 
 	tensionUI_->Initialize();
 	// テンション関係
-	tensionUI_->Update(0.0f, 0);
+	tensionUI_->Update(50.0f, 0);
 	
 	followCamera_->Initialize(player_->GetPositionPtr(), waterManager_->GetLimit().upperLimit, waterManager_->GetLimit().lowerLimit);
 
