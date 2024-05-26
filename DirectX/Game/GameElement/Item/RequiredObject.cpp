@@ -15,13 +15,14 @@ ItemManager* RequiredObject::itemManager_ = nullptr;
 Vector4 RequiredObject::staticColor_ = { 1.0f,1.0f,1.0f,1.0f };
 
 
-RequiredObject::RequiredObject(const int& no, const float& scale) {
+RequiredObject::RequiredObject(const int& no, const float& scale, const float& scaleDia) {
 	isHit_ = false;
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::ITEM);
 	Collider::AddTargetMask(ColliderMask::PLAYER);
 
 	position_ = { 0.0f,1.0f,-0.02f };
 	scale_ = scale;
+	scaleDiameter_ = scaleDia;
 	rotate_ = 0.0f;
 
 	no_ = no;
@@ -111,7 +112,7 @@ void RequiredObject::OnCollision(const Collider& collider) {
 
 void RequiredObject::SetCollider() {
 	if (!isHit_) {
-		Collider::SetCircle({ position_.x,position_.y }, scale_);
+		Collider::SetCircle({ position_.x,position_.y }, scale_ * scaleDiameter_);
 		collisionManager_->SetCollider(this);
 	}
 }

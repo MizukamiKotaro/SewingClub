@@ -19,7 +19,7 @@ struct QuotaSendData {
 class RequiredObject : public Collider {
 public:
 	RequiredObject() = default;
-	RequiredObject(const int& no, const float& scale);
+	RequiredObject(const int& no, const float& scale, const float& scaleDia);
 	~RequiredObject() = default;
 
 	static void StaticInitialize();
@@ -62,6 +62,7 @@ private:
 	float scale_;
 	float rotate_;
 	Vector4 color_;
+	float scaleDiameter_;
 
 	int no_;
 	bool isActive_;
