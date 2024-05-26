@@ -13,6 +13,8 @@
 #include "GameElement/Baby/Baby.h"
 #include"GameElement/OptionUI/OptionUI.h"
 #include "GameElement/TensionUI/TensionUI.h"
+#include "GameElement/Camera/FollowCamera.h"
+#include "GameElement/Camera/GoalCamera.h"
 #include"GameElement/GameOver/GameOver.h"
 
 class InstancingModelManager;
@@ -66,6 +68,8 @@ private:
 	int maxStageNo_ = 3;
 
 	bool isCanGoal_ = false; // ゴールできるか
+	bool isGoalTransition_ = false; // ゴールできるようになったらの演出
+	int countIndex = 0; // 初期化用の使ってるけどいらない子です
 
 	// 背景
 	std::unique_ptr<BackGround> bg_;
@@ -78,6 +82,10 @@ private:
 
 	// テンション用UI
 	std::unique_ptr<TensionUI> tensionUI_;
+
+	// カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
+	std::unique_ptr<GoalCamera> goalCamera_;
 
 	//ゲームオーバー関係
 	std::unique_ptr<GameOver>gameOver_;

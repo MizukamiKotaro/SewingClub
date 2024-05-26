@@ -61,6 +61,9 @@ StageScene::StageScene()
 
 	tensionUI_ = std::make_unique<TensionUI>();
 
+	followCamera_ = std::make_unique<FollowCamera>();
+	goalCamera_ = std::make_unique<GoalCamera>();
+
 	gameOver_ = std::make_unique<GameOver>();
 }
 
@@ -101,9 +104,14 @@ void StageScene::Initialize()
 	tensionUI_->Initialize();
 	// テンション関係
 	tensionUI_->Update(0.0f, 0);
+	
+	followCamera_->Initialize(player_->GetPositionPtr(), waterManager_->GetLimit().upperLimit, waterManager_->GetLimit().lowerLimit);
 
 	gameOver_->Initialize();
 	isGameoverActive_ = false;
+
+	countIndex = 0;
+	isGoalTransition_ = false;
 }
 
 void StageScene::Update()
@@ -151,10 +159,12 @@ void StageScene::Update()
 	//optionが開かれていない場合
 	if (!isGameoverActive_) {
 		if (!isOptionOpen_) {
-			player_->Update(deltaTime);
-			baby_->Update(deltaTime);
-
-			enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
+			// ゴール遷移演出じゃなければ
+			if (!isGoalTransition_) {
+				player_->Update(deltaTime);
+				baby_->Update(deltaTime);
+				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
+			}
 
 			waterManager_->Update(deltaTime, camera_.get());
 
@@ -167,14 +177,34 @@ void StageScene::Update()
 				goal_->Update(deltaTime);
 			}
 
+			// カメラ更新処理
 			debugCamera_->Update();
 			if (debugCamera_->IsDebug()) {
 				debugCamera_->DebugUpdate();
 			}
 			else {
+				Vector3 camera{};
+				if (isCanGoal_ && countIndex == 0) {
+					isGoalTransition_ = true;
+				}
+
+				// 通常カメラ
+				if (!isGoalTransition_) {
+					camera = followCamera_->Update();
+				}
+				// 遷移カメラ
+				else {
+					camera = goalCamera_->Update(player_->GetPosition(), goal_->GetPosition(), deltaTime);
+					if (goalCamera_->GetFinishd()) {
+						isGoalTransition_ = false;
+						countIndex++;
+						followCamera_->Reset();
+					}
+				}
+
 				// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
-				camera_->transform_.translate_.x = player_->GetPosition().x;
-				camera_->transform_.translate_.y = player_->GetPosition().y;
+				camera_->transform_.translate_.x = camera.x;
+				camera_->transform_.translate_.y = camera.y;
 				camera_->Update();
 			}
 			// テンション関係
@@ -194,7 +224,6 @@ void StageScene::Update()
 		else {
 			ans_ = optionUI_->Update();
 		}
-
 		
 	}
 	else {
