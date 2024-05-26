@@ -60,6 +60,8 @@ StageScene::StageScene()
 	optionUI_ = std::make_unique<OptionUI>(OptionUI::kStage);
 
 	tensionUI_ = std::make_unique<TensionUI>();
+
+	followCamera_ = std::make_unique<FollowCamera>();
 }
 
 void StageScene::Initialize()
@@ -99,6 +101,8 @@ void StageScene::Initialize()
 	tensionUI_->Initialize();
 	// テンション関係
 	tensionUI_->Update(0.0f, 0);
+	
+	followCamera_->Initialize(player_->GetPositionPtr(), waterManager_->GetLimit().upperLimit, waterManager_->GetLimit().lowerLimit);
 }
 
 void StageScene::Update()
@@ -166,9 +170,11 @@ void StageScene::Update()
 			debugCamera_->DebugUpdate();
 		}
 		else {
+			Vector3 camera = followCamera_->Update();
+
 			// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
-			camera_->transform_.translate_.x = player_->GetPosition().x;
-			camera_->transform_.translate_.y = player_->GetPosition().y;
+			camera_->transform_.translate_.x = camera.x;
+			camera_->transform_.translate_.y = camera.y;
 			camera_->Update();
 		}
 		// テンション関係

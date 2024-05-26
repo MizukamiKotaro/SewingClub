@@ -44,4 +44,12 @@ private:
 
 	int waterNum_;
 
+	struct Limit {
+		Vector3 upperLimit{};
+		Vector3 lowerLimit{};
+	};
+	Limit limit_;
+public:
+	const Limit& GetLimit() const { return limit_; }
+
 };

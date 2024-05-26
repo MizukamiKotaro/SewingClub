@@ -13,6 +13,7 @@
 #include "GameElement/Baby/Baby.h"
 #include"GameElement/OptionUI/OptionUI.h"
 #include "GameElement/TensionUI/TensionUI.h"
+#include "GameElement/Camera/FollowCamera.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -77,5 +78,8 @@ private:
 
 	// テンション用UI
 	std::unique_ptr<TensionUI> tensionUI_;
+
+	// カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
 
 };

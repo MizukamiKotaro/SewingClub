@@ -448,6 +448,9 @@
     <Filter Include="Game\GameElement\TensionUI">
       <UniqueIdentifier>{e14b39a2-3ac9-4428-a444-2c7375a51ebd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\Camera">
+      <UniqueIdentifier>{44684e86-00cb-4c65-be2f-24552ae6fcf0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -929,6 +932,12 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\TensionUI\TensionUI.cpp">
       <Filter>Game\GameElement\TensionUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Camera\FollowCamera.cpp">
+      <Filter>Game\GameElement\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1480,6 +1489,15 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h">
       <Filter>Game\GameElement\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Camera\FollowCamera.h">
+      <Filter>Game\GameElement\Camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
