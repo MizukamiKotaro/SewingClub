@@ -930,6 +930,12 @@
     <ClCompile Include="Game\GameElement\TensionUI\TensionUI.cpp">
       <Filter>Game\GameElement\TensionUI</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\GameOver\GameOver.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1480,6 +1486,15 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h">
       <Filter>Game\GameElement\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\GameOver\GameOver.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

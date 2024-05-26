@@ -60,6 +60,8 @@ StageScene::StageScene()
 	optionUI_ = std::make_unique<OptionUI>(OptionUI::kStage);
 
 	tensionUI_ = std::make_unique<TensionUI>();
+
+	gameOver_ = std::make_unique<GameOver>();
 }
 
 void StageScene::Initialize()
@@ -99,6 +101,9 @@ void StageScene::Initialize()
 	tensionUI_->Initialize();
 	// テンション関係
 	tensionUI_->Update(0.0f, 0);
+
+	gameOver_->Initialize();
+	isGameoverActive_ = false;
 }
 
 void StageScene::Update()
@@ -144,52 +149,60 @@ void StageScene::Update()
 
 
 	//optionが開かれていない場合
-	if (!isOptionOpen_) {
-		player_->Update(deltaTime);
-		baby_->Update(deltaTime);
+	if (!isGameoverActive_) {
+		if (!isOptionOpen_) {
+			player_->Update(deltaTime);
+			baby_->Update(deltaTime);
 
-		enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
+			enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
 
-		waterManager_->Update(deltaTime, camera_.get());
+			waterManager_->Update(deltaTime, camera_.get());
 
-		itemManager_->Update(deltaTime, camera_.get());
-		isCanGoal_ = itemManager_->GetIsCanGoal();
+			itemManager_->Update(deltaTime, camera_.get());
+			isCanGoal_ = itemManager_->GetIsCanGoal();
 
-		backGroundObjectManager_->Update(deltaTime);
+			backGroundObjectManager_->Update(deltaTime);
 
-		if (isCanGoal_) {
-			goal_->Update(deltaTime);
-		}
+			if (isCanGoal_) {
+				goal_->Update(deltaTime);
+			}
 
-		debugCamera_->Update();
-		if (debugCamera_->IsDebug()) {
-			debugCamera_->DebugUpdate();
+			debugCamera_->Update();
+			if (debugCamera_->IsDebug()) {
+				debugCamera_->DebugUpdate();
+			}
+			else {
+				// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
+				camera_->transform_.translate_.x = player_->GetPosition().x;
+				camera_->transform_.translate_.y = player_->GetPosition().y;
+				camera_->Update();
+			}
+			// テンション関係
+			tensionUI_->Update(baby_->GetTension(), baby_->GetFace());
+
+			// 背景更新
+			bg_->Update(camera_.get());
+
+			collisionManager_->CheckCollision();
+
+			//水のうねうね
+			waterEffect_->Update(deltaTime);
+
+
+			effeGoalGuid_->Update();
 		}
 		else {
-			// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
-			camera_->transform_.translate_.x = player_->GetPosition().x;
-			camera_->transform_.translate_.y = player_->GetPosition().y;
-			camera_->Update();
+			ans_ = optionUI_->Update();
 		}
-		// テンション関係
-		tensionUI_->Update(baby_->GetTension(), baby_->GetFace());
 
-		// 背景更新
-		bg_->Update(camera_.get());
-
-		collisionManager_->CheckCollision();
-
-		//水のうねうね
-		waterEffect_->Update(deltaTime);
-
-
-		effeGoalGuid_->Update();
+		
 	}
 	else {
-		ans_ = optionUI_->Update();
+		gameOverFlags_ = gameOver_->Update();
 	}
 
 	SceneChange();
+
 }
 
 
@@ -236,7 +249,9 @@ void StageScene::Draw()
 	if (isOptionOpen_) {
 		optionUI_->Draw();
 	}
-
+	if (isGameoverActive_) {
+		gameOver_->Draw();
+	}
 	BlackDraw();
 
 #ifdef _DEBUG
@@ -249,55 +264,72 @@ void StageScene::Draw()
 
 void StageScene::SceneChange()
 {
+	//ゲームオーバー画面が開かれていないとき
+	if (!isGameoverActive_) {
+		//optionが開かれていないとき
+		if (!isOptionOpen_) {
+			if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
+				// シーン切り替え
+				ChangeScene(CLEAR);
+				bgm_.Stop();
+				player_->Finalize();
+			}
+			if (goal_->IsClear()) {
+				// シーン切り替え
+				if (stageNo_ + 1 == maxStageNo_) {
+					ChangeScene(SELECT);
+				}
+				else {
+					stageNo_++;
+					ChangeScene(STAGE);
+				}
+				bgm_.Stop();
+				player_->Finalize();
+			}
 
-	if (!isOptionOpen_) {
-		if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
-			// シーン切り替え
-			ChangeScene(CLEAR);
-			bgm_.Stop();
-			player_->Finalize();
+			//ヒットによる処理
+			if (player_->GetIsHitEnemy()) {
+				isGameoverActive_ = true;
+				seDead_.Play();
+			}
+
+			//optionを開く
+			if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
+				isOptionOpen_ = true;
+			}
 		}
-		if (goal_->IsClear()) {
-			// シーン切り替え
-			if (stageNo_ + 1 == maxStageNo_) {
+		else {
+			if (ans_.backOption) {
+				isOptionOpen_ = false;
+			}
+			else if (ans_.backSelect) {
 				ChangeScene(SELECT);
+				bgm_.Stop();
+				player_->Finalize();
 			}
-			else {
-				stageNo_++;
-				ChangeScene(STAGE);
+			else if (ans_.backtitle) {
+				ChangeScene(TITLE);
+				bgm_.Stop();
+				player_->Finalize();
 			}
-			bgm_.Stop();
-			player_->Finalize();
+
 		}
 
-		if (player_->GetIsHitEnemy()) {
-			ChangeScene(SELECT);
-			bgm_.Stop();
-			player_->Finalize();
-			seDead_.Play();
-		}
-
-		//optionを開く
-		if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
-			isOptionOpen_ = true;
-		}
 	}
-
 	else {
-		if (ans_.backOption) {
-			isOptionOpen_ = false;
+		//ゲームオーバー時画面
+
+		if (gameOverFlags_.restart) {
+			ChangeScene(STAGE);
+			bgm_.Stop();
+			player_->Finalize();
 		}
-		else if (ans_.backSelect) {
+
+		if (gameOverFlags_.goSelect) {
 			ChangeScene(SELECT);
 			bgm_.Stop();
 			player_->Finalize();
 		}
-		else if (ans_.backtitle) {
-			ChangeScene(TITLE);
-			bgm_.Stop();
-			player_->Finalize();
-		}
-
 	}
 }
 
