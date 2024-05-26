@@ -939,6 +939,9 @@
     <ClCompile Include="Game\GameElement\Camera\FollowCamera.cpp">
       <Filter>Game\GameElement\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\Camera\GoalCamera.cpp">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1497,6 +1500,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Camera\FollowCamera.h">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Camera\GoalCamera.h">
       <Filter>Game\GameElement\Camera</Filter>
     </ClInclude>
   </ItemGroup>

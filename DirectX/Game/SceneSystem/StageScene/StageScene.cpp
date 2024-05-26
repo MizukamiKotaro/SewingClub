@@ -62,6 +62,7 @@ StageScene::StageScene()
 	tensionUI_ = std::make_unique<TensionUI>();
 
 	followCamera_ = std::make_unique<FollowCamera>();
+	goalCamera_ = std::make_unique<GoalCamera>();
 }
 
 void StageScene::Initialize()
@@ -149,10 +150,14 @@ void StageScene::Update()
 
 	//optionが開かれていない場合
 	if (!isOptionOpen_) {
-		player_->Update(deltaTime);
-		baby_->Update(deltaTime);
 
-		enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
+		// ゴール遷移演出じゃなければ
+		if (!isGoalTransition_) {
+			player_->Update(deltaTime);
+			baby_->Update(deltaTime);
+
+			enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
+		}
 
 		waterManager_->Update(deltaTime, camera_.get());
 
@@ -170,7 +175,26 @@ void StageScene::Update()
 			debugCamera_->DebugUpdate();
 		}
 		else {
-			Vector3 camera = followCamera_->Update();
+			Vector3 camera{};
+			
+			static int countIndex = 0;
+			if (isCanGoal_ && countIndex == 0) {
+				isGoalTransition_ = true;
+			}
+
+			// 通常カメラ
+			if (!isGoalTransition_) {
+				camera = followCamera_->Update();
+			}
+			// 遷移カメラ
+			else {
+				camera = goalCamera_->Update(player_->GetPosition(), goal_->GetPosition(), deltaTime);
+				if (goalCamera_->GetFinishd()) {
+					isGoalTransition_ = false;
+					countIndex++;
+					followCamera_->Reset();
+				}
+			}
 
 			// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
 			camera_->transform_.translate_.x = camera.x;
