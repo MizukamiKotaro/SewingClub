@@ -88,8 +88,11 @@ void GameClear::InputUpdate()
 			if (nowSelect_ == StageSelect) {
 				nowSelect_ = Retry;
 			}
-			else if (nowSelect_ == Retry) {
+			else if (nowSelect_ == Retry&&isNextStage_) {
 				nowSelect_ = NextStage;
+			}
+			else if (nowSelect_ == Retry && !isNextStage_) {
+				nowSelect_ = Retry;
 			}
 			else if (nowSelect_ == NextStage) {
 				nowSelect_ = StageSelect;
@@ -98,8 +101,10 @@ void GameClear::InputUpdate()
 		}
 		if (move.x < -stickD_) {
 			inputActive_ = false;
-			if (nowSelect_ == StageSelect) {
+			if (nowSelect_ == StageSelect&&isNextStage_) {
 				nowSelect_ = NextStage;
+			}else if (nowSelect_ == StageSelect && !isNextStage_) {
+				nowSelect_ = Retry;
 			}
 			else if (nowSelect_ == Retry) {
 				nowSelect_ = StageSelect;
@@ -138,7 +143,12 @@ GameClear::~GameClear()
 void GameClear::Initialize(bool nextstage)
 {
 	isNextStage_ = nextstage;
-	nowSelect_ = NextStage;
+	if (isNextStage_) {
+		nowSelect_ = NextStage;
+	}
+	else {
+		nowSelect_ = StageSelect;
+	}
 	count_ = 0;
 
 	sp_[text_Num]->SetTextureTopLeft({ 125,0 });
@@ -151,6 +161,16 @@ void GameClear::Initialize(bool nextstage)
 	sp_[Valuation_Good]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
 	sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
 	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,1 });
+
+	Update();
+
+	isNextStage_ = nextstage;
+	if (isNextStage_) {
+		nowSelect_ = NextStage;
+	}
+	else {
+		nowSelect_ = StageSelect;
+	}
 }
 
 ClearAnswer GameClear::Update()
@@ -222,7 +242,10 @@ void GameClear::Draw()
 	}
 
 	for (int i = 0; i < _countPSelect; i++) {
-		if (i == (int)NextStage && isNextStage_) {
+		if (i == (int)NextStage && !isNextStage_) {
+			
+		}
+		else {
 			selects_[i]->Draw();
 		}
 	}

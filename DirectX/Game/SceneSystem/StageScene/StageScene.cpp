@@ -109,10 +109,12 @@ void StageScene::Initialize()
 	followCamera_->Initialize(player_->GetPositionPtr(), waterManager_->GetLimit().upperLimit, waterManager_->GetLimit().lowerLimit);
 
 	gameOver_->Initialize();
-	isGameoverActive_ = false;
+	gameClear_->Initialize(true);
 
 	countIndex = 0;
 	isGoalTransition_ = false;
+
+	nowScene =kGameClear;
 }
 
 void StageScene::Update()
@@ -156,9 +158,9 @@ void StageScene::Update()
 
 	//planetManager_->Update(deltaTime);
 
-
-	//optionが開かれていない場合
-	if (!isGameoverActive_) {
+	switch (nowScene)
+	{
+	case StageScene::kPlay:
 		if (!isOptionOpen_) {
 			// ゴール遷移演出じゃなければ
 			if (!isGoalTransition_) {
@@ -225,11 +227,20 @@ void StageScene::Update()
 		else {
 			ans_ = optionUI_->Update();
 		}
-		
-	}
-	else {
+
+		break;
+	case StageScene::kGameOver:
 		gameOverFlags_ = gameOver_->Update();
+		break;
+	case StageScene::kGameClear:
+		gameClearFlags_ = gameClear_->Update();
+		break;
+	case StageScene::_countPlayScenes:
+		break;
+	default:
+		break;
 	}
+
 
 	SceneChange();
 
