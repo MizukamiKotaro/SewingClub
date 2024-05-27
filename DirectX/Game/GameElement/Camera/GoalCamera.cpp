@@ -36,7 +36,7 @@ Vector3 GoalCamera::Update(const Vector3& playerPos, const Vector3& goalPos, con
 		count_ = 0.0f;
 	}
 	else {
-		count_ += 1.0f/* * delta*/;
+		count_ += delta;
 		delta;
 	}
 	return result;

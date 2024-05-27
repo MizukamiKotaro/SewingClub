@@ -32,7 +32,7 @@ private:
 	"カメラのY座標制限",
 	*/
 	float delayConstant_ = 0.0f; // 遅延定数
-	float space_ = 20.0f; // 余白
+	float space_ = 40.0f; // 余白
 	Vector3 upperLimitPos_; // 上限座標
 	Vector3 lowerLimitPos_; // 下限座標
 
