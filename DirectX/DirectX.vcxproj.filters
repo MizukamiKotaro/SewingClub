@@ -448,6 +448,9 @@
     <Filter Include="Game\GameElement\TensionUI">
       <UniqueIdentifier>{e14b39a2-3ac9-4428-a444-2c7375a51ebd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\GameOver">
+      <UniqueIdentifier>{27770544-64a1-4922-a60f-c100c6488402}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -931,9 +934,12 @@
       <Filter>Game\GameElement\TensionUI</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\GameElement\OptionUI</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\GameOver\GameOver.cpp">
+      <Filter>Game\GameElement\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\GameClear\GameClear.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1487,13 +1493,16 @@
     <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h">
       <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
+      <Filter>Game\GameElement\OptionUI</Filter>
+    </ClInclude>
     <ClInclude Include="Game\GameElement\GameOver\GameOver.h">
+      <Filter>Game\GameElement\GameOver</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\GameClear\GameClear.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

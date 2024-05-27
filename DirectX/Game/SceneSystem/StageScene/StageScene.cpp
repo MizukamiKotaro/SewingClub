@@ -62,6 +62,7 @@ StageScene::StageScene()
 	tensionUI_ = std::make_unique<TensionUI>();
 
 	gameOver_ = std::make_unique<GameOver>();
+	gameClear_ = std::make_unique<GameClear>();
 }
 
 void StageScene::Initialize()
@@ -103,7 +104,10 @@ void StageScene::Initialize()
 	tensionUI_->Update(0.0f, 0);
 
 	gameOver_->Initialize();
-	isGameoverActive_ = false;
+	
+	gameClear_->Initialize(true);
+	
+	nowScene = kPlay;
 }
 
 void StageScene::Update()
@@ -149,57 +153,72 @@ void StageScene::Update()
 
 
 	//optionが開かれていない場合
-	if (!isGameoverActive_) {
-		if (!isOptionOpen_) {
-			player_->Update(deltaTime);
-			baby_->Update(deltaTime);
 
-			enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
+	//各プレイシーン状態更新
+	switch (nowScene)
+	{
+	case StageScene::kPlay:
+			if (!isOptionOpen_) {
+				player_->Update(deltaTime);
+				baby_->Update(deltaTime);
 
-			waterManager_->Update(deltaTime, camera_.get());
+				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
 
-			itemManager_->Update(deltaTime, camera_.get());
-			isCanGoal_ = itemManager_->GetIsCanGoal();
+				waterManager_->Update(deltaTime, camera_.get());
 
-			backGroundObjectManager_->Update(deltaTime);
+				itemManager_->Update(deltaTime, camera_.get());
+				isCanGoal_ = itemManager_->GetIsCanGoal();
 
-			if (isCanGoal_) {
-				goal_->Update(deltaTime);
-			}
+				backGroundObjectManager_->Update(deltaTime);
 
-			debugCamera_->Update();
-			if (debugCamera_->IsDebug()) {
-				debugCamera_->DebugUpdate();
+				if (isCanGoal_) {
+					goal_->Update(deltaTime);
+				}
+
+				debugCamera_->Update();
+				if (debugCamera_->IsDebug()) {
+					debugCamera_->DebugUpdate();
+				}
+				else {
+					// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
+					camera_->transform_.translate_.x = player_->GetPosition().x;
+					camera_->transform_.translate_.y = player_->GetPosition().y;
+					camera_->Update();
+				}
+				// テンション関係
+				tensionUI_->Update(baby_->GetTension(), baby_->GetFace());
+
+				// 背景更新
+				bg_->Update(camera_.get());
+
+				collisionManager_->CheckCollision();
+
+				//水のうねうね
+				waterEffect_->Update(deltaTime);
+
+
+				effeGoalGuid_->Update();
 			}
 			else {
-				// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
-				camera_->transform_.translate_.x = player_->GetPosition().x;
-				camera_->transform_.translate_.y = player_->GetPosition().y;
-				camera_->Update();
-			}
-			// テンション関係
-			tensionUI_->Update(baby_->GetTension(), baby_->GetFace());
-
-			// 背景更新
-			bg_->Update(camera_.get());
-
-			collisionManager_->CheckCollision();
-
-			//水のうねうね
-			waterEffect_->Update(deltaTime);
-
-
-			effeGoalGuid_->Update();
-		}
-		else {
-			ans_ = optionUI_->Update();
-		}
-
-		
-	}
-	else {
+				ans_ = optionUI_->Update();
+			}	
+		break;
+	case StageScene::kGameOver:
 		gameOverFlags_ = gameOver_->Update();
+		break;
+	case StageScene::kGameClear:
+		gameClearFlags_ = gameClear_->Update();
+		break;
+	case StageScene::_countPlayScenes:
+		break;
+	default:
+		break;
 	}
+
+	
+	
+		
+	
 
 	SceneChange();
 
@@ -249,9 +268,14 @@ void StageScene::Draw()
 	if (isOptionOpen_) {
 		optionUI_->Draw();
 	}
-	if (isGameoverActive_) {
+
+	if (nowScene == kGameOver) {
 		gameOver_->Draw();
 	}
+	else if (nowScene == kGameClear) {
+		gameClear_->Draw();
+	}
+
 	BlackDraw();
 
 #ifdef _DEBUG
@@ -264,8 +288,10 @@ void StageScene::Draw()
 
 void StageScene::SceneChange()
 {
-	//ゲームオーバー画面が開かれていないとき
-	if (!isGameoverActive_) {
+
+	switch (nowScene)
+	{
+	case StageScene::kPlay:
 		//optionが開かれていないとき
 		if (!isOptionOpen_) {
 			if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
@@ -275,21 +301,12 @@ void StageScene::SceneChange()
 				player_->Finalize();
 			}
 			if (goal_->IsClear()) {
-				// シーン切り替え
-				if (stageNo_ + 1 == maxStageNo_) {
-					ChangeScene(SELECT);
-				}
-				else {
-					stageNo_++;
-					ChangeScene(STAGE);
-				}
-				bgm_.Stop();
-				player_->Finalize();
+				nowScene = kGameClear;
 			}
 
 			//ヒットによる処理
 			if (player_->GetIsHitEnemy()) {
-				isGameoverActive_ = true;
+				nowScene = kGameOver;
 				seDead_.Play();
 			}
 
@@ -312,11 +329,9 @@ void StageScene::SceneChange()
 				bgm_.Stop();
 				player_->Finalize();
 			}
-
 		}
-
-	}
-	else {
+		break;
+	case StageScene::kGameOver:
 		//ゲームオーバー時画面
 
 		if (gameOverFlags_.restart) {
@@ -330,7 +345,43 @@ void StageScene::SceneChange()
 			bgm_.Stop();
 			player_->Finalize();
 		}
+
+		break;
+	case StageScene::kGameClear:
+		if (gameClearFlags_.goNeext) {
+
+			// シーン切り替え
+			if (stageNo_ + 1 == maxStageNo_) {
+				ChangeScene(SELECT);
+			}
+			else {
+				stageNo_++;
+				ChangeScene(STAGE);
+			}
+			bgm_.Stop();
+			player_->Finalize();
+
+		}else if (gameClearFlags_.reTry) {
+			ChangeScene(STAGE);
+			bgm_.Stop();
+			player_->Finalize();
+		}else if (gameClearFlags_.goSelect) {
+			ChangeScene(SELECT);
+			bgm_.Stop();
+			player_->Finalize();
+		}
+
+		break;
+	case StageScene::_countPlayScenes:
+		break;
+	default:
+		break;
 	}
+
+	
+
+	
+	
 }
 
 void StageScene::MakePostEffect()

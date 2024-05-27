@@ -14,6 +14,7 @@
 #include"GameElement/OptionUI/OptionUI.h"
 #include "GameElement/TensionUI/TensionUI.h"
 #include"GameElement/GameOver/GameOver.h"
+#include"GameElement/GameClear/GameClear.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -79,9 +80,21 @@ private:
 	// テンション用UI
 	std::unique_ptr<TensionUI> tensionUI_;
 
+	enum playScenes {
+		kPlay,
+		kGameOver,
+		kGameClear,
+		_countPlayScenes
+	};
+
+	playScenes nowScene = kPlay;
+
 	//ゲームオーバー関係
 	std::unique_ptr<GameOver>gameOver_;
-	bool isGameoverActive_ = false;
-
 	GameOverFlags gameOverFlags_;
+
+	//クリア関係
+	std::unique_ptr<GameClear>gameClear_;
+	ClearAnswer gameClearFlags_;
+
 };
