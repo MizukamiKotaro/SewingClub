@@ -3,6 +3,7 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "calc.h"
 #include "Input.h"
+#include "Ease/Ease.h"
 
 Input* input = nullptr;
 
@@ -10,7 +11,6 @@ Baby::Baby(Player* player)
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::BABY);
 	Collider::AddTargetMask(ColliderMask::WATER);
-	//Collider::AddTargetMask(ColliderMask::PLAYER);
 
 	CreateGlobalVariable("Baby");
 
@@ -60,6 +60,10 @@ void Baby::Initialize()
 
 	isCircleWater_ = true;
 	TensionInitialize();
+
+	preIsInWaterPlayer_ = true;
+	playerOutTime_ = 0.0f;
+	isRide_ = false;
 }
 
 void Baby::Update(float deltaTime)
@@ -70,7 +74,20 @@ void Baby::Update(float deltaTime)
 	prePosition_ = model_->transform_.translate_;
 	preIsInWater_ = isInWater_;
 
-	if (isInWater_) {
+	if (/*preIsInWaterPlayer_ && */!player_->GetPreInWater()) {
+		Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
+		pos.z = 0.0f;
+		if (pos.Length() <= fParas_[kNearPlayerLength]) {
+			isRide_ = true;
+			playerOutTime_ = 0.0f;
+		}
+	}
+	preIsInWaterPlayer_ = player_->GetPreInWater();
+
+	if (isRide_) {
+		RideUpdate(deltaTime);
+	}
+	else if (isInWater_) {
 		InWaterUpdate(deltaTime);
 		isInWater_ = false;
 		waterGravityPos_ = {};
@@ -156,6 +173,7 @@ const bool Baby::GetIsSuperSuperSmile() const
 void Baby::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER) {
+		isRide_ = false;
 		if (!preIsInWater_ && isFollowWater_) {
 			model_->transform_.translate_ = prePosition_;
 			Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
@@ -350,7 +368,7 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 					model_->transform_.translate_ += velocity_;
 				}
 				else {
-					float speed = t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
+					float speed = t * fParas_[FloatParamater::kMaxSlideLength] * deltaTime;
 					vect = velocity_ + vect.Normalize() * speed;
 					speed_ = std::clamp(vect.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
 					vect = vect.Normalize() * speed_;
@@ -510,6 +528,9 @@ void Baby::InitializeGlobalVariable()
 	fNames = {
 		"加速度が最大になるときのプレイヤーとの距離",
 		"プレイヤーとの限界距離",
+		"プレイヤーのジャンプに引き寄せられる距離",
+		"プレイヤーのジャンプに引き寄せられる最大の時間",
+		"プレイヤーが水中にいる時の引っぱりの倍率",
 		"加速度の最大",
 		"最大速度",
 		"最低速度",
@@ -634,4 +655,34 @@ void Baby::TensionFaceUpdate()
 	else {
 		tension_.face = Face::kNormal;
 	}
+}
+
+void Baby::RideUpdate(const float& deltaTime)
+{
+	prePosition_ = model_->transform_.translate_;
+	if (playerOutTime_ < fParas_[kNearPlayerTime]) {
+		model_->transform_.translate_ = Ease::UseEase(model_->transform_.translate_, player_->GetPosition(), playerOutTime_, fParas_[kNearPlayerTime], Ease::Constant);
+
+		float rotate = player_->GetRotate().z;
+		rotate -= 1.57f;
+		if (rotate < 0.0f) {
+			rotate = 6.28f + rotate;
+		}
+
+		if (model_->transform_.rotate_.z >= 4.71f && rotate <= 1.57f) {
+			model_->transform_.rotate_.z = Ease::UseEase(model_->transform_.rotate_.z, rotate + 6.28f, playerOutTime_, fParas_[kNearPlayerTime], Ease::Constant);
+		}
+		else if (model_->transform_.rotate_.z <= 1.57f && rotate >= 4.71f) {
+			model_->transform_.rotate_.z = Ease::UseEase(model_->transform_.rotate_.z, rotate - 6.28f, playerOutTime_, fParas_[kNearPlayerTime], Ease::Constant);
+		}
+		else {
+			model_->transform_.rotate_.z = Ease::UseEase(model_->transform_.rotate_.z, rotate, playerOutTime_, fParas_[kNearPlayerTime], Ease::Constant);
+		}
+	}
+	else {
+		model_->transform_.translate_ = player_->GetPosition();
+		model_->transform_.rotate_.z = player_->GetRotate().z;
+	}
+	playerOutTime_ = std::clamp(playerOutTime_ + deltaTime, 0.0f, fParas_[kNearPlayerTime]);
+	model_->Update();
 }

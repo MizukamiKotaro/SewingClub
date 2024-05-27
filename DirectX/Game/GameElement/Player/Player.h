@@ -35,6 +35,8 @@ public:
 
 	const Vector3& GetVelocity() const { return velocity_; }
 
+	const Vector3& GetRotate() const { return model_->transform_.rotate_; }
+
 private:
 	// グローバル変数の初期化、std::vectorに変更したためここで定義している
 	void InitializeGlobalVariable();
