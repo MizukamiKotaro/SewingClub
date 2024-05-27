@@ -376,7 +376,7 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 			Vector2 vect1 = { vect.x,vect.y };
 			vect1 = vect1.Normalize();
 
-			Vector2 vect2 = waterPos_ - Vector2{model_->transform_.translate_.x,model_->transform_.translate_.y};
+			Vector2 vect2 = waterPos_ - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
 			vect2 = vect2.Normalize();
 
 			float outer = Calc::Outer(vect2, vect1);
@@ -431,8 +431,8 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 					vect = velocity_ + vect.Normalize() * speed;
 					speed_ = std::clamp(vect.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
 					vect = vect.Normalize() * speed_;
-					
-					Vector3 po = Calc::ClosestPoint(vect, Line{ Vector3{startPos_.x,startPos_.y,0.0f},Vector3{endPos_.x - startPos_.x,endPos_.y - startPos_.y,0.0f} });
+
+					Vector3 po = Calc::ClosestPoint(vect, Line{ Vector3{},Vector3{endPos_.x - startPos_.x,endPos_.y - startPos_.y,0.0f} });
 					po.x += waterPos_.x;
 					po.y += waterPos_.y;
 
@@ -446,7 +446,7 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 						ppo.x += startPos_.x;
 						ppo.y += startPos_.y;
 						if (((ppo.x > startPos_.x && waterPos_.x > ppo.x && po.x < ppo.x) || (ppo.x < startPos_.x && waterPos_.x < ppo.x && po.x > ppo.x) ||
-							(ppo.x > startPos_.x && waterPos_.x < ppo.x && po.x > ppo.x) || (ppo.x < startPos_.x && waterPos_.x > ppo.x && po.x < ppo.x)) && 
+							(ppo.x > startPos_.x && waterPos_.x < ppo.x && po.x > ppo.x) || (ppo.x < startPos_.x && waterPos_.x > ppo.x && po.x < ppo.x)) &&
 							speed_ <= 0.05f) {
 
 							waterPos_ = Vector2{ ppo.x,ppo.y };
@@ -471,7 +471,7 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 							Vector3 v = { std::cosf(waterRotate_),std::sinf(waterRotate_), 0.0f };
 							po = Vector3{ po.x,po.y,model_->transform_.translate_.z } + v * (waterRadius_ + 0.01f);
 							velocity_ = po - model_->transform_.translate_;
-							
+
 							Vector2 in = input->GetGamePadLStick();
 							if (in.x == 0.0f && in.y == 0.0f) {
 								velocity_ *= 0.8f;
@@ -721,30 +721,8 @@ void Baby::TensionFaceUpdate()
 
 void Baby::RideUpdate(const float& deltaTime)
 {
-	prePosition_ = model_->transform_.translate_;
-	if (playerOutTime_ < fParas_[kNearPlayerTime]) {
-		model_->transform_.translate_ = Ease::UseEase(model_->transform_.translate_, player_->GetPosition(), playerOutTime_, fParas_[kNearPlayerTime], Ease::Constant);
-
-		float rotate = player_->GetRotate().z;
-		rotate -= 1.57f;
-		if (rotate < 0.0f) {
-			rotate = 6.28f + rotate;
-		}
-
-		if (model_->transform_.rotate_.z >= 4.71f && rotate <= 1.57f) {
-			model_->transform_.rotate_.z = Ease::UseEase(model_->transform_.rotate_.z, rotate + 6.28f, playerOutTime_, fParas_[kNearPlayerTime], Ease::Constant);
-		}
-		else if (model_->transform_.rotate_.z <= 1.57f && rotate >= 4.71f) {
-			model_->transform_.rotate_.z = Ease::UseEase(model_->transform_.rotate_.z, rotate - 6.28f, playerOutTime_, fParas_[kNearPlayerTime], Ease::Constant);
-		}
-		else {
-			model_->transform_.rotate_.z = Ease::UseEase(model_->transform_.rotate_.z, rotate, playerOutTime_, fParas_[kNearPlayerTime], Ease::Constant);
-		}
-	}
-	else {
-		model_->transform_.translate_ = player_->GetPosition();
-		model_->transform_.rotate_.z = player_->GetRotate().z;
-	}
+	model_->transform_.translate_ = player_->GetPosition();
+	model_->transform_.rotate_.z = player_->GetRotate().z;
 	playerOutTime_ = std::clamp(playerOutTime_ + deltaTime, 0.0f, fParas_[kNearPlayerTime]);
 	model_->Update();
 }
