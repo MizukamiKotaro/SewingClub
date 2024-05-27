@@ -50,7 +50,7 @@ void WaterManager::Initialize()
 		// 下限Yの探索
 		handle = stageWater_[i]->GetPosition().y - stageWater_[i]->GetScale();
 		if (handle < limit_.lowerLimit.y) {
-			limit_.upperLimit.y = handle;
+			limit_.lowerLimit.y = handle;
 		}
 	}
 }
