@@ -23,7 +23,7 @@ private:
 	float count_ = 0.0f;
 	float waitCount_ = 0.0f;
 	// 単位 秒:second
-	const float kMaxFrame_ = 3.0f; // イージング用最大フレームカウント
-	const float kWaitTime_ = 2.0f; // 一時停止待機時間
+	const float kMaxFrame_ = 2.0f; // イージング用最大フレームカウント
+	const float kWaitTime_ = 1.0f; // 一時停止待機時間
 	
 };
