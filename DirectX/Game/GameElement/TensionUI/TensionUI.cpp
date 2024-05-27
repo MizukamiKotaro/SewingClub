@@ -21,7 +21,8 @@ TensionUI::TensionUI() {
 
 void TensionUI::Initialize() {
 	SetGlobalVariable();
-
+	sprites_.at(static_cast<uint32_t>(Type::Gauge))->pos_ = fixedPosition_;
+	sprites_.at(static_cast<uint32_t>(Type::Gauge))->size_ = kMaxSize_;
 	sprites_.at(static_cast<uint32_t>(Type::Frame))->SetAnchorPoint(Vector2(0.5f, 0.56f));
 }
 

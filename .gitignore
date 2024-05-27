@@ -36,6 +36,7 @@ bld/
 
 Externals/DirectXTex/Shaders/Compiled/*.pdb
 imgui.ini
+DirectX/Resources/GlobalVariables/aaDontTouchPlayData*.json
 DirectX/Resources/GlobalVariables/zzESC*.json
 
 # Visual Studio 2015/2017 cache/options directory

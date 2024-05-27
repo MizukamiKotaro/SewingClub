@@ -22,6 +22,7 @@ void ItemManager::InitializeGlobalVariables()
 	scale_ = 0.5f;
 	reqItemNum_ = 0;
 	reqScale_ = 0.8f;
+	reqScaleDiameter_ = 3.0f;
 	SetGlobalVariable();
 }
 
@@ -36,7 +37,7 @@ void ItemManager::Initialize()
 		itemMap_[i] = std::make_unique<Item>(i, &scale_);
 	}
 	for (int i = 0; i < reqItemNum_; i++) {
-		reqItemMap_[i] = std::make_unique<RequiredObject>(i, reqScale_);
+		reqItemMap_[i] = std::make_unique<RequiredObject>(i, reqScale_, reqScaleDiameter_);
 	}
 	isCanGoal_ = false;
 }
@@ -64,7 +65,7 @@ void ItemManager::Update(float deltaTime, Camera* camera)
 	for (int i = 0; i < reqItemNum_; i++) {
 #ifdef _DEBUG
 		if (reqItemMap_.find(i) == reqItemMap_.end()) {
-			reqItemMap_[i] = std::make_unique<RequiredObject>(i, reqScale_);
+			reqItemMap_[i] = std::make_unique<RequiredObject>(i, reqScale_, reqScaleDiameter_);
 		}
 #endif // _DEBUG
 		if (reqItemMap_[i]->Update(deltaTime, camera)) {
@@ -107,6 +108,7 @@ void ItemManager::SetGlobalVariable()
 	globalVariable_->AddItem("アイテムの色", Vector3{ 1.0f,1.0f,1.0f });
 	stageEditor_->AddItem("必須アイテムの数", reqItemNum_);
 	globalVariable_->AddItem("必須アイテムのスケール", reqScale_);
+	globalVariable_->AddItem("必須アイテムのコライダーの倍率", reqScaleDiameter_);
 
 	ApplyGlobalVariable();
 }
@@ -123,6 +125,7 @@ void ItemManager::ApplyGlobalVariable()
 
 	reqItemNum_ = stageEditor_->GetIntValue("必須アイテムの数");
 	reqScale_ = globalVariable_->GetFloatValue("必須アイテムのスケール");
+	reqScaleDiameter_ = globalVariable_->GetFloatValue("必須アイテムのコライダーの倍率");
 	if (reqItemNum_ < 0) {
 		reqItemNum_ = 0;
 	}

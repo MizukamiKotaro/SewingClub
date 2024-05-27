@@ -451,6 +451,9 @@
     <Filter Include="Game\GameElement\GameOver">
       <UniqueIdentifier>{27770544-64a1-4922-a60f-c100c6488402}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\Camera">
+      <UniqueIdentifier>{44684e86-00cb-4c65-be2f-24552ae6fcf0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -935,6 +938,15 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
       <Filter>Game\GameElement\OptionUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Camera\FollowCamera.cpp">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Camera\GoalCamera.cpp">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\GameOver\GameOver.cpp">
       <Filter>Game\GameElement\GameOver</Filter>
@@ -1498,6 +1510,18 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
       <Filter>Game\GameElement\OptionUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Camera\FollowCamera.h">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Camera\GoalCamera.h">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\GameOver\GameOver.h">
       <Filter>Game\GameElement\GameOver</Filter>
