@@ -5,6 +5,7 @@
 #include "InstancingModelManager.h"
 #include "CollisionSystem/Collider/Collider.h"
 #include"Audio/Audio.h"
+#include "Game/GameElement/Animation/Animation2D.h"
 
 class Camera;
 class Wave;
@@ -16,7 +17,7 @@ public:
 
 	void Initialize();
 
-	void Update(float deltaTime);
+	bool Update(float deltaTime);
 
 	void Draw() const;
 
@@ -39,6 +40,7 @@ private:
 
 	std::unique_ptr<GlobalVariableUser> globalVariable_;
 	std::unique_ptr<StageEditor> stageEditor_;
+	std::unique_ptr<Animation2D> animation_;
 
 private:
 	static float deleteTime_;

@@ -19,7 +19,7 @@ Vector3 GoalCamera::Update(const Vector3& playerPos, const Vector3& goalPos, con
 	case GoalCamera::TYPE::Wait:
 		result = goalPos;
 		if (kWaitTime_ <= count_) {
-			isSwitch = true;
+			//isSwitch = true;
 		}
 		break;
 	case GoalCamera::TYPE::ToPlayer:
@@ -49,4 +49,10 @@ bool GoalCamera::GetFinishd() {
 		type_ = TYPE::ToGoal;
 	}
 	return result;
+}
+
+void GoalCamera::SetNext() {
+	int index = static_cast<int>(type_);
+	type_ = static_cast<TYPE>(index + 1);
+	count_ = 0.0f;
 }
