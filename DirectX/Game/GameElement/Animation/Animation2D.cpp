@@ -104,6 +104,10 @@ bool Animation2D::Update(std::string path) {
 	// UV座標の更新
 	UpdateTrans(number);
 	oldPath_ = path;
+	// loopならアニメーションの終わりとか気にしなくていいから強制true
+	if (isLoop_) {
+		return true;
+	}
 	return finished;
 }
 
