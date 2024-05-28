@@ -6,6 +6,7 @@
 #include "CollisionSystem/Collider/Collider.h"
 #include"Audio/Audio.h"
 #include "Game/GameElement/Animation/Animation2D.h"
+#include"GameElement/Effects/GoalDusts/GoalDusts.h"
 
 class Camera;
 class Wave;
@@ -56,4 +57,6 @@ private:
 	Vector4 color_;
 
 	Audio seGoal_;
+
+	std::unique_ptr<EffectGoalDusts>edusts_;
 };

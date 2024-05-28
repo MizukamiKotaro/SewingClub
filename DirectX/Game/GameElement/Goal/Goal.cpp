@@ -37,6 +37,7 @@ Goal::Goal()
 	Transform handle = animation_->GetSceneUV(0u);
 	animation_->Play(true, false);
 	
+	edusts_ = std::make_unique<EffectGoalDusts>();
 }
 
 void Goal::Initialize()
@@ -47,6 +48,9 @@ void Goal::Initialize()
 	isHit_ = false;
 	Transform handle = animation_->GetSceneUV(0u);
 	animation_->Play(true, false);
+
+	edusts_->Initialize(position_);
+	edusts_->SetActive(true);
 }
 
 bool Goal::Update(float deltaTime)
@@ -64,6 +68,7 @@ bool Goal::Update(float deltaTime)
 	deltaTime = deltaTime;
 	SetCollider();
 	bool result = animation_->Update("goal");
+	edusts_->Update();
 	return result;
 }
 
@@ -72,6 +77,8 @@ void Goal::Draw() const
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
 	Matrix4x4 uvMatrix = animation_->GetUVTrans().worldMat_;
 	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,uvMatrix, color_ });
+
+	edusts_->Draw();
 }
 
 void Goal::SetGlobalVariable()

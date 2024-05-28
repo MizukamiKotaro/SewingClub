@@ -954,6 +954,9 @@
     <ClCompile Include="Game\GameElement\GameClear\GameClear.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\GoalDusts\GoalDusts.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1527,6 +1530,9 @@
       <Filter>Game\GameElement\GameOver</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\GameClear\GameClear.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\GoalDusts\GoalDusts.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

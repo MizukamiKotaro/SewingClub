@@ -16,12 +16,13 @@ public:
 
 	void Draw();
 
+	void SetActive(bool active);
+
 private:
 
 	void GetGlobalV();
 
-	void SetActive(bool active);
-
+	
 
 private:
 
