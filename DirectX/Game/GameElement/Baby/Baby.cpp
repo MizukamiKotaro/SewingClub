@@ -170,8 +170,8 @@ void Baby::Update(float deltaTime)
 	if (animation_->Update("babynormal")) {
 		// modelにuvのセット
 		baby_->SetUVParam(animation_->GetUVTrans());
-
 	}
+	TextureUpdate();
 
 	if (spawnWaitCount_-- <= 0) {
 		isSpawnEffect_ = true;
@@ -725,4 +725,15 @@ void Baby::RideUpdate(const float& deltaTime)
 	model_->transform_.rotate_.z = player_->GetRotate().z;
 	playerOutTime_ = std::clamp(playerOutTime_ + deltaTime, 0.0f, fParas_[kNearPlayerTime]);
 	model_->Update();
+}
+
+void Baby::TextureUpdate() {
+	uint32_t faceIndex = static_cast<uint32_t>(tension_.face);
+	if (!isInWater_ && !isFollowWater_) {
+		faceIndex += kMaxFacePattern;
+	}
+	if (faceIndex == texturePath.size()) {
+		faceIndex -= kMaxFacePattern;
+	}
+	baby_->SetTexture(TextureManager::GetInstance()->LoadTexture(directryPath + texturePath.at(faceIndex)));
 }

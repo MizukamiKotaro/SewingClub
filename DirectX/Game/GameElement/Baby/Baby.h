@@ -48,6 +48,8 @@ private:
 
 	void RideUpdate(const float& deltaTime);
 
+	void TextureUpdate(); // 赤ちゃんのアニメーションテクスチャ用更新
+
 private:
 	std::unique_ptr<Model> baby_;
 	Player* player_;
@@ -139,4 +141,20 @@ private:
 	float spawnWaitCount_ = 0;
 	float maxSpawnWaitCount_ = 10;
 	bool isSpawnEffect_ = false;
+
+	uint32_t kMaxFacePattern = 5u; // 表情差分最大数
+	std::string directryPath = "baby/";
+	std::vector<std::string> texturePath{
+		"baby_normal.png",
+		"baby_good.png",
+		"baby_veryGood.png",
+		"baby_anxiety.png",
+		"baby_cry.png",
+
+		"baby_jump_normal.png",
+		"baby_jump_good.png",
+		"baby_jump_veryGood.png",
+		"baby_jump_anxiety.png",
+	};
+
 };
