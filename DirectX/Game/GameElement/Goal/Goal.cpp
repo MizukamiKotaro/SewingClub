@@ -51,6 +51,7 @@ void Goal::Initialize()
 
 	edusts_->Initialize(position_);
 	edusts_->SetActive(true);
+	isGoal_ = false;
 }
 
 bool Goal::Update(float deltaTime)
@@ -65,10 +66,11 @@ bool Goal::Update(float deltaTime)
 	}
 #endif // _DEBUG
 	
-	deltaTime = deltaTime;
-	SetCollider();
-	bool result = animation_->Update("goal");
-	edusts_->Update();
+	bool result = false;
+	if (isGoal_) {
+		result = animation_->Update("goal", deltaTime);
+		SetCollider();
+	}
 	return result;
 }
 

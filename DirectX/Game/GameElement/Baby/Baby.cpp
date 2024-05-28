@@ -168,7 +168,7 @@ void Baby::Update(float deltaTime)
 	TensionUpdate(deltaTime);
 	gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
 
-	if (animation_->Update("babynormal")) {
+	if (animation_->Update("babynormal",deltaTime)) {
 		// modelにuvのセット
 		baby_->SetUVParam(animation_->GetUVTrans());
 	}
