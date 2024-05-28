@@ -39,6 +39,8 @@ void UIGoalGuidance::Initialize(const Vector3* playerPos, const Vector3* goalPos
 
 	model_->Initialize();
 	
+
+	quota_.clear();
 	//ゴールとアイテムのUIの初期更新
 	isQuota_ = true;
 	Update();
