@@ -155,7 +155,6 @@ void StageScene::Update()
 	ans_ = UpdateAnswer();
 
 	float deltaTime = frameInfo_->GetDeltaTime();
-	ImGui::Text("DeltaTime %f", deltaTime);
 
 	//planetManager_->Update(deltaTime);
 
