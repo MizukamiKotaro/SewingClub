@@ -155,6 +155,7 @@ void StageScene::Update()
 	ans_ = UpdateAnswer();
 
 	float deltaTime = frameInfo_->GetDeltaTime();
+	ImGui::Text("DeltaTime %f", deltaTime);
 
 	//planetManager_->Update(deltaTime);
 
@@ -167,9 +168,8 @@ void StageScene::Update()
 				player_->Update(deltaTime);
 				baby_->Update(deltaTime);
 				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
-
-				waterManager_->Update(deltaTime, camera_.get());
 			}
+			waterManager_->Update(deltaTime, camera_.get());
 
 			itemManager_->Update(deltaTime, camera_.get());
 			isCanGoal_ = itemManager_->GetIsCanGoal();
@@ -177,9 +177,7 @@ void StageScene::Update()
 			backGroundObjectManager_->Update(deltaTime);
 
 			bool goal = false;
-			if (isCanGoal_ && countIndex != 1) {
-				goal = goal_->Update(deltaTime);
-			}
+			goal = goal_->Update(deltaTime);
 
 			// カメラ更新処理
 			debugCamera_->Update();
@@ -203,6 +201,7 @@ void StageScene::Update()
 					// 待機中になったら
 					if (goalCamera_->GetType() == 1u) {
 						countIndex = 2;
+						goal_->SetGoal(true);
 						if (goal) {
 							goalCamera_->SetNext();
 						}
@@ -278,9 +277,7 @@ void StageScene::Draw()
 
 	itemManager_->Draw();
 
-	if (isCanGoal_) {
-		goal_->Draw();
-	}
+	goal_->Draw();
 
 	enemyManager_->Draw();
 

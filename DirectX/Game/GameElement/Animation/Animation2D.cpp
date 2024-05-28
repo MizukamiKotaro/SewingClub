@@ -87,7 +87,7 @@ Animation2D::Animation2D(Animation2DData* data) {
 	data_ = data;
 }
 
-bool Animation2D::Update(std::string path) {
+bool Animation2D::Update(std::string path, const float& delta) {
 #ifdef _DEBUG
 	data_->ApplyGlobalVariable();
 #endif // _DEBUG
@@ -99,7 +99,7 @@ bool Animation2D::Update(std::string path) {
 		nowFrame_ = 0.0f;
 	}
 
-	bool finished = AnimationCount();
+	bool finished = AnimationCount(delta);
 	uint32_t number = data_->keyParam_.at(nowScene_).sceneNumber;
 	// UV座標の更新
 	UpdateTrans(number);
@@ -124,8 +124,8 @@ Transform Animation2D::GetSceneUV(const uint32_t& scene) {
 	return transform_;
 }
 
-bool Animation2D::AnimationCount() {
-	if (data_->keyParam_.at(nowScene_).keyFrame <= nowFrame_++) {
+bool Animation2D::AnimationCount(const float& delta) {
+	if (data_->keyParam_.at(nowScene_).keyFrame <= nowFrame_) {
 		nowScene_ += 1u;
 		nowFrame_ = 0.0f;
 		// 最後まで行った&&ループするならば
@@ -140,6 +140,7 @@ bool Animation2D::AnimationCount() {
 			return true;
 		}
 	}
+	nowFrame_ += delta * 60.0f;
 	return false;
 }
 

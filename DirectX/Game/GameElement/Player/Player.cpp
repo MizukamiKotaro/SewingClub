@@ -145,7 +145,7 @@ void Player::Update(float deltaTime)
 		animationHandle = "playeridle";
 	}
 	// アニメーションがされていたら
-	if (animation_->Update(animationHandle)) {
+	if (animation_->Update(animationHandle, deltaTime)) {
 		// modelにuvのセット
 		model_->SetUVParam(animation_->GetUVTrans());
 	}

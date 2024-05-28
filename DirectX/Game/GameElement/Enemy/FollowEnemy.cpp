@@ -60,7 +60,7 @@ void FollowEnemy::Update(const float& deltaTime, Camera* camera, const uint32_t&
 	}
 
 	// アニメーション
-	if (animation_->Update("followEnemy")) {
+	if (animation_->Update("followEnemy", deltaTime)) {
 
 	}
 }
