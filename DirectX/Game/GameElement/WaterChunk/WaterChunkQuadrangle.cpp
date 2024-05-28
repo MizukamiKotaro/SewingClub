@@ -23,6 +23,7 @@ WaterChunkQuadrangle::WaterChunkQuadrangle()
 	isPlayer_ = false;
 	preIsPlayer_ = false;
 	isWave_ = false;
+	isActive_ = true;
 }
 
 void WaterChunkQuadrangle::StaticInitialize()

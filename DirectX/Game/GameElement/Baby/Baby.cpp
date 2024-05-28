@@ -81,6 +81,7 @@ void Baby::Initialize()
 	TensionInitialize();
 	RideInWaterInitialize();
 	preIsInWaterPlayer_ = true;
+	prePreIsInWaterPlayer_ = preIsInWaterPlayer_;
 	playerOutTime_ = 0.0f;
 	isRide_ = false;
 }
@@ -167,7 +168,7 @@ void Baby::Update(float deltaTime)
 	rideInWater_.isRideInWater = false;
 	TensionUpdate(deltaTime);
 	gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
-
+	prePreIsInWaterPlayer_ = preIsInWaterPlayer_;
 	if (animation_->Update("babynormal")) {
 		// modelにuvのセット
 		baby_->SetUVParam(animation_->GetUVTrans());
@@ -628,6 +629,7 @@ void Baby::InitializeGlobalVariable()
 		"水から出たときのテンションアップするまでの水中の時間",
 		"テンションマックス維持の時間",
 		"テンションマックスが終了したときのテンション",
+		"プレイヤーに乗ったときのテンションアップの数値",
 	};
 }
 
@@ -678,7 +680,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		}
 		tension_.inWaterTime = 0.0f;
 
-		if (!isFollowWater_) {
+		if (!isFollowWater_ && !isRide_) {
 			tension_.flyTime += deltaTime;
 			if (tension_.flyTime >= fParas_[FloatParamater::kFlyTime] && tension_.tension > 0.0f) {
 				tension_.tension += fParas_[FloatParamater::kUpTensionToFly];
@@ -690,7 +692,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		}
 	}
 
-	if (player_->GetPreInWater()) {
+	if (player_->GetPreInWater() && !rideInWater_.isRideInWater) {
 		tension_.playerInWaterTime += deltaTime;
 		if (tension_.playerInWaterTime >= fParas_[FloatParamater::kPlayerInWaterTime]) {
 			tension_.tension -= fParas_[FloatParamater::kDownTensionBePlayerInWater];
@@ -699,6 +701,17 @@ void Baby::TensionUpdate(const float& deltaTime)
 	}
 	else {
 		tension_.playerInWaterTime = 0.0f;
+	}
+
+	if (isRide_ && !tension_.isRideUp_) {
+		tension_.isRideUp_ = true;
+		tension_.tension += fParas_[FloatParamater::kUpTentionRide];
+	}
+	else if (!isRide_) {
+		tension_.isRideUp_ = false;
+	}
+	else if (isRide_ && !preIsInWaterPlayer_ && prePreIsInWaterPlayer_) {
+		tension_.tension += fParas_[FloatParamater::kUpTensionOutWater];
 	}
 
 	if (tension_.tension <= 0.0f) {
@@ -723,7 +736,7 @@ void Baby::TensionFaceUpdate()
 	if (tension_.tension <= 0.0f) {
 		tension_.face = Face::kCry;
 	}
-	else if (player_->GetPreInWater() || tension_.tension < 30.0f) {
+	else if ((player_->GetPreInWater() && !rideInWater_.isRideInWater) || tension_.tension < 30.0f) {
 		tension_.face = Face::kAnxiety;
 	}
 	else if (tension_.tension >= 90.0f) {

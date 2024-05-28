@@ -80,6 +80,7 @@ private:
 
 	float playerOutTime_;
 	bool preIsInWaterPlayer_;
+	bool prePreIsInWaterPlayer_;
 	bool isRide_;
 
 	enum Face {
@@ -100,6 +101,7 @@ private:
 		float inWaterTime = 0.0f;
 		float superTime = 0.0f;
 		Face face = kNormal;
+		bool isRideUp_ = false;
 	};
 	Tension tension_;
 
@@ -138,6 +140,7 @@ private:
 		kInWaterTime, // 水から出たときのテンションアップするまでの水中の時間
 		kSuperSuperSmileTime, // テンションマックス維持の時間
 		kResetTensionFromSuper, // テンションマックスが終了したときのテンション
+		kUpTentionRide, // プレイヤーに乗ったときのテンションアップの数値
 		kFloatEnd,
 	};
 
