@@ -24,6 +24,8 @@ public:
 	const bool IsClear() const { return isHit_; }
 
 	const Vector3& GetPosition()const { return position_; }
+
+	void SetGoal(const bool& flag) { isGoal_ = flag; }
 private:
 	void SetGlobalVariable();
 
@@ -54,6 +56,8 @@ private:
 	bool isSmall_;
 	float time_;
 	Vector4 color_;
+	bool isGoal_ = false; // ゴールできるか
+
 
 	Audio seGoal_;
 };

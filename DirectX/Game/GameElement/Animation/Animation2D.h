@@ -50,7 +50,7 @@ public:
 	~Animation2D() = default;
 
 	/// <returns>アニメーション更新時はtrueを返す</returns>
-	bool Update(std::string path);
+	bool Update(std::string path, const float& delta);
 
 	// アニメーションの再生
 	void Play(bool flag, bool loop = true);
@@ -62,7 +62,7 @@ public:
 
 private:
 	// true:scene切り替え/false:scene継続
-	bool AnimationCount();
+	bool AnimationCount(const float& delta);
 
 	void UpdateTrans(const uint32_t& listNum);
 
