@@ -46,7 +46,11 @@ private:
 	void TensionUpdate(const float& deltaTime);
 	void TensionFaceUpdate();
 
+	void RideInWaterInitialize();
+
 	void RideUpdate(const float& deltaTime);
+
+	void TextureUpdate(); // 赤ちゃんのアニメーションテクスチャ用更新
 
 private:
 	std::unique_ptr<Model> baby_;
@@ -99,12 +103,22 @@ private:
 	};
 	Tension tension_;
 
+	struct RideInWater
+	{
+		bool isRideInWater;
+		float rideFinishSpeed;
+		float rideFinishTime;
+	};
+	RideInWater rideInWater_;
+
 	enum FloatParamater {
 		kMaxPlayerLength, // 加速度が最大になるときのプレイヤーとの距離
 		kLimitePlayerLength, // プレイヤーとの限界距離
 		kNearPlayerLength, // プレイヤーのジャンプに引き寄せられる距離
 		kNearPlayerTime, // プレイヤーのジャンプに引き寄せられる最大の時間
 		kPulledPower, // プレイヤーが水中にいる時の引っぱりの倍率
+		kRideFinishTime, // プレイヤーに乗って水中にいられる時間
+		kRideInWaterSpeed, // プレイヤーに乗って水中に潜れるスピード
 		kMaxAcceleration, // 加速度の最大
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
@@ -139,4 +153,20 @@ private:
 	float spawnWaitCount_ = 0;
 	float maxSpawnWaitCount_ = 10;
 	bool isSpawnEffect_ = false;
+
+	uint32_t kMaxFacePattern = 5u; // 表情差分最大数
+	std::string directryPath = "baby/";
+	std::vector<std::string> texturePath{
+		"baby_normal.png",
+		"baby_good.png",
+		"baby_veryGood.png",
+		"baby_anxiety.png",
+		"baby_cry.png",
+
+		"baby_jump_normal.png",
+		"baby_jump_good.png",
+		"baby_jump_veryGood.png",
+		"baby_jump_anxiety.png",
+	};
+
 };

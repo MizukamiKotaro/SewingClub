@@ -39,6 +39,7 @@ Baby::Baby(Player* player)
 	yarn_->transform_.scale_ = { 0.1f,0.1f,0.1f };
 	
 	TensionInitialize();
+	RideInWaterInitialize();
 	SetGlobalVariable();
 
 	// アニメーションの初期化とモデルのセット
@@ -78,7 +79,7 @@ void Baby::Initialize()
 
 	effeEnterW_->Initialize();
 	TensionInitialize();
-
+	RideInWaterInitialize();
 	preIsInWaterPlayer_ = true;
 	playerOutTime_ = 0.0f;
 	isRide_ = false;
@@ -163,15 +164,15 @@ void Baby::Update(float deltaTime)
 	model_->Update();
 	baby_->Update();
 	SetCollider();
-
+	rideInWater_.isRideInWater = false;
 	TensionUpdate(deltaTime);
 	gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
 
 	if (animation_->Update("babynormal")) {
 		// modelにuvのセット
 		baby_->SetUVParam(animation_->GetUVTrans());
-
 	}
+	TextureUpdate();
 
 	if (spawnWaitCount_-- <= 0) {
 		isSpawnEffect_ = true;
@@ -209,86 +210,101 @@ const bool Baby::GetIsSuperSuperSmile() const
 void Baby::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER) {
-		isRide_ = false;
-		if (!preIsInWater_ && isFollowWater_) {
-			model_->transform_.translate_ = prePosition_;
-			Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
-			Vector2 vect = { pos.x,pos.y };
-			vect = vect.Normalize();
-			float rotate = std::acosf(vect.x);
-			if (vect.y < 0) {
-				rotate = 6.28f - rotate;
+		if (!isRide_ || (isRide_ && (player_->GetSpeed() < rideInWater_.rideFinishSpeed || rideInWater_.rideFinishTime > fParas_[kInWaterTime]))) {
+			isRide_ = false;
+			if (!preIsInWater_ && isFollowWater_) {
+				model_->transform_.translate_ = prePosition_;
+				Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
+				Vector2 vect = { pos.x,pos.y };
+				vect = vect.Normalize();
+				float rotate = std::acosf(vect.x);
+				if (vect.y < 0) {
+					rotate = 6.28f - rotate;
+				}
+				rotate = std::fmod(rotate + 1.57f, 6.28f);
+				if (model_->transform_.rotate_.z >= 4.71f && rotate <= 1.57f) {
+					model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate + 6.28f, 0.01f);
+				}
+				else if (model_->transform_.rotate_.z <= 1.57f && rotate >= 4.71f) {
+					model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate - 6.28f, 0.01f);
+				}
+				else {
+					model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate, 0.01f);
+				}
+				model_->transform_.rotate_.z = std::fmod(model_->transform_.rotate_.z, 6.28f);
+				if (model_->transform_.rotate_.z < 0.0f) {
+					model_->transform_.rotate_.z += 6.28f;
+				}
+				model_->Update();
+				baby_->Update();
 			}
-			rotate = std::fmod(rotate + 1.57f, 6.28f);
-			if (model_->transform_.rotate_.z >= 4.71f && rotate <= 1.57f) {
-				model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate + 6.28f, 0.01f);
+
+			if (collider.GetShape() == ColliderShape::CIRCLE) {
+				if (!preIsInWater_ && isFollowWater_ && (player_->GetPosition() - model_->transform_.translate_).Length() <= fParas_[FloatParamater::kLimitePlayerLength]) {
+					isInWater_ = false;
+					isFollowWater_ = true;
+				}
+				else {
+					isInWater_ = true;
+					isFollowWater_ = false;
+				}
+				isCircleWater_ = true;
+				ShapeCircle* circle = collider.GetCircle();
+				waterPos_ = circle->position_;
+				waterRadius_ = circle->radius_.x;
+				if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
+					waterGravityPos_ = circle->position_;
+				}
+				else {
+					waterGravityPos_ = (circle->position_ + waterGravityPos_) * 0.5f;
+
+				}
 			}
-			else if (model_->transform_.rotate_.z <= 1.57f && rotate >= 4.71f) {
-				model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate - 6.28f, 0.01f);
+			else if (collider.GetShape() == ColliderShape::QUADRANGLE2D) {
+				if (!preIsInWater_ && isFollowWater_ && (player_->GetPosition() - model_->transform_.translate_).Length() <= fParas_[FloatParamater::kLimitePlayerLength]) {
+					isInWater_ = false;
+					isFollowWater_ = true;
+				}
+				else {
+					isInWater_ = true;
+					isFollowWater_ = false;
+				}
+				isCircleWater_ = false;
+				ShapeQuadrangle* quadrangle = collider.GetQuadrangle();
+				Vector2 startPos = (quadrangle->leftTop_ + quadrangle->leftBottom_) / 2;
+				Vector2 endPos = (quadrangle->rightTop_ + quadrangle->rightBottom_) / 2;
+				Vector3 vect = { endPos.x - startPos.x, endPos.y - startPos.y, 0.0f };
+				Vector3 point = Calc::ClosestPoint({ model_->transform_.translate_.x,model_->transform_.translate_.y,0.0f }, Segment{ {startPos.x,startPos.y,0.0f},vect });
+				Vector2 position = { point.x,point.y };
+				waterPos_ = position;
+
+				startPos_ = startPos;
+				endPos_ = endPos;
+				startScale_ = (quadrangle->leftTop_ - quadrangle->leftBottom_).Length() / 2;
+				endScale_ = (quadrangle->rightTop_ - quadrangle->rightBottom_).Length() / 2;
+
+				float t = (position - startPos_).Length() / (endPos_ - startPos_).Length();
+				waterRadius_ = (1.0f - t) * startScale_ + t * endScale_;
+
+				Vector3 v = model_->transform_.translate_ - point;
+				Vector2 v2 = { v.x,v.y };
+				v2 = v2.Normalize();
+				waterRotate_ = std::acosf(v2.x);
+				if (v2.y < 0) {
+					waterRotate_ = 6.28f - waterRotate_;
+				}
+
+				if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
+					waterGravityPos_ = position;
+				}
+				else {
+					waterGravityPos_ = (position + waterGravityPos_) * 0.5f;
+
+				}
 			}
-			else {
-				model_->transform_.rotate_.z = Calc::Lerp(model_->transform_.rotate_.z, rotate, 0.01f);
-			}
-			model_->transform_.rotate_.z = std::fmod(model_->transform_.rotate_.z, 6.28f);
-			if (model_->transform_.rotate_.z < 0.0f) {
-				model_->transform_.rotate_.z += 6.28f;
-			}
-			model_->Update();
-			baby_->Update();
 		}
-
-		
-
-		if (collider.GetShape() == ColliderShape::CIRCLE) {
-			isCircleWater_ = true;
-			isInWater_ = true;
-			isFollowWater_ = false;
-			ShapeCircle* circle = collider.GetCircle();
-			waterPos_ = circle->position_;
-			waterRadius_ = circle->radius_.x;
-			if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
-				waterGravityPos_ = circle->position_;
-			}
-			else {
-				waterGravityPos_ = (circle->position_ + waterGravityPos_) * 0.5f;
-
-			}
-		}
-		else if (collider.GetShape() == ColliderShape::QUADRANGLE2D) {
-			isCircleWater_ = false;
-			isInWater_ = true;
-			isFollowWater_ = false;
-			ShapeQuadrangle* quadrangle = collider.GetQuadrangle();
-			Vector2 startPos = (quadrangle->leftTop_ + quadrangle->leftBottom_) / 2;
-			Vector2 endPos = (quadrangle->rightTop_ + quadrangle->rightBottom_) / 2;
-			Vector3 vect = { endPos.x - startPos.x, endPos.y - startPos.y, 0.0f };
-			Vector3 point = Calc::ClosestPoint({ model_->transform_.translate_.x,model_->transform_.translate_.y,0.0f }, Segment{ {startPos.x,startPos.y,0.0f},vect });
-			Vector2 position = { point.x,point.y };
-			waterPos_ = position;
-			
-			startPos_ = startPos;
-			endPos_ = endPos;
-			startScale_ = (quadrangle->leftTop_ - quadrangle->leftBottom_).Length() / 2;
-			endScale_ = (quadrangle->rightTop_ - quadrangle->rightBottom_).Length() / 2;
-
-			float t = (position - startPos_).Length() / (endPos_ - startPos_).Length();
-			waterRadius_ = (1.0f - t) * startScale_ + t * endScale_;
-
-			Vector3 v = model_->transform_.translate_ - point;
-			Vector2 v2 = { v.x,v.y };
-			v2 = v2.Normalize();
-			waterRotate_ = std::acosf(v2.x);
-			if (v2.y < 0) {
-				waterRotate_ = 6.28f - waterRotate_;
-			}
-
-			if (waterGravityPos_.x == 0.0f && waterGravityPos_.y == 0.0f) {
-				waterGravityPos_ = position;
-			}
-			else {
-				waterGravityPos_ = (position + waterGravityPos_) * 0.5f;
-
-			}
+		else {
+			rideInWater_.isRideInWater = true;
 		}
 
 		//水にはいいた瞬間の処理
@@ -590,6 +606,8 @@ void Baby::InitializeGlobalVariable()
 		"プレイヤーのジャンプに引き寄せられる距離",
 		"プレイヤーのジャンプに引き寄せられる最大の時間",
 		"プレイヤーが水中にいる時の引っぱりの倍率",
+		"プレイヤーに乗って水中にいられる時間",
+		"プレイヤーに乗って水中に潜れるスピード",
 		"加速度の最大",
 		"最大速度",
 		"最低速度",
@@ -719,10 +737,35 @@ void Baby::TensionFaceUpdate()
 	}
 }
 
+void Baby::RideInWaterInitialize()
+{
+	rideInWater_.isRideInWater = false;
+	rideInWater_.rideFinishSpeed = 0.0f;
+	rideInWater_.rideFinishTime = 0.0f;
+}
+
 void Baby::RideUpdate(const float& deltaTime)
 {
 	model_->transform_.translate_ = player_->GetPosition();
 	model_->transform_.rotate_.z = player_->GetRotate().z;
+	rideInWater_.rideFinishSpeed = fParas_[kRideInWaterSpeed] * deltaTime;
+	if (rideInWater_.isRideInWater) {
+		rideInWater_.rideFinishTime += deltaTime;
+	}
+	else {
+		rideInWater_.rideFinishTime = 0.0f;
+	}
 	playerOutTime_ = std::clamp(playerOutTime_ + deltaTime, 0.0f, fParas_[kNearPlayerTime]);
 	model_->Update();
+}
+
+void Baby::TextureUpdate() {
+	uint32_t faceIndex = static_cast<uint32_t>(tension_.face);
+	if (!isInWater_ && !isFollowWater_) {
+		faceIndex += kMaxFacePattern;
+	}
+	if (faceIndex == texturePath.size()) {
+		faceIndex -= kMaxFacePattern;
+	}
+	baby_->SetTexture(TextureManager::GetInstance()->LoadTexture(directryPath + texturePath.at(faceIndex)));
 }

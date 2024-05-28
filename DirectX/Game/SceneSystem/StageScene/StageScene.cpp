@@ -167,17 +167,18 @@ void StageScene::Update()
 				player_->Update(deltaTime);
 				baby_->Update(deltaTime);
 				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
-			}
 
-			waterManager_->Update(deltaTime, camera_.get());
+				waterManager_->Update(deltaTime, camera_.get());
+			}
 
 			itemManager_->Update(deltaTime, camera_.get());
 			isCanGoal_ = itemManager_->GetIsCanGoal();
 
 			backGroundObjectManager_->Update(deltaTime);
 
-			if (isCanGoal_) {
-				goal_->Update(deltaTime);
+			bool goal = false;
+			if (isCanGoal_ && countIndex != 1) {
+				goal = goal_->Update(deltaTime);
 			}
 
 			// カメラ更新処理
@@ -189,6 +190,7 @@ void StageScene::Update()
 				Vector3 camera{};
 				if (isCanGoal_ && countIndex == 0) {
 					isGoalTransition_ = true;
+					countIndex = 1;
 				}
 
 				// 通常カメラ
@@ -198,6 +200,14 @@ void StageScene::Update()
 				// 遷移カメラ
 				else {
 					camera = goalCamera_->Update(player_->GetPosition(), goal_->GetPosition(), deltaTime);
+					// 待機中になったら
+					if (goalCamera_->GetType() == 1u) {
+						countIndex = 2;
+						if (goal) {
+							goalCamera_->SetNext();
+						}
+					}
+					// おわったら初期化
 					if (goalCamera_->GetFinishd()) {
 						isGoalTransition_ = false;
 						countIndex++;

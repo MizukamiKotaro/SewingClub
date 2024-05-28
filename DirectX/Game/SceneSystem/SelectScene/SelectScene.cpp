@@ -1,135 +1,146 @@
 #include "SelectScene.h"
 #include "Kyoko.h"
-#include "Ease/Ease.h"
-
 #include "ImGuiManager/ImGuiManager.h"
-#include "Game/GameElement/Animation/AnimationManager.h"
-#include"Audio/AudioManager/AudioManager.h"
-#include"GlobalVariables/GlobalVariables.h"
-
-
+#include<numbers>
 SelectScene::SelectScene()
 {
 	FirstInit();
 
-	//オブジェクト初期化
-	for (int i = 0; i < _countOfStageNumbers; i++) {
-		stageBoxes_[i] = std::make_unique<Model>("WaterCircle");
+	input_ = Input::GetInstance();
 
-		stageBoxes_[i]->Initialize();
-
-		stageNumbers_[i] = std::make_unique<Model>("plane");
-		stageNumbers_[i]->Initialize();
-
-	}
-
-	bgm_.LoadMP3("Music/stageSelect.mp3", "SelectBGM", bgmVolume_);
+	optionUI_ = std::make_unique<OptionUI>(OptionUI::kSelect);
 
 	bg_ = std::make_unique<BackGround>();
 	bg_->Update(camera_.get());
 
-	buttonA_ = std::make_unique<Sprite>("controler_UI_A1.png");
-	left_ = std::make_unique<Sprite>("pause_arrow.png");
-	left_->SetIsFlipX(true);
-	right_ = std::make_unique<Sprite>("pause_arrow.png");
+	bgm_.LoadMP3("Music/stageSelect.mp3", "SelectBGM", bgmVolume_);
 
-	optionUI_ = std::make_unique<OptionUI>(OptionUI::kSelect);
+	//画像初期化
+	for (int i = 0; i < _countTags; i++) {
+		sp_[i] = std::make_unique<Sprite>(paths[i]);
+	}
 
-	GlobalVariables* GV = GlobalVariables::GetInstance();
-	GV->CreateGroup(groupName_);
-	GV->AddItem(groupName_, keys[buttonPos], buttonA_->pos_);
-	GV->AddItem(groupName_, keys[buttonSize], buttonA_->size_);
-	GV->AddItem(groupName_, keys[leftPos], left_->pos_);
-	GV->AddItem(groupName_, keys[leftSize], left_->size_);
-	GV->AddItem(groupName_, keys[rightPos], right_->pos_);
-	GV->AddItem(groupName_, keys[rightSize], right_->size_);
+	sp_[LArrow]->SetIsFlipX(true);
 
-	buttonA_->pos_ = GV->GetVector2Value(groupName_, keys[buttonPos]);
-	buttonA_->size_ = GV->GetVector2Value(groupName_, keys[buttonSize]);
-	left_->pos_ = GV->GetVector2Value(groupName_, keys[leftPos]);
-	left_->size_ = GV->GetVector2Value(groupName_, keys[leftSize]);
-	right_->pos_ = GV->GetVector2Value(groupName_, keys[rightPos]);
-	right_->size_ = GV->GetVector2Value(groupName_, keys[rightSize]);
+	//画像の数字のみサイズ変更
+	sp_[Num1]->SetTextureSize({ 125, 125 });
+	sp_[Num10]->SetTextureSize({ 125, 125 });
+
+	//マップ画像初期化
+	for (int i = 0; i < _countStages; i++) {
+		mapSprite_[i] = std::make_unique<Sprite>(mapPaths_[i]);
+	}
+
+
+	gvu_ = new GlobalVariableUser("Scene", "Selects");
+	for (int i = 0; i < _countTags; i++) {
+		if (i == LArrow) {
+			gvu_->AddItem(spKeysP[i], arrowPos_[Left]);
+
+		}
+		else if (i == RArrow) {
+			gvu_->AddItem(spKeysP[i], arrowPos_[Right]);
+		}
+		else {
+			gvu_->AddItem(spKeysP[i], sp_[i]->pos_);
+		}
+		gvu_->AddItem(spKeysS[i], sp_[i]->size_);
+	}
+	for (int i = 0; i < _countStages; i++) {
+		gvu_->AddItem(mapKeysP[i], mapSprite_[i]->pos_);
+		gvu_->AddItem(mapKeysS[i], mapSprite_[i]->size_);
+	}
+
+	gvu_->AddItem(anoKeys[NumPos], numberCPos_);
+	gvu_->AddItem(anoKeys[NumsDistance], numDistance_);
+	gvu_->AddItem(anoKeys[SwingSecond], swingSecond_);
+	gvu_->AddItem(anoKeys[SwingNum], swingNum_);
+	gvu_->AddItem(anoKeys[MapPos], mapPos_);
+	gvu_->AddItem(anoKeys[MapSize], mapSize_);
 
 }
 
+void SelectScene::SetGlobalV()
+{
+
+	for (int i = 0; i < _countTags; i++) {
+		if (i == LArrow) {
+			arrowPos_[Left] = gvu_->GetVector2Value(spKeysP[i]);
+		}
+		else if (i == RArrow) {
+			arrowPos_[Right] = gvu_->GetVector2Value(spKeysP[i]);
+		}
+		else {
+			sp_[i]->pos_ = gvu_->GetVector2Value(spKeysP[i]);
+		}
+		sp_[i]->size_ = gvu_->GetVector2Value(spKeysS[i]);
+	}
+	for (int i = 0; i < _countStages; i++) {
+		mapSprite_[i]->pos_ = gvu_->GetVector2Value(mapKeysP[i]);
+		mapSprite_[i]->size_ = gvu_->GetVector2Value(mapKeysS[i]);
+	}
+	numberCPos_ = gvu_->GetVector2Value(anoKeys[NumPos]);
+	numDistance_ = gvu_->GetFloatValue(anoKeys[NumsDistance]);
+	swingSecond_ = gvu_->GetFloatValue(anoKeys[SwingSecond]);
+	swingNum_ = gvu_->GetFloatValue(anoKeys[SwingNum]);
+	mapPos_ = gvu_->GetVector2Value(anoKeys[MapPos]);
+	mapSize_ = gvu_->GetVector2Value(anoKeys[MapSize]);
+
+}
+
+SelectScene::~SelectScene() {}
+
 void SelectScene::Initialize()
 {
-	//現在GAMEOVER音が途切れてしまうのでコメント
-	//AudioManager::GetInstance()->AllStop();
-
-	// アニメーション初期化
-	animation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("numbers"));
-
 	//カメラ初期化
 	camera_->Initialize();
 
-	//ステージ箱選択
-	float diff = 8;
-	int count = 0;
-	for (auto& box : stageBoxes_) {
-		//初期化と配置
-		box->Initialize();
-		box->transform_.translate_.x = -diff + diff * count;
+	//option初期化
+	optionUI_->Initialize();
 
-		// UV座標のセット
-		Transform handle = animation_->GetSceneUV(static_cast<uint32_t>(count) + 1u);
-		box->SetUVParam(handle);
-		box->SetTexture(TextureManager::GetInstance()->LoadTexture("numbers.png"));
-
-		box->Update();
-		count++;
-	}
-
-	for (auto& t : ts_) {
-		t = 0;
-	}
-
-	//データ初期化
-	switchData_.changeReception = true;
-	switchData_.moveLowerLimit = 0.8f;
-	switchData_.resetFlagLimit = 0.2f;
-	switchData_.maxSelectBoxScale_ = 1.5f;
-	switchData_.minSelectBoxScale_ = 1.0f;
+	bg_->Initialize();
 
 	bgm_.Play(true);
 
+	SetGlobalV();
 
-	buttonA_->Update();
-	left_->Update();
-	right_->Update();
-
-	optionUI_->Initialize();
+	Update();
 }
 
 void SelectScene::Update()
 {
-	//デバッグ
-	Debug();
+	SetGlobalV();
 
-	//カメラ更新
+#ifdef _DEBUG
+	for (int i = 0; i < _countStages; i++) {
+		mapSprite_[i]->pos_ = mapPos_;
+		mapSprite_[i]->size_ = mapSize_;
+	}
+#endif // _DEBUG
+
+
 	camera_->Update();
-
-	bg_->Update(camera_.get());
 
 	if (isOptionActive_) {
 		ans_ = optionUI_->Update();
 	}
 	else {
-		//ステージを選ぶ処理
-		SelectStage();
+		InputUpdate();
 	}
-	//シーン変更関係処理
+
+	ArrowUpdate();
+
+	NumberUpdate();
+
 	SceneChange();
 
-	buttonA_->Update();
-	left_->Update();
-	right_->Update();
+	bg_->Update(camera_.get());
 
-	//ステージ箱の更新
-	for (auto& box : stageBoxes_) {
-		box->Update();
+	//更新
+	for (int i = 0; i < _countTags; i++) {
+		sp_[i]->Update();
 	}
+	mapSprite_[pickedNum_]->Update();
 }
 
 void SelectScene::Draw()
@@ -139,19 +150,25 @@ void SelectScene::Draw()
 
 	bg_->Draw();
 
-	//ステージ選択BOX
-	for (auto& box : stageBoxes_) {
-		box->Draw(*camera_.get());
+	//描画
+	for (int i = 0; i < _countTags; i++) {
+		if (i == (int)Num10 && pickedNum_ < 9) {
+
+		}
+		else if (i == LArrow && pickedNum_ == 0) {
+		}
+		else if (i == RArrow && pickedNum_ == maxStageNum_ - 1) {
+		}
+		else {
+			sp_[i]->Draw();
+		}
 	}
 
-	buttonA_->Draw();
-	left_->Draw();
-	right_->Draw();
+	mapSprite_[pickedNum_]->Draw();
 
 	if (isOptionActive_) {
 		optionUI_->Draw();
 	}
-
 
 	//シーン転換時のフェードインアウト
 	BlackDraw();
@@ -160,42 +177,24 @@ void SelectScene::Draw()
 }
 
 
-void SelectScene::Debug()
-{
-#ifdef _DEBUG
-	ImGui::Begin("debug");
-	ImGui::Text("flag : %d , pickedNum : %d", switchData_.changeReception, pickedNum_);
-	ImGui::End();
-
-	GlobalVariables* GV = GlobalVariables::GetInstance();
-
-	buttonA_->pos_ = GV->GetVector2Value(groupName_, keys[buttonPos]);
-	buttonA_->size_ = GV->GetVector2Value(groupName_, keys[buttonSize]);
-	left_->pos_ = GV->GetVector2Value(groupName_, keys[leftPos]);
-	left_->size_ = GV->GetVector2Value(groupName_, keys[leftSize]);
-	right_->pos_ = GV->GetVector2Value(groupName_, keys[rightPos]);
-	right_->size_ = GV->GetVector2Value(groupName_, keys[rightSize]);
-
-
-#endif // _DEBUG
-
-
-}
 
 void SelectScene::SceneChange()
 {
-
+	//optionのアンサーによる処理
 	if (isOptionActive_) {
+		//optionから抜ける
 		if (ans_.backOption) {
 			isOptionActive_ = false;
 		}
+		//タイトルに戻る
 		else if (ans_.backtitle) {
-				// シーン切り替え
-				ChangeScene(TITLE);
-				bgm_.Stop();
+			// シーン切り替え
+			ChangeScene(TITLE);
+			bgm_.Stop();
 		}
 	}
 	else {
+		//ステージを選択する処理
 		if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
 			// シーン切り替え
 			stageNo_ = pickedNum_;
@@ -207,81 +206,88 @@ void SelectScene::SceneChange()
 		}
 
 	}
-
-
-
-
-
-
 }
 
-void SelectScene::SelectStage()
+void SelectScene::InputUpdate()
 {
+	Vector2 move = input_->GetGamePadLStick();
 
-#pragma region 入力による選ばれている番号変更処理
+	if (isInputActive_) {
+		//右入力
+		if (move.x > inputDeadline_) {
+			isInputActive_ = false;
+			//最後のステージじゃないなら処理
+			if (pickedNum_ != maxStageNum_ - 1) {
+				pickedNum_++;
+			}
 
-	Vector2 lStick = input_->GetGamePadLStick();
-
-	//操作受付フラグONの時
-	if (switchData_.changeReception) {
-		//入力をみて変更
-		if (lStick.x >= switchData_.moveLowerLimit) {
-			pickedNum_++;
-			switchData_.changeReception = false;
-		}
-		if (lStick.x <= -switchData_.moveLowerLimit) {
-			pickedNum_--;
-			switchData_.changeReception = false;
-		}
-
-		//選択外なら戻す
-		if (pickedNum_ >= _countOfStageNumbers) {
-			pickedNum_ = _countOfStageNumbers - 1;
-		}
-		else if (pickedNum_ < 0) {
-			pickedNum_ = 0;
+		}//左入力
+		else if (move.x < -inputDeadline_) {
+			isInputActive_ = false;
+			//最後のステージじゃないなら処理
+			if (pickedNum_ != 0) {
+				pickedNum_--;
+			}
 		}
 	}
 	else {
-		//値がリセット範囲内の時
-		if (lStick.x <= switchData_.resetFlagLimit && lStick.x >= -switchData_.resetFlagLimit) {
-			switchData_.changeReception = true;
+		if (move.x < inputDeadline_ && move.x > -inputDeadline_) {
+			isInputActive_ = true;
 		}
 	}
+}
 
+void SelectScene::ArrowUpdate()
+{
 
+	for (int i = 0; i < _countLR; i++) {
 
-
-	//各更新処理
-	for (int i = 0; i < _countOfStageNumbers; i++) {
-		if (i == pickedNum_) {
-
-			ts_[i] += switchData_.maxScaleMinute;
-			if (ts_[i] > 1.0f) {
-				ts_[i] = 1.0f;
-			}
+		if (i == (int)Left) {
+			//動きの処理
+			count_[i] -= swingSecond_ / 60.0f;
+			count_[i] = std::fmod(count_[i], -2.0f * (float)std::numbers::pi);
+			animeMove_[i].x = +std::sin(count_[i]) * swingNum_;
+			sp_[LArrow]->pos_ = arrowPos_[i] + animeMove_[i];
 		}
 		else {
-			ts_[i] -= switchData_.minScaleMinute;
-			if (ts_[i] < 0.0f) {
-				ts_[i] = 0.0f;
-			}
+			//動きの処理
+			count_[i] += swingSecond_ / 60.0f;
+			count_[i] = std::fmod(count_[i], 2.0f * (float)std::numbers::pi);
+			animeMove_[i].x = +std::sin(count_[i]) * swingNum_;
+			sp_[RArrow]->pos_ = arrowPos_[i] + animeMove_[i];
 		}
-
-		float scale = Ease::UseEase(switchData_.minSelectBoxScale_, switchData_.maxSelectBoxScale_, ts_[i]);
-
-		Vector3 scaleV3 = { scale,scale, scale };
-
-		//拡大
-		stageBoxes_[i]->transform_.scale_ = scaleV3;
 	}
-
-#pragma endregion
-
-
 
 
 
 
 }
 
+void SelectScene::NumberUpdate()
+{
+
+	//配置の処理
+	//10の位以下で1の位の値が中央に
+	if (pickedNum_ + 1 < 10) {
+		sp_[Num1]->pos_ = numberCPos_;
+		//番号管理
+		sp_[Num1]->SetTextureTopLeft({ 125.0f * (pickedNum_ + 1),0 });
+	}
+	else {
+		//10の位がある場合距離を置いて表示
+		Vector2 newPos = numberCPos_;
+		newPos.x -= numDistance_ / 2;
+		sp_[Num1]->pos_ = newPos;
+		newPos.x += numDistance_;
+		sp_[Num10]->pos_ = newPos;
+
+		//番号管理
+		int num1 = (pickedNum_ + 1) % 10;
+		sp_[Num1]->SetTextureTopLeft({ 125.0f * (num1),0 });
+		int num10 = pickedNum_ - num1;
+		num10 /= 10;
+		sp_[Num10]->SetTextureTopLeft({ 125.0f * (num10 + 1),0 });
+
+	}
+
+}

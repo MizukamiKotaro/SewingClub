@@ -53,7 +53,7 @@ public:
 	bool Update(std::string path);
 
 	// アニメーションの再生
-	void Play(bool flag);
+	void Play(bool flag, bool loop = true);
 
 	// 指定したSceneのUV取得
 	Transform GetSceneUV(const uint32_t& scene);

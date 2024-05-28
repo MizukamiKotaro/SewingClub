@@ -99,16 +99,21 @@ bool Animation2D::Update(std::string path) {
 		nowFrame_ = 0.0f;
 	}
 
-	AnimationCount();
+	bool finished = AnimationCount();
 	uint32_t number = data_->keyParam_.at(nowScene_).sceneNumber;
 	// UV座標の更新
 	UpdateTrans(number);
 	oldPath_ = path;
-	return true;
+	// loopならアニメーションの終わりとか気にしなくていいから強制true
+	if (isLoop_) {
+		return true;
+	}
+	return finished;
 }
 
-void Animation2D::Play(bool flag) {
+void Animation2D::Play(bool flag, bool loop) {
 	if (isPlay_ == flag) { return; }
+	isLoop_ = loop;
 	isPlay_ = flag;
 	nowFrame_ = 0.0f;
 	nowScene_ = 0u;
@@ -124,10 +129,16 @@ bool Animation2D::AnimationCount() {
 		nowScene_ += 1u;
 		nowFrame_ = 0.0f;
 		// 最後まで行った&&ループするならば
-		if (nowScene_ == data_->keyParam_.size() && isLoop_) {
-			nowScene_ = 0u;
+		if (nowScene_ == data_->keyParam_.size()) {
+			if (isLoop_) {
+				nowScene_ = 0u;
+			}
+			else {
+				nowScene_ -= 1u;
+				isPlay_ = false;
+			}
+			return true;
 		}
-		return true;
 	}
 	return false;
 }

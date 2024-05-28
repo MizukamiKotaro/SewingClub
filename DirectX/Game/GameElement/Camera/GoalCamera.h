@@ -10,6 +10,8 @@ public:
 
 	Vector3 Update(const Vector3& playerPos,const Vector3& goalPos, const float& delta);
 	bool GetFinishd();
+	uint32_t GetType() const { return static_cast<uint32_t>(type_); }
+	void SetNext();
 
 private:
 	enum class TYPE {
