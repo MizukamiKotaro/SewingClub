@@ -10,9 +10,9 @@ public:
 	EffectGoalDusts();
 	~EffectGoalDusts();
 
-	void Initialize(const Vector3& gpos);
+	void Initialize();
 
-	void Update();
+	void Update(Vector3& gpos);
 
 	void Draw();
 
@@ -28,7 +28,7 @@ private:
 
 	bool isActive_ = false;
 
-	const Vector3* goalPos_;
+	Vector3 goalPos_;
 
 	//画像データ
 	
@@ -56,18 +56,20 @@ private:
 		textureType texType = kT1;
 		bool IsDead_ = false;	//生存
 		Vector3 pos;	//座標
-		Vector3 velo;	//移動
+		Vector3 stPos;
+		float count=0;
+		float maxCount;
 		float rotate = 0;
 		Vector3 size;	//サイズ
 		Vector3 color;	//色
 		float alpha;	//透明度
 
-		float direction;//これとゴールの距離
-		float maxDirection;//沸いたときの距離
 	};
 
 	std::list<DustData>datas_;
 	
+	float rotateR_;
+
 	float count_ = 0;
 	float maxCount_ = 15;//出現間隔
 	float preMaxCount = 30;
@@ -77,6 +79,8 @@ private:
 	bool randomTexture_ = true;
 
 	int selectTex = 0;
+
+	float dustCount_ = 180;
 
 	//以下Imgui
 	Vector2 randSpawnRadius_{ 3,5 };

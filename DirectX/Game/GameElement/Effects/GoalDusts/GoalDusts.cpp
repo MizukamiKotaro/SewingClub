@@ -2,6 +2,7 @@
 #include"RandomGenerator/RandomGenerator.h"
 #include"TextureManager.h"
 #include"calc.h"
+#include<numbers>
 
 EffectGoalDusts::EffectGoalDusts()
 {
@@ -49,23 +50,36 @@ EffectGoalDusts::~EffectGoalDusts()
 {
 }
 
-void EffectGoalDusts::Initialize(const Vector3&gpos)
+void EffectGoalDusts::Initialize()
 {
 	datas_.clear();
 
-	goalPos_ = &gpos;
+	
 
 	GetGlobalV();
 }
 
-void EffectGoalDusts::Update()
+void EffectGoalDusts::Update(Vector3& gpos)
 {
 #ifdef _DEBUG
 	GetGlobalV();
 #endif // _DEBUG
 
+	rotateR_ += 1.0f / 180.0f;
+	rotateR_ = std::fmod(rotateR_, (float)std::numbers::pi*2.0f);
+	
+	goalPos_ = gpos;
 #pragma region 出現処理
-	if (count_++ >= maxCount_) {
+	
+	float maxC;
+	if (isActive_) {
+		maxC = maxCount_;
+	}
+	else {
+		maxC = preMaxCount;
+	}
+
+	if (count_++ >= maxC) {
 		count_ = 0;
 
 		DustData newdata;
@@ -76,10 +90,10 @@ void EffectGoalDusts::Update()
 			RandomGenerator::GetInstance()->RandFloat(-1,1),
 			0
 		};
-		newdata.pos =*goalPos_+ pos.Normalize() * RandomGenerator::GetInstance()->RandFloat(randSpawnRadius_.x, randSpawnRadius_.y);
-
+		newdata.pos = pos.Normalize() * RandomGenerator::GetInstance()->RandFloat(randSpawnRadius_.x, randSpawnRadius_.y);
+		newdata.stPos = newdata.pos;
 		//速度作成
-		newdata.velo = (*goalPos_ - newdata.pos).Normalize() * RandomGenerator::GetInstance()->RandFloat(randSpd_.x, randSpd_.y);
+		newdata.maxCount = RandomGenerator::GetInstance()->RandFloat(randSpd_.x,randSpd_.y);
 
 		//回転ランダム有効の場合
 		if (randomRotate_) {
@@ -88,12 +102,17 @@ void EffectGoalDusts::Update()
 		if (randomColor_) {
 			newdata.color = RandomGenerator::GetInstance()->RandVector3({ 0,0,0 }, { 1,1,1 });
 		}
+		else {
+			newdata.color = { 1,1,1 };
+		}
 		if (randomTexture_) {
 			newdata.texType = (textureType)RandomGenerator::GetInstance()->RandInt(0, _countTexture-1);
 		}
+		else {
+			newdata.texType = (textureType)selectTex;
+		}
 
-		newdata.maxDirection = (*goalPos_ - newdata.pos).Length();
-
+		
 		//データ追加
 		datas_.emplace_back(newdata);
 	}
@@ -101,19 +120,18 @@ void EffectGoalDusts::Update()
 
 #pragma region 更新処理
 	for (auto& data : datas_) {
+		float t = data.count / data.maxCount;
+
 		//移動処理
-		data.pos += data.velo;
-		//距離取得でT取得
-		data.direction = ((*goalPos_) - data.pos).Length();
-		float t = data.direction / data.maxDirection;
+		data.pos = Calc::Lerp(data.stPos,{0,0,0}, t);
 		//サイズ再設定
-		float scale = Calc::Lerp(stedSize_.y, stedSize_.x, t);
+		float scale = Calc::Lerp(stedSize_.x, stedSize_.y, t);
 		data.size = { scale,scale ,scale };
 		//透明度再設定
-		data.alpha = Calc::Lerp(stedAlpha_.y, stedAlpha_.x, t);
+		data.alpha = Calc::Lerp(stedAlpha_.x, stedAlpha_.y, t);
 
 		//移動方向とゴールへの向きベクトル反転で死ぬ
-		if (data.direction<=0.1f) {
+		if (data.count++>=data.maxCount) {
 			data.IsDead_ = true;
 		}
 	}
@@ -132,8 +150,13 @@ void EffectGoalDusts::Update()
 
 void EffectGoalDusts::Draw()
 {
+	Matrix4x4 pmatrix = Matrix4x4::MakeAffinMatrix({1,1,1}, Vector3(0, 0, rotateR_), goalPos_);
 	for (auto& data : datas_) {
+		
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(data.size, Vector3(0, 0, data.rotate), data.pos);
+
+		matrix =matrix*pmatrix;
+
 		instancingManager_->AddBox(modelData_[data.texType], InstancingModelData{matrix ,Matrix4x4::MakeIdentity4x4(), {data.color.x,data.color.y,data.color.z,data.alpha}});
 	}
 }

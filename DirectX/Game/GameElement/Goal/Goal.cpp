@@ -49,7 +49,7 @@ void Goal::Initialize()
 	Transform handle = animation_->GetSceneUV(0u);
 	animation_->Play(true, false);
 
-	edusts_->Initialize(position_);
+	edusts_->Initialize();
 	edusts_->SetActive(true);
 	isGoal_ = false;
 }
@@ -71,6 +71,8 @@ bool Goal::Update(float deltaTime)
 		result = animation_->Update("goal", deltaTime);
 		SetCollider();
 	}
+	edusts_->SetActive(isGoal_);
+	edusts_->Update(position_);
 	return result;
 }
 
