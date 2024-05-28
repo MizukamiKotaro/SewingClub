@@ -3,6 +3,7 @@
 #include "SceneSystem/TitleScene/TitleScene.h"
 #include "SceneSystem/StageScene/StageScene.h"
 #include "SceneSystem/SelectScene/SelectScene.h"
+#include"SceneSystem/nSelectScene/nSelectScene.h"
 #include "SceneSystem/ClearScene/ClearScene.h"
 
 IScene* SceneFactory::CreateScene(int sceneNo)
@@ -13,7 +14,7 @@ IScene* SceneFactory::CreateScene(int sceneNo)
 		newScene = new TitleScene();
 	}
 	else if (sceneNo == SELECT) {
-		newScene = new SelectScene();
+		newScene = new nSelectScene();
 	}
 	else if (sceneNo == STAGE) {
 		newScene = new StageScene();

@@ -108,8 +108,6 @@ bool AudioOptionUI::Update()
 {
 	SetGlobalVData();
 
-
-
 	Vector2 input = input_->GetGamePadLStick();
 	if (input.y <= -0.9f) {
 		if (nowSelect == BGMVolume) {
@@ -195,8 +193,6 @@ void AudioOptionUI::AudioBarUpdate()
 	volume_[BGMVolume] = VM_->GetMusicVolumeStage();
 
 	volume_[SEVolume] = VM_->GetSEVolumeStage();
-
-
 
 
 	//入力で音量変更

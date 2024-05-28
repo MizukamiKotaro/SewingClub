@@ -114,7 +114,7 @@ void StageScene::Initialize()
 	countIndex = 0;
 	isGoalTransition_ = false;
 
-	nowScene =kGameClear;
+	nowScene =kPlay;
 }
 
 void StageScene::Update()

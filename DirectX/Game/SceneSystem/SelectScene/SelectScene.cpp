@@ -99,6 +99,7 @@ void SelectScene::Initialize()
 	left_->Update();
 	right_->Update();
 
+
 	optionUI_->Initialize();
 }
 
