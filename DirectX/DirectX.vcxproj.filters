@@ -145,7 +145,6 @@
     <ClCompile Include="Game\SceneSystem\IScene\IScene.cpp" />
     <ClCompile Include="Game\SceneSystem\SceneFactory\SceneFactory.cpp" />
     <ClCompile Include="Game\SceneSystem\SceneManager\SceneManager.cpp" />
-    <ClCompile Include="Game\SceneSystem\SelectScene\SelectScene.cpp" />
     <ClCompile Include="Game\SceneSystem\StageScene\StageScene.cpp" />
     <ClCompile Include="Game\SceneSystem\TitleScene\TitleScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -166,7 +165,7 @@
     <ClCompile Include="Engine\Utils\Shape\Triangle.cpp" />
     <ClCompile Include="Engine\Utils\Transform\Transform.cpp" />
     <ClCompile Include="Game\GameElement\Effects\particleAcceleration.cpp" />
-    <ClCompile Include="Game\SceneSystem\nSelectScene\nSelectScene.cpp" />
+    <ClCompile Include="Game\SceneSystem\SelectScene\SelectScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\GameElement\Camera\FollowCamera.h" />
@@ -351,10 +350,9 @@
     <ClInclude Include="Game\SceneSystem\IScene\IScene.h" />
     <ClInclude Include="Game\SceneSystem\SceneFactory\SceneFactory.h" />
     <ClInclude Include="Game\SceneSystem\SceneManager\SceneManager.h" />
-    <ClInclude Include="Game\SceneSystem\SelectScene\SelectScene.h" />
     <ClInclude Include="Game\SceneSystem\StageScene\StageScene.h" />
     <ClInclude Include="Game\SceneSystem\TitleScene\TitleScene.h" />
     <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h" />
-    <ClInclude Include="Game\SceneSystem\nSelectScene\nSelectScene.h" />
+    <ClInclude Include="Game\SceneSystem\SelectScene\SelectScene.h" />
   </ItemGroup>
 </Project>
