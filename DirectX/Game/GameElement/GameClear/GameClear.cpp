@@ -1,4 +1,5 @@
 #include "GameClear.h"
+#include "GameElement/Animation/AnimationManager.h"
 
 #include<numbers>
 
@@ -51,6 +52,17 @@ GameClear::GameClear()
 	gvu_->AddItem(anoKeys[GageColor], GageColor_);
 
 	SetGlobalV();
+
+	// 赤ちゃんアニメーション
+	babyAnimation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("babynormal"));
+	// UV座標のセット
+	for (uint32_t index = 0u; index < Valuations::_countValuations; index++) {
+		Transform handle = babyAnimation_->GetSceneUV(0u);
+		baby_[index]->SetTextureTopLeft(Vector2(handle.translate_.x, handle.translate_.y));
+		baby_[index]->SetTextureSize(Vector2(handle.scale_.x, handle.scale_.y));
+	}
+	babyAnimation_->Play(true);
+
 }
 
 void GameClear::SetGlobalV()

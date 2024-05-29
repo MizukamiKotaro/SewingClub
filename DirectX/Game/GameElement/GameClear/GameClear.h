@@ -4,6 +4,7 @@
 #include"GlobalVariables/GlobalVariableUser.h"
 #include"Vector3.h"
 #include<iostream>
+#include "GameElement/Animation/Animation2D.h"
 
 struct ClearAnswer {
 	bool goSelect = false;
@@ -47,6 +48,9 @@ private:
 
 	//次のステージがあるか否か
 	bool isNextStage_ = true;
+
+	// 赤ちゃん用アニメーション
+	std::unique_ptr<Animation2D> babyAnimation_;
 
 #pragma region 総画像管理
 	//スプライト

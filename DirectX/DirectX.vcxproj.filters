@@ -1517,9 +1517,6 @@
     <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h">
       <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
       <Filter>Game\GameElement\OptionUI</Filter>
     </ClInclude>
@@ -1549,6 +1546,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\GetItem\GetItem.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
+      <Filter>Game\GameElement\TensionUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
