@@ -113,6 +113,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.cpp" />
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h.cpp" />
     <ClCompile Include="Game\GameElement\BackGround\BackGround.cpp" />
     <ClCompile Include="Game\GameElement\BackGround\Star.cpp" />
     <ClCompile Include="Game\GameElement\Camera\FollowCamera.cpp" />
@@ -283,6 +285,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Effects\particleAcceleration.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.h" />
+    <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h" />
     <ClInclude Include="Game\GameElement\Camera\FollowCamera.h" />
     <ClInclude Include="Game\GameElement\Camera\GoalCamera.h" />
     <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h" />

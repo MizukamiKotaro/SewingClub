@@ -37,7 +37,8 @@ Baby::Baby(Player* player)
 	isCircleWater_ = true;
 	yarn_ = std::make_unique<Model>("Cube");
 	yarn_->transform_.scale_ = { 0.1f,0.1f,0.1f };
-	
+	combo_.num = 0;
+	combo_.maxNum = 1;
 	TensionInitialize();
 	RideInWaterInitialize();
 	SetGlobalVariable();
@@ -76,11 +77,12 @@ void Baby::Initialize()
 	yarn_->transform_.scale_ = { 0.05f,0.05f,0.05f };
 
 	isCircleWater_ = true;
-
+	combo_.num = 0;
 	effeEnterW_->Initialize();
 	TensionInitialize();
 	RideInWaterInitialize();
 	preIsInWaterPlayer_ = true;
+	prePreIsInWaterPlayer_ = preIsInWaterPlayer_;
 	playerOutTime_ = 0.0f;
 	isRide_ = false;
 }
@@ -167,7 +169,7 @@ void Baby::Update(float deltaTime)
 	rideInWater_.isRideInWater = false;
 	TensionUpdate(deltaTime);
 	gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
-
+	prePreIsInWaterPlayer_ = preIsInWaterPlayer_;
 	if (animation_->Update("babynormal",deltaTime)) {
 		// modelにuvのセット
 		baby_->SetUVParam(animation_->GetUVTrans());
@@ -212,6 +214,7 @@ void Baby::OnCollision(const Collider& collider)
 	if (collider.GetMask() == ColliderMask::WATER) {
 		if (!isRide_ || (isRide_ && (player_->GetSpeed() < rideInWater_.rideFinishSpeed || rideInWater_.rideFinishTime > fParas_[kInWaterTime]))) {
 			isRide_ = false;
+			combo_.num = 0;
 			if (!preIsInWater_ && isFollowWater_) {
 				model_->transform_.translate_ = prePosition_;
 				Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
@@ -334,6 +337,7 @@ void Baby::SetGlobalVariable()
 	InitializeGlobalVariable();
 
 	globalVariable_->AddItem("スケール", Vector2{ 1.0f,1.0f });
+	globalVariable_->AddItem("コンボの最大数", 3, "コンボ関係");
 
 	for (int i = 0; i < kFloatEnd; i++) {
 		if (i >= kFlyTime) {
@@ -362,6 +366,7 @@ void Baby::ApplyGlobalVariable()
 	if (fParas_[FloatParamater::kMaxPlayerLength] == 0.0f) {
 		fParas_[FloatParamater::kMaxPlayerLength] = 0.01f;
 	}
+	combo_.maxNum = globalVariable_->GetIntValue("コンボの最大数", "コンボ関係");
 
 	Vector2 scale = globalVariable_->GetVector2Value("スケール");
 	model_->transform_.scale_ = { scale.x,scale.y,1.0f };
@@ -628,6 +633,7 @@ void Baby::InitializeGlobalVariable()
 		"水から出たときのテンションアップするまでの水中の時間",
 		"テンションマックス維持の時間",
 		"テンションマックスが終了したときのテンション",
+		"プレイヤーに乗ったときのテンションアップの数値",
 	};
 }
 
@@ -678,7 +684,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		}
 		tension_.inWaterTime = 0.0f;
 
-		if (!isFollowWater_) {
+		if (!isFollowWater_ && !isRide_) {
 			tension_.flyTime += deltaTime;
 			if (tension_.flyTime >= fParas_[FloatParamater::kFlyTime] && tension_.tension > 0.0f) {
 				tension_.tension += fParas_[FloatParamater::kUpTensionToFly];
@@ -690,7 +696,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		}
 	}
 
-	if (player_->GetPreInWater()) {
+	if (player_->GetPreInWater() && !rideInWater_.isRideInWater) {
 		tension_.playerInWaterTime += deltaTime;
 		if (tension_.playerInWaterTime >= fParas_[FloatParamater::kPlayerInWaterTime]) {
 			tension_.tension -= fParas_[FloatParamater::kDownTensionBePlayerInWater];
@@ -699,6 +705,21 @@ void Baby::TensionUpdate(const float& deltaTime)
 	}
 	else {
 		tension_.playerInWaterTime = 0.0f;
+	}
+
+	if (isRide_ && !tension_.isRideUp_) {
+		tension_.isRideUp_ = true;
+		tension_.tension += fParas_[FloatParamater::kUpTentionRide];
+	}
+	else if (!isRide_) {
+		tension_.isRideUp_ = false;
+	}
+	else if (isRide_ && !preIsInWaterPlayer_ && prePreIsInWaterPlayer_) {
+		combo_.num++;
+		if (combo_.num > combo_.maxNum) {
+			combo_.num = combo_.maxNum;
+		}
+		tension_.tension += fParas_[FloatParamater::kUpTensionOutWater];
 	}
 
 	if (tension_.tension <= 0.0f) {
@@ -723,7 +744,7 @@ void Baby::TensionFaceUpdate()
 	if (tension_.tension <= 0.0f) {
 		tension_.face = Face::kCry;
 	}
-	else if (player_->GetPreInWater() || tension_.tension < 30.0f) {
+	else if ((player_->GetPreInWater() && !rideInWater_.isRideInWater) || tension_.tension < 30.0f) {
 		tension_.face = Face::kAnxiety;
 	}
 	else if (tension_.tension >= 90.0f) {

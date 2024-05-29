@@ -966,6 +966,12 @@
     <ClCompile Include="Game\GameElement\Effects\GetItem\GetItem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.cpp">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h.cpp">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1549,6 +1555,12 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\GetItem\GetItem.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.h">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
