@@ -17,6 +17,7 @@
 #include "GameElement/Camera/GoalCamera.h"
 #include"GameElement/GameOver/GameOver.h"
 #include"GameElement/GameClear/GameClear.h"
+#include "GameElement/PopupUI/PopupUI.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -83,6 +84,10 @@ private:
 
 	// テンション用UI
 	std::unique_ptr<TensionUI> tensionUI_;
+
+	// ゲーム開始時処理
+	std::unique_ptr<PopupUI> popupUI_;
+	bool isGameStarted_ = false;
 
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_;

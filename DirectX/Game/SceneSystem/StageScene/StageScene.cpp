@@ -61,6 +61,8 @@ StageScene::StageScene()
 
 	tensionUI_ = std::make_unique<TensionUI>();
 
+	popupUI_ = std::make_unique<PopupUI>();
+
 	followCamera_ = std::make_unique<FollowCamera>();
 	goalCamera_ = std::make_unique<GoalCamera>();
 
@@ -105,6 +107,9 @@ void StageScene::Initialize()
 	tensionUI_->Initialize();
 	// テンション関係
 	tensionUI_->Update(50.0f, 0);
+
+	popupUI_->Initialize();
+	isGameStarted_ = false;
 	
 	followCamera_->Initialize(player_->GetPositionPtr(), waterManager_->GetLimit().upperLimit, waterManager_->GetLimit().lowerLimit);
 
@@ -162,8 +167,17 @@ void StageScene::Update()
 	{
 	case StageScene::kPlay:
 		if (!isOptionOpen_) {
+
+			popupUI_->Update(deltaTime);
+			if (!isGameStarted_) {
+				if (popupUI_->GetPhase() == 1u) {
+					// UIが出きったらスタート
+					isGameStarted_ = true;
+				}
+			}
+
 			// ゴール遷移演出じゃなければ
-			if (!isGoalTransition_) {
+			if (!isGoalTransition_ || isGameStarted_) {
 				player_->Update(deltaTime);
 				baby_->Update(deltaTime);
 				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
@@ -291,6 +305,8 @@ void StageScene::Draw()
 	player_->DrawUI();
 
 	tensionUI_->Draw();
+
+	popupUI_->Draw();
 
 	//option描画
 	if (isOptionOpen_) {
