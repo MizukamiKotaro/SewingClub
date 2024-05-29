@@ -87,7 +87,12 @@ private:
 		"HUD_arrow.png",
 		"ingame_select_HUD.png"
 	};
+
+
+	
 #pragma endregion
+
+
 
 #pragma region 評価値管理
 	enum Valuations {
@@ -97,7 +102,17 @@ private:
 		_countValuations
 	};
 	//評価
-	Valuations valuation_ = Good;
+	Valuations valuation_ = Normal;
+
+	//表情による赤ちゃんの差
+	std::unique_ptr<Sprite>baby_[_countValuations];
+
+	//差分画像
+	std::string  babyPaths[_countValuations] = {
+		"baby_normal.png",
+		"baby_good.png",
+		"baby_veryGood.png"
+	};
 #pragma endregion
 
 
