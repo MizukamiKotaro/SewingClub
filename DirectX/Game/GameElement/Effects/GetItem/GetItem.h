@@ -6,14 +6,25 @@
 class EffectGetItem {
 public:
 
-	EffectGetItem();
-	~EffectGetItem();
+public:
+	static EffectGetItem* GetInstance();
+private:
+	EffectGetItem() = default;
+	~EffectGetItem() = default;
+	EffectGetItem(const EffectGetItem& o) = delete;
+	const EffectGetItem& operator=(const EffectGetItem& o) = delete;
+
+public:
+
+	void ModelLoad();
 
 	void Initialize();
 
 	void Update();
 
 	void Draw();
+
+	void Finalize();
 
 	void Spawn(const Vector3&  cPos);
 private:
@@ -47,6 +58,8 @@ private:
 	float maxSpd_=1.0f;
 
 	Vector2 randSpawnNum_ = { 2,3 };
+
+	float gravity_ = 0.8f;
 #pragma region データ
 	GlobalVariableUser* gvu_;
 
@@ -57,6 +70,7 @@ private:
 		kRandSpd,
 		kMaxSpd,
 		kRandSapwn,
+		kGravity,
 		_countTag
 	};
 
@@ -66,7 +80,8 @@ private:
 		"点滅量",
 		"ランダム速度（min,max",
 		"最大速度",
-		"ランダム生成量"
+		"ランダム生成量",
+		"重力",
 	};
 #pragma endregion
 

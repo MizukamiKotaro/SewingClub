@@ -7,6 +7,7 @@
 #include "SceneSystem/IScene/IScene.h"
 #include "WindowsInfo/WindowsInfo.h"
 #include "ItemManager.h"
+#include"GameElement/Effects/GetItem/GetItem.h"
 
 InstancingModelManager* RequiredObject::instancingManager_ = nullptr;
 const InstancingMeshTexData* RequiredObject::modelData_ = nullptr;
@@ -41,9 +42,11 @@ void RequiredObject::StaticInitialize() {
 	modelData_ = instancingManager_->GetDrawData({ modelData,tex,BlendMode::kBlendModeNormal });
 	itemManager_ = ItemManager::GetInstance();
 	//staticColor_ = itemManager_->GetColor();
+
 }
 
 bool RequiredObject::Update(float deltaTime, Camera* camera) {
+	
 	if (isHit_) { return true; }
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -70,6 +73,7 @@ bool RequiredObject::Update(float deltaTime, Camera* camera) {
 	if (isActive_) {
 		SetCollider();
 	}
+
 	return isHit_;
 }
 
@@ -107,6 +111,8 @@ void RequiredObject::OnCollision(const Collider& collider) {
 	if (collider.GetMask() == ColliderMask::PLAYER) {
 		isHit_ = true;
 		seGetCoin_.Play();
+
+		EffectGetItem::GetInstance()->Spawn(position_);
 	}
 }
 

@@ -17,6 +17,7 @@
 #include "GameElement/Camera/GoalCamera.h"
 #include"GameElement/GameOver/GameOver.h"
 #include"GameElement/GameClear/GameClear.h"
+#include"GameElement/Effects/GetItem/GetItem.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -105,4 +106,6 @@ private:
 	std::unique_ptr<GameClear>gameClear_;
 	ClearAnswer gameClearFlags_;
 
+	//演出のシングルトン
+	EffectGetItem* effeGetItem_;
 };

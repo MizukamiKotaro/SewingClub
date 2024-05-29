@@ -67,6 +67,9 @@ private:
 	int no_;
 	bool isActive_;
 
+
 	//コイン取得音
 	Audio seGetCoin_;
+
+	
 };

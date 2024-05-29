@@ -33,7 +33,7 @@ private:
 	//選ばれている番号(0,1,2~)
 	int pickedNum_ = 0;
 
-	const int maxStageNum_ = 10;
+	const int maxStageNum_ = 8;
 
 	// 背景
 	std::unique_ptr<BackGround> bg_;
