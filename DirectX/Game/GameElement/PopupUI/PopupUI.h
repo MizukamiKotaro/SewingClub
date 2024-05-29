@@ -12,6 +12,7 @@ public:
 	uint32_t GetPhase() const { return static_cast<uint32_t>(phase); }
 
 private:
+	void SpriteUpdate();
 	void PopUp(); // 拡大
 	void Wait(); // 待機
 	void FadeOut(); // 消える

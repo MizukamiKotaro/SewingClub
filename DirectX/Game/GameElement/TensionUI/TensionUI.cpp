@@ -19,11 +19,46 @@ TensionUI::TensionUI() {
 	animation_ = std::make_unique<Animation2D>(animationData_.get());
 }
 
-void TensionUI::Initialize() {
+void TensionUI::Initialize(const float& tension, const int& faceParam) {
 	SetGlobalVariable();
-	sprites_.at(static_cast<uint32_t>(Type::Gauge))->pos_ = fixedPosition_;
-	sprites_.at(static_cast<uint32_t>(Type::Gauge))->size_ = kMaxSize_;
 	sprites_.at(static_cast<uint32_t>(Type::Frame))->SetAnchorPoint(Vector2(0.5f, 0.56f));
+
+	// ここで0 ~ 100 なのを 0 ~ 1でもらうようにしている
+	tensionPercent_ = tension * 0.01f;
+
+	/*
+	* pos,size,uvScale,uvTrans
+	* 初期値 1060.0f,350.0f,1.0f,1.0f
+	* 1097.5f,280.0f,0.8f,0.2fだった場合
+	*/
+
+	// uvを求める xのみでyはかならず固定
+	// uvScaleを求める テンション率
+	float uvScale = tensionPercent_;
+	// uv座標を求める 1.0f - テンション率
+	float uvTrans = 1.0f - tensionPercent_;
+	// spriteSizeを求める 最大サイズ * uvScale
+	float spriteSize = kMaxSize_.x * uvScale;
+	// spriteの位置を求める (最大サイズ - 今のサイズ) / 2 + 定位置
+	float spritePos = (kMaxSize_.x - spriteSize) * 0.5f;
+	spritePos += fixedPosition_.x;
+
+	// 座標更新
+	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetTextureTopLeft(Vector2(uvTrans, 0.0f));
+	sprites_.at(static_cast<uint32_t>(Type::Gauge))->SetTextureSize(Vector2(uvScale, 1.0f));
+	sprites_.at(static_cast<uint32_t>(Type::Gauge))->pos_ = Vector2(spritePos, fixedPosition_.y);
+	sprites_.at(static_cast<uint32_t>(Type::Gauge))->size_ = Vector2(spriteSize, kMaxSize_.y);
+
+	// 表情の更新
+	auto handle = animation_->GetSceneUV(faceParam);
+	sprites_.at(static_cast<uint32_t>(Type::Face))->SetTextureTopLeft(Vector2(handle.translate_.x, handle.translate_.y));
+	sprites_.at(static_cast<uint32_t>(Type::Face))->SetTextureSize(Vector2(handle.scale_.x, handle.scale_.y));
+
+	GaugeColor(tension);
+
+	for (auto& sprite : sprites_) {
+		sprite->Update();
+	}
 }
 
 void TensionUI::Update(const float& tension, const int& faceParam) {

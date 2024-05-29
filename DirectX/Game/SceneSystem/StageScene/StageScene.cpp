@@ -105,9 +105,8 @@ void StageScene::Initialize()
 	optionUI_->Initialize();
 	isOptionOpen_ = false;
 
-	tensionUI_->Initialize();
 	// テンション関係
-	tensionUI_->Update(50.0f, 0);
+	tensionUI_->Initialize(baby_->GetTension(), baby_->GetFace());
 
 	popupUI_->Initialize();
 	isGameStarted_ = false;
