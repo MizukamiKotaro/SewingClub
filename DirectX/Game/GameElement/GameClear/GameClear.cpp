@@ -17,6 +17,12 @@ GameClear::GameClear()
 
 	sp_[Back]->size_ = { 1280,720 };
 
+	for (int i = 0; i < _countValuations; i++) {
+		baby_[i] = std::make_unique<Sprite>(babyPaths[i]);
+		baby_[i]->SetTextureSize({baby_[i]->size_.x/3.0f,baby_[i]->size_.y});
+		baby_[i]->SetTextureTopLeft({ 0,0 });
+	}
+
 	gvu_ = new GlobalVariableUser("Scene", "GameClear");
 
 	for (int i = 0; i < _countText; i++) {
@@ -88,7 +94,7 @@ void GameClear::InputUpdate()
 			if (nowSelect_ == StageSelect) {
 				nowSelect_ = Retry;
 			}
-			else if (nowSelect_ == Retry&&isNextStage_) {
+			else if (nowSelect_ == Retry && isNextStage_) {
 				nowSelect_ = NextStage;
 			}
 			else if (nowSelect_ == Retry && !isNextStage_) {
@@ -101,9 +107,10 @@ void GameClear::InputUpdate()
 		}
 		if (move.x < -stickD_) {
 			inputActive_ = false;
-			if (nowSelect_ == StageSelect&&isNextStage_) {
+			if (nowSelect_ == StageSelect && isNextStage_) {
 				nowSelect_ = NextStage;
-			}else if (nowSelect_ == StageSelect && !isNextStage_) {
+			}
+			else if (nowSelect_ == StageSelect && !isNextStage_) {
 				nowSelect_ = Retry;
 			}
 			else if (nowSelect_ == Retry) {
@@ -133,7 +140,7 @@ void GameClear::ArrowUpdate()
 
 	sp_[Arrow]->pos_ = selects_[nowSelect_]->pos_ + arrowPos_ + animeMove_;
 	sp_[Arrow_Frame]->pos_ = selects_[nowSelect_]->pos_;
-	
+
 }
 
 GameClear::~GameClear()
@@ -233,6 +240,13 @@ void GameClear::Draw()
 				sp_[i]->Draw();
 			}
 		}
+		else if (i == Baby) {
+			baby_[valuation_]->pos_ = sp_[i]->pos_;
+			baby_[valuation_]->size_ = sp_[i]->size_;
+			baby_[valuation_]->Update();
+			baby_[valuation_]->Draw();
+		}
+
 		else {
 			//それ以外のごみ
 			sp_[i]->Draw();
@@ -243,7 +257,7 @@ void GameClear::Draw()
 
 	for (int i = 0; i < _countPSelect; i++) {
 		if (i == (int)NextStage && !isNextStage_) {
-			
+
 		}
 		else {
 			selects_[i]->Draw();

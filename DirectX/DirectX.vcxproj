@@ -209,6 +209,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Client\ClientManager.cpp" />
     <ClCompile Include="Game\GameElement\DeadLine\DeadLine.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectExtraJump.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\GetItem\GetItem.cpp" />
     <ClCompile Include="Game\GameElement\Effects\GoalDusts\GoalDusts.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\DoesNotWorkEnemy.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\EnemyManager.cpp" />
@@ -415,6 +416,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Client\ClientManager.h" />
     <ClInclude Include="Game\GameElement\DeadLine\DeadLine.h" />
     <ClInclude Include="Game\GameElement\Effects\EffectExtraJump.h" />
+    <ClInclude Include="Game\GameElement\Effects\GetItem\GetItem.h" />
     <ClInclude Include="Game\GameElement\Effects\GoalDusts\GoalDusts.h" />
     <ClInclude Include="Game\GameElement\Enemy\DoesNotWorkEnemy.h" />
     <ClInclude Include="Game\GameElement\Enemy\EnemyManager.h" />

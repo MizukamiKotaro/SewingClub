@@ -69,6 +69,9 @@ StageScene::StageScene()
 
 	gameOver_ = std::make_unique<GameOver>();
 	gameClear_ = std::make_unique<GameClear>();
+
+	effeGetItem_ = EffectGetItem::GetInstance();
+	effeGetItem_->ModelLoad();
 }
 
 void StageScene::Initialize()
@@ -121,7 +124,11 @@ void StageScene::Initialize()
 	countIndex = 0;
 	isGoalTransition_ = false;
 
-	nowScene =kPlay;
+	effeGetItem_->Initialize();
+
+	nowScene =kGameClear;
+
+
 }
 
 void StageScene::Update()
@@ -155,6 +162,10 @@ void StageScene::Update()
 
 	if (input_->PressedKey(DIK_R) || num != stageNo_) {
 		Initialize();
+	}
+
+	if (input_->PressedKey(DIK_SPACE)) {
+		effeGetItem_->Spawn(player_->GetPosition());
 	}
 #endif // _DEBUG
 
@@ -274,6 +285,7 @@ void StageScene::Update()
 
 	SceneChange();
 
+	effeGetItem_->Update();
 }
 
 
@@ -302,19 +314,22 @@ void StageScene::Draw()
 
 	enemyManager_->Draw();
 
+	effeGetItem_->Draw();
+
 	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
 
-	//if (isCanGoal_) {
+	
+	///いかUI
 	effeGoalGuid_->Draw(camera_.get());
-	//}
-
+	
 	player_->DrawUI();
 
 	tensionUI_->Draw();
 
 	popupUI_->Draw();
+
 
 	//option描画
 	if (isOptionOpen_) {

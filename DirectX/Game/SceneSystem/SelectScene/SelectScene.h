@@ -26,14 +26,16 @@ private:
 	void ArrowUpdate();
 	//番号の更新
 	void NumberUpdate();
+	//雲の動き更新
+	void CloudUpdate();
 private:
 
-	Input* input_=nullptr;
+	Input* input_ = nullptr;
 
 	//選ばれている番号(0,1,2~)
 	int pickedNum_ = 0;
 
-	const int maxStageNum_ = 10;
+	const int maxStageNum_ = 8;
 
 	// 背景
 	std::unique_ptr<BackGround> bg_;
@@ -73,11 +75,36 @@ private:
 	float swingNum_ = 1.0f;
 #pragma endregion
 
+#pragma region 雲の動き関係
+
+	enum CloudState {
+		None,
+		Spawn1,
+		Spawn2,
+		Spawn3,
+		FadeOut,
+		_countState
+	};
+	bool isStateChange_ = false;
+	CloudState state_ =None;
+
+	bool isDraw_[_countState] = { false };
+	float alpha_[_countState] = { 1 };
+
+	int animeCount_ = 0;
+	//各シーンカウント
+	int maxAnimeCount_ = 60;
+
+#pragma endregion
+
 
 #pragma region 画像群
 	//画像群
 	enum spTags {
 		Clound,
+		SmallClound1,
+		SmallClound2,
+		SmallClound3,
 		text_Stage,
 		Num1,
 		Num10,
@@ -91,13 +118,16 @@ private:
 
 	//画像のパス
 	std::string paths[_countTags] = {
-		"back_obj.png",
+		"outgame_stageSelect_flame.png",
+		"outgame_stageSelect_HUD1.png",
+		"outgame_stageSelect_HUD1.png",
+		"outgame_stageSelect_HUD1.png",
 		"HUD/stage_HUD.png",
 		"number_HUD.png",
 		"number_HUD.png",
 		"HUD_arrow.png",
 		"HUD_arrow.png",
-		"baby_normal.png",
+		"outgame_stageSelect_baby.png",
 	};
 
 	enum Stages {
@@ -128,22 +158,22 @@ private:
 
 	//画像パス
 	std::string mapPaths_[_countStages] = {
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
-		"uvChecker.png",
+		"maps/map1.png",
+		"maps/map2.png",
+		"maps/map3.png",
+		"maps/map4.png",
+		"maps/map5.png",
+		"maps/map6.png",
+		"maps/map7.png",
+		"maps/map8.png",
+		"maps/map8.png",
+		"maps/map8.png",
+		"maps/map8.png",
+		"maps/map8.png",
+		"maps/map8.png",
+		"maps/map8.png",
+		"maps/map8.png",
+		"maps/map8.png",
 	};
 #pragma endregion
 
@@ -152,6 +182,9 @@ private:
 
 	std::string spKeysP[_countTags] = {
 		"雲　座標",
+		"小さい雲1 座標",
+		"小さい雲2 座標",
+		"小さい雲3 座標",
 		"「ステージ」座標",
 		"１桁目 座標 (触らない)",
 		"２桁目　座標(触らない)",
@@ -161,6 +194,9 @@ private:
 	};
 	std::string spKeysS[_countTags] = {
 	"雲　サイズ",
+	"小さい雲1 サイズ",
+	"小さい雲2 サイズ",
+	"小さい雲3 サイズ",
 	"「ステージ」サイズ",
 	"１桁目 サイズ ",
 	"２桁目　サイズ",
@@ -204,6 +240,7 @@ private:
 		SwingNum,
 		MapPos,
 		MapSize,
+		AnimeCount,
 		_countAnother
 	};
 
@@ -213,7 +250,8 @@ private:
 		"矢印の速度",
 		"矢印の振幅量",
 		"マップ座標",
-		"マップサイズ"
+		"マップサイズ",
+		"アニメーションカウント",
 	};
 #pragma endregion
 
