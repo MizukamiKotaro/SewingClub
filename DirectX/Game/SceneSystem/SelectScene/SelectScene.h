@@ -89,12 +89,13 @@ private:
 	CloudState state_ =None;
 
 	bool isDraw_[_countState] = { false };
-	float alpha_[_countState] = { 1 };
+	float alpha_[_countState] = { 0 };
 
 	int animeCount_ = 0;
 	//各シーンカウント
 	int maxAnimeCount_ = 60;
 
+	Vector2 animePos_[_countState];
 #pragma endregion
 
 

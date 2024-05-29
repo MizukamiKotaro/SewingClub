@@ -319,6 +319,18 @@ void SelectScene::CloudUpdate()
 
 	if (!isStateChange_) {
 
+		float t = (float)animeCount_ / (float)maxAnimeCount_;
+		if (state_ == FadeOut) {
+			alpha_[Spawn1] = Calc::Lerp(1, 0, t);
+			alpha_[Spawn2] = Calc::Lerp(1, 0, t);
+			alpha_[Spawn3] = Calc::Lerp(1, 0, t);
+		}
+		else if (state_ != None) {
+
+			alpha_[state_] = Calc::Lerp(0, 1, t);
+
+		}
+
 		if (animeCount_++ >= maxAnimeCount_) {
 			animeCount_ = 0;
 			isStateChange_ = true;
@@ -332,15 +344,14 @@ void SelectScene::CloudUpdate()
 				isDraw_[Spawn3] = false;
 
 			}
+			else if (state_ != None) {
+
+				alpha_[state_] = 1;
+
+			}
 		}
 
-		if (state_ == FadeOut) {
-			float t = (float)animeCount_ / (float)maxAnimeCount_;
-			alpha_[Spawn1] = Calc::Lerp(1, 0, t);
-			alpha_[Spawn2] = Calc::Lerp(1, 0, t);
-			alpha_[Spawn3] = Calc::Lerp(1, 0, t);
-
-		}
+		
 	}
 	else {
 		isStateChange_ = false;
@@ -372,15 +383,15 @@ void SelectScene::CloudUpdate()
 
 		case SelectScene::Spawn1:
 			isDraw_[Spawn1] = true;
-			alpha_[Spawn1] = 1;
+			//alpha_[Spawn1] = 0;
 			break;
 		case SelectScene::Spawn2:
 			isDraw_[Spawn2] = true;
-			alpha_[Spawn2] = 1;
+			//alpha_[Spawn2] = 0;
 			break;
 		case SelectScene::Spawn3:
 			isDraw_[Spawn3] = true;
-			alpha_[Spawn3] = 1;
+			//alpha_[Spawn3] = 0;
 			break;
 		case SelectScene::FadeOut:
 			break;
