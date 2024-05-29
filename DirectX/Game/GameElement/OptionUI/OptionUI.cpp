@@ -10,7 +10,7 @@ OptionUI::OptionUI(SceneType type)
 	backSprite_->size_ = { 1280,720 };
 	blackFrame_ = std::make_unique<Sprite>("title_option_whitecloud.png");
 
-
+	textPause_ = std::make_unique<Sprite>("HUD/option_HUD.png");
 	selectArrow_ = std::make_unique<Sprite>("HUD_arrow.png");
 	textBackGame_ = std::make_unique<Sprite>("spBack.png");
 	textBackSelect_ = std::make_unique<Sprite>("Text_Select.png");
@@ -18,6 +18,14 @@ OptionUI::OptionUI(SceneType type)
 	textSoundEdit_ = std::make_unique<Sprite>("Text_SoundEdit.png");
 	textLeaveGame_ = std::make_unique<Sprite>("Text_LeeaveGame.png");
 	
+	textPause_->SetColor({ 0,0,0,1 });
+	//selectArrow_->SetColor({ 0,0,0,1 });
+	textBackGame_->SetColor({ 0,0,0,1 });
+	textBackSelect_->SetColor({ 0,0,0,1 });
+	textBackTitle_->SetColor({ 0,0,0,1 });
+	textSoundEdit_->SetColor({ 0,0,0,1 });
+	textLeaveGame_->SetColor({ 0,0,0,1 });
+
 	type_ = type;
 	std::string groupName;
 
@@ -41,11 +49,19 @@ OptionUI::OptionUI(SceneType type)
 	gVUser_->AddItem(keys[ArrowSwing], arrowSwingNum_);
 	gVUser_->AddItem(keys[ArrowSwingCount], addSwingCount_);
 	gVUser_->AddItem(keys[TextBackGamePos], textBackGame_->pos_);
+	gVUser_->AddItem(keys[TextBackGameSize], textBackGame_->size_);
 	gVUser_->AddItem(keys[TextBackSelectPos], textBackSelect_->pos_);
+	gVUser_->AddItem(keys[TextBackSelectSize], textBackSelect_->size_);
 	gVUser_->AddItem(keys[TextBackTitlePos], textBackTitle_->pos_);
+	gVUser_->AddItem(keys[TextBackTitleSize], textBackTitle_->size_);
 	gVUser_->AddItem(keys[TextSoundEditPos], textSoundEdit_->pos_);
+	gVUser_->AddItem(keys[TextSoundEditSize], textSoundEdit_->size_);
 	gVUser_->AddItem(keys[TextLeaveGamePos], textLeaveGame_->pos_);
+	gVUser_->AddItem(keys[TextLeaveGameSize], textLeaveGame_->size_);
 	gVUser_->AddItem(keys[BlackScreenAlpha], backalpha_);
+	gVUser_->AddItem(keys[TextPause], textPause_->pos_);
+	gVUser_->AddItem(keys[TextPauseSize], textPause_->size_);
+
 }
 
 OptionUI::~OptionUI()
@@ -76,11 +92,22 @@ void OptionUI::SetGrobalV()
 	arrowSwingNum_ = gVUser_->GetFloatValue(keys[ArrowSwing]);
 	addSwingCount_ = gVUser_->GetFloatValue(keys[ArrowSwingCount]);
 	textBackGame_->pos_ = gVUser_->GetVector2Value(keys[TextBackGamePos]);
+	textBackGame_->size_ = gVUser_->GetVector2Value(keys[TextBackGameSize]);
 	textBackSelect_->pos_ = gVUser_->GetVector2Value(keys[TextBackSelectPos]);
+	textBackSelect_->size_ = gVUser_->GetVector2Value(keys[TextBackSelectSize]);
 	textBackTitle_->pos_ = gVUser_->GetVector2Value(keys[TextBackTitlePos]);
+	textBackTitle_->size_ = gVUser_->GetVector2Value(keys[TextBackTitleSize]);
+
 	textSoundEdit_->pos_ = gVUser_->GetVector2Value(keys[TextSoundEditPos]);
+	textSoundEdit_->size_ = gVUser_->GetVector2Value(keys[TextSoundEditSize]);
+
 	textLeaveGame_->pos_ = gVUser_->GetVector2Value(keys[TextLeaveGamePos]);
+	textLeaveGame_->size_ = gVUser_->GetVector2Value(keys[TextLeaveGameSize]);
 	backalpha_ = gVUser_->GetFloatValue(keys[BlackScreenAlpha]);
+
+	textPause_->pos_ = gVUser_->GetVector2Value(keys[TextPause]);
+	textPause_->size_ = gVUser_->GetVector2Value(keys[TextPauseSize]);
+
 
 	backSprite_->SetColor({ 0, 0, 0, backalpha_ });
 
@@ -90,12 +117,15 @@ UpdateAnswer OptionUI::Update()
 {
 	ans_ = UpdateAnswer();
 
+#ifdef _DEBUG
 	SetGrobalV();
+#endif // _DEBUG
+
 
 	isBacked_ = false;
 	backSprite_->Update();
 	blackFrame_->Update();
-
+	textPause_->Update();
 	switch (type_)
 	{
 	case OptionUI::kTitle:
@@ -439,6 +469,8 @@ void OptionUI::TitleDraw()
 	{
 	case OptionUI::kNone:
 
+
+		textPause_->Draw();
 		textBackGame_->Draw();
 		textSoundEdit_->Draw();
 		textLeaveGame_->Draw();
@@ -463,6 +495,8 @@ void OptionUI::SelectDraw()
 	{
 	case OptionUI::kNone:
 
+
+		textPause_->Draw();
 		textBackGame_->Draw();
 		textBackTitle_->Draw();
 		textSoundEdit_->Draw();
@@ -487,6 +521,8 @@ void OptionUI::StageDraw()
 	{
 	case OptionUI::kNone:
 
+
+		textPause_->Draw();
 		textBackGame_->Draw();
 		textBackSelect_->Draw();
 		textBackTitle_->Draw();

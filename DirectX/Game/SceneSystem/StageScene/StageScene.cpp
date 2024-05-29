@@ -126,7 +126,7 @@ void StageScene::Initialize()
 
 	effeGetItem_->Initialize();
 
-	nowScene =kGameClear;
+	nowScene =kPlay;
 
 
 }

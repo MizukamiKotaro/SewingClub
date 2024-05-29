@@ -146,13 +146,14 @@ void SelectScene::Update()
 	}
 	else {
 		InputUpdate();
+
+		ArrowUpdate();
+
+		NumberUpdate();
+
+		CloudUpdate();
 	}
 
-	ArrowUpdate();
-
-	NumberUpdate();
-
-	CloudUpdate();
 
 	SceneChange();
 
