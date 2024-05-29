@@ -92,6 +92,7 @@ private:
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 	std::unique_ptr<GoalCamera> goalCamera_;
+	float cameraOffset_ = -50.0f;
 
 	enum playScenes {
 		kPlay,

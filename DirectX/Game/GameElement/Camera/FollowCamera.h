@@ -8,18 +8,14 @@ public:
 
 	FollowCamera();
 
-	void Initialize(const Vector3* target, const Vector3& upperlimit, const Vector3& lowerlimit);
+	void Initialize(const Vector3* target, const Vector3& upperlimit, const Vector3& lowerlimit, const float& posZ = 0.0f);
 
 	Vector3 Update();
 
 	void Reset();
+	void SetFirstOffsetZ(const float& offsetZ); // Z座標のセット
 
 private:
-
-	void SetGlobalVariable();
-
-	void ApplyGlobalVariable();
-
 	void FollowUpdate();
 
 private:
@@ -38,6 +34,7 @@ private:
 
 	// 追従対象の残像座標
 	Vector3 interTarget_;
+	float offset_;
 
 	const std::string groupName_ = "FollowCamera";
 };

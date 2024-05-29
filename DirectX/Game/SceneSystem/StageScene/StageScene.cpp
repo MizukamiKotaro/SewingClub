@@ -42,7 +42,8 @@ StageScene::StageScene()
 
 	player_ = std::make_unique<Player>();
 	baby_ = std::make_unique<Baby>(player_.get());
-	camera_->transform_.translate_.z = -50.0f;
+	cameraOffset_ = -50.0f;
+	camera_->transform_.translate_.z = cameraOffset_;
 	camera_->Update();
 
 	WaterChunk::SetPlayer(player_.get());
@@ -111,7 +112,9 @@ void StageScene::Initialize()
 	popupUI_->Initialize();
 	isGameStarted_ = false;
 	
-	followCamera_->Initialize(player_->GetPositionPtr(), waterManager_->GetLimit().upperLimit, waterManager_->GetLimit().lowerLimit);
+	followCamera_->Initialize(player_->GetPositionPtr(), waterManager_->GetLimit().upperLimit, waterManager_->GetLimit().lowerLimit, 25.0f);
+	camera_->transform_.translate_.z = followCamera_->Update().z + cameraOffset_;
+	camera_->Update();
 
 	gameOver_->Initialize();
 	gameClear_->Initialize(true);
@@ -173,11 +176,12 @@ void StageScene::Update()
 				if (popupUI_->GetPhase() == 1u) {
 					// UIが出きったらスタート
 					isGameStarted_ = true;
+					followCamera_->SetFirstOffsetZ(0.0f);
 				}
 			}
 
 			// ゴール遷移演出じゃなければ
-			if (!isGoalTransition_ || isGameStarted_) {
+			if (!isGoalTransition_ && isGameStarted_) {
 				player_->Update(deltaTime);
 				baby_->Update(deltaTime);
 				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
@@ -207,6 +211,9 @@ void StageScene::Update()
 				// 通常カメラ
 				if (!isGoalTransition_) {
 					camera = followCamera_->Update();
+					if (isGameStarted_) {
+						//camera.z = 0.0f;
+					}
 				}
 				// 遷移カメラ
 				else {
@@ -225,11 +232,13 @@ void StageScene::Update()
 						countIndex++;
 						followCamera_->Reset();
 					}
+					camera.z = 0.0f;
 				}
 
 				// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
 				camera_->transform_.translate_.x = camera.x;
 				camera_->transform_.translate_.y = camera.y;
+				camera_->transform_.translate_.z = camera.z + cameraOffset_;
 				camera_->Update();
 			}
 			// テンション関係
