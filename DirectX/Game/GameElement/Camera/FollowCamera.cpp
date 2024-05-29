@@ -9,24 +9,21 @@ FollowCamera::FollowCamera()
 
 	delayConstant_ = 0.1f;
 
-	SetGlobalVariable();
-
 	Reset();
 
 }
 
-void FollowCamera::Initialize(const Vector3* target, const Vector3& upperlimit, const Vector3& lowerlimit)
+void FollowCamera::Initialize(const Vector3* target, const Vector3& upperlimit, const Vector3& lowerlimit, const float& posZ)
 {
 	target_ = target;
 	upperLimitPos_ = upperlimit;
 	lowerLimitPos_ = lowerlimit;
+	offset_ = posZ;
 	Reset();
 
 }
 
 Vector3 FollowCamera::Update() {
-
-	ApplyGlobalVariable();
 
 	FollowUpdate();
 	return interTarget_;
@@ -40,21 +37,12 @@ void FollowCamera::Reset()
 		Vector3 pos = *target_;
 
 		interTarget_ = pos;
+		interTarget_.z = offset_;
 	}
 }
 
-void FollowCamera::SetGlobalVariable()
-{
-	//GlobalVariables* globalVariables = GlobalVariables::GetInstance();
-
-
-	ApplyGlobalVariable();
-}
-
-void FollowCamera::ApplyGlobalVariable()
-{
-	//GlobalVariables* globalVariables = GlobalVariables::GetInstance();
-
+void FollowCamera::SetFirstOffsetZ(const float& offsetZ) {
+	offset_ = offsetZ;
 }
 
 void FollowCamera::FollowUpdate()
@@ -65,7 +53,9 @@ void FollowCamera::FollowUpdate()
 		// 制限
 		pos.x = std::clamp(pos.x, lowerLimitPos_.x - space_, upperLimitPos_.x + space_);
 		pos.y = std::clamp(pos.y, lowerLimitPos_.y - space_, upperLimitPos_.y + space_);
+		pos.z = offset_;
 
 		interTarget_ = Calc::Lerp(interTarget_, pos, delayConstant_);
+		interTarget_.z = Calc::Lerp(interTarget_.z, offset_, delayConstant_);
 	}
 }

@@ -454,6 +454,9 @@
     <Filter Include="Game\GameElement\Camera">
       <UniqueIdentifier>{44684e86-00cb-4c65-be2f-24552ae6fcf0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\PopupUI">
+      <UniqueIdentifier>{0435b587-5a8d-4948-a365-d2401681a1b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -953,6 +956,9 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\GameClear\GameClear.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\PopupUI\PopupUI.cpp">
+      <Filter>Game\GameElement\PopupUI</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Effects\GoalDusts\GoalDusts.cpp">
       <Filter>ソース ファイル</Filter>
@@ -1534,6 +1540,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\GameClear\GameClear.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\PopupUI\PopupUI.h">
+      <Filter>Game\GameElement\PopupUI</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\GoalDusts\GoalDusts.h">
       <Filter>ヘッダー ファイル</Filter>

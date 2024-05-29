@@ -239,6 +239,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Planet\PlanetTypeColor.cpp" />
     <ClCompile Include="Game\GameElement\Player\GravityAreaSearch.cpp" />
     <ClCompile Include="Game\GameElement\Player\Player.cpp" />
+    <ClCompile Include="Game\GameElement\PopupUI\PopupUI.cpp" />
     <ClCompile Include="Game\GameElement\ScoreManager\ScoreManager.cpp" />
     <ClCompile Include="Game\GameElement\Score\Score.cpp" />
     <ClCompile Include="Game\GameElement\StageUI\StageUI.cpp" />
@@ -446,6 +447,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Planet\PlanetTypeColor.h" />
     <ClInclude Include="Game\GameElement\Player\GravityAreaSearch.h" />
     <ClInclude Include="Game\GameElement\Player\Player.h" />
+    <ClInclude Include="Game\GameElement\PopupUI\PopupUI.h" />
     <ClInclude Include="Game\GameElement\ScoreManager\ScoreManager.h" />
     <ClInclude Include="Game\GameElement\Score\Score.h" />
     <ClInclude Include="Game\GameElement\StageUI\StageUI.h" />
