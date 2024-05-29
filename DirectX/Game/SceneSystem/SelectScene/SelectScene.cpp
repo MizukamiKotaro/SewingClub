@@ -59,6 +59,12 @@ SelectScene::SelectScene()
 	gvu_->AddItem(anoKeys[MapPos], mapPos_);
 	gvu_->AddItem(anoKeys[MapSize], mapSize_);
 	gvu_->AddItem(anoKeys[AnimeCount], animeCount_);
+
+	gvu_->AddItem(anoKeys[cS1], cSwingSeconds_[Spawn1]);
+	gvu_->AddItem(anoKeys[cS2], cSwingSeconds_[Spawn2]);
+	gvu_->AddItem(anoKeys[cS3], cSwingSeconds_[Spawn3]);
+	gvu_->AddItem(anoKeys[cS4], cSwingSeconds_[None]);
+
 }
 
 void SelectScene::SetGlobalV()
@@ -70,6 +76,18 @@ void SelectScene::SetGlobalV()
 		}
 		else if (i == RArrow) {
 			arrowPos_[Right] = gvu_->GetVector2Value(spKeysP[i]);
+		}
+		else if (i == SmallClound1) {
+			cPos_[Spawn1] = gvu_->GetVector2Value(spKeysP[i]);
+		}
+		else if (i == SmallClound2) {
+			cPos_[Spawn2] = gvu_->GetVector2Value(spKeysP[i]);
+		}
+		else if (i == SmallClound3) {
+			cPos_[Spawn3] = gvu_->GetVector2Value(spKeysP[i]);
+		}
+		else if (i == Clound) {
+			cPos_[None] = gvu_->GetVector2Value(spKeysP[i]);
 		}
 		else {
 			sp_[i]->pos_ = gvu_->GetVector2Value(spKeysP[i]);
@@ -87,7 +105,10 @@ void SelectScene::SetGlobalV()
 	mapPos_ = gvu_->GetVector2Value(anoKeys[MapPos]);
 	mapSize_ = gvu_->GetVector2Value(anoKeys[MapSize]);
 	maxAnimeCount_ = gvu_->GetIntValue(anoKeys[AnimeCount]);
-
+	cSwingSeconds_[Spawn1] = gvu_->GetFloatValue(anoKeys[cS1]);
+	cSwingSeconds_[Spawn2] = gvu_->GetFloatValue(anoKeys[cS2]);
+	cSwingSeconds_[Spawn3] = gvu_->GetFloatValue(anoKeys[cS3]);
+	cSwingSeconds_[None] = gvu_->GetFloatValue(anoKeys[cS4]);
 }
 
 SelectScene::~SelectScene() {}
@@ -113,13 +134,10 @@ void SelectScene::Update()
 {
 	SetGlobalV();
 
-#ifdef _DEBUG
 	for (int i = 0; i < _countStages; i++) {
 		mapSprite_[i]->pos_ = mapPos_;
 		mapSprite_[i]->size_ = mapSize_;
 	}
-#endif // _DEBUG
-
 
 	camera_->Update();
 
@@ -166,20 +184,27 @@ void SelectScene::Draw()
 		else if (i == SmallClound1) {
 			if (isDraw_[Spawn1]) {
 				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn1] });
+				sp_[i]->pos_ = cPos_[Spawn1] + animePos_[Spawn1];
 				sp_[i]->Draw();
 			}
 		}
 		else if (i == SmallClound2) {
 			if (isDraw_[Spawn2]) {
 				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn2] });
+				sp_[i]->pos_ = cPos_[Spawn2] + animePos_[Spawn2];
 				sp_[i]->Draw();
 			}
 		}
 		else if (i == SmallClound3) {
 			if (isDraw_[Spawn3]) {
 				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn3] });
+				sp_[i]->pos_ = cPos_[Spawn3] + animePos_[Spawn3];
 				sp_[i]->Draw();
 			}
+		}
+		else if (i == Clound) {
+			sp_[i]->pos_ = cPos_[None] + animePos_[None];
+			sp_[i]->Draw();
 		}
 		else {
 			sp_[i]->Draw();
@@ -351,7 +376,7 @@ void SelectScene::CloudUpdate()
 			}
 		}
 
-		
+
 	}
 	else {
 		isStateChange_ = false;
@@ -401,4 +426,22 @@ void SelectScene::CloudUpdate()
 			break;
 		}
 	}
+
+	//動きの処理
+	cCount_[Spawn1] += cSwingSeconds_[Spawn1] / 60.0f;
+	cCount_[Spawn1] = std::fmod(cCount_[Spawn1], 2.0f * (float)std::numbers::pi);
+	animePos_[Spawn1].y = +std::sin(cCount_[Spawn1]) * swingNum_;
+
+	cCount_[Spawn2] += cSwingSeconds_[Spawn2] / 60.0f;
+	cCount_[Spawn2] = std::fmod(cCount_[Spawn2], 2.0f * (float)std::numbers::pi);
+	animePos_[Spawn2].y = +std::sin(cCount_[Spawn2]) * swingNum_;
+
+	cCount_[Spawn3] += cSwingSeconds_[Spawn3] / 60.0f;
+	cCount_[Spawn3] = std::fmod(cCount_[Spawn3], 2.0f * (float)std::numbers::pi);
+	animePos_[Spawn3].y = +std::sin(cCount_[Spawn3]) * swingNum_;
+
+	cCount_[None] += cSwingSeconds_[None] / 60.0f;
+	cCount_[None] = std::fmod(cCount_[None], 2.0f * (float)std::numbers::pi);
+	animePos_[None].y = +std::sin(cCount_[None]) * swingNum_;
+
 }
