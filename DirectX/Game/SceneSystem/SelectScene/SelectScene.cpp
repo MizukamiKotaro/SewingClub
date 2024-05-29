@@ -1,6 +1,7 @@
 #include "SelectScene.h"
 #include "Kyoko.h"
 #include "ImGuiManager/ImGuiManager.h"
+#include"calc.h"
 #include<numbers>
 SelectScene::SelectScene()
 {
@@ -57,7 +58,7 @@ SelectScene::SelectScene()
 	gvu_->AddItem(anoKeys[SwingNum], swingNum_);
 	gvu_->AddItem(anoKeys[MapPos], mapPos_);
 	gvu_->AddItem(anoKeys[MapSize], mapSize_);
-
+	gvu_->AddItem(anoKeys[AnimeCount], animeCount_);
 }
 
 void SelectScene::SetGlobalV()
@@ -85,6 +86,7 @@ void SelectScene::SetGlobalV()
 	swingNum_ = gvu_->GetFloatValue(anoKeys[SwingNum]);
 	mapPos_ = gvu_->GetVector2Value(anoKeys[MapPos]);
 	mapSize_ = gvu_->GetVector2Value(anoKeys[MapSize]);
+	maxAnimeCount_ = gvu_->GetIntValue(anoKeys[AnimeCount]);
 
 }
 
@@ -132,6 +134,8 @@ void SelectScene::Update()
 
 	NumberUpdate();
 
+	CloudUpdate();
+
 	SceneChange();
 
 	bg_->Update(camera_.get());
@@ -158,6 +162,24 @@ void SelectScene::Draw()
 		else if (i == LArrow && pickedNum_ == 0) {
 		}
 		else if (i == RArrow && pickedNum_ == maxStageNum_ - 1) {
+		}
+		else if (i == SmallClound1) {
+			if (isDraw_[Spawn1]) {
+				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn1] });
+				sp_[i]->Draw();
+			}
+		}
+		else if (i == SmallClound2) {
+			if (isDraw_[Spawn2]) {
+				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn2] });
+				sp_[i]->Draw();
+			}
+		}
+		else if (i == SmallClound3) {
+			if (isDraw_[Spawn3]) {
+				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn3] });
+				sp_[i]->Draw();
+			}
 		}
 		else {
 			sp_[i]->Draw();
@@ -290,4 +312,82 @@ void SelectScene::NumberUpdate()
 
 	}
 
+}
+
+void SelectScene::CloudUpdate()
+{
+
+	if (!isStateChange_) {
+
+		if (animeCount_++ >= maxAnimeCount_) {
+			animeCount_ = 0;
+			isStateChange_ = true;
+			if (state_ == FadeOut) {
+				alpha_[Spawn1] = 0;
+				alpha_[Spawn2] = 0;
+				alpha_[Spawn3] = 0;
+
+				isDraw_[Spawn1] = false;
+				isDraw_[Spawn2] = false;
+				isDraw_[Spawn3] = false;
+
+			}
+		}
+
+		if (state_ == FadeOut) {
+			float t = (float)animeCount_ / (float)maxAnimeCount_;
+			alpha_[Spawn1] = Calc::Lerp(1, 0, t);
+			alpha_[Spawn2] = Calc::Lerp(1, 0, t);
+			alpha_[Spawn3] = Calc::Lerp(1, 0, t);
+
+		}
+	}
+	else {
+		isStateChange_ = false;
+
+		if (state_ == None) {
+			state_ = Spawn1;
+		}
+		else if (state_ == Spawn1) {
+			state_ = Spawn2;
+		}
+		else if (state_ == Spawn2) {
+			state_ = Spawn3;
+		}
+		else if (state_ == Spawn3) {
+			state_ = FadeOut;
+		}
+		else if (state_ == FadeOut) {
+			state_ = None;
+		}
+
+		switch (state_)
+		{
+		case SelectScene::None:
+			isDraw_[Spawn1] = false;
+			isDraw_[Spawn2] = false;
+			isDraw_[Spawn3] = false;
+
+			break;
+
+		case SelectScene::Spawn1:
+			isDraw_[Spawn1] = true;
+			alpha_[Spawn1] = 1;
+			break;
+		case SelectScene::Spawn2:
+			isDraw_[Spawn2] = true;
+			alpha_[Spawn2] = 1;
+			break;
+		case SelectScene::Spawn3:
+			isDraw_[Spawn3] = true;
+			alpha_[Spawn3] = 1;
+			break;
+		case SelectScene::FadeOut:
+			break;
+		case SelectScene::_countState:
+			break;
+		default:
+			break;
+		}
+	}
 }
