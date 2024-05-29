@@ -105,6 +105,13 @@ private:
 	};
 	Tension tension_;
 
+	struct Combo
+	{
+		int32_t num;
+		int32_t maxNum;
+	};
+	Combo combo_;
+
 	struct RideInWater
 	{
 		bool isRideInWater;

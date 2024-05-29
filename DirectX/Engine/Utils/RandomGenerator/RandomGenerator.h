@@ -9,13 +9,15 @@ public:
 
 	static RandomGenerator* GetInstance();
 
-	int RandInt(int min, int max);
+	int RandInt(const int& min, const int& max);
 
-	float RandFloat(float min, float max);
+	float RandFloat(const float& min, const float& max);
 
-	Vector2 RandVector2(float min, float max);
+	Vector2 RandVector2(const float& min, const float& max);
 
-	Vector3 RandVector3(float min, float max);
+	Vector2 RandVector2(const Vector2& min, const Vector2& max);
+
+	Vector3 RandVector3(const float& min, const float& max);
 
 	Vector3 RandVector3(const Vector3& min, const Vector3& max);
 

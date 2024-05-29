@@ -37,7 +37,8 @@ Baby::Baby(Player* player)
 	isCircleWater_ = true;
 	yarn_ = std::make_unique<Model>("Cube");
 	yarn_->transform_.scale_ = { 0.1f,0.1f,0.1f };
-	
+	combo_.num = 0;
+	combo_.maxNum = 1;
 	TensionInitialize();
 	RideInWaterInitialize();
 	SetGlobalVariable();
@@ -76,7 +77,7 @@ void Baby::Initialize()
 	yarn_->transform_.scale_ = { 0.05f,0.05f,0.05f };
 
 	isCircleWater_ = true;
-
+	combo_.num = 0;
 	effeEnterW_->Initialize();
 	TensionInitialize();
 	RideInWaterInitialize();
@@ -213,6 +214,7 @@ void Baby::OnCollision(const Collider& collider)
 	if (collider.GetMask() == ColliderMask::WATER) {
 		if (!isRide_ || (isRide_ && (player_->GetSpeed() < rideInWater_.rideFinishSpeed || rideInWater_.rideFinishTime > fParas_[kInWaterTime]))) {
 			isRide_ = false;
+			combo_.num = 0;
 			if (!preIsInWater_ && isFollowWater_) {
 				model_->transform_.translate_ = prePosition_;
 				Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
@@ -335,6 +337,7 @@ void Baby::SetGlobalVariable()
 	InitializeGlobalVariable();
 
 	globalVariable_->AddItem("スケール", Vector2{ 1.0f,1.0f });
+	globalVariable_->AddItem("コンボの最大数", 3, "コンボ関係");
 
 	for (int i = 0; i < kFloatEnd; i++) {
 		if (i >= kFlyTime) {
@@ -363,6 +366,7 @@ void Baby::ApplyGlobalVariable()
 	if (fParas_[FloatParamater::kMaxPlayerLength] == 0.0f) {
 		fParas_[FloatParamater::kMaxPlayerLength] = 0.01f;
 	}
+	combo_.maxNum = globalVariable_->GetIntValue("コンボの最大数", "コンボ関係");
 
 	Vector2 scale = globalVariable_->GetVector2Value("スケール");
 	model_->transform_.scale_ = { scale.x,scale.y,1.0f };
@@ -711,6 +715,10 @@ void Baby::TensionUpdate(const float& deltaTime)
 		tension_.isRideUp_ = false;
 	}
 	else if (isRide_ && !preIsInWaterPlayer_ && prePreIsInWaterPlayer_) {
+		combo_.num++;
+		if (combo_.num > combo_.maxNum) {
+			combo_.num = combo_.maxNum;
+		}
 		tension_.tension += fParas_[FloatParamater::kUpTensionOutWater];
 	}
 
