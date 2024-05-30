@@ -133,7 +133,7 @@ void StageScene::Initialize()
 	}
 	effeGoalGuid_->Update();
 
-	nowScene =kGameOver;
+	nowScene =kPlay;
 
 	tensionEffectManager_->Initialize();
 }
@@ -271,7 +271,7 @@ void StageScene::Update()
 			//水のうねうね
 			waterEffect_->Update(deltaTime);
 
-			comboEffect_->Update(deltaTime, player_->GetPosition());
+			comboEffect_->Update(deltaTime);
 
 			effeGoalGuid_->Update();
 		}
