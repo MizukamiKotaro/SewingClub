@@ -155,8 +155,10 @@ BabyTensionEffectChip::BabyTensionEffectChip(const float& tension, const float& 
 
 	generatePos_ = { std::cosf(angle) * length, std::sinf(angle) * length };
 
-	localPos_ = { 0.0f,std::sinf(floatAngle) * floatlength_ };
+	localPos_ = { 0.0f,std::sinf(floatAngle_) * floatlength_ };
+	scale_ = {};
 	pos_ = {};
+	time_ = 0.0f;
 	isActive_ = true;
 	isMove_ = false;
 }
@@ -188,7 +190,8 @@ void BabyTensionEffectChip::Update(const float& deltaTime)
 
 void BabyTensionEffectChip::FloatUpdate(const float& deltaTime)
 {
-	floatAngle_ += deltaTime;
+	floatAngle_ = std::fmodf(floatAngle_ + addFloatAngle_ * deltaTime, 6.28f);
+	localPos_ = { 0.0f,std::sinf(floatAngle_) * floatlength_ };
 }
 
 void BabyTensionEffectChip::Draw(const Camera& camera)
