@@ -969,7 +969,7 @@
     <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.cpp">
       <Filter>Game\GameElement\Charactor\Baby</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h.cpp">
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.cpp">
       <Filter>Game\GameElement\Charactor\Baby</Filter>
     </ClCompile>
   </ItemGroup>

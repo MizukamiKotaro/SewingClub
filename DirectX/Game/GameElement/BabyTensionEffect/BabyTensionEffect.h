@@ -4,9 +4,9 @@
 #include "GlobalVariables/GlobalVariableUser.h"
 #include <memory>
 #include <vector>
+#include "ParticleManager.h"
 
 class RandomGenerator;
-class Camera;
 
 class BabyTensionEffectChip
 {
@@ -20,7 +20,9 @@ public:
 	void Update(const float& deltaTime);
 	void FloatUpdate(const float& deltaTime);
 
-	void Draw(const Camera& camera);
+	void Draw() const;
+
+	const bool& GetIsActive() const { return isActive_; }
 
 private:
 	Vector2 gagePos_;
@@ -42,6 +44,8 @@ private:
 	bool isMove_;
 private:
 	static const Vector3* babyPos_;
+	static ParticleManager* instancingManager_;
+	static const ParticleMeshTexData* modelData_;
 };
 
 class BabyTensionEffect 
@@ -53,8 +57,9 @@ public:
 	static void StaticUpdate();
 
 	void Update(const float& deltaTime);
-	void Draw(const Camera& camera);
-
+	void Draw() const;
+	const float GetTension();
+	const bool& GetIsActive() const { return isActive_; }
 private:
 	static void SetGlobalVariable();
 	static void ApplyGlobalVariable();
