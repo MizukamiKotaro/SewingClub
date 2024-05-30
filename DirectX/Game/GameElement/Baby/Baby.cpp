@@ -52,7 +52,7 @@ Baby::Baby(Player* player)
 	baby_->SetTexture(TextureManager::GetInstance()->LoadTexture("baby_normal.png"));
 	animation_->Play(true);
 
-	effeEnterW_ = std::make_unique<EffectEnterWater>();
+	effeEnterW_ = std::make_unique<EffectEnterWater>("BabyEnterWater");
 
 	input = Input::GetInstance();
 	tensionEffectManager_ = BabyTensionEffectManager::GetInstance();

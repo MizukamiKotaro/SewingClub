@@ -74,7 +74,7 @@ Player::Player()
 
 	effeExtraJump_ = std::make_unique<EffectExtraJump>();
 	effectOutWater_ = std::make_unique<EffectOutWater>();
-	effeEnterWater_ = std::make_unique<EffectEnterWater>();
+	effeEnterWater_ = std::make_unique<EffectEnterWater>("EffectEnterWater");
 	effeUIEnterWater_ = std::make_unique<EffectUIEnterWater>("IngameUIEnterWater");
 	particleScceleration_ = std::make_unique<ParticleAcceleration>();
 	

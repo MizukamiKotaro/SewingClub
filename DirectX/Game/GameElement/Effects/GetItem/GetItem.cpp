@@ -31,7 +31,7 @@ void EffectGetItem::ModelLoad()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("plane");
-	modelData_ = instancingManager_->GetDrawData({ modelData, TextureManager::GetInstance()->LoadTexture("whiteStar.png"), BlendMode::kBlendModeNormal });
+	modelData_ = instancingManager_->GetDrawData({ modelData, TextureManager::GetInstance()->LoadTexture("effect_star.png"), BlendMode::kBlendModeNormal });
 
 	gvu_ = new GlobalVariableUser("Effect", "GetItem");
 

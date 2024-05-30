@@ -7,7 +7,7 @@ class EffectEnterWater {
 
 public:
 
-	EffectEnterWater();
+	EffectEnterWater(const std::string  name);
 	~EffectEnterWater();
 
 
