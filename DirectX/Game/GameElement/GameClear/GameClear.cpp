@@ -1,4 +1,5 @@
 #include "GameClear.h"
+#include "GameElement/Animation/AnimationManager.h"
 
 #include<numbers>
 
@@ -51,6 +52,17 @@ GameClear::GameClear()
 	gvu_->AddItem(anoKeys[GageColor], GageColor_);
 
 	SetGlobalV();
+
+	// 赤ちゃんアニメーション
+	babyAnimation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("babynormal"));
+	// UV座標のセット
+	for (uint32_t index = 0u; index < Valuations::_countValuations; index++) {
+		Transform handle = babyAnimation_->GetSceneUV(0u);
+		baby_[index]->SetTextureTopLeft(Vector2(handle.translate_.x, handle.translate_.y));
+		baby_[index]->SetTextureSize(Vector2(handle.scale_.x, handle.scale_.y));
+	}
+	babyAnimation_->Play(true);
+
 }
 
 void GameClear::SetGlobalV()
@@ -169,7 +181,7 @@ void GameClear::Initialize(bool nextstage)
 	sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
 	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,1 });
 
-	Update();
+	Update(0.0f);
 
 	isNextStage_ = nextstage;
 	if (isNextStage_) {
@@ -180,7 +192,7 @@ void GameClear::Initialize(bool nextstage)
 	}
 }
 
-ClearAnswer GameClear::Update()
+ClearAnswer GameClear::Update(const float& delta)
 {
 #ifdef _DEBUG
 	SetGlobalV();
@@ -214,6 +226,12 @@ ClearAnswer GameClear::Update()
 	}
 	for (int i = 0; i < _countPSelect; i++) {
 		selects_[i]->Update();
+	}
+
+	if (babyAnimation_->Update("babynormal", delta)) {
+		Transform trans = babyAnimation_->GetUVTrans();
+		baby_[valuation_]->SetTextureTopLeft(Vector2(trans.translate_.x, trans.translate_.y));
+		baby_[valuation_]->SetTextureSize(Vector2(trans.scale_.x, trans.scale_.y));
 	}
 
 	return ScceneChange();
