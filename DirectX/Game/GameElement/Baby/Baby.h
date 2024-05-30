@@ -9,6 +9,7 @@
 #include "GameElement/Effects/EffectEnterWater.h"
 
 class Player;
+class BabyTensionEffectManager;
 
 class Baby : public Charactor
 {
@@ -26,6 +27,7 @@ public:
 	const float& GetTension() const { return tension_.tension; }
 	const bool GetIsCry() const;
 	const bool GetIsSuperSuperSmile() const;
+	const Vector3* GetPosPtr() const { return &model_->transform_.translate_; }
 
 private:
 	void OnCollision(const Collider& collider) override;
@@ -55,6 +57,7 @@ private:
 private:
 	std::unique_ptr<Model> baby_;
 	Player* player_;
+	BabyTensionEffectManager* tensionEffectManager_;
 	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 
 	Vector3 prePosition_;

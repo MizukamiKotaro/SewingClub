@@ -1,9 +1,14 @@
 #include "BabyTensionEffect.h"
 #include "RandomGenerator/RandomGenerator.h"
 #include "Ease/Ease.h"
-#include "Camera.h"
+#include "calc.h"
+#include "ModelDataManager.h"
+#include "TextureManager.h"
 
 const Vector3* BabyTensionEffectChip::babyPos_ = nullptr;
+const Vector3* BabyTensionEffectChip::cameraPos_ = nullptr;
+ParticleManager* BabyTensionEffectChip::instancingManager_ = nullptr;
+const ParticleMeshTexData* BabyTensionEffectChip::modelData_ = nullptr;
 
 RandomGenerator* BabyTensionEffect::rand_ = nullptr;
 std::unique_ptr<GlobalVariableUser> BabyTensionEffect::globalVariable_ = nullptr;
@@ -37,7 +42,7 @@ BabyTensionEffect::BabyTensionEffect(const float& tensionNum)
 	float tension, angle, length, rotate;
 	Vector2 scale, gagePos;
 	float floatMinLength = fParas_[kFloatLength] * 0.5f;
-	for (int32_t i = 0; i < chipNum; chipNum++) {
+	for (int32_t i = 0; i < chipNum; i++) {
 		
 		length = fParas_[kGenerateLength] + rand_->RandFloat(-fParas_[kLengthWidth], fParas_[kLengthWidth]);
 		rotate = rand_->RandFloat(-0.4f, 0.4f);
@@ -75,17 +80,43 @@ void BabyTensionEffect::StaticUpdate()
 
 void BabyTensionEffect::Update(const float& deltaTime)
 {
-	for (size_t i = 0; i < 1; i++)
+	time_ += deltaTime;
+	bool isActive = false;
+	for (size_t i = 0; i < chips_.size(); i++)
 	{
-		chips_[i]->Update(deltaTime);
+		if (!chips_[i]->GetIsActive()) {
+			continue;
+		}
+		if (time_ > fParas_[kMoveRagTime] * i + fParas_[kStayTime] + fParas_[kGenerateEndTime]) {
+			chips_[i]->Update(deltaTime);
+		}
+		else if (time_ > fParas_[kGenerateTime] + fParas_[kGenerateRagTime] * i) {
+			chips_[i]->GenerateUpdate(deltaTime);
+		}
+		isActive = true;
+	}
+	if (!isActive) {
+		isActive_ = false;
 	}
 }
 
-void BabyTensionEffect::Draw(const Camera& camera)
+void BabyTensionEffect::Draw() const
 {
-	for (const std::unique_ptr<BabyTensionEffectChip>& chip : chips_) {
-		chip->Draw(camera);
+	if (isActive_) {
+		for (const std::unique_ptr<BabyTensionEffectChip>& chip : chips_) {
+			chip->Draw();
+		}
 	}
+}
+
+const float BabyTensionEffect::GetTension()
+{
+	float tension = 0.0f;
+	for (size_t i = 0; i < chips_.size(); i++)
+	{
+		tension += chips_[i]->GetTension();
+	}
+	return tension;
 }
 
 void BabyTensionEffect::SetGlobalVariable()
@@ -102,7 +133,6 @@ void BabyTensionEffect::SetGlobalVariable()
 	for (int i = 0; i < kFloatEnd; i++) {
 		globalVariable_->AddItem(fNames[i], fParas_[i]);
 	}
-	globalVariable_->AddItem("浮き具合", float(0.0f));
 
 	ApplyGlobalVariable();
 }
@@ -155,17 +185,30 @@ BabyTensionEffectChip::BabyTensionEffectChip(const float& tension, const float& 
 
 	generatePos_ = { std::cosf(angle) * length, std::sinf(angle) * length };
 
-	localPos_ = { 0.0f,std::sinf(floatAngle) * floatlength_ };
+	localPos_ = { 0.0f,std::sinf(floatAngle_) * floatlength_ };
+	scale_ = {};
 	pos_ = {};
+	time_ = 0.0f;
 	isActive_ = true;
 	isMove_ = false;
 }
 
+void BabyTensionEffectChip::StaticInitialize()
+{
+	instancingManager_ = ParticleManager::GetInstance();
+	modelData_ = instancingManager_->GetDrawData(
+		ParticleMeshTexData{ ModelDataManager::GetInstance()->LoadObj("plane"),
+		TextureManager::GetInstance()->LoadTexture("ingame_note_HUD.png"),BlendMode::kBlendModeNormal});
+}
+
 const float BabyTensionEffectChip::GetTension()
 {
-	float tension = tensionNum_;
-	tensionNum_ = 0.0f;
-	return tension;
+	if (!isActive_) {
+		float tension = tensionNum_;
+		tensionNum_ = 0.0f;
+		return tension;
+	}
+	return 0.0f;
 }
 
 void BabyTensionEffectChip::GenerateUpdate(const float& deltaTime)
@@ -183,15 +226,35 @@ void BabyTensionEffectChip::GenerateUpdate(const float& deltaTime)
 
 void BabyTensionEffectChip::Update(const float& deltaTime)
 {
-	GenerateUpdate(deltaTime);
+	if (!isMove_) {
+		Vector2 v = Vector2{ babyPos_->x - cameraPos_->x,babyPos_->y - cameraPos_->y };
+		pos_ += v;
+	}
+	isMove_ = true;
+	Vector2 v = (gagePos_ - pos_).Normalize();
+	pos_ += v * speed_ * deltaTime;
+	if (Calc::Dot(v, (gagePos_ - pos_).Normalize()) < 0.0f) {
+		isActive_ = false;
+	}
 }
 
 void BabyTensionEffectChip::FloatUpdate(const float& deltaTime)
 {
-	floatAngle_ += deltaTime;
+	floatAngle_ = std::fmodf(floatAngle_ + addFloatAngle_ * deltaTime, 6.28f);
+	localPos_ = { 0.0f,std::sinf(floatAngle_) * floatlength_ };
+	pos_ = generatePos_ + localPos_;
 }
 
-void BabyTensionEffectChip::Draw(const Camera& camera)
+void BabyTensionEffectChip::Draw() const
 {
-	pos_.x = camera.transform_.translate_.x;
+	if (isActive_) {
+		if (isMove_) {
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, Vector3{ pos_.x + cameraPos_->x,pos_.y + cameraPos_->y,-1.0f });
+			instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} }, modelData_);
+		}
+		else {
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, Vector3{ pos_.x + babyPos_->x,pos_.y + babyPos_->y,-1.0f });
+			instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} }, modelData_);
+		}
+	}
 }

@@ -4,15 +4,16 @@
 #include "GlobalVariables/GlobalVariableUser.h"
 #include <memory>
 #include <vector>
+#include "ParticleManager.h"
 
 class RandomGenerator;
-class Camera;
 
 class BabyTensionEffectChip
 {
 public:
 	BabyTensionEffectChip(const float& tension, const float& angle, const float& length, const float& rotate, const float& speed, const Vector2& scale, const Vector2& gagePos, const float& generateTime, const float& floatAngle, const float& floatTime, const float& floatLength);
 	static void SetBabyPos(const Vector3* pos) { babyPos_ = pos; }
+	static void SetCameraPos(const Vector3* pos) { cameraPos_ = pos; }
 	static void StaticInitialize();
 	const float GetTension();
 
@@ -20,7 +21,9 @@ public:
 	void Update(const float& deltaTime);
 	void FloatUpdate(const float& deltaTime);
 
-	void Draw(const Camera& camera);
+	void Draw() const;
+
+	const bool& GetIsActive() const { return isActive_; }
 
 private:
 	Vector2 gagePos_;
@@ -42,6 +45,9 @@ private:
 	bool isMove_;
 private:
 	static const Vector3* babyPos_;
+	static const Vector3* cameraPos_;
+	static ParticleManager* instancingManager_;
+	static const ParticleMeshTexData* modelData_;
 };
 
 class BabyTensionEffect 
@@ -53,8 +59,9 @@ public:
 	static void StaticUpdate();
 
 	void Update(const float& deltaTime);
-	void Draw(const Camera& camera);
-
+	void Draw() const;
+	const float GetTension();
+	const bool& GetIsActive() const { return isActive_; }
 private:
 	static void SetGlobalVariable();
 	static void ApplyGlobalVariable();
