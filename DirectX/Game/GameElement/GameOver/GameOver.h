@@ -82,6 +82,7 @@ private:
 
 	float rotateNUm_ = 0.001f;
 
+	float maxRotate_ = 0.01f;
 	enum SelectText {
 		Retry,
 		GoSelect,
@@ -114,6 +115,7 @@ private:
 		MinMaxSpd,
 		MaxDirection,
 		RotateNum,
+		MaxRotateNum,
 		_countAnother
 	};
 
@@ -128,7 +130,8 @@ private:
 		"「ゲームオーバー」文字の距離",
 		"最小最大速度",
 		"文字の移動できる最大距離",
-		"回転量"
+		"回転量",
+		"最大傾き量",
 	};
 
 	//テキストのサイズ

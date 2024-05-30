@@ -130,7 +130,7 @@ void StageScene::Initialize()
 	}
 	effeGoalGuid_->Update();
 
-	nowScene =kPlay;
+	nowScene =kGameOver;
 
 	tensionEffectManager_->Initialize();
 }

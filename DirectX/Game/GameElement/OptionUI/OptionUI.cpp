@@ -14,9 +14,9 @@ OptionUI::OptionUI(SceneType type)
 	selectArrow_ = std::make_unique<Sprite>("HUD_arrow.png");
 	textBackGame_ = std::make_unique<Sprite>("HUD/ingame_pose_backGame_HUD.png");
 	textBackSelect_ = std::make_unique<Sprite>("HUD/ingame_stageSelect_HUD.png");
-	textBackTitle_ = std::make_unique<Sprite>("Text_Title.png");
+	textBackTitle_ = std::make_unique<Sprite>("HUD/ingame_stageSelect_title2_HUD.png");
 	textSoundEdit_ = std::make_unique<Sprite>("HUD/option_musicVolume_HUD.png");
-	textLeaveGame_ = std::make_unique<Sprite>("Text_LeeaveGame.png");
+	textLeaveGame_ = std::make_unique<Sprite>("HUD/ingame_title_gameFinish_HUD.png");
 	
 	textPause_->SetColor({ 0,0,0,1 });
 	//selectArrow_->SetColor({ 0,0,0,1 });

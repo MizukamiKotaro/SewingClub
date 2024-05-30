@@ -40,7 +40,7 @@ GameOver::GameOver()
 	text_[GoSelect]->SetColor({ 0,0,0,1 });
 
 	for (auto& sp : backCloud_) {
-		sp = std::make_unique<Sprite>("back_obj.png");
+		sp = std::make_unique<Sprite>("ingame_select_HUD.png");
 	}
 
 	gVU_ = new GlobalVariableUser("Scene", "GameOver");
@@ -66,6 +66,7 @@ GameOver::GameOver()
 	gVU_->AddItem(anoKeys[MinMaxSpd], minMaxSpd_);
 	gVU_->AddItem(anoKeys[MaxDirection], maxDirection_);
 	gVU_->AddItem(anoKeys[RotateNum], rotateNUm_);
+	gVU_->AddItem(anoKeys[MaxRotateNum], maxRotate_);
 
 
 }
@@ -95,6 +96,7 @@ void GameOver::SetGlobalV()
 	minMaxSpd_ = gVU_->GetVector2Value(anoKeys[MinMaxSpd]);
 	maxDirection_ = gVU_->GetFloatValue(anoKeys[MaxDirection]);
 	rotateNUm_ = gVU_->GetFloatValue(anoKeys[RotateNum]);
+	maxRotate_ = gVU_->GetFloatValue(anoKeys[MaxRotateNum]);
 #ifdef _DEBUG
 	back_->SetColor({ 0,0,0,alpha_ });
 
@@ -183,6 +185,15 @@ GameOverFlags GameOver::Update()
 			movePos_[i] += velo_[i];
 			GOText_[i]->pos_ = centerP_[i] + movePos_[i];
 			GOText_[i]->rotate_ += rotates_[i];
+
+			if (GOText_[i]->rotate_ >= maxRotate_) {
+				GOText_[i]->rotate_ = maxRotate_;
+				rotates_[i] = RandomGenerator::GetInstance()->RandFloat(-rotateNUm_, 0);
+			}
+			else  if (GOText_[i]->rotate_ <= -maxRotate_) {
+				GOText_[i]->rotate_ = -maxRotate_;
+				rotates_[i] = RandomGenerator::GetInstance()->RandFloat(0, rotateNUm_);
+			}
 		}
 	}
 #pragma endregion
