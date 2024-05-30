@@ -319,11 +319,11 @@ void GameClear::SetBabyParam(const float& tension, const int& faceIndex) {
 		valuation_ = Valuations::Normal;
 	}
 	// good
-	else if (faceIndex == 0) {
+	else if (faceIndex == 1 || faceIndex == 0) {
 		valuation_ = Valuations::Good;
 	}
 	// perfect
-	else if (faceIndex == 1 || faceIndex == 2) {
+	else if (faceIndex == 2) {
 		valuation_ = Valuations::Perfect;
 	}
 }
