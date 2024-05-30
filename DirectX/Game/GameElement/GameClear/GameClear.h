@@ -23,7 +23,7 @@ public:
 	ClearAnswer Update(const float& delta);
 
 	void Draw();
-	void SetBabyParam(const float& tension);
+	void SetBabyParam(const float& tension, const int& faceIndex);
 
 private:
 

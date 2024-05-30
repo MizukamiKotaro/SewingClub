@@ -286,7 +286,7 @@ void GameClear::Draw()
 	}
 }
 
-void GameClear::SetBabyParam(const float& tension) {
+void GameClear::SetBabyParam(const float& tension, const int& faceIndex) {
 	// ここで0 ~ 100 なのを 0 ~ 1でもらうようにしている
 	float tensionPercent = tension * 0.01f;
 
@@ -314,6 +314,18 @@ void GameClear::SetBabyParam(const float& tension) {
 	sp_[Gage_Bar]->size_ = Vector2(spriteSize, kMaxGaugeScale_.y);
 	sp_[Gage_Bar]->Update();
 
+	// Normal評価
+	if (faceIndex == 3 || faceIndex == 4) {
+		valuation_ = Valuations::Normal;
+	}
+	// good
+	else if (faceIndex == 0) {
+		valuation_ = Valuations::Good;
+	}
+	// perfect
+	else if (faceIndex == 1 || faceIndex == 2) {
+		valuation_ = Valuations::Perfect;
+	}
 }
 
 
