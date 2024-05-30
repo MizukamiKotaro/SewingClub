@@ -369,6 +369,7 @@ void StageScene::SceneChange()
 			}
 			if (goal_->IsClear()) {
 				nowScene = kGameClear;
+				gameClear_->SetBabyParam(baby_->GetTension());
 			}
 
 			//ヒットによる処理

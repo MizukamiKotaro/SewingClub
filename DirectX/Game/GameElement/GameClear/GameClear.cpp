@@ -181,6 +181,9 @@ void GameClear::Initialize(bool nextstage)
 	sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
 	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,1 });
 
+	kMaxGaugePos_ = sp_[Gage_Bar]->pos_;
+	kMaxGaugeScale_ = sp_[Gage_Bar]->size_;
+
 	Update(0.0f);
 
 	isNextStage_ = nextstage;
@@ -281,6 +284,36 @@ void GameClear::Draw()
 			selects_[i]->Draw();
 		}
 	}
+}
+
+void GameClear::SetBabyParam(const float& tension) {
+	// ここで0 ~ 100 なのを 0 ~ 1でもらうようにしている
+	float tensionPercent = tension * 0.01f;
+
+	/*
+	* pos,size,uvScale,uvTrans
+	* 初期値 1060.0f,350.0f,1.0f,1.0f
+	* 1097.5f,280.0f,0.8f,0.2fだった場合
+	*/
+
+	// uvを求める xのみでyはかならず固定
+	// uvScaleを求める テンション率
+	float uvScale = tensionPercent;
+	// uv座標を求める 1.0f - テンション率
+	float uvTrans = 1.0f - tensionPercent;
+	// spriteSizeを求める 最大サイズ * uvScale
+	float spriteSize = kMaxGaugeScale_.x * uvScale;
+	// spriteの位置を求める (最大サイズ - 今のサイズ) / 2 + 定位置
+	float spritePos = (kMaxGaugeScale_.x - spriteSize) * 0.5f;
+	spritePos += kMaxGaugePos_.x;
+
+	// 座標更新
+	sp_[Gage_Bar]->SetTextureTopLeft(Vector2(uvTrans, 0.0f));
+	sp_[Gage_Bar]->SetTextureSize(Vector2(uvScale, 1.0f));
+	sp_[Gage_Bar]->pos_ = Vector2(spritePos, kMaxGaugePos_.y);
+	sp_[Gage_Bar]->size_ = Vector2(spriteSize, kMaxGaugeScale_.y);
+	sp_[Gage_Bar]->Update();
+
 }
 
 

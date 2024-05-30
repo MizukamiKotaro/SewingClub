@@ -23,6 +23,7 @@ public:
 	ClearAnswer Update(const float& delta);
 
 	void Draw();
+	void SetBabyParam(const float& tension);
 
 private:
 
@@ -218,5 +219,7 @@ private:
 
 #pragma endregion
 
+	Vector2 kMaxGaugePos_;
+	Vector2 kMaxGaugeScale_;
 
 };
