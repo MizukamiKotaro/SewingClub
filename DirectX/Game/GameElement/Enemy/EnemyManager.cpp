@@ -20,8 +20,8 @@ void EnemyManager::Initialize(Player* pplayer)
 		DoesNotWorkEnemy::StaticInitialize();
 		FollowEnemy::StaticInitialize();
 		stageEditor_ = std::make_unique<StageEditor>("敵の設置");
-		stageEditor_->Initialize();
 	}
+	stageEditor_->Initialize();
 	doesNotWorkEnemyNum_ = 0;
 	followEnemyNum_ = 0;
 	SetGlobalVariable();
