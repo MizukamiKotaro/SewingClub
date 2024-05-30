@@ -118,5 +118,5 @@ private:
 	EffectGetItem* effeGetItem_;
 
 	// コンボエフェクト
-	std::unique_ptr<ComboEffectManager> comboEffect_;
+	ComboEffectManager* comboEffect_ = nullptr;
 };

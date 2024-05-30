@@ -73,7 +73,7 @@ StageScene::StageScene()
 	effeGetItem_ = EffectGetItem::GetInstance();
 	effeGetItem_->ModelLoad();
 
-	comboEffect_ = std::make_unique<ComboEffectManager>();
+	comboEffect_ = ComboEffectManager::GetInstance();
 
 }
 

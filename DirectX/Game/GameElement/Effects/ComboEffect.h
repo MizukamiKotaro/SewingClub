@@ -36,7 +36,8 @@ public:
 
 	static ComboEffectManager* GetInstance();
 
-	void Update(const float& delta, const Vector3& playerPosition);
+	void Update(const float& delta);
+	void Create(const Vector3& playerPosition);
 	void Draw();
 
 private:

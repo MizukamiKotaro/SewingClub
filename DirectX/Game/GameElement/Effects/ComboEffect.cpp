@@ -16,23 +16,23 @@ ComboEffectManager::ComboEffectManager() {
 }
 
 ComboEffectManager* ComboEffectManager::GetInstance() {
-	static ComboEffect instance;
+	static ComboEffectManager instance;
 	return &instance;
 }
 
-void ComboEffectManager::Update(const float& delta, const Vector3& playerPosition) {
+void ComboEffectManager::Update(const float& delta) {
 	// 更新処理
 	for (auto& model : effectContiner_) {
 		model.Update(delta);
 	}
+}
 
+void ComboEffectManager::Create(const Vector3& playerPosition) {
 	// 生成処理
-	if (false) {
-		for (auto& model : effectContiner_) {
-			// 今動いていなければ
-			if (!model.GetActive()) {
-				model.Initialize(playerPosition, RandNum(0, static_cast<int>(effectContiner_.size())));
-			}
+	for (auto& model : effectContiner_) {
+		// 今動いていなければ
+		if (!model.GetActive()) {
+			model.Initialize(playerPosition, RandNum(0, static_cast<int>(effectContiner_.size())));
 		}
 	}
 }
