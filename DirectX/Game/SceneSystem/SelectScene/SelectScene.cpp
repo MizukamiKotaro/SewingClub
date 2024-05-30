@@ -109,6 +109,11 @@ void SelectScene::SetGlobalV()
 	cSwingSeconds_[Spawn2] = gvu_->GetFloatValue(anoKeys[cS2]);
 	cSwingSeconds_[Spawn3] = gvu_->GetFloatValue(anoKeys[cS3]);
 	cSwingSeconds_[None] = gvu_->GetFloatValue(anoKeys[cS4]);
+
+	for (int i = 0; i < _countStages; i++) {
+		mapSprite_[i]->pos_ = mapPos_;
+		mapSprite_[i]->size_ = mapSize_;
+	}
 }
 
 SelectScene::~SelectScene() {}
@@ -132,12 +137,13 @@ void SelectScene::Initialize()
 
 void SelectScene::Update()
 {
+#ifdef _DEBUG
 	SetGlobalV();
 
-	for (int i = 0; i < _countStages; i++) {
-		mapSprite_[i]->pos_ = mapPos_;
-		mapSprite_[i]->size_ = mapSize_;
-	}
+	
+#endif // _DEBUG
+
+
 
 	camera_->Update();
 

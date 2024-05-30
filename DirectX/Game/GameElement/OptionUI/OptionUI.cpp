@@ -10,12 +10,12 @@ OptionUI::OptionUI(SceneType type)
 	backSprite_->size_ = { 1280,720 };
 	blackFrame_ = std::make_unique<Sprite>("title_option_whitecloud.png");
 
-	textPause_ = std::make_unique<Sprite>("HUD/option_HUD.png");
+	textPause_ = std::make_unique<Sprite>("HUD/ingame_pose_HUD.png");
 	selectArrow_ = std::make_unique<Sprite>("HUD_arrow.png");
-	textBackGame_ = std::make_unique<Sprite>("spBack.png");
-	textBackSelect_ = std::make_unique<Sprite>("Text_Select.png");
+	textBackGame_ = std::make_unique<Sprite>("HUD/ingame_pose_backGame_HUD.png");
+	textBackSelect_ = std::make_unique<Sprite>("HUD/ingame_stageSelect_HUD.png");
 	textBackTitle_ = std::make_unique<Sprite>("Text_Title.png");
-	textSoundEdit_ = std::make_unique<Sprite>("Text_SoundEdit.png");
+	textSoundEdit_ = std::make_unique<Sprite>("HUD/option_musicVolume_HUD.png");
 	textLeaveGame_ = std::make_unique<Sprite>("Text_LeeaveGame.png");
 	
 	textPause_->SetColor({ 0,0,0,1 });

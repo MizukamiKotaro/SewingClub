@@ -88,13 +88,6 @@ void StageScene::Initialize()
 	itemManager_->Initialize();
 	goal_->Initialize();
 
-	effeGoalGuid_->Initialize(player_->GetPositionPtr(), &goal_->GetPosition(), camera_.get());
-	std::list<QuotaSendData>datas = itemManager_->GetQuotaData();
-	for (auto& data : datas) {
-		effeGoalGuid_->SetQuota(data.pos, *data.size, data.isHit);
-	}
-	effeGoalGuid_->Update();
-
 	enemyManager_->Initialize(player_.get());
 
 
@@ -125,6 +118,13 @@ void StageScene::Initialize()
 	isGoalTransition_ = false;
 
 	effeGetItem_->Initialize();
+
+	effeGoalGuid_->Initialize(player_->GetPositionPtr(), &goal_->GetPosition(), camera_.get());
+	std::list<QuotaSendData>datas = itemManager_->GetQuotaData();
+	for (auto& data : datas) {
+		effeGoalGuid_->SetQuota(data.pos, *data.size, data.isHit);
+	}
+	effeGoalGuid_->Update();
 
 	nowScene =kPlay;
 
