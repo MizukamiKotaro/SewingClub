@@ -1,5 +1,7 @@
 #include "BabyTensionEffect.h"
 #include "RandomGenerator/RandomGenerator.h"
+#include "Ease/Ease.h"
+#include "Camera.h"
 
 const Vector3* BabyTensionEffectChip::babyPos_ = nullptr;
 
@@ -34,6 +36,7 @@ BabyTensionEffect::BabyTensionEffect(const float& tensionNum)
 	chips_.resize(chipNum);
 	float tension, angle, length, rotate;
 	Vector2 scale, gagePos;
+	float floatMinLength = fParas_[kFloatLength] * 0.5f;
 	for (int32_t i = 0; i < chipNum; chipNum++) {
 		
 		length = fParas_[kGenerateLength] + rand_->RandFloat(-fParas_[kLengthWidth], fParas_[kLengthWidth]);
@@ -52,7 +55,7 @@ BabyTensionEffect::BabyTensionEffect(const float& tensionNum)
 		}
 		scale = baseScale_ * tension;
 		gagePos = localGagePos_ + rand_->RandVector2(localMinGagePos_, localMaxGagePos_);
-		chips_[i] = std::make_unique<BabyTensionEffectChip>(tension, angle, length, rotate, fParas_[kMoveSpeed], scale, gagePos, fParas_[kGenerateEndTime], rand_->RandFloat(0.0f, 6.28f));
+		chips_[i] = std::make_unique<BabyTensionEffectChip>(tension, angle, length, rotate, fParas_[kMoveSpeed], scale, gagePos, fParas_[kGenerateEndTime], rand_->RandFloat(0.0f, 6.28f), fParas_[kFloatTime], rand_->RandFloat(floatMinLength, fParas_[kFloatLength]));
 	}
 }
 
@@ -68,6 +71,21 @@ void BabyTensionEffect::StaticInitialize()
 void BabyTensionEffect::StaticUpdate()
 {
 	ApplyGlobalVariable();
+}
+
+void BabyTensionEffect::Update(const float& deltaTime)
+{
+	for (size_t i = 0; i < 1; i++)
+	{
+		chips_[i]->Update(deltaTime);
+	}
+}
+
+void BabyTensionEffect::Draw(const Camera& camera)
+{
+	for (const std::unique_ptr<BabyTensionEffectChip>& chip : chips_) {
+		chip->Draw(camera);
+	}
 }
 
 void BabyTensionEffect::SetGlobalVariable()
@@ -117,21 +135,30 @@ void BabyTensionEffect::InitializeGlobalVariable()
 		"生成場所の距離",
 		"距離の幅",
 		"ふよふよの時間",
+		"ふよふよの幅",
 		"スケール",
 	};
 }
 
-BabyTensionEffectChip::BabyTensionEffectChip(const float& tension, const float& angle, const float& length, const float& rotate, const float& speed, const Vector2& scale, const Vector2& gagePos, const float& generateTime, const float& floatTime)
+BabyTensionEffectChip::BabyTensionEffectChip(const float& tension, const float& angle, const float& length, const float& rotate, const float& speed, const Vector2& scale, const Vector2& gagePos, const float& generateTime, const float& floatAngle, const float& floatTime, const float& floatLength)
 {
 	tensionNum_ = tension;
-	angle_ = angle;
-	length_ = length;
 	rotate_ = rotate;
 	speed_ = speed;
 	maxScale_ = scale;
 	gagePos_ = gagePos;
 	generateTime_ = generateTime;
+	floatAngle_ = floatAngle;
 	floatTime_ = floatTime;
+	addFloatAngle_ = floatTime / 6.28f;
+	floatlength_ = floatLength;
+
+	generatePos_ = { std::cosf(angle) * length, std::sinf(angle) * length };
+
+	localPos_ = { 0.0f,std::sinf(floatAngle) * floatlength_ };
+	pos_ = {};
+	isActive_ = true;
+	isMove_ = false;
 }
 
 const float BabyTensionEffectChip::GetTension()
@@ -139,4 +166,32 @@ const float BabyTensionEffectChip::GetTension()
 	float tension = tensionNum_;
 	tensionNum_ = 0.0f;
 	return tension;
+}
+
+void BabyTensionEffectChip::GenerateUpdate(const float& deltaTime)
+{
+	if (time_ < generateTime_) {
+		time_ = std::clamp(time_ + deltaTime, 0.0f, generateTime_);
+		float t = time_ / generateTime_;
+		pos_ = Ease::UseEase({}, generatePos_ + localPos_, t, Ease::EaseOutSine);
+		scale_ = Ease::UseEase({}, maxScale_, t, Ease::EaseOutSine);
+	}
+	else {
+		FloatUpdate(deltaTime);
+	}
+}
+
+void BabyTensionEffectChip::Update(const float& deltaTime)
+{
+	GenerateUpdate(deltaTime);
+}
+
+void BabyTensionEffectChip::FloatUpdate(const float& deltaTime)
+{
+	floatAngle_ += deltaTime;
+}
+
+void BabyTensionEffectChip::Draw(const Camera& camera)
+{
+	pos_.x = camera.transform_.translate_.x;
 }
