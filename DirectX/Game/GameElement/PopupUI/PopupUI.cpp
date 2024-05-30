@@ -12,7 +12,7 @@ void PopupUI::Initialize() {
 	isFinished_ = false;
 	alpha_ = 1.0f;
 	scale_ = Vector2(0.0f, 0.0f);
-	sprite_->pos_.y += 140.0f;
+	sprite_->pos_.y += 640.0f;
 	SpriteUpdate();
 }
 
@@ -41,6 +41,7 @@ void PopupUI::Draw() {
 }
 
 void PopupUI::SpriteUpdate() {
+	sprite_->SetColor(Vector4(1.0f, 1.0f, 1.0f, alpha_));
 	sprite_->size_ = scale_;
 	sprite_->Update();
 }
@@ -61,7 +62,6 @@ void PopupUI::Wait() {
 }
 
 void PopupUI::FadeOut() {
-	sprite_->SetColor(Vector4(1.0f, 1.0f, 1.0f, alpha_));
 	alpha_ = Ease::UseEase(1.0f, 0.0f, counter_.nowFrame, counter_.kMaxFadeFrame, Ease::EaseType::EaseOut, 3);
 	if (counter_.nowFrame >= counter_.kMaxFadeFrame) {
 		phase = Phase::PopUp;
