@@ -8,7 +8,7 @@ public:
 
 	void Clear() { effects_.clear(); }
 
-	void FirstInitialize(const Vector3* babyPos);
+	void FirstInitialize(const Vector3* babyPos, const Vector3* cameraPos);
 
 	void Initialize();
 

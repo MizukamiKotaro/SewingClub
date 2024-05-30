@@ -6,6 +6,7 @@
 #include "TextureManager.h"
 
 const Vector3* BabyTensionEffectChip::babyPos_ = nullptr;
+const Vector3* BabyTensionEffectChip::cameraPos_ = nullptr;
 ParticleManager* BabyTensionEffectChip::instancingManager_ = nullptr;
 const ParticleMeshTexData* BabyTensionEffectChip::modelData_ = nullptr;
 
@@ -41,7 +42,7 @@ BabyTensionEffect::BabyTensionEffect(const float& tensionNum)
 	float tension, angle, length, rotate;
 	Vector2 scale, gagePos;
 	float floatMinLength = fParas_[kFloatLength] * 0.5f;
-	for (int32_t i = 0; i < chipNum; chipNum++) {
+	for (int32_t i = 0; i < chipNum; i++) {
 		
 		length = fParas_[kGenerateLength] + rand_->RandFloat(-fParas_[kLengthWidth], fParas_[kLengthWidth]);
 		rotate = rand_->RandFloat(-0.4f, 0.4f);
@@ -132,7 +133,6 @@ void BabyTensionEffect::SetGlobalVariable()
 	for (int i = 0; i < kFloatEnd; i++) {
 		globalVariable_->AddItem(fNames[i], fParas_[i]);
 	}
-	globalVariable_->AddItem("浮き具合", float(0.0f));
 
 	ApplyGlobalVariable();
 }
@@ -226,6 +226,10 @@ void BabyTensionEffectChip::GenerateUpdate(const float& deltaTime)
 
 void BabyTensionEffectChip::Update(const float& deltaTime)
 {
+	if (!isMove_) {
+		Vector2 v = Vector2{ babyPos_->x - cameraPos_->x,babyPos_->y - cameraPos_->y };
+		pos_ += v;
+	}
 	isMove_ = true;
 	Vector2 v = (gagePos_ - pos_).Normalize();
 	pos_ += v * speed_ * deltaTime;
@@ -244,7 +248,13 @@ void BabyTensionEffectChip::FloatUpdate(const float& deltaTime)
 void BabyTensionEffectChip::Draw() const
 {
 	if (isActive_) {
-		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, Vector3{ pos_.x + babyPos_->x,pos_.y + babyPos_->y,-1.0f });
-		instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} }, modelData_);
+		if (isMove_) {
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, Vector3{ pos_.x + cameraPos_->x,pos_.y + cameraPos_->y,-1.0f });
+			instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} }, modelData_);
+		}
+		else {
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, Vector3{ pos_.x + babyPos_->x,pos_.y + babyPos_->y,-1.0f });
+			instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} }, modelData_);
+		}
 	}
 }

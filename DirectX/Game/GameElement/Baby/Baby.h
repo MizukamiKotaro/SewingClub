@@ -9,6 +9,7 @@
 #include "GameElement/Effects/EffectEnterWater.h"
 
 class Player;
+class BabyTensionEffectManager;
 
 class Baby : public Charactor
 {
@@ -56,6 +57,7 @@ private:
 private:
 	std::unique_ptr<Model> baby_;
 	Player* player_;
+	BabyTensionEffectManager* tensionEffectManager_;
 	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 
 	Vector3 prePosition_;

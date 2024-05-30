@@ -75,7 +75,7 @@ StageScene::StageScene()
 	effeGetItem_->ModelLoad();
 
 	tensionEffectManager_ = BabyTensionEffectManager::GetInstance();
-	tensionEffectManager_->FirstInitialize(baby_->GetPosPtr());
+	tensionEffectManager_->FirstInitialize(baby_->GetPosPtr(), &camera_->transform_.translate_);
 }
 
 void StageScene::Initialize()

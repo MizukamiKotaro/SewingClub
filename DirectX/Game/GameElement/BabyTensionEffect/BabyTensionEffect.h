@@ -13,6 +13,7 @@ class BabyTensionEffectChip
 public:
 	BabyTensionEffectChip(const float& tension, const float& angle, const float& length, const float& rotate, const float& speed, const Vector2& scale, const Vector2& gagePos, const float& generateTime, const float& floatAngle, const float& floatTime, const float& floatLength);
 	static void SetBabyPos(const Vector3* pos) { babyPos_ = pos; }
+	static void SetCameraPos(const Vector3* pos) { cameraPos_ = pos; }
 	static void StaticInitialize();
 	const float GetTension();
 
@@ -44,6 +45,7 @@ private:
 	bool isMove_;
 private:
 	static const Vector3* babyPos_;
+	static const Vector3* cameraPos_;
 	static ParticleManager* instancingManager_;
 	static const ParticleMeshTexData* modelData_;
 };

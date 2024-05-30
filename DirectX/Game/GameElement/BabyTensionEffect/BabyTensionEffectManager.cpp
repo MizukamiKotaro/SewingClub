@@ -6,11 +6,12 @@ BabyTensionEffectManager* BabyTensionEffectManager::GetInstance()
 	return &instance;
 }
 
-void BabyTensionEffectManager::FirstInitialize(const Vector3* babyPos)
+void BabyTensionEffectManager::FirstInitialize(const Vector3* babyPos, const Vector3* cameraPos)
 {
 	BabyTensionEffect::StaticInitialize();
 	BabyTensionEffectChip::StaticInitialize();
 	BabyTensionEffectChip::SetBabyPos(babyPos);
+	BabyTensionEffectChip::SetCameraPos(cameraPos);
 }
 
 void BabyTensionEffectManager::Initialize()
