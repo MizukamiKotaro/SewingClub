@@ -181,7 +181,7 @@ void GameClear::Initialize(bool nextstage)
 	sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
 	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,1 });
 
-	Update();
+	Update(0.0f);
 
 	isNextStage_ = nextstage;
 	if (isNextStage_) {
@@ -192,7 +192,7 @@ void GameClear::Initialize(bool nextstage)
 	}
 }
 
-ClearAnswer GameClear::Update()
+ClearAnswer GameClear::Update(const float& delta)
 {
 #ifdef _DEBUG
 	SetGlobalV();
@@ -226,6 +226,12 @@ ClearAnswer GameClear::Update()
 	}
 	for (int i = 0; i < _countPSelect; i++) {
 		selects_[i]->Update();
+	}
+
+	if (babyAnimation_->Update("babynormal", delta)) {
+		Transform trans = babyAnimation_->GetUVTrans();
+		baby_[valuation_]->SetTextureTopLeft(Vector2(trans.translate_.x, trans.translate_.y));
+		baby_[valuation_]->SetTextureSize(Vector2(trans.scale_.x, trans.scale_.y));
 	}
 
 	return ScceneChange();

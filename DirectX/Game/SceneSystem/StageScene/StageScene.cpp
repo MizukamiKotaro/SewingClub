@@ -274,7 +274,7 @@ void StageScene::Update()
 		gameOverFlags_ = gameOver_->Update();
 		break;
 	case StageScene::kGameClear:
-		gameClearFlags_ = gameClear_->Update();
+		gameClearFlags_ = gameClear_->Update(deltaTime);
 		break;
 	case StageScene::_countPlayScenes:
 		break;

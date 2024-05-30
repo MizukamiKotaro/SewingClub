@@ -20,7 +20,7 @@ public:
 
 	void Initialize(bool nextStageActive);
 
-	ClearAnswer Update();
+	ClearAnswer Update(const float& delta);
 
 	void Draw();
 
