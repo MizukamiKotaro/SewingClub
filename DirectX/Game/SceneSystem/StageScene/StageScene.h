@@ -21,6 +21,7 @@
 #include "GameElement/PopupUI/PopupUI.h"
 #include"GameElement/Effects/GetItem/GetItem.h"
 #include "GameElement/Effects/ComboEffect.h"
+#include"GameElement/InGameHUD/InGameHUD.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -116,8 +117,12 @@ private:
 	ClearAnswer gameClearFlags_;
 
 	//演出のシングルトン
-	EffectGetItem* effeGetItem_;
+	EffectGetItem* effeGetItem_=nullptr;
 
 	// コンボエフェクト
 	ComboEffectManager* comboEffect_ = nullptr;
+
+
+	//HUDとか
+	std::unique_ptr<InGameHUD>ingameHUD_;
 };

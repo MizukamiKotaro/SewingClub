@@ -975,6 +975,9 @@
     <ClCompile Include="Game\GameElement\Effects\ComboEffect.cpp">
       <Filter>Game\GameElement\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\InGameHUD\InGameHUD.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1567,6 +1570,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\ComboEffect.h">
       <Filter>Game\GameElement\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\InGameHUD\InGameHUD.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

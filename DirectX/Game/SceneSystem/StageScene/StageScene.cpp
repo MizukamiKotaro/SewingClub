@@ -79,6 +79,7 @@ StageScene::StageScene()
 
 	comboEffect_ = ComboEffectManager::GetInstance();
 
+	ingameHUD_ = std::make_unique<InGameHUD>();
 }
 
 void StageScene::Initialize()
@@ -133,9 +134,14 @@ void StageScene::Initialize()
 	}
 	effeGoalGuid_->Update();
 
-	nowScene =kPlay;
 
 	tensionEffectManager_->Initialize();
+
+	ingameHUD_->Initialize();
+
+
+	//シーンの初期状態
+	nowScene = kPlay;
 }
 
 void StageScene::Update()
@@ -296,6 +302,7 @@ void StageScene::Update()
 	SceneChange();
 
 	effeGetItem_->Update();
+	ingameHUD_->Update();
 }
 
 
@@ -340,6 +347,8 @@ void StageScene::Draw()
 	tensionUI_->Draw();
 
 	popupUI_->Draw();
+
+	ingameHUD_->Draw();
 
 	//option描画
 	if (isOptionOpen_) {
