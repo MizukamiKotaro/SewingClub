@@ -106,7 +106,7 @@ void EffectGoalDusts::Update(Vector3& gpos)
 			newdata.color = { 1,1,1 };
 		}
 		if (randomTexture_) {
-			newdata.texType = (textureType)RandomGenerator::GetInstance()->RandInt(0, _countTexture-1);
+			newdata.texType = (textureType)RandomGenerator::GetInstance()->RandInt(0, (int)_countTexture);
 		}
 		else {
 			newdata.texType = (textureType)selectTex;
