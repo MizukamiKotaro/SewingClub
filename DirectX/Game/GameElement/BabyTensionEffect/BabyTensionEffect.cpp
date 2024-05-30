@@ -29,10 +29,10 @@ BabyTensionEffect::BabyTensionEffect(const float& tensionNum)
 	time_ = 0.0f;
 	int32_t chipNum = 0;
 	if (tensionNum > 10.0f) {
-		chipNum = rand_->RandInt(minChipNum_ - 1, minChipNum_);
+		chipNum = rand_->RandInt(maxChipNum_ - 1, maxChipNum_);
 	}
 	else {
-		chipNum = rand_->RandInt(maxChipNum_ - 1, maxChipNum_);
+		chipNum = rand_->RandInt(minChipNum_ - 1, minChipNum_);
 	}
 	float hoge = tensionNum;
 	float tensionChip = hoge / chipNum;
@@ -180,7 +180,7 @@ BabyTensionEffectChip::BabyTensionEffectChip(const float& tension, const float& 
 	generateTime_ = generateTime;
 	floatAngle_ = floatAngle;
 	floatTime_ = floatTime;
-	addFloatAngle_ = floatTime / 6.28f;
+	addFloatAngle_ = 6.28f / floatTime_;
 	floatlength_ = floatLength;
 
 	generatePos_ = { std::cosf(angle) * length, std::sinf(angle) * length };
@@ -249,11 +249,11 @@ void BabyTensionEffectChip::Draw() const
 {
 	if (isActive_) {
 		if (isMove_) {
-			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, Vector3{ pos_.x + cameraPos_->x,pos_.y + cameraPos_->y,-1.0f });
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, Vector3{ pos_.x + cameraPos_->x,pos_.y + cameraPos_->y,-1.0f });
 			instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} }, modelData_);
 		}
 		else {
-			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, Vector3{ pos_.x + babyPos_->x,pos_.y + babyPos_->y,-1.0f });
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, Vector3{ pos_.x + babyPos_->x,pos_.y + babyPos_->y,-1.0f });
 			instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} }, modelData_);
 		}
 	}
