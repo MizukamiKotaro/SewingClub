@@ -20,7 +20,7 @@
 
 #include "GameElement/PopupUI/PopupUI.h"
 #include"GameElement/Effects/GetItem/GetItem.h"
-
+#include "GameElement/Effects/ComboEffect.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -117,4 +117,7 @@ private:
 
 	//演出のシングルトン
 	EffectGetItem* effeGetItem_;
+
+	// コンボエフェクト
+	ComboEffectManager* comboEffect_ = nullptr;
 };
