@@ -24,14 +24,16 @@ private:
 
 	void AudioBarUpdate();
 
+	//画像更新
+	void UpdateSprite();
 private:
 
 	Input* input_;
 	VolumeManager* VM_;
 	
 
-	
-
+	float inputDLine_ = 0.9f;
+	bool isInputActive_ = true;
 
 #pragma region 音設定関係
 
@@ -68,7 +70,7 @@ private:
 	float volume_[_countOption] = { 0.5f };
 
 	//入力で変わる音量
-	float moveValue_ = 0.01f;
+	float moveValue_ = 0.001f;
 #pragma endregion
 
 #pragma region ImGui関係
@@ -126,6 +128,9 @@ private:
 		"「戻る」テキスト座標",
 		"「戻る」テキストサイズ"
 	};
+
+
+
 #pragma endregion
 
 

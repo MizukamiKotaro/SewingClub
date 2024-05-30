@@ -4,7 +4,7 @@
 OptionUI::OptionUI(SceneType type)
 {
 	input_ = Input::GetInstance();
-	audioOption_ = std::make_unique<AudioOptionUI>();
+	audioOption_ = std::make_unique<uAudioOptionUI>();
 
 	backSprite_ = std::make_unique<Sprite>("white.png");
 	backSprite_->size_ = { 1280,720 };
@@ -191,11 +191,11 @@ void OptionUI::Draw()
 
 void OptionUI::SceneChange()
 {
-	//他シーンから戻ってきた売位通らない
+	//他シーンから戻ってきた場合通らない
 	if (!isBacked_) {
 
 		//ゲームに戻る処理
-		if (nowSelect_ == BackGame && input_->PressedGamePadButton(Input::GamePadButton::A)) {
+		if ((nowSelect_ == BackGame && input_->PressedGamePadButton(Input::GamePadButton::A)) || input_->PressedGamePadButton(Input::GamePadButton::START)) {
 			ans_.backOption = true;
 		}
 

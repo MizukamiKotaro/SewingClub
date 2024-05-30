@@ -978,6 +978,9 @@
     <ClCompile Include="Game\GameElement\InGameHUD\InGameHUD.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\OptionUI\uAudioOptionUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1572,6 +1575,9 @@
       <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\InGameHUD\InGameHUD.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\OptionUI\uAudioOptionUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

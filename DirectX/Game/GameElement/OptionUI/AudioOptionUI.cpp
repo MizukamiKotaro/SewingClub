@@ -20,7 +20,7 @@ AudioOptionUI::AudioOptionUI()
 		spSoundGageNum_[i] = std::make_unique<Sprite>("soundGageFrameNum.png");
 	}
 
-	spNowSelectOption_ = std::make_unique<Sprite>("OptionSelect.png");
+	spNowSelectOption_ = std::make_unique<Sprite>("HUD_arrow.png");
 
 	pauseButton_ = std::make_unique<Sprite>("controler_UI_=-.png");
 	backButton_ = std::make_unique<Sprite>("spBack.png");
@@ -83,41 +83,37 @@ void AudioOptionUI::Initialize()
 	SetGlobalVData();
 
 
-	spNowSelectOption_->Update();
-	pauseButton_->Update();
-	backButton_->Update();
 
-
-	//バーをどちらも更新
-	for (int i = 0; i < _countOption; i++) {
-		float newScaleX = Calc::Lerp(0, gageBarMaxScale_[i], volume_[i]);
-		spSoundGageBar_[i]->size_.x = newScaleX;
-	}
-
-	for (int i = 0; i < _countOption; i++) {
-		//更新
-		spSoundGageFrame_[i]->Update();
-		spSoundGageBar_[i]->Update();
-		spSoundText_[i]->Update();
-		spSoundGageNum_[i]->Update();
-	}
+	UpdateSprite();
+	
 
 }
 
 bool AudioOptionUI::Update()
 {
+#ifdef _DEBUG
 	SetGlobalVData();
+#endif // _DEBUG
+
 
 	Vector2 input = input_->GetGamePadLStick();
-	if (input.y <= -0.9f) {
-		if (nowSelect == BGMVolume) {
-			nowSelect = SEVolume;
 
+	if (isInputActive_) {
+		if (input.y <= -0.9f) {
+			if (nowSelect == BGMVolume) {
+				nowSelect = SEVolume;
+
+			}
+		}
+		else if (input.y >= 0.9f) {
+			if (nowSelect == SEVolume) {
+				nowSelect = BGMVolume;
+			}
 		}
 	}
-	else if (input.y >= 0.9f) {
-		if (nowSelect == SEVolume) {
-			nowSelect = BGMVolume;
+	else {
+		if (input.y > -inputDLine_ && input.y < inputDLine_) {
+			isInputActive_ = false;
 		}
 	}
 
@@ -125,10 +121,7 @@ bool AudioOptionUI::Update()
 
 	AudioBarUpdate();
 
-	spNowSelectOption_->Update();
-
-	pauseButton_->Update();
-	backButton_->Update();
+	UpdateSprite();
 
 	if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
 		VM_->SaveVolumeStage(volume_[SEVolume], volume_[BGMVolume]);
@@ -189,22 +182,24 @@ void AudioOptionUI::SetGlobalVData()
 
 void AudioOptionUI::AudioBarUpdate()
 {
-
+	//各値取得
 	volume_[BGMVolume] = VM_->GetMusicVolumeStage();
-
 	volume_[SEVolume] = VM_->GetSEVolumeStage();
-
 
 	//入力で音量変更
 	Vector2 input = input_->GetGamePadLStick();
 
-	//現在選択しているほうの値を変更
-	if (input.x > 0) {
-		volume_[nowSelect] += moveValue_;
+	//入力可能時操作
+	if (isInputActive_) {
+		//現在選択しているほうの値を変更
+		if (input.x > 0) {
+			volume_[nowSelect] += moveValue_;
+		}
+		else if (input.x < 0) {
+			volume_[nowSelect] -= moveValue_;
+		}
 	}
-	else if (input.x < 0) {
-		volume_[nowSelect] -= moveValue_;
-	}
+
 	//領域外対策
 	if (volume_[nowSelect] < 0.0f) {
 		volume_[nowSelect] = 0.0f;
@@ -213,17 +208,28 @@ void AudioOptionUI::AudioBarUpdate()
 		volume_[nowSelect] = 1.0f;
 	}
 
-	//バーをどちらも更新
-	for (int i = 0; i < _countOption; i++) {
-		float newScaleX = Calc::Lerp(0, gageBarMaxScale_[i], volume_[i]);
-		spSoundGageBar_[i]->size_.x = newScaleX;
-	}
-
+	
+	//変更した音を追加
 	if (nowSelect == BGMVolume) {
 		VM_->SetMusicVolumeStage(volume_[nowSelect]);
 	}
 	else if (nowSelect == SEVolume) {
 		VM_->SetSEVolumeStage(volume_[nowSelect]);
+	}
+
+}
+
+void AudioOptionUI::UpdateSprite()
+{
+
+	spNowSelectOption_->Update();
+	pauseButton_->Update();
+	backButton_->Update();
+
+	//バーをどちらも更新
+	for (int i = 0; i < _countOption; i++) {
+		float newScaleX = Calc::Lerp(0, gageBarMaxScale_[i], volume_[i]);
+		spSoundGageBar_[i]->size_.x = newScaleX;
 	}
 
 	for (int i = 0; i < _countOption; i++) {
