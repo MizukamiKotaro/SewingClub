@@ -244,7 +244,7 @@ void BabyTensionEffectChip::FloatUpdate(const float& deltaTime)
 void BabyTensionEffectChip::Draw() const
 {
 	if (isActive_) {
-		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, Vector3{ pos_.x,pos_.y,-1.0f });
+		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, Vector3{ pos_.x + babyPos_->x,pos_.y + babyPos_->y,-1.0f });
 		instancingManager_->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), {1.0f,1.0f,1.0f,1.0f} }, modelData_);
 	}
 }

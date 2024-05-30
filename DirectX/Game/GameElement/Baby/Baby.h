@@ -26,6 +26,7 @@ public:
 	const float& GetTension() const { return tension_.tension; }
 	const bool GetIsCry() const;
 	const bool GetIsSuperSuperSmile() const;
+	const Vector3* GetPosPtr() const { return &model_->transform_.translate_; }
 
 private:
 	void OnCollision(const Collider& collider) override;

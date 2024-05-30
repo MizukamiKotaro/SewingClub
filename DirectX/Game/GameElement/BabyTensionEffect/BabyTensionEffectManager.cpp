@@ -1,5 +1,11 @@
 #include "BabyTensionEffectManager.h"
 
+BabyTensionEffectManager* BabyTensionEffectManager::GetInstance()
+{
+	static BabyTensionEffectManager instance;
+	return &instance;
+}
+
 void BabyTensionEffectManager::FirstInitialize(const Vector3* babyPos)
 {
 	BabyTensionEffect::StaticInitialize();
