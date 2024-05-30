@@ -972,8 +972,8 @@
     <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h.cpp">
       <Filter>Game\GameElement\Charactor\Baby</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameElement\Baby\ComboEffect.cpp">
-      <Filter>Game\GameElement\Charactor\Baby</Filter>
+    <ClCompile Include="Game\GameElement\Effects\ComboEffect.cpp">
+      <Filter>Game\GameElement\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1565,8 +1565,8 @@
     <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
       <Filter>Game\GameElement\TensionUI</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\Baby\ComboEffect.h">
-      <Filter>Game\GameElement\Charactor\Baby</Filter>
+    <ClInclude Include="Game\GameElement\Effects\ComboEffect.h">
+      <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

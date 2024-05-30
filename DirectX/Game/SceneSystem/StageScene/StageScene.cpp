@@ -72,6 +72,9 @@ StageScene::StageScene()
 
 	effeGetItem_ = EffectGetItem::GetInstance();
 	effeGetItem_->ModelLoad();
+
+	comboEffect_ = std::make_unique<ComboEffectManager>();
+
 }
 
 void StageScene::Initialize()
@@ -199,6 +202,7 @@ void StageScene::Update()
 			waterManager_->Update(deltaTime, camera_.get());
 
 			itemManager_->Update(deltaTime, camera_.get());
+
 			isCanGoal_ = itemManager_->GetIsCanGoal();
 
 			backGroundObjectManager_->Update(deltaTime);
@@ -262,6 +266,7 @@ void StageScene::Update()
 			//水のうねうね
 			waterEffect_->Update(deltaTime);
 
+			comboEffect_->Update(deltaTime, player_->GetPosition());
 
 			effeGoalGuid_->Update();
 		}
@@ -327,9 +332,9 @@ void StageScene::Draw()
 	player_->DrawUI();
 
 	tensionUI_->Draw();
+	comboEffect_->Draw();
 
 	popupUI_->Draw();
-
 
 	//option描画
 	if (isOptionOpen_) {
