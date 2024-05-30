@@ -53,9 +53,9 @@ private:
 		kMaxNum
 	};
 	std::array<std::string, MeshData::kMaxNum> texturePath_{
-		"coin_1.png",
-		"coin_1.png",
-		"coin_1.png",
+		"rainbow.png",
+		"rainbow.png",
+		"rainbow.png",
 	};
 	
 	std::array<const ParticleMeshTexData*, MeshData::kMaxNum> modelData_;

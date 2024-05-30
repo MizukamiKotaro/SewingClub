@@ -32,7 +32,8 @@ void ComboEffectManager::Create(const Vector3& playerPosition) {
 	for (auto& model : effectContiner_) {
 		// 今動いていなければ
 		if (!model.GetActive()) {
-			model.Initialize(playerPosition, RandNum(0, static_cast<int>(effectContiner_.size())));
+			model.Initialize(playerPosition, RandNum(0, static_cast<int>(modelData_.size())));
+			return;
 		}
 	}
 }
@@ -58,11 +59,11 @@ uint32_t ComboEffectManager::RandNum(int min, int max) {
 void ComboEffect::Initialize(const Vector3& playerpos, const uint32_t& index) {
 	meshIndex_ = index;
 	position_ = playerpos;
-	position_.z += 0.5f;
+	position_.z -= 2.0f;
 	isActive_ = true;
 	nowframe_ = 0.0f;
-	scale_ = Vector2(1.0f, 1.0f);
-	color_ = Vector4(1.0f, 1.0f, 1.0f, 0.8f);
+	scale_ = Vector2(3.0f, 30.0f);
+	color_ = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void ComboEffect::Update(const float& delta) {
@@ -70,7 +71,7 @@ void ComboEffect::Update(const float& delta) {
 
 	// とりあえず一定時間たったら消すにする
 	nowframe_ += delta;
-	if (nowframe_ >= 2.0f) {
+	if (nowframe_ >= 10.0f) {
 		isActive_ = false;
 	}
 
@@ -78,6 +79,8 @@ void ComboEffect::Update(const float& delta) {
 
 void ComboEffect::Draw(ParticleManager* instancingManager, const ParticleMeshTexData* data) const {
 	if (!isActive_) { return; }
+	instancingManager;
+	ParticleManager* instance = ParticleManager::GetInstance();
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, position_);
-	instancingManager->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ }, data);
+	instance->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ }, data);
 }

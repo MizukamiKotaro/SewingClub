@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "Ease/Ease.h"
 #include "GameElement/BabyTensionEffect/BabyTensionEffectManager.h"
+#include "GameElement/Effects/ComboEffect.h"
 
 Input* input = nullptr;
 
@@ -723,6 +724,8 @@ void Baby::TensionUpdate(const float& deltaTime)
 			combo_.num = combo_.maxNum;
 		}
 		tension += fParas_[FloatParamater::kUpTensionOutWater];
+		// comboUIの生成
+		ComboEffectManager::GetInstance()->Create(baby_->transform_.GetWorldPosition());
 	}
 
 	if (tension_.tension <= 0.0f) {

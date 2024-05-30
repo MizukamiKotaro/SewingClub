@@ -271,7 +271,7 @@ void StageScene::Update()
 			//水のうねうね
 			waterEffect_->Update(deltaTime);
 
-			comboEffect_->Update(deltaTime, player_->GetPosition());
+			comboEffect_->Update(deltaTime);
 
 			effeGoalGuid_->Update();
 		}
@@ -329,6 +329,7 @@ void StageScene::Draw()
 	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
+	comboEffect_->Draw();
 
 	
 	///いかUI
@@ -337,7 +338,6 @@ void StageScene::Draw()
 	player_->DrawUI();
 
 	tensionUI_->Draw();
-	comboEffect_->Draw();
 
 	popupUI_->Draw();
 
