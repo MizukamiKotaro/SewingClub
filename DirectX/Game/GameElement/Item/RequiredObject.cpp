@@ -8,6 +8,7 @@
 #include "WindowsInfo/WindowsInfo.h"
 #include "ItemManager.h"
 #include"GameElement/Effects/GetItem/GetItem.h"
+#include"calc.h"
 
 InstancingModelManager* RequiredObject::instancingManager_ = nullptr;
 const InstancingMeshTexData* RequiredObject::modelData_ = nullptr;
@@ -48,6 +49,7 @@ void RequiredObject::StaticInitialize() {
 bool RequiredObject::Update(float deltaTime, Camera* camera) {
 	
 	if (isHit_) { return true; }
+
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 	//staticColor_ = itemManager_->GetColor();
@@ -68,6 +70,25 @@ bool RequiredObject::Update(float deltaTime, Camera* camera) {
 	}
 #endif // _DEBUG
 
+	if (isHitAnime_) {
+		if (count_++ >= maxCount_) {
+			isHit_ = true;
+
+			EffectGetItem::GetInstance()->Spawn(position_+animeV_);
+		}
+		else {
+			float t = (float)count_ / (float)maxCount_;
+
+			animeV_ = Calc::Lerp(stAPos_, edAPos_, t);
+			scale_ = Calc::Lerp(stedScale_.x, stedScale_.y, t);
+			rotate_ = Calc::Lerp(stedRotate_.x, stedRotate_.y, t);
+			color_.w = Calc::Lerp(stedAlpha_.x, stedAlpha_.y, t);
+		}
+
+		
+	}
+
+
 	ActiveCheck(camera);
 	deltaTime;
 	if (isActive_) {
@@ -80,7 +101,7 @@ bool RequiredObject::Update(float deltaTime, Camera* camera) {
 void RequiredObject::Draw() const {
 	if (isActive_) {
 		if (!isHit_) {
-			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_+animeV_);
 			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ });
 		}
 	}
@@ -108,11 +129,13 @@ void RequiredObject::ApplyGlobalVariable() {
 }
 
 void RequiredObject::OnCollision(const Collider& collider) {
-	if (collider.GetMask() == ColliderMask::PLAYER) {
-		isHit_ = true;
-		seGetCoin_.Play();
+	if (!isHitAnime_) {
+		if (collider.GetMask() == ColliderMask::PLAYER) {
+			isHitAnime_ = true;
+			seGetCoin_.Play();
 
-		EffectGetItem::GetInstance()->Spawn(position_);
+			EffectGetItem::GetInstance()->Spawn(position_);
+		}
 	}
 }
 

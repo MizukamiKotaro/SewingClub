@@ -71,5 +71,20 @@ private:
 	//コイン取得音
 	Audio seGetCoin_;
 
+#pragma region 
+	bool isHitAnime_ = false;
 	
+	Vector3 animeV_ = { 0,0,0 };
+	Vector3 stAPos_ = { 0,0,0 };
+	Vector3 edAPos_ = { 0,5,0 };
+
+
+	Vector2 stedScale_ = { 1,0 };
+	Vector2 stedRotate_ = { 0,10 };
+	Vector2 stedAlpha_ = { 1,0 };
+
+	int count_ = 0;
+	int maxCount_ = 30;
+#pragma endregion
+
 };
