@@ -10,6 +10,8 @@
 #include"GameElement/Effects/GetItem/GetItem.h"
 #include"calc.h"
 
+#include<numbers>
+
 InstancingModelManager* RequiredObject::instancingManager_ = nullptr;
 const InstancingMeshTexData* RequiredObject::modelData_ = nullptr;
 
@@ -86,6 +88,12 @@ bool RequiredObject::Update(float deltaTime, Camera* camera) {
 		}
 
 		
+	}
+	else {
+		//ある値を超えると0に戻す
+		swingCount_ += addSwingCount_ / 60.0f;
+		swingCount_ = std::fmod(swingCount_, 2.0f * (float)std::numbers::pi);
+		animeV_.y = std::sin(swingCount_) * arrowSwingNum_;
 	}
 
 

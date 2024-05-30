@@ -83,6 +83,10 @@ private:
 	Vector2 stedRotate_ = { 0,10 };
 	Vector2 stedAlpha_ = { 1,0 };
 
+	float swingCount_ = 0;
+	float addSwingCount_ = 3.0f;
+	float arrowSwingNum_ = 0.5f;
+
 	int count_ = 0;
 	int maxCount_ = 30;
 #pragma endregion
