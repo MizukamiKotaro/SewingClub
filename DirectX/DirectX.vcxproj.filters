@@ -969,7 +969,7 @@
     <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.cpp">
       <Filter>Game\GameElement\Charactor\Baby</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h.cpp">
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.cpp">
       <Filter>Game\GameElement\Charactor\Baby</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1523,9 +1523,6 @@
     <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h">
       <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
       <Filter>Game\GameElement\OptionUI</Filter>
     </ClInclude>
@@ -1561,6 +1558,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h">
       <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
+      <Filter>Game\GameElement\TensionUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -29,7 +29,7 @@ class ItemManager;
 class ParticleManager;
 class EnemyManager;
 class BackGroundObjectManager;
-
+class BabyTensionEffectManager;
 
 class StageScene : public IScene
 {
@@ -59,6 +59,7 @@ private:
 	CollisionManager* collisionManager_;
 	WaterManager* waterManager_;
 	ItemManager* itemManager_;
+	BabyTensionEffectManager* tensionEffectManager_;
 
 	//
 	ParticleManager* particleManager_;

@@ -6,6 +6,7 @@
 #include "TextureManager.h"
 #include "Input.h"
 #include "Ease/Ease.h"
+#include "GameElement/BabyTensionEffect/BabyTensionEffectManager.h"
 
 Input* input = nullptr;
 
@@ -54,6 +55,7 @@ Baby::Baby(Player* player)
 	effeEnterW_ = std::make_unique<EffectEnterWater>();
 
 	input = Input::GetInstance();
+	tensionEffectManager_ = BabyTensionEffectManager::GetInstance();
 }
 
 void Baby::Initialize()
@@ -166,8 +168,8 @@ void Baby::Update(float deltaTime)
 	model_->Update();
 	baby_->Update();
 	SetCollider();
-	rideInWater_.isRideInWater = false;
 	TensionUpdate(deltaTime);
+	rideInWater_.isRideInWater = false;
 	gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
 	prePreIsInWaterPlayer_ = preIsInWaterPlayer_;
 	if (animation_->Update("babynormal",deltaTime)) {
@@ -674,20 +676,21 @@ void Baby::TensionInitialize()
 
 void Baby::TensionUpdate(const float& deltaTime)
 {
+	float tension = 0.0f;
 	if (preIsInWater_) {
 		tension_.inWaterTime += deltaTime;
 		tension_.flyTime = 0.0f;
 	}
 	else {
 		if (tension_.tension > 0.0f && tension_.inWaterTime >= fParas_[FloatParamater::kInWaterTime]) {
-			tension_.tension += fParas_[FloatParamater::kUpTensionOutWater];
+			tension += fParas_[FloatParamater::kUpTensionOutWater];
 		}
 		tension_.inWaterTime = 0.0f;
 
 		if (!isFollowWater_ && !isRide_) {
 			tension_.flyTime += deltaTime;
 			if (tension_.flyTime >= fParas_[FloatParamater::kFlyTime] && tension_.tension > 0.0f) {
-				tension_.tension += fParas_[FloatParamater::kUpTensionToFly];
+				tension += fParas_[FloatParamater::kUpTensionToFly];
 				tension_.flyTime = std::fmodf(tension_.flyTime, fParas_[FloatParamater::kFlyTime]);
 			}
 		}
@@ -709,7 +712,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 
 	if (isRide_ && !tension_.isRideUp_) {
 		tension_.isRideUp_ = true;
-		tension_.tension += fParas_[FloatParamater::kUpTentionRide];
+		tension += fParas_[FloatParamater::kUpTentionRide];
 	}
 	else if (!isRide_) {
 		tension_.isRideUp_ = false;
@@ -719,7 +722,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		if (combo_.num > combo_.maxNum) {
 			combo_.num = combo_.maxNum;
 		}
-		tension_.tension += fParas_[FloatParamater::kUpTensionOutWater];
+		tension += fParas_[FloatParamater::kUpTensionOutWater];
 	}
 
 	if (tension_.tension <= 0.0f) {
@@ -730,6 +733,10 @@ void Baby::TensionUpdate(const float& deltaTime)
 		}
 	}
 	else {
+		tension_.tension += tensionEffectManager_->GetTension();
+		if (tension != 0.0f) {
+			tensionEffectManager_->CreateEffect(tension);
+		}
 		tension_.cryTime = 0.0f;
 	}
 

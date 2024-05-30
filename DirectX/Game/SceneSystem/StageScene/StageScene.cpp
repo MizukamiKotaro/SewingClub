@@ -13,6 +13,7 @@
 
 #include "GameElement/Animation/AnimationManager.h"
 #include"Audio/AudioManager/AudioManager.h"
+#include "GameElement/BabyTensionEffect/BabyTensionEffectManager.h"
 
 StageScene::StageScene()
 {
@@ -72,6 +73,9 @@ StageScene::StageScene()
 
 	effeGetItem_ = EffectGetItem::GetInstance();
 	effeGetItem_->ModelLoad();
+
+	tensionEffectManager_ = BabyTensionEffectManager::GetInstance();
+	tensionEffectManager_->FirstInitialize(baby_->GetPosPtr(), &camera_->transform_.translate_);
 }
 
 void StageScene::Initialize()
@@ -128,7 +132,7 @@ void StageScene::Initialize()
 
 	nowScene =kPlay;
 
-
+	tensionEffectManager_->Initialize();
 }
 
 void StageScene::Update()
@@ -194,6 +198,7 @@ void StageScene::Update()
 			if (!isGoalTransition_ && isGameStarted_) {
 				player_->Update(deltaTime);
 				baby_->Update(deltaTime);
+				tensionEffectManager_->Update(deltaTime);
 				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
 			}
 			waterManager_->Update(deltaTime, camera_.get());
@@ -274,7 +279,7 @@ void StageScene::Update()
 		gameOverFlags_ = gameOver_->Update();
 		break;
 	case StageScene::kGameClear:
-		gameClearFlags_ = gameClear_->Update();
+		gameClearFlags_ = gameClear_->Update(deltaTime);
 		break;
 	case StageScene::_countPlayScenes:
 		break;
@@ -307,7 +312,7 @@ void StageScene::Draw()
 	waterEffect_->WaterAreaDraw();
 
 	//waveFloor_->Draw();
-
+	tensionEffectManager_->Draw();
 	itemManager_->Draw();
 
 	goal_->Draw();
@@ -369,6 +374,7 @@ void StageScene::SceneChange()
 			}
 			if (goal_->IsClear()) {
 				nowScene = kGameClear;
+				gameClear_->SetBabyParam(baby_->GetTension(), baby_->GetFace());
 			}
 
 			//ヒットによる処理
