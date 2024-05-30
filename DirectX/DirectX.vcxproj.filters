@@ -927,9 +927,6 @@
     <ClCompile Include="Game\GameElement\Effects\EffectGoalGuidance.cpp">
       <Filter>Game\GameElement\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameElement\OptionUI\AudioOptionUI.cpp">
-      <Filter>Game\GameElement\OptionUI</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameElement\Item\RequiredObject.cpp">
       <Filter>Game\GameElement\Item</Filter>
     </ClCompile>
@@ -978,7 +975,7 @@
     <ClCompile Include="Game\GameElement\InGameHUD\InGameHUD.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameElement\OptionUI\uAudioOptionUI.cpp">
+    <ClCompile Include="Game\GameElement\OptionUI\AudioOptionUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1523,9 +1520,6 @@
     <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h">
       <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\OptionUI\AudioOptionUI.h">
-      <Filter>Game\GameElement\OptionUI</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameElement\Item\RequiredObject.h">
       <Filter>Game\GameElement\Item</Filter>
     </ClInclude>
@@ -1577,7 +1571,7 @@
     <ClInclude Include="Game\GameElement\InGameHUD\InGameHUD.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\OptionUI\uAudioOptionUI.h">
+    <ClInclude Include="Game\GameElement\OptionUI\AudioOptionUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

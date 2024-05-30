@@ -1,6 +1,6 @@
 #pragma once
 //#include"GameElement/OptionUI/AudioOptionUI.h"
-#include"GameElement/OptionUI/uAudioOptionUI.h"
+#include"GameElement/OptionUI/AudioOptionUI.h"
 #include"GlobalVariables/GlobalVariableUser.h"
 
 
@@ -87,7 +87,7 @@ private:
 
 	NowSelect nowSelect_ = BackGame;
 
-	std::unique_ptr<uAudioOptionUI> audioOption_;
+	std::unique_ptr<AudioOptionUI> audioOption_;
 	//戻ったばっかの場合の誤作動防止
 	bool isBacked_ = false;
 

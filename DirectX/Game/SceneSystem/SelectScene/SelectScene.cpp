@@ -132,7 +132,13 @@ void SelectScene::Initialize()
 
 	SetGlobalV();
 
-	Update();
+	ArrowUpdate();
+
+	NumberUpdate();
+
+	CloudUpdate();
+
+	UpdateSprite();
 }
 
 void SelectScene::Update()
@@ -163,13 +169,7 @@ void SelectScene::Update()
 
 	SceneChange();
 
-	bg_->Update(camera_.get());
-
-	//更新
-	for (int i = 0; i < _countTags; i++) {
-		sp_[i]->Update();
-	}
-	mapSprite_[pickedNum_]->Update();
+	UpdateSprite();
 }
 
 void SelectScene::Draw()
@@ -190,28 +190,21 @@ void SelectScene::Draw()
 		}
 		else if (i == SmallClound1) {
 			if (isDraw_[Spawn1]) {
-				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn1] });
-				sp_[i]->pos_ = cPos_[Spawn1] + animePos_[Spawn1];
+
 				sp_[i]->Draw();
 			}
 		}
 		else if (i == SmallClound2) {
 			if (isDraw_[Spawn2]) {
-				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn2] });
-				sp_[i]->pos_ = cPos_[Spawn2] + animePos_[Spawn2];
+
 				sp_[i]->Draw();
 			}
 		}
 		else if (i == SmallClound3) {
 			if (isDraw_[Spawn3]) {
-				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn3] });
-				sp_[i]->pos_ = cPos_[Spawn3] + animePos_[Spawn3];
+
 				sp_[i]->Draw();
 			}
-		}
-		else if (i == Clound) {
-			sp_[i]->pos_ = cPos_[None] + animePos_[None];
-			sp_[i]->Draw();
 		}
 		else {
 			sp_[i]->Draw();
@@ -451,4 +444,38 @@ void SelectScene::CloudUpdate()
 	cCount_[None] = std::fmod(cCount_[None], 2.0f * (float)std::numbers::pi);
 	animePos_[None].y = +std::sin(cCount_[None]) * swingNum_;
 
+}
+
+void SelectScene::UpdateSprite()
+{
+	bg_->Update(camera_.get());
+	//更新
+	for (int i = 0; i < _countTags; i++) {
+
+		if (i == SmallClound1) {
+			if (isDraw_[Spawn1]) {
+				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn1] });
+				sp_[i]->pos_ = cPos_[Spawn1] + animePos_[Spawn1];
+
+			}
+		}
+		else if (i == SmallClound2) {
+			if (isDraw_[Spawn2]) {
+				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn2] });
+				sp_[i]->pos_ = cPos_[Spawn2] + animePos_[Spawn2];
+			}
+		}
+		else if (i == SmallClound3) {
+			if (isDraw_[Spawn3]) {
+				sp_[i]->SetColor({ 1,1,1,alpha_[Spawn3] });
+				sp_[i]->pos_ = cPos_[Spawn3] + animePos_[Spawn3];
+			}
+		}
+		else if (i == Clound) {
+			sp_[i]->pos_ = cPos_[None] + animePos_[None];
+		}
+
+		sp_[i]->Update();
+	}
+	mapSprite_[pickedNum_]->Update();
 }

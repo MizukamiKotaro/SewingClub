@@ -4,7 +4,7 @@
 OptionUI::OptionUI(SceneType type)
 {
 	input_ = Input::GetInstance();
-	audioOption_ = std::make_unique<uAudioOptionUI>();
+	audioOption_ = std::make_unique<AudioOptionUI>();
 
 	backSprite_ = std::make_unique<Sprite>("white.png");
 	backSprite_->size_ = { 1280,720 };

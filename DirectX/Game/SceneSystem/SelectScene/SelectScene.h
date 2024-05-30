@@ -28,6 +28,9 @@ private:
 	void NumberUpdate();
 	//雲の動き更新
 	void CloudUpdate();
+
+	//画像更新
+	void UpdateSprite();
 private:
 
 	Input* input_ = nullptr;
@@ -85,8 +88,8 @@ private:
 		FadeOut,
 		_countState
 	};
-	bool isStateChange_ = false;
-	CloudState state_ =None;
+	bool isStateChange_ = true;
+	CloudState state_ =FadeOut;
 
 	bool isDraw_[_countState] = { false };
 	float alpha_[_countState] = { 0 };
