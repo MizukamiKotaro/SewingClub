@@ -105,6 +105,7 @@ private:
 
 	float addSwingCount_ = 1.0f;
 
+	std::unique_ptr<Sprite>textPause_;
 	std::unique_ptr<Sprite>textBackGame_;
 	std::unique_ptr<Sprite>textBackSelect_;
 	std::unique_ptr<Sprite>textBackTitle_;
@@ -123,11 +124,18 @@ private:
 		ArrowSwing,
 		ArrowSwingCount,
 		TextBackGamePos,
+		TextBackGameSize,
 		TextBackSelectPos,
+		TextBackSelectSize,
 		TextBackTitlePos,
+		TextBackTitleSize,
 		TextSoundEditPos,
+		TextSoundEditSize,
 		TextLeaveGamePos,
+		TextLeaveGameSize,
 		BlackScreenAlpha,
+		TextPause,
+		TextPauseSize,
 		_countTags
 	};
 
@@ -137,11 +145,18 @@ private:
 		"矢印の振幅",
 		"一秒間での振幅速度",
 		"テキスト　戻る　座標",
+		"テキスト　戻る　size",
 		"テキスト　ステージ選択　座標",
+		"テキスト　ステージ選択　size",
 		"テキスト　タイトル　座標",
+		"テキスト　タイトル　size",
 		"テキスト　音　座標",
+		"テキスト　音　size",
 		"テキスト　ゲームをやめる　座標",
+		"テキスト　ゲームをやめる　size",
 		"黒背景の透明度",
+		"テキスト　ポーズ　座標",
+		"テキスト　ポーズ　サイズ",
 	};
 #pragma endregion
 

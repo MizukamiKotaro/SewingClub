@@ -89,12 +89,17 @@ private:
 	CloudState state_ =None;
 
 	bool isDraw_[_countState] = { false };
-	float alpha_[_countState] = { 1 };
+	float alpha_[_countState] = { 0 };
 
 	int animeCount_ = 0;
 	//各シーンカウント
 	int maxAnimeCount_ = 60;
 
+	Vector2 cPos_[_countState];
+	Vector2 animePos_[_countState];
+	float cCount_[_countState] = { 0 };
+	
+	float cSwingSeconds_[_countState];
 #pragma endregion
 
 
@@ -241,6 +246,11 @@ private:
 		MapPos,
 		MapSize,
 		AnimeCount,
+		cS1,		
+		cS2,		
+		cS3,		
+		cS4,
+		
 		_countAnother
 	};
 
@@ -252,6 +262,11 @@ private:
 		"マップ座標",
 		"マップサイズ",
 		"アニメーションカウント",
+		"雲1速度",
+		"雲2速度",
+		"雲3速度",
+		"雲4速度",
+
 	};
 #pragma endregion
 
