@@ -509,11 +509,12 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 		}
 		else {
 			float speed = t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
-			velocity_ += vect.Normalize() * speed;
+			vect = vect.Normalize();
+			velocity_ += vect * speed;
 			speed_ = std::clamp(velocity_.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
 			velocity_ = velocity_.Normalize() * speed_;
 			Vector2 vector = gravityAreaSearch_->GetNearPos() - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
-			vector = vector.Normalize() * fParas_[kGravityWater] * deltaTime;
+			vector = vector.Normalize() * fParas_[kGravityWater] * deltaTime + Vector2{ vect.x,vect.y } *fParas_[kGravityPlayer] * deltaTime;
 			velocity_.x += vector.x;
 			velocity_.y += vector.y;
 			model_->transform_.translate_ += velocity_;
@@ -620,6 +621,7 @@ void Baby::InitializeGlobalVariable()
 		"最大速度",
 		"最低速度",
 		"水の浮力",
+		"プレイヤーに対しての重力加速度",
 		"重力加速度",
 		"加速度が最大の時の移動角度",
 		"加速度が最大の時の水の移動距離",

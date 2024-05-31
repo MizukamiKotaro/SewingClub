@@ -135,6 +135,7 @@ private:
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
 		kBuoyancy, // 水の浮力
+		kGravityPlayer, // プレイヤーに対しての重力加速度
 		kGravityWater, // 重力加速度
 		kMaxSlide, // 加速度が最大の時の水の移動角度
 		kMaxSlideLength, // 加速度が最大の時の水の移動距離
