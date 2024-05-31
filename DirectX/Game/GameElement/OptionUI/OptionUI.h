@@ -9,6 +9,7 @@ struct UpdateAnswer {
 	bool backSelect = false;	//セレクトに戻る
 	bool backtitle = false;		//タイトルに戻る
 	bool leaveGame = false;		//ゲームをやめる
+	bool audioOption = false;	//オーディオいじってるか
 };
 
 class OptionUI {

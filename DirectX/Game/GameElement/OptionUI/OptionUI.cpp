@@ -199,6 +199,10 @@ void OptionUI::SceneChange()
 			ans_.backOption = true;
 		}
 
+		if (opScene_ == kSound) {
+			ans_.audioOption = true;
+		}
+
 		//タイトルシーンでの入力差
 		if (type_ == kTitle) {
 

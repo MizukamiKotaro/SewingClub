@@ -158,7 +158,12 @@ void TitleScene::Update()
 	else {
 		ans_ = optionUI_->Update();
 		
+		if (ans_.audioOption) {
+			bgm_.Update();
+		}
 	}
+
+	
 
 	SceneChange();
 

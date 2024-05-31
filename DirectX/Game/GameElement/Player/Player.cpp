@@ -205,6 +205,13 @@ void Player::Finalize()
 	seStayWater_.Stop();
 }
 
+void Player::SoundUpdate()
+{
+	seIn2Water_.Update();
+	seOutWater_.Update();
+	seStayWater_.Update();
+}
+
 const Vector3& Player::GetPosition() const
 {
 	return model_->transform_.GetWorldPosition();

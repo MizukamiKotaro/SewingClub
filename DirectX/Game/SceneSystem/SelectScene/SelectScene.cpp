@@ -155,6 +155,9 @@ void SelectScene::Update()
 
 	if (isOptionActive_) {
 		ans_ = optionUI_->Update();
+		if (ans_.audioOption) {
+			bgm_.Update();
+		}
 	}
 	else {
 		InputUpdate();

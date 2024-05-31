@@ -37,6 +37,9 @@ public:
 
 	//シーン変わり目の処理
 	void Finalize();
+
+	//音量変更時に呼び出し
+	void SoundUpdate();
 public:
 	// ポジションの取得
 	const Vector3& GetPosition() const;
