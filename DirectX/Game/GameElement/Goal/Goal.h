@@ -59,6 +59,7 @@ private:
 	Vector4 color_;
 	bool isGoal_ = false; // ゴールできるか
 
+	Audio seOpenGoal_;
 
 	Audio seGoal_;
 

@@ -27,6 +27,11 @@ OptionUI::OptionUI(SceneType type)
 	textLeaveGame_->SetColor({ 0,0,0,1 });
 
 	type_ = type;
+
+
+	seMove_.LoadMP3("SE/Scene/outgame_selectNow.mp3");
+	seSelect_.LoadMP3("SE/Scene/autgame_decision.mp3");
+
 	std::string groupName;
 
 	switch (type)
@@ -197,6 +202,7 @@ void OptionUI::SceneChange()
 		//ゲームに戻る処理
 		if ((nowSelect_ == BackGame && input_->PressedGamePadButton(Input::GamePadButton::A)) || input_->PressedGamePadButton(Input::GamePadButton::START)) {
 			ans_.backOption = true;
+			seSelect_.Play();
 		}
 
 		if (opScene_ == kSound) {
@@ -212,11 +218,13 @@ void OptionUI::SceneChange()
 				//音のセレクトに移動する処理
 				if (nowSelect_ == SoundSelect && input_->PressedGamePadButton(Input::GamePadButton::A)) {
 					opScene_ = kSound;
+					seSelect_.Play();
 				}
 
 				//ゲームをやめる処理
 				if (nowSelect_ == LeaveGame && input_->PressedGamePadButton(Input::GamePadButton::A)) {
 					ans_.leaveGame = true;
+					seSelect_.Play();
 				}
 			}
 
@@ -228,11 +236,13 @@ void OptionUI::SceneChange()
 				//音のセレクトに移動する処理
 				if (nowSelect_ == SoundSelect && input_->PressedGamePadButton(Input::GamePadButton::A)) {
 					opScene_ = kSound;
+					seSelect_.Play();
 				}
 
 				//タイトルに戻る処理
 				if (nowSelect_ == BackTitle && input_->PressedGamePadButton(Input::GamePadButton::A)) {
 					ans_.backtitle = true;
+					seSelect_.Play();
 				}
 			}
 		}
@@ -244,16 +254,19 @@ void OptionUI::SceneChange()
 				//音のセレクトに移動する処理
 				if (nowSelect_ == SoundSelect && input_->PressedGamePadButton(Input::GamePadButton::A)) {
 					opScene_ = kSound;
+					seSelect_.Play();
 				}
 
 				//タイトルに戻る処理
 				if (nowSelect_ == BackTitle && input_->PressedGamePadButton(Input::GamePadButton::A)) {
 					ans_.backtitle = true;
+					seSelect_.Play();
 				}
 
 				//ステージセレクトに戻る処理
 				if (nowSelect_ == BackSelect && input_->PressedGamePadButton(Input::GamePadButton::A)) {
 					ans_.backSelect = true;
+					seSelect_.Play();
 				}
 			}
 		}
@@ -321,6 +334,7 @@ void OptionUI::TitleUpdate()
 			//上入力で選択を変更
 			if (move.y >= 0.9f) {
 				isStickBack_ = false;
+				seMove_.Play();
 				//各現在状態による次の選択への移動
 
 				if (nowSelect_ == BackGame) {
@@ -335,6 +349,7 @@ void OptionUI::TitleUpdate()
 
 			}//下入力で選択を変更
 			else if (move.y <= -0.9f) {
+				seMove_.Play();
 				isStickBack_ = false;
 				//各現在状態による次の選択への移動
 
@@ -372,6 +387,7 @@ void OptionUI::SelectUpdate()
 			//タイトルには「戻る、音設定、ゲームをやめる」の三つ
 			//上入力で選択を変更
 			if (move.y >= 0.9f) {
+				seMove_.Play();
 				isStickBack_ = false;
 				//各現在状態による次の選択への移動
 
@@ -388,6 +404,7 @@ void OptionUI::SelectUpdate()
 
 			}//下入力で選択を変更
 			else if (move.y <= -0.9f) {
+				seMove_.Play();
 				isStickBack_ = false;
 				//各現在状態による次の選択への移動
 
@@ -426,6 +443,7 @@ void OptionUI::StageUpdate()
 			//上入力で選択を変更
 			if (move.y >= 0.9f) {
 				isStickBack_ = false;
+				seMove_.Play();
 				//各現在状態による次の選択への移動
 
 				if (nowSelect_ == BackGame) {
@@ -445,6 +463,7 @@ void OptionUI::StageUpdate()
 			}//下入力で選択を変更
 			else if (move.y <= -0.9f) {
 				isStickBack_ = false;
+				seMove_.Play();
 				//各現在状態による次の選択への移動
 
 				if (nowSelect_ == BackGame) {

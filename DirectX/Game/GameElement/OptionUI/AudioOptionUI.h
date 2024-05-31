@@ -4,6 +4,7 @@
 #include"Audio/VolumeManager/VolumeManager.h"
 #include"GlobalVariables/GlobalVariableUser.h"
 #include"Vector3.h"
+#include"Audio.h"
 
 class AudioOptionUI
 {
@@ -29,6 +30,10 @@ private:
 	
 	Input* input_=nullptr;
 	VolumeManager* VM_;
+
+	Audio seMove_;
+	Audio seSelectSE_;
+	Audio seSelectBGM_;
 
 #pragma region 画像群
 

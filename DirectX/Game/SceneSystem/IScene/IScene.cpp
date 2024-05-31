@@ -7,6 +7,8 @@ int IScene::sceneNo_ = TITLE;
 
 int IScene::stageNo_ = SHINING_STAR;
 
+bool IScene::isBreak_ = false;
+
 IScene::~IScene(){}
 
 void IScene::FirstInit()

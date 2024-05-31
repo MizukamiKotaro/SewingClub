@@ -38,6 +38,7 @@ TitleScene::TitleScene()
 	bg_ = std::make_unique<BackGround>();
 
 	bgm_.LoadMP3("Music/title.mp3", "TitleBGM", bgmVolume_);
+	seOpenOption_.LoadMP3("SE/Scene/autgame_poseOpen.mp3");
 
 	effeUIEnterW_ = std::make_unique<EffectUIEnterWater>("TitleBubbleUI");
 	waterE_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
@@ -268,6 +269,7 @@ void TitleScene::SceneChange()
 		bgm_.Stop();
 	}
 	else if (!isOptionActive_&&input_->PressedGamePadButton(Input::GamePadButton::START) &&!isOptionActive_) {
+		seOpenOption_.Play();
 		isOptionActive_ = true;
 	}
 	else if (isOptionActive_ && ans_.backOption) {
@@ -276,7 +278,7 @@ void TitleScene::SceneChange()
 	}
 	else if (isOptionActive_ && ans_.leaveGame) {
 		//処理
-
+		isBreak_ = true;
 	}
 }
 

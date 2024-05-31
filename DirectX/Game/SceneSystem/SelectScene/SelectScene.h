@@ -52,6 +52,7 @@ private:
 
 #pragma region 音関係
 	Audio bgm_;
+	Audio seOpenOption_;
 	float bgmVolume_ = 0.15f;
 #pragma endregion
 

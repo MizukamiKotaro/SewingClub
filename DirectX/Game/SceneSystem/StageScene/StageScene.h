@@ -71,6 +71,9 @@ private:
 	Audio seDead_;
 	float bgmVolume_ = 0.15f;
 
+	Audio seClear_;
+	Audio seOpenOption_;
+
 	//ステージ最大数
 	int maxStageNo_ = 3;
 

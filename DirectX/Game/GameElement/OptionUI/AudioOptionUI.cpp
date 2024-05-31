@@ -6,9 +6,11 @@ AudioOptionUI::AudioOptionUI()
 {
 
 	VM_ = VolumeManager::GetInstance();
-
-
 	input_ = Input::GetInstance();
+
+	seMove_.LoadMP3("SE/Scene/outgame_selectNow.mp3");
+	seSelectSE_.LoadMP3("SE/Scene/autgame_decision.mp3");
+	seSelectBGM_.LoadMP3("Music/autgame_decision.mp3");
 
 	for (int type = 0; type < _countVolumeType; type++) {
 		for (int sp = 0; sp < _countSprite; sp++) {
@@ -100,6 +102,7 @@ bool AudioOptionUI::Update()
 	if (isInputActive_) {
 		//上入力
 		if (move.y > inputDline_) {
+			seMove_.Play();
 			isInputActive_ = false;
 			if (nowSelect_ == BGM) {
 				nowSelect_ = Back;
@@ -113,6 +116,7 @@ bool AudioOptionUI::Update()
 
 		}//下入力
 		else if (move.y < -inputDline_) {
+			seMove_.Play();
 			isInputActive_ = false;
 			if (nowSelect_ == BGM) {
 				nowSelect_ = SE;
@@ -162,6 +166,10 @@ bool AudioOptionUI::Update()
 
 	UpdateSprite();
 
+	seMove_.Update();
+	seSelectSE_.Update();
+	seSelectBGM_.Update();
+
 
 	if (input_->PressedGamePadButton(Input::GamePadButton::START) ||
 		(nowSelect_ == Back && input_->PressedGamePadButton(Input::GamePadButton::A))) {
@@ -206,13 +214,16 @@ void AudioOptionUI::AudioBarUpdate()
 	//入力で音量変更
 	Vector2 input = input_->GetGamePadLStick();
 
+	bool isInput = false;
 	//入力可能時操作
 	if (isInputActive_) {
 		//現在選択しているほうの値を変更
 		if (input.x > inputDline_) {
+			isInput = true;
 			volume_[nowSelect_] += moveValue_;
 		}
-		else if (input.x < -inputDline_) {
+		else if (input.x < -inputDline_) {		
+			isInput = true;
 			volume_[nowSelect_] -= moveValue_;
 		}
 	}
@@ -226,17 +237,18 @@ void AudioOptionUI::AudioBarUpdate()
 	}
 
 	//変更した音を追加
-	if (nowSelect_ == BGM) {
-		VM_->SetMusicVolumeStage(volume_[nowSelect_]);
-	}
-	else if (nowSelect_ == SE) {
-		VM_->SetSEVolumeStage(volume_[nowSelect_]);
+	if (isInput) {
+		if (nowSelect_ == BGM) {
+			VM_->SetMusicVolumeStage(volume_[nowSelect_]);
+			seSelectBGM_.Play();
+		}
+		else if (nowSelect_ == SE) {
+			VM_->SetSEVolumeStage(volume_[nowSelect_]);
+			seSelectSE_.Play();
+		}
 	}
 
 	VM_->SaveVolumeStage(volume_[SE], volume_[BGM]);
-
-
-
 }
 
 void AudioOptionUI::UpdateSprite()

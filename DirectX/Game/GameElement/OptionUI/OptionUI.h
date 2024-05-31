@@ -2,7 +2,7 @@
 //#include"GameElement/OptionUI/AudioOptionUI.h"
 #include"GameElement/OptionUI/AudioOptionUI.h"
 #include"GlobalVariables/GlobalVariableUser.h"
-
+#include"Audio.h"
 
 struct UpdateAnswer {
 	bool backOption = false;	//optionをやめるフラグ
@@ -116,6 +116,14 @@ private:
 
 
 	UpdateAnswer ans_;
+
+#pragma region 音
+	Audio seMove_;
+	Audio seSelect_;
+
+#pragma endregion
+
+
 #pragma region ImGui
 
 	GlobalVariableUser* gVUser_ = nullptr;

@@ -28,7 +28,8 @@ Goal::Goal()
 	SetGlobalVariable();
 	scale_ = maxScale_;
 
-	seGoal_.LoadWave("SE/goal.wav");
+	seOpenGoal_.LoadMP3("SE/Scene/ingame_goalOpen.mp3");
+	seGoal_.LoadMP3("SE/Scene/ingame_goalTouch.mp3");
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 
 	// アニメーション
@@ -68,6 +69,9 @@ bool Goal::Update(float deltaTime)
 	
 	bool result = false;
 	if (isGoal_) {
+		if (!seOpenGoal_.IsPlaying()) {
+			seOpenGoal_.Play();
+		}
 		result = animation_->Update("goal", deltaTime);
 		SetCollider();
 	}

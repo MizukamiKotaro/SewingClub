@@ -35,7 +35,7 @@ RequiredObject::RequiredObject(const int& no, const float& scale, const float& s
 	color_ = staticColor_;
 	isActive_ = true;
 
-	seGetCoin_.LoadWave("SE/getCoin.wav");
+	seGetCoin_.LoadMP3("SE/Item/ingame_itemGet.mp3");
 }
 
 void RequiredObject::StaticInitialize() {

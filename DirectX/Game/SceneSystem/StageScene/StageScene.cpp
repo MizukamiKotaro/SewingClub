@@ -57,6 +57,10 @@ StageScene::StageScene()
 
 	bgm_.LoadMP3("Music/ingame.mp3", "StageBGM", bgmVolume_);
 	seDead_.LoadWave("SE/gameOver.wav", "DEADSOUND", bgmVolume_);
+
+	seClear_.LoadMP3("SE/Scene/ingame_clear.mp3");
+	seOpenOption_.LoadMP3("SE/Scene/autgame_poseOpen.mp3");
+
 	waterEffect_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
 
 	optionUI_ = std::make_unique<OptionUI>(OptionUI::kStage);
@@ -394,6 +398,7 @@ void StageScene::SceneChange()
 			if (goal_->IsClear()) {
 				nowScene = kGameClear;
 				gameClear_->SetBabyParam(baby_->GetTension(), baby_->GetFace());
+				seClear_.Play();
 			}
 
 			//ヒットによる処理
@@ -405,6 +410,7 @@ void StageScene::SceneChange()
 			//optionを開く
 			if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
 				isOptionOpen_ = true;
+				seOpenOption_.Play();
 			}
 		}
 		else {

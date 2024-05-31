@@ -17,6 +17,7 @@ SelectScene::SelectScene()
 	effeBSleep_ = std::make_unique<EffectBabySleep > ();
 
 	bgm_.LoadMP3("Music/stageSelect.mp3", "SelectBGM", bgmVolume_);
+	seOpenOption_.LoadMP3("SE/Scene/autgame_poseOpen.mp3");
 
 	//画像初期化
 	for (int i = 0; i < _countTags; i++) {
@@ -270,6 +271,7 @@ void SelectScene::SceneChange()
 		}//オプション開く処理
 		else if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
 			isOptionActive_ = true;
+			seOpenOption_.Play();
 		}
 
 	}

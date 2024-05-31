@@ -31,6 +31,8 @@ public:
 	// ステージ番号を管理する変数
 	static int stageNo_;
 
+	//終了するか
+	static bool isBreak_;
 public:
 	// 継承先で実装される関数
 	// 抽象クラスなので純粋仮想関数とする
@@ -82,5 +84,6 @@ private:
 	const float kTransitionTime = 0.5f;
 
 	bool sameScene_ = false;
+
 };
 
