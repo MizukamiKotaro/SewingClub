@@ -1,8 +1,12 @@
 #include "ComboEffect.h"
 #include "TextureManager/TextureManager.h"
 #include <GameElement/Enemy/IEnemy.h>
-//#include <numbers>
+#include "Input/Input.h"
 #include <random>
+#include "Ease/Ease.h"
+#include <numbers>
+#include "Math/calc.h"
+#include "RandomGenerator/RandomGenerator.h"
 
 ComboEffectManager::ComboEffectManager() {
 	instancingManager_ = ParticleManager::GetInstance();
@@ -20,6 +24,9 @@ ComboEffectManager* ComboEffectManager::GetInstance() {
 }
 
 void ComboEffectManager::Update(const float& delta) {
+	if (Input::GetInstance()->PressedKey(DIK_C)) {
+		Create(Vector3(0.0f, 0.0f, -1.0f));
+	}
 	// 更新処理
 	for (auto& model : effectContiner_) {
 		model.Update(delta);
@@ -31,7 +38,18 @@ void ComboEffectManager::Create(const Vector3& playerPosition) {
 	for (auto& model : effectContiner_) {
 		// 今動いていなければ
 		if (!model.GetActive()) {
-			model.Initialize(playerPosition, RandNum(0, static_cast<int>(modelData_.size()) - 1u));
+			int randNum;
+			// 番号が前と同じならば再抽選
+			do {
+				// 乱数の生成
+				randNum = RandomGenerator::GetInstance()->RandInt(0, static_cast<int>(modelData_.size()));
+				if (randNum == 3) {
+					break;
+				}
+			}while (randNum == oldRandNumber_);
+
+			model.Initialize(playerPosition, randNum);
+			oldRandNumber_ = randNum;
 			return;
 		}
 	}
@@ -43,40 +61,77 @@ void ComboEffectManager::Draw() {
 	}
 }
 
-uint32_t ComboEffectManager::RandNum(int min, int max) {
-
-	//	ハードウェア乱数をシードにして初期化
-	std::random_device seedGen;
-	//	メルセンヌツイスター法で疑似乱数生成器の作成
-	std::mt19937_64 randNum(seedGen());
-	//	(min,max)の範囲で等間隔に乱数を生成 一様実数分布
-	std::uniform_real_distribution<> dist(min, max);
-
-	return static_cast<int>(dist(randNum));
-}
-
 void ComboEffect::Initialize(const Vector3& playerpos, const uint32_t& index) {
 	meshIndex_ = index;
 	position_ = playerpos;
 	position_.z -= 2.0f;
 	isActive_ = true;
-	nowframe_ = 0.0f;
-	scale_ = Vector2(1.0f, 1.0f);
+	const float rad = std::numbers::pi_v<float> *(1.0f / 3.0f);
+	rotate_ = RandomGenerator::GetInstance()->RandFloat(-rad, rad);
+	scale_ = 0.0f;
 	color_ = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	scaleParam_.Initialize(0.8f, Vector2(0.0f, 0.26f));
+	rotateParam_.Initialize(0.4f, Vector2(rotate_ + -std::numbers::pi_v<float>, rotate_));
+	fadeParam_.Initialize(0.8f, Vector2(1.0f, 0.0f));
+	phase = EffectPhase::Appearance;
 }
 
 void ComboEffect::Update(const float& delta) {
 	if (!isActive_) { return; }
 
-	// とりあえず一定時間たったら消すにする
-	nowframe_ += delta;
-	if (nowframe_ >= 10.0f) {
+	bool isChange = false;
+	switch (phase) {
+	case ComboEffect::Appearance:
+		if (ScalePopup(delta)) {
+			phase = EffectPhase::Lapse;
+		}
+		break;
+	case ComboEffect::Lapse:
+		isChange = Fade(delta);
+		break;
+	}
+
+	if (isChange) {
 		isActive_ = false;
 	}
 }
 
 void ComboEffect::Draw(ParticleManager* instancingManager, const ParticleMeshTexData* data) const {
 	if (!isActive_) { return; }
-	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, position_);
+	static const Vector2 aspectRatio = Vector2(13.0f, 5.0f); // アスペクト比
+	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_ * aspectRatio.x,scale_ * aspectRatio.y,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
 	instancingManager->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ }, data);
+}
+
+bool ComboEffect::ScalePopup(const float& delta) {
+	// 拡大して登場
+	scale_ = Ease::UseEase(scaleParam_.easeMin, scaleParam_.easeMax, scaleParam_.nowframe, scaleParam_.kMaxframe, Ease::EaseType::EaseOutBounce);
+	rotate_ = Ease::UseEase(rotateParam_.easeMin, rotateParam_.easeMax, rotateParam_.nowframe, rotateParam_.kMaxframe, Ease::EaseType::EaseInSine);
+	
+	if (scaleParam_.nowframe >= scaleParam_.kMaxframe && rotateParam_.nowframe >= rotateParam_.kMaxframe) {
+		// 演出終わったらtrue返す
+		return true;
+	}
+	
+	// clamp
+	scaleParam_.nowframe += delta;
+	scaleParam_.nowframe = std::clamp(scaleParam_.nowframe, 0.0f, scaleParam_.kMaxframe);
+	rotateParam_.nowframe += delta;
+	rotateParam_.nowframe = std::clamp(rotateParam_.nowframe, 0.0f, rotateParam_.kMaxframe);
+	
+	return false;
+}
+
+bool ComboEffect::Fade(const float& delta) {
+	float T = fadeParam_.nowframe / fadeParam_.kMaxframe;
+	color_.w = Calc::Lerp(fadeParam_.easeMin, fadeParam_.easeMax, T);
+
+	if (fadeParam_.nowframe >= fadeParam_.kMaxframe) {
+		// fadeがおわったら返す
+		return true;
+	}
+	
+	fadeParam_.nowframe += delta;
+	fadeParam_.nowframe = std::clamp(fadeParam_.nowframe, 0.0f, fadeParam_.kMaxframe);
+	return false;
 }
