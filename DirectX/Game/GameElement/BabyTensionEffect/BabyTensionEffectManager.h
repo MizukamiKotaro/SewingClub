@@ -1,6 +1,8 @@
 #pragma once
 #include "BabyTensionEffect.h"
 
+class TensionUpEffectManager;
+
 class BabyTensionEffectManager
 {
 public:
@@ -29,4 +31,5 @@ private:
 private:
 	std::list<std::unique_ptr<BabyTensionEffect>> effects_;
 	float tension_;
+	TensionUpEffectManager* tensionUpEffectManager_;
 };
