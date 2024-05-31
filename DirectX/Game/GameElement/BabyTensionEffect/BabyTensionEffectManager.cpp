@@ -1,4 +1,5 @@
 #include "BabyTensionEffectManager.h"
+#include "GameElement/TensionUpEffect/TensionUpEffectManager.h"
 
 BabyTensionEffectManager* BabyTensionEffectManager::GetInstance()
 {
@@ -12,12 +13,15 @@ void BabyTensionEffectManager::FirstInitialize(const Vector3* babyPos, const Vec
 	BabyTensionEffectChip::StaticInitialize();
 	BabyTensionEffectChip::SetBabyPos(babyPos);
 	BabyTensionEffectChip::SetCameraPos(cameraPos);
+	tensionUpEffectManager_ = TensionUpEffectManager::GetInstance();
+	tensionUpEffectManager_->FirstInitialize(babyPos, cameraPos);
 }
 
 void BabyTensionEffectManager::Initialize()
 {
 	Clear();
 	tension_ = 0.0f;
+	tensionUpEffectManager_->Initialize();
 }
 
 void BabyTensionEffectManager::Update(const float& deltaTime)
@@ -36,6 +40,7 @@ void BabyTensionEffectManager::Update(const float& deltaTime)
 		tension_ += (*i)->GetTension();
 		i++;
 	}
+	tensionUpEffectManager_->Update(deltaTime);
 }
 
 void BabyTensionEffectManager::Draw() const
@@ -43,9 +48,11 @@ void BabyTensionEffectManager::Draw() const
 	for (const std::unique_ptr<BabyTensionEffect>& e : effects_) {
 		e->Draw();
 	}
+	tensionUpEffectManager_->Draw();
 }
 
 void BabyTensionEffectManager::CreateEffect(const float& tension)
 {
 	effects_.push_back(std::make_unique<BabyTensionEffect>(tension));
+	tensionUpEffectManager_->CreateEffect(tension);
 }

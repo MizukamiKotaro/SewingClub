@@ -37,6 +37,7 @@ TensionUpEffect::TensionUpEffect(const float& tensionNum, const bool& isBaby, co
 	float chipHalf = tensionChip * 0.1f;
 	float addAngle = 6.28f / chipNum;
 	Vector2 scale = {};
+	chips_.resize(chipNum);
 	for (int32_t i = 0; i < chipNum; i++) {
 		if (i == chipNum - 1) {
 			tension = hoge;
@@ -149,7 +150,7 @@ void TensionUpEffectChip::StaticInitialize()
 	instancingManager_ = ParticleManager::GetInstance();
 	modelData_ = instancingManager_->GetDrawData(
 		ParticleMeshTexData{ ModelDataManager::GetInstance()->LoadObj("plane"),
-		TextureManager::GetInstance()->LoadTexture("ingame_note_HUD.png"),BlendMode::kBlendModeNormal});
+		TextureManager::GetInstance()->LoadTexture("whiteStar.png"),BlendMode::kBlendModeNormal});
 }
 
 void TensionUpEffectChip::Update(const float& deltaTime)
