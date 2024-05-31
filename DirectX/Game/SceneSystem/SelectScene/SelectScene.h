@@ -4,7 +4,7 @@
 #include"Audio.h"
 #include"GameElement/OptionUI/OptionUI.h"
 #include"GlobalVariables/GlobalVariableUser.h"
-
+#include"GameElement/Effects/EffectBabySleep/EffectBabySleep.h"
 
 class SelectScene :public IScene {
 public:
@@ -43,6 +43,7 @@ private:
 	// 背景
 	std::unique_ptr<BackGround> bg_;
 
+	std::unique_ptr<EffectBabySleep>effeBSleep_;
 #pragma region Option関係
 	std::unique_ptr<OptionUI>optionUI_;
 	bool isOptionActive_ = false;
@@ -78,6 +79,10 @@ private:
 	float swingNum_ = 1.0f;
 #pragma endregion
 
+	float bCount_ = { 0 };
+	float bSwingSecond_ = 1.0f;
+	float bSwingNum_ = 1.0f;
+	Vector2 bAnimeP_ = { 0,0 };
 #pragma region 雲の動き関係
 
 	enum CloudState {
@@ -118,6 +123,7 @@ private:
 		Num10,
 		LArrow,
 		RArrow,
+		BBody,
 		Baby,
 		_countTags
 	};
@@ -135,7 +141,9 @@ private:
 		"number_HUD.png",
 		"HUD_arrow.png",
 		"HUD_arrow.png",
+		"Baby_Sleap.png",
 		"outgame_stageSelect_baby.png",
+		
 	};
 
 	enum Stages {
@@ -198,6 +206,7 @@ private:
 		"２桁目　座標(触らない)",
 		"左矢印　座標",
 		"右矢印 座標",
+		"赤ちゃん体 座標",
 		"赤ちゃん　座標",
 	};
 	std::string spKeysS[_countTags] = {
@@ -210,7 +219,8 @@ private:
 	"２桁目　サイズ",
 	"左矢印　サイズ",
 	"右矢印 サイズ",
-	"赤ちゃん　サイズ",
+	"赤ちゃん体 サイズ",
+	"赤ちゃん　サイズ",	
 	};
 
 	std::string mapKeysP[_countStages] = {
@@ -246,6 +256,8 @@ private:
 		NumsDistance,
 		SwingSecond,
 		SwingNum,
+		BSwingSecond,
+		BSwingNum,
 		MapPos,
 		MapSize,
 		AnimeCount,
@@ -262,6 +274,8 @@ private:
 		"二つの数字の距離",
 		"矢印の速度",
 		"矢印の振幅量",
+		"赤ちゃんの振幅速度",
+		"赤ちゃんの振幅量",
 		"マップ座標",
 		"マップサイズ",
 		"アニメーションカウント",

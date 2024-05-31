@@ -14,6 +14,8 @@ SelectScene::SelectScene()
 	bg_ = std::make_unique<BackGround>();
 	bg_->Update(camera_.get());
 
+	effeBSleep_ = std::make_unique<EffectBabySleep > ();
+
 	bgm_.LoadMP3("Music/stageSelect.mp3", "SelectBGM", bgmVolume_);
 
 	//画像初期化
@@ -56,6 +58,8 @@ SelectScene::SelectScene()
 	gvu_->AddItem(anoKeys[NumsDistance], numDistance_);
 	gvu_->AddItem(anoKeys[SwingSecond], swingSecond_);
 	gvu_->AddItem(anoKeys[SwingNum], swingNum_);
+	gvu_->AddItem(anoKeys[BSwingSecond], bSwingSecond_);
+	gvu_->AddItem(anoKeys[BSwingNum], bSwingNum_);
 	gvu_->AddItem(anoKeys[MapPos], mapPos_);
 	gvu_->AddItem(anoKeys[MapSize], mapSize_);
 	gvu_->AddItem(anoKeys[AnimeCount], animeCount_);
@@ -102,6 +106,9 @@ void SelectScene::SetGlobalV()
 	numDistance_ = gvu_->GetFloatValue(anoKeys[NumsDistance]);
 	swingSecond_ = gvu_->GetFloatValue(anoKeys[SwingSecond]);
 	swingNum_ = gvu_->GetFloatValue(anoKeys[SwingNum]);
+	bSwingSecond_ = gvu_->GetFloatValue(anoKeys[BSwingSecond]);
+	bSwingNum_ = gvu_->GetFloatValue(anoKeys[BSwingNum]);
+
 	mapPos_ = gvu_->GetVector2Value(anoKeys[MapPos]);
 	mapSize_ = gvu_->GetVector2Value(anoKeys[MapSize]);
 	maxAnimeCount_ = gvu_->GetIntValue(anoKeys[AnimeCount]);
@@ -128,6 +135,9 @@ void SelectScene::Initialize()
 
 	bg_->Initialize();
 
+	effeBSleep_->Initialize();
+
+
 	bgm_.Play(true);
 
 	SetGlobalV();
@@ -145,8 +155,6 @@ void SelectScene::Update()
 {
 #ifdef _DEBUG
 	SetGlobalV();
-
-	
 #endif // _DEBUG
 
 
@@ -167,6 +175,13 @@ void SelectScene::Update()
 		NumberUpdate();
 
 		CloudUpdate();
+
+		effeBSleep_->Update(1.0f);
+
+		bCount_ += bSwingSecond_ / 60.0f;
+		bCount_ = std::fmod(bCount_, 2.0f * (float)std::numbers::pi);
+		bAnimeP_.y = +std::sin(bCount_) * bSwingNum_;
+		sp_[Baby]->pos_ += bAnimeP_;
 	}
 
 
@@ -215,6 +230,8 @@ void SelectScene::Draw()
 	}
 
 	mapSprite_[pickedNum_]->Draw();
+
+	effeBSleep_->Draw();
 
 	if (isOptionActive_) {
 		optionUI_->Draw();

@@ -987,6 +987,9 @@
     <ClCompile Include="Game\GameElement\TensionUpEffect\TensionUpEffectManager.cpp">
       <Filter>Game\GameElement\TensionUpEffect</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1588,6 +1591,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\TensionUpEffect\TensionUpEffectManager.h">
       <Filter>Game\GameElement\TensionUpEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

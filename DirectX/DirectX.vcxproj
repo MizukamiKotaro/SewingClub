@@ -120,6 +120,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Camera\FollowCamera.cpp" />
     <ClCompile Include="Game\GameElement\Camera\GoalCamera.cpp" />
     <ClCompile Include="Game\GameElement\Effects\ComboEffect.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectGoalGuidance.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectUIEnterWater.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectEnterWater.cpp" />
@@ -294,6 +295,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Camera\FollowCamera.h" />
     <ClInclude Include="Game\GameElement\Camera\GoalCamera.h" />
     <ClInclude Include="Game\GameElement\Effects\ComboEffect.h" />
+    <ClInclude Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.h" />
     <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h" />
     <ClInclude Include="Game\GameElement\Effects\EffectUIEnterWater.h" />
     <ClInclude Include="Game\GameElement\BackGround\BackGround.h" />
