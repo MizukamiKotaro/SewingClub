@@ -98,17 +98,24 @@ void Baby::Update(float deltaTime)
 	prePosition_ = model_->transform_.translate_;
 	preIsInWater_ = isInWater_;
 
-	if (/*preIsInWaterPlayer_ && */!player_->GetPreInWater()) {
+	bool isRide = false;
+	if (!player_->GetPreInWater()) {
 		Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
 		pos.z = 0.0f;
-		if (pos.Length() <= fParas_[kNearPlayerLength]) {
+		float length = pos.Length();
+		if (length <= fParas_[kNearPlayerLength]) {
+			isRide = true;
 			isRide_ = true;
+			playerOutTime_ = 0.0f;
+		}
+		else if (length <= fParas_[kNearPulledPlayerLength]) {
+			isRide = true;
 			playerOutTime_ = 0.0f;
 		}
 	}
 	preIsInWaterPlayer_ = player_->GetPreInWater();
 
-	if (isRide_) {
+	if (isRide || isRide_) {
 		RideUpdate(deltaTime);
 	}
 	else if (isInWater_) {
@@ -509,11 +516,12 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 		}
 		else {
 			float speed = t * fParas_[FloatParamater::kMaxAcceleration] * deltaTime;
-			velocity_ += vect.Normalize() * speed;
+			vect = vect.Normalize();
+			velocity_ += vect * speed;
 			speed_ = std::clamp(velocity_.Length(), 0.0f, fParas_[FloatParamater::kMaxSpeed] * deltaTime);
 			velocity_ = velocity_.Normalize() * speed_;
 			Vector2 vector = gravityAreaSearch_->GetNearPos() - Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y };
-			vector = vector.Normalize() * fParas_[kGravityWater] * deltaTime;
+			vector = vector.Normalize() * fParas_[kGravityWater] * deltaTime + Vector2{ vect.x,vect.y } *fParas_[kGravityPlayer] * deltaTime;
 			velocity_.x += vector.x;
 			velocity_.y += vector.y;
 			model_->transform_.translate_ += velocity_;
@@ -620,6 +628,9 @@ void Baby::InitializeGlobalVariable()
 		"最大速度",
 		"最低速度",
 		"水の浮力",
+		"プレイヤーに対しての重力加速度",
+		"プレイヤーのジャンプに引っ張られる距離",
+		"プレイヤーのジャンプに引っ張られる加速度",
 		"重力加速度",
 		"加速度が最大の時の移動角度",
 		"加速度が最大の時の水の移動距離",
@@ -766,6 +777,33 @@ void Baby::RideInWaterInitialize()
 
 void Baby::RideUpdate(const float& deltaTime)
 {
+	if (isRide_) {
+		RideUpdate2(deltaTime);
+	}
+	else {
+		Vector3 pos = player_->GetPosition();
+		Vector3 v = pos - model_->transform_.translate_;
+		v.z = 0.0f;
+		v = v.Normalize();
+		float s = velocity_.Length();
+		velocity_ = v * (s + fParas_[kNearPulledPlayerGravity] * deltaTime);
+		model_->transform_.translate_ += velocity_;
+		Vector3 v2 = pos - model_->transform_.translate_;
+		v2.z = 0.0f;
+		float l = v2.Length();
+		v2 = v2.Normalize();
+
+		if (Calc::Dot(v, v2) < 0.0f || l <= fParas_[kNearPlayerLength]) {
+			isRide_ = true;
+			playerOutTime_ = 0.0f;
+			RideUpdate2(deltaTime);
+		}
+	}
+	model_->Update();
+}
+
+void Baby::RideUpdate2(const float& deltaTime)
+{
 	model_->transform_.translate_ = player_->GetPosition();
 	model_->transform_.rotate_.z = player_->GetRotate().z;
 	rideInWater_.rideFinishSpeed = fParas_[kRideInWaterSpeed] * deltaTime;
@@ -776,7 +814,6 @@ void Baby::RideUpdate(const float& deltaTime)
 		rideInWater_.rideFinishTime = 0.0f;
 	}
 	playerOutTime_ = std::clamp(playerOutTime_ + deltaTime, 0.0f, fParas_[kNearPlayerTime]);
-	model_->Update();
 }
 
 void Baby::TextureUpdate() {

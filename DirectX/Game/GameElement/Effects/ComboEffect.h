@@ -16,15 +16,38 @@ public:
 	const uint32_t& GetIndex() const { return meshIndex_; }
 	const bool& GetActive() const { return isActive_; }
 private:
-
+	bool ScalePopup(const float& delta); // 拡大回転して登場
+	bool Fade(const float& delta);
 
 private:
-	Vector2 scale_;
+	float scale_;
+	float rotate_;
 	Vector3 position_;
 	Vector4 color_;
 	uint32_t meshIndex_ = 0u;
 	bool isActive_ = false;
-	float nowframe_ = 0.0f;
+
+	struct EffectParam {
+		float nowframe = 0.0f;
+		float kMaxframe = 0.0f;
+		float easeMin = 0.0f;
+		float easeMax = 0.0f;
+		void Initialize(const float& maxframe, const Vector2& minmax) {
+			nowframe = 0.0f;
+			kMaxframe = maxframe;
+			easeMin = minmax.x;
+			easeMax = minmax.y;
+		}
+	};
+	EffectParam scaleParam_;
+	EffectParam rotateParam_;
+	EffectParam fadeParam_;
+
+	enum EffectPhase {
+		Appearance,
+		Lapse
+	};
+	EffectPhase phase;
 
 };
 
@@ -41,9 +64,6 @@ public:
 	void Draw();
 
 private:
-	uint32_t RandNum(int min, int max);
-
-private:
 	//インスタンシングに必要
 	ParticleManager* instancingManager_ = nullptr;
 	enum MeshData {
@@ -53,13 +73,14 @@ private:
 		kMaxNum
 	};
 	std::array<std::string, MeshData::kMaxNum> texturePath_{
-		"rainbow.png",
-		"rainbow.png",
-		"rainbow.png",
+		"ingame_baby_yeah1.png",
+		"ingame_baby_yay1.png",
+		"ingame_baby_wow1.png",
 	};
 	
 	std::array<const ParticleMeshTexData*, MeshData::kMaxNum> modelData_;
 
 	std::array<ComboEffect, 10u> effectContiner_;
+	int oldRandNumber_ = 0;
 
 };
