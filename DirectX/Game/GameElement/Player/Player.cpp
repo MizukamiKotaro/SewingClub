@@ -226,6 +226,10 @@ const Vector3* Player::GetPositionPtr() const
 void Player::ChangeSEfromSPD(float deltaTime)
 {
 	float maxSpd = (fParas_[kMaxSpeed] * deltaTime + addAcceleration_) - fParas_[kMinSpeed] * deltaTime;
+	if (speed_ == fParas_[kMaxSpeed] * deltaTime + addAcceleration_) {
+		pSPDType_ = pHigh;
+		return;
+	}
 	if (speed_ != 0) {
 		float t = speed_ / maxSpd;
 		//三段階音変更
@@ -235,9 +239,6 @@ void Player::ChangeSEfromSPD(float deltaTime)
 		}
 		else if (t < 1.0f) {
 			pSPDType_ = pMedium;
-		}
-		else {
-			pSPDType_ = pHigh;
 		}
 	}
 	else {
