@@ -457,6 +457,9 @@
     <Filter Include="Game\GameElement\PopupUI">
       <UniqueIdentifier>{0435b587-5a8d-4948-a365-d2401681a1b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\TensionUpEffect">
+      <UniqueIdentifier>{de9657b3-500a-4212-bdc6-aeb7944873d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -977,6 +980,12 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\OptionUI\AudioOptionUI.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\TensionUpEffect\TensionUpEffect.cpp">
+      <Filter>Game\GameElement\TensionUpEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\TensionUpEffect\TensionUpEffectManager.cpp">
+      <Filter>Game\GameElement\TensionUpEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1573,6 +1582,12 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\OptionUI\AudioOptionUI.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUpEffect\TensionUpEffect.h">
+      <Filter>Game\GameElement\TensionUpEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUpEffect\TensionUpEffectManager.h">
+      <Filter>Game\GameElement\TensionUpEffect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

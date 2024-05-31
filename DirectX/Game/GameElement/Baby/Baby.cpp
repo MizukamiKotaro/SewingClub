@@ -687,17 +687,6 @@ void Baby::TensionUpdate(const float& deltaTime)
 			tension += fParas_[FloatParamater::kUpTensionOutWater];
 		}
 		tension_.inWaterTime = 0.0f;
-
-		if (!isFollowWater_ && !isRide_) {
-			tension_.flyTime += deltaTime;
-			if (tension_.flyTime >= fParas_[FloatParamater::kFlyTime] && tension_.tension > 0.0f) {
-				tension += fParas_[FloatParamater::kUpTensionToFly];
-				tension_.flyTime = std::fmodf(tension_.flyTime, fParas_[FloatParamater::kFlyTime]);
-			}
-		}
-		else {
-			tension_.flyTime = 0.0f;
-		}
 	}
 
 	if (player_->GetPreInWater() && !rideInWater_.isRideInWater) {
