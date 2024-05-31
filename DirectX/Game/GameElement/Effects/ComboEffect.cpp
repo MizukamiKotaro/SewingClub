@@ -22,6 +22,7 @@ ComboEffectManager* ComboEffectManager::GetInstance() {
 
 void ComboEffectManager::Update(const float& delta) {
 	// 更新処理
+	Create(Vector3(0.0f, 0.0f, -1.0f));
 	for (auto& model : effectContiner_) {
 		model.Update(delta);
 	}
@@ -32,8 +33,8 @@ void ComboEffectManager::Create(const Vector3& playerPosition) {
 	for (auto& model : effectContiner_) {
 		// 今動いていなければ
 		if (!model.GetActive()) {
-			model.Initialize(playerPosition, RandNum(0, static_cast<int>(modelData_.size())));
-			return;
+			model.Initialize(playerPosition, RandNum(0, static_cast<int>(modelData_.size()) - 1u));
+			//return;
 		}
 	}
 }
@@ -78,7 +79,7 @@ void ComboEffect::Update(const float& delta) {
 }
 
 void ComboEffect::Draw(ParticleManager* instancingManager, const ParticleMeshTexData* data) const {
-	if (!isActive_) { return; }
+	//if (!isActive_) { return; }
 	instancingManager;
 	ParticleManager* instance = ParticleManager::GetInstance();
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, position_);

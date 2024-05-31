@@ -134,6 +134,7 @@ void StageScene::Initialize()
 	}
 	effeGoalGuid_->Update();
 
+	nowScene = playScenes::kPlay;
 
 	tensionEffectManager_->Initialize();
 
@@ -333,10 +334,10 @@ void StageScene::Draw()
 
 	effeGetItem_->Draw();
 
+	comboEffect_->Draw();
 	//インスタンシング関係のすべてを描画
 	instancingmodelManager_->Draw(*camera_.get());
 	particleManager_->Draw(*camera_.get());
-	comboEffect_->Draw();
 
 	
 	///いかUI
