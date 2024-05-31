@@ -1,8 +1,6 @@
 #include "ComboEffect.h"
 #include "TextureManager/TextureManager.h"
 #include <GameElement/Enemy/IEnemy.h>
-#include "Input/Input.h"
-#include <random>
 #include "Ease/Ease.h"
 #include <numbers>
 #include "Math/calc.h"
@@ -24,9 +22,6 @@ ComboEffectManager* ComboEffectManager::GetInstance() {
 }
 
 void ComboEffectManager::Update(const float& delta) {
-	if (Input::GetInstance()->PressedKey(DIK_C)) {
-		Create(Vector3(0.0f, 0.0f, -1.0f));
-	}
 	// 更新処理
 	for (auto& model : effectContiner_) {
 		model.Update(delta);
