@@ -68,9 +68,9 @@ Player::Player()
 
 	gravityAreaSearch_ = std::make_unique<GravityAreaSearch>();
 
-	seIn2Water_.LoadWave("SE/inToWater.wav","水に入る音");
-	seOutWater_.LoadWave("SE/outWater.wav","水から出る音");
-	seStayWater_.LoadWave("SE/inWater.wav","水の中にいる音");
+	for (int i = 0; i < _countSEType; i++) {
+		se_[i].LoadMP3(sePath_[i], seText_[i]);
+	}
 
 	effeExtraJump_ = std::make_unique<EffectExtraJump>();
 	effectOutWater_ = std::make_unique<EffectOutWater>();
@@ -103,7 +103,7 @@ void Player::Initialize()
 	//水の中のUI演出を実行
 	effeUIEnterWater_->IsEffectActive(true);
 	//音も再生
-	seStayWater_.Play();
+	se_[sStayWater_].Play();
 }
 
 void Player::Update(float deltaTime)
@@ -161,7 +161,7 @@ void Player::Update(float deltaTime)
 	particleScceleration_->IsActive(effectActive, leng);
 #pragma endregion
 
-
+	ChangeSEfromSPD(deltaTime);
 
 	model_->Update();
 
@@ -200,16 +200,17 @@ void Player::DrawUI()
 
 void Player::Finalize()
 {
-	seIn2Water_.Stop();
-	seOutWater_.Stop();
-	seStayWater_.Stop();
+	
+	for (int i = 0; i < _countSEType; i++) {
+		se_[i].Stop();
+	}
 }
 
 void Player::SoundUpdate()
 {
-	seIn2Water_.Update();
-	seOutWater_.Update();
-	seStayWater_.Update();
+	for (int i = 0; i < _countSEType; i++) {
+		se_[i].Update();
+	}
 }
 
 const Vector3& Player::GetPosition() const
@@ -220,6 +221,28 @@ const Vector3& Player::GetPosition() const
 const Vector3* Player::GetPositionPtr() const
 {
 	return &model_->transform_.GetWorldPosition();
+}
+
+void Player::ChangeSEfromSPD(float deltaTime)
+{
+	float maxSpd = (fParas_[kMaxSpeed] * deltaTime + addAcceleration_) - fParas_[kMinSpeed] * deltaTime;
+	if (speed_ != 0) {
+		float t = speed_ / maxSpd;
+		//三段階音変更
+		//速度Low
+		if (t < (2.0f / 4.0f)) {
+			pSPDType_ = pLow;
+		}
+		else if (t < 1.0f) {
+			pSPDType_ = pMedium;
+		}
+		else {
+			pSPDType_ = pHigh;
+		}
+	}
+	else {
+		pSPDType_ = pLow;
+	}
 }
 
 void Player::Move(float deltaTime)
@@ -288,8 +311,8 @@ void Player::Move(float deltaTime)
 
 void Player::PopUpFromWater()
 {
-	seOutWater_.Play();
-	seStayWater_.Stop();
+	se_[sOutWater].Play();
+	se_[sStayWater_].Stop();
 	timeCount_ = 0.0f;
 	memoOutWaterSpeed_ = speed_;
 	model_->transform_.translate_ += velocity_;
@@ -308,8 +331,25 @@ void Player::PopUpFromWater()
 
 void Player::ComeToWater()
 {
-	seIn2Water_.Play();
-	seStayWater_.Play(true);
+	switch (pSPDType_)
+	{
+	case Player::pLow:
+		se_[sInWLow].Play();
+		break;
+	case Player::pMedium:
+		se_[sInWMedium].Play();
+		break;
+	case Player::pHigh:
+		se_[sInWHigh].Play();
+		break;
+	case Player::_countPSPDType:
+		break;
+	default:
+		break;
+	}
+
+	se_[sStayWater_].Play(true);
+
 	timeCount_ = 0.0f;
 	model_->transform_.translate_ += velocity_;
 

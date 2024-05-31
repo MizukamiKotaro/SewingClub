@@ -69,6 +69,8 @@ private:
 	// グローバル変数の更新
 	void ApplyGlobalVariable() override;
 
+	//移動速度によるサウンド更新
+	void ChangeSEfromSPD(float deltaTime);
 	// 水や惑星内での更新処理
 	void Move(float deltaTime);
 	// 水や惑星から飛び出たときの処理
@@ -177,12 +179,7 @@ private:
 
 	float floatingParameter_;
 
-	//水に入る音
-	Audio seIn2Water_;
-	//水から出る音
-	Audio seOutWater_;
-	//水の中の音
-	Audio seStayWater_;
+
 
 	//通常水面ジャンプ演出の数
 	int normalJumpEffectNum_ = 5;
@@ -193,6 +190,44 @@ private:
 	// アニメーション
 	std::unique_ptr<Animation2D> animation_;
 
+
+	enum PSPDType {
+		pLow,
+		pMedium,
+		pHigh,
+		_countPSPDType
+	};
+
+	//プレイヤー速度タイプ
+	PSPDType pSPDType_ =pLow;
+
+	enum SEType {
+		sInWLow,
+		sInWMedium,
+		sInWHigh,
+		sOutWater,
+		sStayWater_,
+		_countSEType
+	};
+
+	Audio se_[_countSEType];
+
+	std::string sePath_[_countSEType]={
+		"SE/waterIn_S.mp3",
+		"SE/waterIn_M.mp3",
+		"SE/waterIn_L.mp3",
+		"SE/waterOut.mp3",
+		"SE/inWater.mp3"
+	};
+
+	std::string seText_[_countSEType] = {
+
+		"水から出る音 S",
+		"水から出る音 M",
+		"水から出る音 L",
+		"水から出る音",
+		"水の中にいる音",
+	};
 
 	//水しぶきエフェクト
 	std::unique_ptr<EffectOutWater>effectOutWater_;
