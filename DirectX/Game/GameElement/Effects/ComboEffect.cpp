@@ -12,7 +12,6 @@ ComboEffectManager::ComboEffectManager() {
 			ParticleMeshTexData{ ModelDataManager::GetInstance()->LoadObj("plane"),
 			TextureManager::GetInstance()->LoadTexture(texturePath_.at(index++)),BlendMode::kBlendModeNormal });
 	}
-
 }
 
 ComboEffectManager* ComboEffectManager::GetInstance() {
@@ -22,7 +21,6 @@ ComboEffectManager* ComboEffectManager::GetInstance() {
 
 void ComboEffectManager::Update(const float& delta) {
 	// 更新処理
-	Create(Vector3(0.0f, 0.0f, -1.0f));
 	for (auto& model : effectContiner_) {
 		model.Update(delta);
 	}
@@ -34,7 +32,7 @@ void ComboEffectManager::Create(const Vector3& playerPosition) {
 		// 今動いていなければ
 		if (!model.GetActive()) {
 			model.Initialize(playerPosition, RandNum(0, static_cast<int>(modelData_.size()) - 1u));
-			//return;
+			return;
 		}
 	}
 }
@@ -63,7 +61,7 @@ void ComboEffect::Initialize(const Vector3& playerpos, const uint32_t& index) {
 	position_.z -= 2.0f;
 	isActive_ = true;
 	nowframe_ = 0.0f;
-	scale_ = Vector2(3.0f, 30.0f);
+	scale_ = Vector2(1.0f, 1.0f);
 	color_ = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
@@ -75,13 +73,10 @@ void ComboEffect::Update(const float& delta) {
 	if (nowframe_ >= 10.0f) {
 		isActive_ = false;
 	}
-
 }
 
 void ComboEffect::Draw(ParticleManager* instancingManager, const ParticleMeshTexData* data) const {
-	//if (!isActive_) { return; }
-	instancingManager;
-	ParticleManager* instance = ParticleManager::GetInstance();
+	if (!isActive_) { return; }
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_.x,scale_.y,1.0f }, Vector3{ 0.0f,0.0f,0.0f }, position_);
-	instance->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ }, data);
+	instancingManager->AddParticle(ParticleData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ }, data);
 }
