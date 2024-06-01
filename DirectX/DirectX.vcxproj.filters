@@ -460,6 +460,9 @@
     <Filter Include="Game\GameElement\TensionUpEffect">
       <UniqueIdentifier>{de9657b3-500a-4212-bdc6-aeb7944873d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\HitStop">
+      <UniqueIdentifier>{ab208386-a49a-4734-b758-98efe0a53a21}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -989,6 +992,9 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\HitStop\HitStop.cpp">
+      <Filter>Game\GameElement\HitStop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1594,6 +1600,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\HitStop\HitStop.h">
+      <Filter>Game\GameElement\HitStop</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

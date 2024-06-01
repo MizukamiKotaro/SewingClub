@@ -224,6 +224,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\GameOver\GameOver.cpp" />
     <ClCompile Include="Game\GameElement\Goal\Goal.cpp" />
     <ClCompile Include="Game\GameElement\GravityArea\GravityArea.cpp" />
+    <ClCompile Include="Game\GameElement\HitStop\HitStop.cpp" />
     <ClCompile Include="Game\GameElement\HitSystem\HitSystem.cpp" />
     <ClCompile Include="Game\GameElement\InGameHUD\InGameHUD.cpp" />
     <ClCompile Include="Game\GameElement\Item\Item.cpp" />
@@ -438,6 +439,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\GameOver\GameOver.h" />
     <ClInclude Include="Game\GameElement\Goal\Goal.h" />
     <ClInclude Include="Game\GameElement\GravityArea\GravityArea.h" />
+    <ClInclude Include="Game\GameElement\HitStop\HitStop.h" />
     <ClInclude Include="Game\GameElement\HitSystem\HitSystem.h" />
     <ClInclude Include="Game\GameElement\InGameHUD\InGameHUD.h" />
     <ClInclude Include="Game\GameElement\Item\Item.h" />
