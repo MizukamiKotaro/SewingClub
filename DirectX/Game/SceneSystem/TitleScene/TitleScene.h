@@ -54,6 +54,7 @@ private:
 
 	Audio bgm_;
 	Audio seOpenOption_;
+	Audio seSelect_;
 	float bgmVolume_ = 0.15f;
 
 	//水の玉の円

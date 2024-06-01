@@ -24,6 +24,9 @@ GameClear::GameClear()
 		baby_[i]->SetTextureTopLeft({ 0,0 });
 	}
 
+	seMove_.LoadMP3("SE/Scene/outgame_selectNow.mp3");
+	seSelect_.LoadMP3("SE/Scene/autgame_decision.mp3");
+
 	gvu_ = new GlobalVariableUser("Scene", "GameClear");
 
 	for (int i = 0; i < _countText; i++) {
@@ -103,6 +106,7 @@ void GameClear::InputUpdate()
 		//右入力
 		if (move.x > stickD_) {
 			inputActive_ = false;
+			seMove_.Play();
 			if (nowSelect_ == StageSelect) {
 				nowSelect_ = Retry;
 			}
@@ -118,6 +122,7 @@ void GameClear::InputUpdate()
 
 		}
 		if (move.x < -stickD_) {
+			seMove_.Play();
 			inputActive_ = false;
 			if (nowSelect_ == StageSelect && isNextStage_) {
 				nowSelect_ = NextStage;
@@ -344,6 +349,7 @@ ClearAnswer GameClear::ScceneChange()
 		else if (nowSelect_ == NextStage) {
 			result.goNeext = true;
 		}
+		seSelect_.Play();
 	}
 
 	return result;

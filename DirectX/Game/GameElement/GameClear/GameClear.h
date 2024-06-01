@@ -5,6 +5,7 @@
 #include"Vector3.h"
 #include<iostream>
 #include "GameElement/Animation/Animation2D.h"
+#include"Audio.h"
 
 struct ClearAnswer {
 	bool goSelect = false;
@@ -52,6 +53,9 @@ private:
 
 	// 赤ちゃん用アニメーション
 	std::unique_ptr<Animation2D> babyAnimation_;
+
+	Audio seMove_;
+	Audio seSelect_;
 
 #pragma region 総画像管理
 	//スプライト

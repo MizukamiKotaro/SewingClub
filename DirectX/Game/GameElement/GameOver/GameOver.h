@@ -3,6 +3,7 @@
 #include"GlobalVariables/GlobalVariableUser.h"
 #include"Input.h"
 #include"Vector3.h"
+#include"Audio.h"
 
 #include<iostream>
 
@@ -33,6 +34,9 @@ private:
 private:
 
 	Input* input_;
+
+	Audio seMove_;
+	Audio seSelect_;
 
 	bool isInputMoveActive_ = true;
 

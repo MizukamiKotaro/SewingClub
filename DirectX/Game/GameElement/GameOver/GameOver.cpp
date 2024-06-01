@@ -6,6 +6,9 @@ GameOver::GameOver()
 {
 	input_ = Input::GetInstance();
 
+	seMove_.LoadMP3("SE/Scene/outgame_selectNow.mp3");
+	seSelect_.LoadMP3("SE/Scene/autgame_decision.mp3");
+
 	back_ = std::make_unique<Sprite>("white.png");
 	back_->size_ = { 1280,720 };
 	back_->SetColor({ backColor_.x,backColor_.y,backColor_.z,alpha_ });
@@ -141,7 +144,7 @@ GameOverFlags GameOver::Update()
 		//左向きの処理
 		if (move.x < -deadLineX_) {
 			isInputMoveActive_ = false;
-
+			seMove_.Play();
 			if (nowSelect_ == GoSelect) {
 				nowSelect_ = Retry;
 			}
@@ -149,7 +152,7 @@ GameOverFlags GameOver::Update()
 		}//右向きの処理
 		else if (move.x > deadLineX_) {
 			isInputMoveActive_ = false;
-
+			seMove_.Play();
 			if (nowSelect_ == Retry) {
 				nowSelect_ = GoSelect;
 			}
@@ -269,6 +272,7 @@ GameOverFlags GameOver::SceneChange()
 		else if (nowSelect_ == GoSelect) {
 			result.goSelect = true;
 		}
+		seSelect_.Play();
 	}
 
 	return result;

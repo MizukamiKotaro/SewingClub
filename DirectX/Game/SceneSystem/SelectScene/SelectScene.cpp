@@ -18,6 +18,8 @@ SelectScene::SelectScene()
 
 	bgm_.LoadMP3("Music/stageSelect.mp3", "SelectBGM", bgmVolume_);
 	seOpenOption_.LoadMP3("SE/Scene/autgame_poseOpen.mp3");
+	seMove_.LoadMP3("SE/Scene/outgame_selectNow.mp3");
+	seSelect_.LoadMP3("SE/Scene/autgame_decision.mp3");
 
 	//画像初期化
 	for (int i = 0; i < _countTags; i++) {
@@ -268,6 +270,7 @@ void SelectScene::SceneChange()
 			stageNo_ = pickedNum_;
 			ChangeScene(STAGE);
 			bgm_.Stop();
+			seSelect_.Play();
 		}//オプション開く処理
 		else if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
 			isOptionActive_ = true;
@@ -285,6 +288,7 @@ void SelectScene::InputUpdate()
 		//右入力
 		if (move.x > inputDeadline_) {
 			isInputActive_ = false;
+			seMove_.Play();
 			//最後のステージじゃないなら処理
 			if (pickedNum_ != maxStageNum_ - 1) {
 				pickedNum_++;
@@ -293,6 +297,7 @@ void SelectScene::InputUpdate()
 		}//左入力
 		else if (move.x < -inputDeadline_) {
 			isInputActive_ = false;
+			seMove_.Play();
 			//最後のステージじゃないなら処理
 			if (pickedNum_ != 0) {
 				pickedNum_--;
