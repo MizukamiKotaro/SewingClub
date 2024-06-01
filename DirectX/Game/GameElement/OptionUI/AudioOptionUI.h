@@ -63,7 +63,7 @@ private:
 	std::string paths[_countVolumeType][_countSprite] = {
 		{"SoundGageBar_All_BGM.png","soundGage.png"},
 		{"SoundGageBar_Al_SE.png","soundGage.png"},
-		{"spBack.png","spBack.png"},
+		{"ingame_pose_back_HUD.png","ingame_pose_back_HUD.png"},
 	};
 #pragma endregion
 	//選択物
