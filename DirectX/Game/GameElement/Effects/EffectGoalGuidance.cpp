@@ -230,12 +230,26 @@ void UIGoalGuidance::Update()
 			}
 
 			if (spritePos.y + scale_.y > (360.0f + area_.x / 2.0f)) {
-				spritePos.y = -scale_.y + (360.0f + area_.x / 2.0f);
+				spritePos.y = -scale_.y + (360.0f + area_.y / 2.0f);
 			}
 			else if (spritePos.y - scale_.y < (360.0f - area_.x / 2.0f)) {
-				spritePos.y = (360.0f - area_.x / 2.0f)+ scale_.y;
+				spritePos.y = (360.0f - area_.y / 2.0f)+ scale_.y;
 			}
 
+
+			//if (spritePos.x + quotaUISize_.x > (640.0f + area_.x / 2.0f)) {
+			//	spritePos.x = (640.0f + area_.x / 2.0f) - quotaUISize_.x;
+			//}//最小領域外チェック
+			//else if (spritePos.x - quotaUISize_.x < (640.0f - area_.x / 2.0f)) {
+			//	spritePos.x = (640.0f - area_.x / 2.0f) + quotaUISize_.x;
+			//}
+
+			//if (spritePos.y + quotaUISize_.y > (360.0f + area_.y / 2.0f)) {
+			//	spritePos.y = (360.0f + area_.y / 2.0f) - quotaUISize_.y;
+			//}
+			//else if (spritePos.y - quotaUISize_.y < (360.0f - area_.y / 2.0f)) {
+			//	spritePos.y = (360.0f - area_.y / 2.0f) + quotaUISize_.y;
+			//}
 		}
 		else if (areaType_ == AreaType::Sphere) {
 
@@ -244,7 +258,8 @@ void UIGoalGuidance::Update()
 			spritePos = TransformPosition(spritePos, cameraVPV);
 		}
 
-		if (goalPos_->x > 0 && goalPos_->x < 1280 && goalPos_->y>0 && goalPos_->y < 720) {
+		Vector3 goalP = TransformPosition(*goalPos_, cameraVPV);
+		if (goalP.x > 0 && goalP.x < 1280 && goalP.y>0 && goalP.y < 720) {
 			isScreen = true;
 		}
 

@@ -63,7 +63,7 @@ void EffectBabySleep::Update(float delta)
 		spCount_ = 0;
 
 		Data newdata;
-		newdata.sp = std::make_unique<Sprite>("Z.png");
+		newdata.sp = std::make_unique<Sprite>("outgame_stgaeSelect_ZZZ.png");
 		newdata.pos = spawnP_;
 		newdata.velo = vector_ * spd_;
 		float size = stedSize_.x;
