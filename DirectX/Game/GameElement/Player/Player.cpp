@@ -108,6 +108,9 @@ void Player::Initialize()
 
 void Player::Update(float deltaTime)
 {
+	if (deltaTime == 0.0f) {
+		return;
+	}
 #ifdef _DEBUG
 	if (stageEditor_->IsChangedStage()) {
 		Initialize();

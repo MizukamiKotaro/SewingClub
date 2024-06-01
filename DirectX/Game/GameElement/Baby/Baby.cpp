@@ -8,6 +8,7 @@
 #include "Ease/Ease.h"
 #include "GameElement/BabyTensionEffect/BabyTensionEffectManager.h"
 #include "GameElement/Effects/ComboEffect.h"
+#include "GameElement/HitStop/HitStop.h"
 
 Input* input = nullptr;
 
@@ -92,6 +93,9 @@ void Baby::Initialize()
 
 void Baby::Update(float deltaTime)
 {
+	if (deltaTime == 0.0f) {
+		return;
+	}
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 #endif // _DEBUG
@@ -714,6 +718,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 	if (isRide_ && !tension_.isRideUp_) {
 		tension_.isRideUp_ = true;
 		tension += fParas_[FloatParamater::kUpTentionRide];
+		HitStop::SetHitStop(HitStopType::kBabyCatch);
 	}
 	else if (!isRide_) {
 		tension_.isRideUp_ = false;
@@ -724,6 +729,12 @@ void Baby::TensionUpdate(const float& deltaTime)
 			combo_.num = combo_.maxNum;
 		}
 		tension += fParas_[FloatParamater::kUpTensionOutWater];
+		if (combo_.num == combo_.maxNum) {
+			HitStop::SetHitStop(HitStopType::kBabyJump);
+		}
+		else {
+			HitStop::SetHitStop(HitStopType::kBabyComb);
+		}
 		// comboUIの生成
 		ComboEffectManager::GetInstance()->Create(baby_->transform_.GetWorldPosition());
 	}

@@ -14,6 +14,7 @@
 #include "GameElement/Animation/AnimationManager.h"
 #include"Audio/AudioManager/AudioManager.h"
 #include "GameElement/BabyTensionEffect/BabyTensionEffectManager.h"
+#include "GameElement/HitStop/HitStop.h"
 
 StageScene::StageScene()
 {
@@ -27,6 +28,7 @@ StageScene::StageScene()
 	WaterWave::StaticInitialize();
 	BackGroundObject::StaticInitialize();
 	WaterChunkQuadrangle::StaticInitialize();
+	HitStop::Initialize();
 
 	instancingmodelManager_ = InstancingModelManager::GetInstance();
 	collisionManager_ = CollisionManager::GetInstance();
@@ -90,7 +92,7 @@ void StageScene::Initialize()
 {
 
 	AudioManager::GetInstance()->AllStop();
-
+	HitStop::Initialize();
 	player_->Initialize();
 	baby_->Initialize();
 	camera_->transform_.translate_.x = player_->GetPosition().x;
@@ -192,7 +194,7 @@ void StageScene::Update()
 
 	float deltaTime = frameInfo_->GetDeltaTime();
 
-	//planetManager_->Update(deltaTime);
+	HitStop::Update(deltaTime);
 
 	switch (nowScene)
 	{
