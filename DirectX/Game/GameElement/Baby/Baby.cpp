@@ -58,16 +58,10 @@ Baby::Baby(Player* player)
 
 	input = Input::GetInstance();
 	tensionEffectManager_ = BabyTensionEffectManager::GetInstance();
-
-	for (int i = 0; i < SEType::kMaxNumber; i++) {
-		se_[i].LoadMP3(sePath_[i], seText_[i]);
-	}
 }
 
 Baby::~Baby() {
-	for (int i = 0; i < SEType::kMaxNumber; i++) {
-		se_[i].Stop();
-	}
+	
 }
 
 void Baby::Initialize()
@@ -98,8 +92,6 @@ void Baby::Initialize()
 	preIsInWaterPlayer_ = true;
 	prePreIsInWaterPlayer_ = preIsInWaterPlayer_;
 	isRide_ = false;
-	//音も再生
-	se_[SEType::sNormal].Play();
 	yarn_->Update();
 	model_->Update();
 	baby_->Update();
@@ -887,9 +879,7 @@ void Baby::TensionFaceUpdate() {
 	}
 
 	if (tension_.face != tension_.oldFace) {
-		// 前の顔と違ったらse流す
-		se_[tension_.oldFace].Stop();
-		se_[tension_.face].Play();
+		
 	}
 	tension_.oldFace = tension_.face;
 }

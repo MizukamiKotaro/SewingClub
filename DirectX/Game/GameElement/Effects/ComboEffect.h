@@ -3,6 +3,7 @@
 #include <memory>
 #include "ParticleManager.h"
 #include <array>
+#include "Audio/Audio.h"
 
 class ComboEffect {
 public:
@@ -55,7 +56,7 @@ private:
 class ComboEffectManager {
 public:
 	ComboEffectManager();
-	~ComboEffectManager() = default;
+	~ComboEffectManager();
 
 	static ComboEffectManager* GetInstance();
 
@@ -82,5 +83,23 @@ private:
 
 	std::array<ComboEffect, 10u> effectContiner_;
 	int oldRandNumber_ = 0;
+
+	// SE関連
+	enum SEType {
+		sGood,
+		sVeryGood,
+		kMaxNumber
+	};
+
+	Audio se_[kMaxNumber];
+
+	std::string sePath_[SEType::kMaxNumber] = {
+		"SE/baby/baby_good.mp3",
+		"SE/baby/baby_veryGood.mp3",
+	};
+	std::string seText_[SEType::kMaxNumber] = {
+		"baby_good",
+		"baby_veryGood",
+	};
 
 };

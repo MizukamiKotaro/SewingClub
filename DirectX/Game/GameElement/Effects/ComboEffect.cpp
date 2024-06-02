@@ -14,6 +14,16 @@ ComboEffectManager::ComboEffectManager() {
 			ParticleMeshTexData{ ModelDataManager::GetInstance()->LoadObj("plane"),
 			TextureManager::GetInstance()->LoadTexture(texturePath_.at(index++)),BlendMode::kBlendModeNormal });
 	}
+
+	for (int i = 0; i < SEType::kMaxNumber; i++) {
+		se_[i].LoadMP3(sePath_[i], seText_[i]);
+	}
+}
+
+ComboEffectManager::~ComboEffectManager() {
+	for (int i = 0; i < SEType::kMaxNumber; i++) {
+		se_[i].Stop();
+	}
 }
 
 ComboEffectManager* ComboEffectManager::GetInstance() {
@@ -44,6 +54,14 @@ void ComboEffectManager::Create(const Vector3& playerPosition) {
 			}while (randNum == oldRandNumber_);
 
 			model.Initialize(playerPosition, randNum);
+			if (randNum != YAY) {
+				se_[sVeryGood].Stop();
+				se_[sGood].Play();
+			}
+			else {
+				se_[sGood].Stop();
+				se_[sVeryGood].Play();
+			}
 			oldRandNumber_ = randNum;
 			return;
 		}
