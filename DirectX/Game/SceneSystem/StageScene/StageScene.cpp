@@ -153,7 +153,7 @@ void StageScene::Initialize()
 
 
 	//シーンの初期状態
-	nowScene = kGameClear;
+	nowScene = kPlay;
 }
 
 void StageScene::Update()
