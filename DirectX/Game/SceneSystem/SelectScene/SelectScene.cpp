@@ -156,9 +156,8 @@ void SelectScene::Initialize()
 
 void SelectScene::Update()
 {
-#ifdef _DEBUG
+
 	SetGlobalV();
-#endif // _DEBUG
 
 
 
