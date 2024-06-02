@@ -36,6 +36,8 @@ private:
 
 	ClearAnswer ScceneChange();
 
+	void TensionUpdate(const float& delta);
+
 private:
 
 	Input* input_;
@@ -53,6 +55,13 @@ private:
 
 	// 赤ちゃん用アニメーション
 	std::unique_ptr<Animation2D> babyAnimation_;
+	// アニメーション必須変数
+	float kMaxTensionPercent_ = 0.0f; // テンションの最大数。リザルトに渡される値
+	float tensionPercent_ = 0.0f; // 足し続ける値
+	Vector2 kMaxGaugePos_;
+	Vector2 kMaxGaugeScale_;
+	float nowFrame_ = 0.0f;
+	const float kMaxAnimationFrame_ = 3.0f;
 
 	Audio seMove_;
 	Audio seSelect_;
@@ -222,8 +231,5 @@ private:
 #pragma endregion
 
 #pragma endregion
-
-	Vector2 kMaxGaugePos_;
-	Vector2 kMaxGaugeScale_;
 
 };
