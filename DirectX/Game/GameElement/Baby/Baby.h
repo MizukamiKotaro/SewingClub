@@ -88,7 +88,6 @@ private:
 	float endScale_;
 	float waterRotate_;
 
-	float playerOutTime_;
 	bool preIsInWaterPlayer_;
 	bool prePreIsInWaterPlayer_;
 	bool isRide_;
@@ -118,6 +117,15 @@ private:
 	};
 	Tension tension_;
 
+	struct InWaterCatch
+	{
+		bool isCatch_;
+		bool preCatch_;
+		bool preRide_;
+		float time_;
+	};
+	InWaterCatch inWaterCatch_;
+
 	struct Combo
 	{
 		int32_t num;
@@ -141,6 +149,7 @@ private:
 		kPulledPower, // プレイヤーが水中にいる時の引っぱりの倍率
 		kRideFinishTime, // プレイヤーに乗って水中にいられる時間
 		kRideInWaterSpeed, // プレイヤーに乗って水中に潜れるスピード
+		kRideInWaterTime, // プレイヤーに水中内で乗れるようになるまでの時間
 		kMaxAcceleration, // 加速度の最大
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
