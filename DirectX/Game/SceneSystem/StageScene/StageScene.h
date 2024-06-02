@@ -106,6 +106,7 @@ private:
 		kPlay,
 		kGameOver,
 		kGameClear,
+		kGameToClear,
 		_countPlayScenes
 	};
 

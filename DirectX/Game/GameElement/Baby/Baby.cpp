@@ -77,19 +77,19 @@ void Baby::Initialize()
 	isInWater_ = true;
 	isFollowWater_ = false;
 	speed_ = 0.0f;
+	isClear_ = false;
+	clearTime_ = 0.0f;
 
 	waterRadius_ = 0.0f;
 	model_->transform_.translate_ = player_->GetPosition();
 	model_->transform_.rotate_ = {};
-	model_->Update();
-	baby_->Update();
 	waterPos_ = { model_->transform_.translate_.x,model_->transform_.translate_.y };
 	waterGravityPos_ = waterPos_;
 	prePosition_ = model_->transform_.translate_;
 	yarn_->transform_.translate_ = { model_->transform_.translate_.x, model_->transform_.translate_.y, model_->transform_.translate_.z + 0.06f };
 	yarn_->transform_.rotate_ = {};
 	yarn_->transform_.scale_ = { 0.05f,0.05f,0.05f };
-
+	SetGlobalVariable();
 	isCircleWater_ = true;
 	combo_.num = 0;
 	effeEnterW_->Initialize();
@@ -101,6 +101,9 @@ void Baby::Initialize()
 	isRide_ = false;
 	//音も再生
 	se_[SEType::sNormal].Play();
+	yarn_->Update();
+	model_->Update();
+	baby_->Update();
 }
 
 void Baby::Update(float deltaTime)
@@ -232,6 +235,42 @@ const bool Baby::GetIsCry() const
 const bool Baby::GetIsSuperSuperSmile() const
 {
 	return false;
+}
+
+void Baby::ClearUpdate(const float& deltaTime)
+{
+	if (isClear_ || model_->transform_.scale_.x <= 0.0f) {
+		return;
+	}
+	float clearTime = player_->GetClearTime();
+	clearTime_ = std::clamp(clearTime_ + deltaTime, 0.0f, clearTime);
+
+	Vector2 goalPos = player_->GetGoalPos();
+
+	Vector2 pos = Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y } - goalPos;
+	float len = pos.Length() - player_->GetClearSpeed() * deltaTime;
+	float r = player_->GetClearRotate() * deltaTime;
+	if (len <= 0.0f) {
+		pos = {};
+	}
+	else {
+		pos = pos.Normalize() * len;
+		model_->transform_.translate_.x = pos.x * std::cosf(r) - pos.y * std::sinf(r) + goalPos.x;
+		model_->transform_.translate_.y = pos.x * std::sinf(r) + pos.y * std::cosf(r) + goalPos.y;
+	}
+	Vector2 s = globalVariable_->GetVector2Value("スケール");
+	Vector3 scale = { s.x,s.y,1.0f };
+
+	model_->transform_.scale_ = Ease::UseEase(scale, Vector3{}, clearTime_, clearTime, Ease::EaseType::Constant);
+
+	model_->transform_.rotate_.z += r;
+
+	if (clearTime_ >= clearTime) {
+		isClear_ = true;
+	}
+	model_->Update();
+	baby_->Update();
+	YarnUpdate();
 }
 
 
@@ -760,7 +799,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		}
 	}
 	else {
-		tension_.tension += tensionEffectManager_->GetTension();
+		tension_.tension += tension;
 		if (tension != 0.0f) {
 			tensionEffectManager_->CreateEffect(tension);
 		}

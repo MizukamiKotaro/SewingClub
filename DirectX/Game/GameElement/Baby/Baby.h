@@ -30,7 +30,8 @@ public:
 	const bool GetIsCry() const;
 	const bool GetIsSuperSuperSmile() const;
 	const Vector3* GetPosPtr() const { return &model_->transform_.translate_; }
-
+	void ClearUpdate(const float& deltaTime);
+	const bool& GetIsClear() const { return isClear_; }
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
@@ -68,7 +69,8 @@ private:
 	bool preIsInWater_;
 	bool isInWater_;
 	bool isFollowWater_;
-
+	bool isClear_;
+	float clearTime_;
 	bool isCircleWater_;
 
 	Vector3 velocity_;
