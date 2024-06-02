@@ -237,18 +237,23 @@ void AudioOptionUI::AudioBarUpdate()
 	}
 
 	//変更した音を追加
-	if (isInput) {
+	if (preInput_ && !isInput) {
 		if (nowSelect_ == BGM) {
 			VM_->SetMusicVolumeStage(volume_[nowSelect_]);
+			seSelectBGM_.Update();
 			seSelectBGM_.Play();
 		}
 		else if (nowSelect_ == SE) {
 			VM_->SetSEVolumeStage(volume_[nowSelect_]);
+			seSelectSE_.Update();
 			seSelectSE_.Play();
 		}
 	}
 
 	VM_->SaveVolumeStage(volume_[SE], volume_[BGM]);
+
+
+	preInput_ = isInput;
 }
 
 void AudioOptionUI::UpdateSprite()

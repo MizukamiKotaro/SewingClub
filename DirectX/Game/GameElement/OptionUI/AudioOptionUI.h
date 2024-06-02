@@ -35,6 +35,8 @@ private:
 	Audio seSelectSE_;
 	Audio seSelectBGM_;
 
+	bool preInput_=false;
+
 #pragma region 画像群
 
 	//ゲージまとめの数
