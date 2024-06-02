@@ -303,6 +303,10 @@ void StageScene::Update()
 	case StageScene::kGameClear:
 		gameClearFlags_ = gameClear_->Update(deltaTime);
 		break;
+	case StageScene::kGameToClear:
+		player_->ClearUpdate(deltaTime);
+		baby_->ClearUpdate(deltaTime);
+		break;
 	case StageScene::_countPlayScenes:
 		break;
 	default:
@@ -398,7 +402,7 @@ void StageScene::SceneChange()
 				player_->Finalize();
 			}
 			if (goal_->IsClear()) {
-				nowScene = kGameClear;
+				nowScene = kGameToClear;
 				gameClear_->SetBabyParam(baby_->GetTension(), baby_->GetFace());
 				seClear_.Play();
 			}
@@ -471,6 +475,11 @@ void StageScene::SceneChange()
 			player_->Finalize();
 		}
 
+		break;
+	case StageScene::kGameToClear:
+		if (player_->GetIsClear() && baby_->GetIsClear()) {
+			nowScene = kGameClear;
+		}
 		break;
 	case StageScene::_countPlayScenes:
 		break;
