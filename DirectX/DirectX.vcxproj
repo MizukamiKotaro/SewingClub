@@ -113,6 +113,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Drawers\PostEffect\Vignette\Vignette.cpp" />
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.cpp" />
     <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.cpp" />
     <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.cpp" />
     <ClCompile Include="Game\GameElement\BackGround\BackGround.cpp" />
@@ -219,6 +221,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\FollowEnemy.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\IEnemy.cpp" />
+    <ClCompile Include="Game\GameElement\FragmentVignette\FragmentVignette.cpp" />
     <ClCompile Include="Game\GameElement\Game.cpp" />
     <ClCompile Include="Game\GameElement\GameClear\GameClear.cpp" />
     <ClCompile Include="Game\GameElement\GameOver\GameOver.cpp" />
@@ -291,6 +294,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Effects\particleAcceleration.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Drawers\PostEffect\Vignette\Vignette.h" />
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.h" />
     <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.h" />
     <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h" />
     <ClInclude Include="Game\GameElement\Camera\FollowCamera.h" />
@@ -434,6 +439,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\GameElement\Enemy\FollowEnemy.h" />
     <ClInclude Include="Game\GameElement\Enemy\IEnemy.h" />
+    <ClInclude Include="Game\GameElement\FragmentVignette\FragmentVignette.h" />
     <ClInclude Include="Game\GameElement\Game.h" />
     <ClInclude Include="Game\GameElement\GameClear\GameClear.h" />
     <ClInclude Include="Game\GameElement\GameOver\GameOver.h" />

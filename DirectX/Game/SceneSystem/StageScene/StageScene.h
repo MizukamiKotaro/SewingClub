@@ -22,6 +22,7 @@
 #include"GameElement/Effects/GetItem/GetItem.h"
 #include "GameElement/Effects/ComboEffect.h"
 #include"GameElement/InGameHUD/InGameHUD.h"
+#include "GameElement/FragmentVignette/FragmentVignette.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -53,7 +54,7 @@ private:
 	std::unique_ptr<Baby> baby_;
 	std::unique_ptr<Goal> goal_;
 	std::unique_ptr<WaterEffect> waterEffect_;
-
+	std::unique_ptr<FragmentVignette> fragmentVignette_;
 	float time_ = 0.0f;
 
 	InstancingModelManager* instancingmodelManager_;

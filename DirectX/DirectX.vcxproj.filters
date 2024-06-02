@@ -463,6 +463,15 @@
     <Filter Include="Game\GameElement\HitStop">
       <UniqueIdentifier>{ab208386-a49a-4734-b758-98efe0a53a21}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline">
+      <UniqueIdentifier>{384aadc8-1c02-4ae6-b59f-445b1247c2a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Drawer\PostEffect\Vignette">
+      <UniqueIdentifier>{ea97fe1c-5aed-4a51-9e82-a2f85d1f62f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\FragmentVignette">
+      <UniqueIdentifier>{bb440279-2c1d-4226-b903-34b438d62a12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -995,6 +1004,15 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\HitStop\HitStop.cpp">
       <Filter>Game\GameElement\HitStop</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.cpp">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\PostEffect\Vignette\Vignette.cpp">
+      <Filter>Engine\Drawer\PostEffect\Vignette</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\FragmentVignette\FragmentVignette.cpp">
+      <Filter>Game\GameElement\FragmentVignette</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1603,6 +1621,15 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\HitStop\HitStop.h">
       <Filter>Game\GameElement\HitStop</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.h">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\PostEffect\Vignette\Vignette.h">
+      <Filter>Engine\Drawer\PostEffect\Vignette</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\FragmentVignette\FragmentVignette.h">
+      <Filter>Game\GameElement\FragmentVignette</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

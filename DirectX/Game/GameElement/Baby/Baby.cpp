@@ -703,6 +703,8 @@ void Baby::InitializeGlobalVariable()
 		"テンションマックス維持の時間",
 		"テンションマックスが終了したときのテンション",
 		"プレイヤーに乗ったときのテンションアップの数値",
+		"泣いてるときのダメージを受ける間隔",
+		"泣いてるときにダメージを受ける量",
 	};
 }
 
@@ -740,6 +742,8 @@ void Baby::TensionInitialize()
 	tension_.inWaterTime = 0.0f;
 	tension_.tension = 50.0f;
 	tension_.superTime = 0.0f;
+	tension_.isGameOver_ = false;
+	tension_.fragmentHP_ = 100.0f;
 }
 
 void Baby::TensionUpdate(const float& deltaTime)
@@ -750,7 +754,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		tension_.flyTime = 0.0f;
 	}
 	else {
-		if (tension_.tension > 0.0f && tension_.inWaterTime >= fParas_[FloatParamater::kInWaterTime]) {
+		if (tension_.inWaterTime >= fParas_[FloatParamater::kInWaterTime]) {
 			tension += fParas_[FloatParamater::kUpTensionOutWater];
 		}
 		tension_.inWaterTime = 0.0f;
@@ -791,15 +795,19 @@ void Baby::TensionUpdate(const float& deltaTime)
 		ComboEffectManager::GetInstance()->Create(baby_->transform_.GetWorldPosition());
 	}
 
+	tension_.tension += tension;
 	if (tension_.tension <= 0.0f) {
 		tension_.cryTime += deltaTime;
-		if (tension_.cryTime >= fParas_[FloatParamater::kCryTime]) {
-			tension_.cryTime = 0.0f;
-			tension_.tension = fParas_[FloatParamater::kResetTensionFromCry];
+		if (tension_.cryTime >= fParas_[kFragmentCryTime]) {
+			tension_.cryTime = std::fmodf(tension_.cryTime, fParas_[kFragmentCryTime]);
+			tension_.fragmentHP_ -= fParas_[kFragmentCry];
+			if (tension_.fragmentHP_ <= 0.0f) {
+				tension_.fragmentHP_ = 0.0f;
+				tension_.isGameOver_ = true;
+			}
 		}
 	}
 	else {
-		tension_.tension += tension;
 		if (tension != 0.0f) {
 			tensionEffectManager_->CreateEffect(tension);
 		}

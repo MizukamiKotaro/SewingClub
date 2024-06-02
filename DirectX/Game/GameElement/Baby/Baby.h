@@ -32,6 +32,8 @@ public:
 	const Vector3* GetPosPtr() const { return &model_->transform_.translate_; }
 	void ClearUpdate(const float& deltaTime);
 	const bool& GetIsClear() const { return isClear_; }
+	const bool& GetIsGameOver() const { return tension_.isGameOver_; }
+	const float& GetFragmentHP() const { return tension_.fragmentHP_; }
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
@@ -111,6 +113,8 @@ private:
 		Face face = kNormal;
 		Face oldFace = kNormal;
 		bool isRideUp_ = false;
+		float fragmentHP_ = 100.0f;
+		bool isGameOver_ = false;
 	};
 	Tension tension_;
 
@@ -160,6 +164,8 @@ private:
 		kSuperSuperSmileTime, // テンションマックス維持の時間
 		kResetTensionFromSuper, // テンションマックスが終了したときのテンション
 		kUpTentionRide, // プレイヤーに乗ったときのテンションアップの数値
+		kFragmentCryTime, // 泣いてるときのダメージを受ける間隔
+		kFragmentCry, // 泣いてるときにダメージを受ける量
 		kFloatEnd,
 	};
 

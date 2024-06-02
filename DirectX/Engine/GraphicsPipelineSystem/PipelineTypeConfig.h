@@ -17,4 +17,5 @@ enum class PipelineType {
 	INSTANCING_MODEL,
 	NOISE,
 	WATER_OUTLINE,
+	VIGNETTE,
 };
