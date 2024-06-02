@@ -126,8 +126,13 @@ void StageScene::Initialize()
 	camera_->Update();
 
 	gameOver_->Initialize();
-	gameClear_->Initialize(true);
 
+	if (stageNo_ + 1 == maxStageNo_) {
+		gameClear_->Initialize(stageNo_,false);
+	}
+	else {
+		gameClear_->Initialize(stageNo_,true);
+	}
 	countIndex = 0;
 	isGoalTransition_ = false;
 
@@ -148,7 +153,7 @@ void StageScene::Initialize()
 
 
 	//シーンの初期状態
-	nowScene = kPlay;
+	nowScene = kGameClear;
 }
 
 void StageScene::Update()

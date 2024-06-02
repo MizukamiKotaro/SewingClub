@@ -19,7 +19,7 @@ public:
 	GameClear();
 	~GameClear();
 
-	void Initialize(bool nextStageActive);
+	void Initialize(int stageNum,bool nextStageActive);
 
 	ClearAnswer Update(const float& delta);
 
@@ -41,6 +41,8 @@ private:
 private:
 
 	Input* input_;
+
+	int stageNum_;
 
 	float stickD_= 0.9f;
 	bool inputActive_ = true;

@@ -101,7 +101,7 @@ void GameOver::SetGlobalV()
 	maxDirection_ = gVU_->GetFloatValue(anoKeys[MaxDirection]);
 	rotateNUm_ = gVU_->GetFloatValue(anoKeys[RotateNum]);
 	maxRotate_ = gVU_->GetFloatValue(anoKeys[MaxRotateNum]);
-#ifdef _DEBUG
+
 	back_->SetColor({ 0,0,0,alpha_ });
 
 	//開始位置
@@ -112,7 +112,6 @@ void GameOver::SetGlobalV()
 		centerP_[c] = pos;
 		pos.x += wordLength_;
 	}
-#endif // _DEBUG
 
 	
 }

@@ -76,7 +76,7 @@ private:
 	Audio seOpenOption_;
 
 	//ステージ最大数
-	int maxStageNo_ = 3;
+	int maxStageNo_ = 8;
 
 	bool isCanGoal_ = false; // ゴールできるか
 	bool isGoalTransition_ = false; // ゴールできるようになったらの演出

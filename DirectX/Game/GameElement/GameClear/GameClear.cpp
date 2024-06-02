@@ -175,9 +175,11 @@ GameClear::~GameClear()
 {
 }
 
-void GameClear::Initialize(bool nextstage)
+void GameClear::Initialize(int stageNum,bool nextstage)
 {
 	SetGlobalV();
+
+	stageNum_ = stageNum;
 
 	isNextStage_ = nextstage;
 	if (isNextStage_) {
@@ -188,7 +190,7 @@ void GameClear::Initialize(bool nextstage)
 	}
 	count_ = 0;
 
-	sp_[text_Num]->SetTextureTopLeft({ 125,0 });
+	sp_[text_Num]->SetTextureTopLeft({ (125.0f+125.0f*(float)stageNum),0 });
 	sp_[text_Num]->SetTextureSize({ 125,125 });
 	sp_[text_Num]->size_ = { 64,64 };
 	SetGlobalV();
@@ -238,11 +240,9 @@ void GameClear::Initialize(bool nextstage)
 
 ClearAnswer GameClear::Update(const float& delta)
 {
-#ifdef _DEBUG
+
 	SetGlobalV();
 
-
-#endif // _DEBUG
 
 	if (!isAnimed_) {
 
