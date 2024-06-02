@@ -57,6 +57,12 @@ public:
 
 	const float& GetSpeed() const { return speed_; }
 
+	void ClearUpdate(const float& deltaTime);
+	const bool& GetIsClear() const { return isClear_; }
+	const float& GetClearRotate() const;
+	const float& GetClearSpeed() const;
+	const float& GetClearTime() const;
+	const Vector2& GetGoalPos() const;
 private:
 	// グローバル変数の初期化、std::vectorに変更したためここで定義している
 	void InitializeGlobalVariable();
@@ -102,6 +108,9 @@ private:
 		kAttenuation, // 減衰率
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
+		kClearRotate, // クリア時の回転角度
+		kClearTime, // クリア時の経過時間
+		kClearSpeed, // クリア時の移動スピード
 		kMaxAddAcceleration, // 加算される加速度の最大値
 		kInterpolationRateInWater, // 水中での補間の割合
 		kInterpolationRate, // 補間の割合
@@ -161,12 +170,12 @@ private:
 	Vector2 gravityVelocity_;
 	Vector2 gravityPos_;
 	bool isGravity_;
-
+	float clearTime_;
 	Vector2 waterGravityPos_;
-
+	Vector2 goalPos_;
 	float memoOutWaterSpeed_;
 	bool isHitEnemy_;
-
+	bool isClear_;
 	float timeCount_;
 	float coolTimeCount_;
 	float accelerationTimeCount_;

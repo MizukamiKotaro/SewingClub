@@ -11,6 +11,7 @@
 #include "TextureManager/TextureManager.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include <numbers>
+#include "Ease/Ease.h"
 
 const float kRotate = 90.0f * (std::numbers::pi_v<float> / 180.0f);
 
@@ -89,7 +90,9 @@ Player::Player()
 
 void Player::Initialize()
 {
-
+	goalPos_ = {};
+	clearTime_ = 0.0f;
+	isClear_ = false;
 	stageEditor_->Initialize();
 	Reset();
 	effeExtraJump_->Initialize(&model_->transform_.GetWorldPosition());
@@ -546,6 +549,56 @@ void Player::UpdateFloating()
 
 }
 
+void Player::ClearUpdate(const float& deltaTime)
+{
+	if (isClear_ || model_->transform_.scale_.x <= 0.0f) {
+		return;
+	}
+	clearTime_ = std::clamp(clearTime_ + deltaTime, 0.0f, fParas_[kClearTime]);
+
+	Vector2 pos = Vector2{ model_->transform_.translate_.x,model_->transform_.translate_.y } - goalPos_;
+	float len = pos.Length() - fParas_[kClearSpeed] * deltaTime;
+	float r = fParas_[kClearRotate] * deltaTime;
+	if (len <= 0.0f) {
+		pos = {};
+	}
+	else {
+		pos = pos.Normalize() * len;
+		model_->transform_.translate_.x = pos.x * std::cosf(r) - pos.y * std::sinf(r) + goalPos_.x;
+		model_->transform_.translate_.y = pos.x * std::sinf(r) + pos.y * std::cosf(r) + goalPos_.y;
+	}
+	Vector3 scale = globalVariable_->GetVector3Value("スケール", tree1Name_[kTree1Status]);
+
+	model_->transform_.scale_ = Ease::UseEase(scale, Vector3{}, clearTime_, fParas_[kClearTime], Ease::EaseType::Constant);
+
+	model_->transform_.rotate_.z += r;
+
+	if (clearTime_ >= fParas_[kClearTime]) {
+		isClear_ = true;
+	}
+	model_->Update();
+}
+
+const float& Player::GetClearRotate() const
+{
+	return fParas_[kClearRotate];
+}
+
+const float& Player::GetClearSpeed() const
+{
+	return fParas_[kClearSpeed];
+}
+
+const float& Player::GetClearTime() const
+{
+	return fParas_[kClearTime];
+}
+
+const Vector2& Player::GetGoalPos() const
+{
+	return goalPos_;
+}
+
 void Player::InitializeGlobalVariable()
 {
 	fParas_.resize(kFloatEnd);
@@ -557,6 +610,9 @@ void Player::InitializeGlobalVariable()
 		"減速率",
 		"最大速度",
 		"最低速度",
+		"クリア時の回転角度",
+		"クリア時の経過時間",
+		"クリア時の移動スピード",
 		"加算される加速度の最大値",
 		"水中での補間の割合",
 		"補間の割合",
@@ -687,6 +743,9 @@ void Player::OnCollision(const Collider& collider)
 	}
 	else if (collider.GetMask() == ColliderMask::ENEMY) {
 		isHitEnemy_ = true;
+	}
+	else if (collider.GetMask() == ColliderMask::GOAL) {
+		goalPos_ = collider.GetCircle()->position_;
 	}
 }
 
