@@ -84,7 +84,7 @@ StageScene::StageScene()
 	tensionEffectManager_->FirstInitialize(baby_->GetPosPtr(), &camera_->transform_.translate_);
 
 	comboEffect_ = ComboEffectManager::GetInstance();
-
+	fragmentVignette_ = std::make_unique<FragmentVignette>();
 	ingameHUD_ = std::make_unique<InGameHUD>();
 }
 
@@ -101,7 +101,7 @@ void StageScene::Initialize()
 	waterManager_->Initialize();
 	itemManager_->Initialize();
 	goal_->Initialize();
-
+	fragmentVignette_->Initialize();
 	enemyManager_->Initialize(player_.get());
 
 
@@ -214,6 +214,7 @@ void StageScene::Update()
 			if (!isGoalTransition_ && isGameStarted_) {
 				player_->Update(deltaTime);
 				baby_->Update(deltaTime);
+				fragmentVignette_->Update(baby_->GetFragmentHP());
 				tensionEffectManager_->Update(deltaTime);
 				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
 			}
@@ -355,6 +356,7 @@ void StageScene::Draw()
 
 	
 	///いかUI
+	fragmentVignette_->Draw();
 	effeGoalGuid_->Draw(camera_.get());
 	
 	player_->DrawUI();
@@ -411,6 +413,10 @@ void StageScene::SceneChange()
 			if (player_->GetIsHitEnemy()) {
 				nowScene = kGameOver;
 				seDead_.Play();
+			}
+			//テンションのHPがなくなったときの処理
+			if (baby_->GetIsGameOver()) {
+				nowScene = kGameOver;
 			}
 
 			//optionを開く
