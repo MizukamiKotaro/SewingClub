@@ -53,6 +53,7 @@ void Goal::Initialize()
 	edusts_->Initialize();
 	edusts_->SetActive(true);
 	isGoal_ = false;
+	isPlayed_ = false;
 }
 
 bool Goal::Update(float deltaTime)
@@ -69,7 +70,8 @@ bool Goal::Update(float deltaTime)
 	
 	bool result = false;
 	if (isGoal_) {
-		if (!seOpenGoal_.IsPlaying()) {
+		if (!isPlayed_) {
+			isPlayed_ = true;
 			seOpenGoal_.Play();
 		}
 		result = animation_->Update("goal", deltaTime);

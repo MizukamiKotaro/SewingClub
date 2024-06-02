@@ -62,6 +62,7 @@ private:
 	Audio seOpenGoal_;
 
 	Audio seGoal_;
+	bool isPlayed_ = false;
 
 	std::unique_ptr<EffectGoalDusts>edusts_;
 };
