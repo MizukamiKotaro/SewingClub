@@ -1,5 +1,6 @@
 #include "GameOver.h"
 #include"RandomGenerator/RandomGenerator.h"
+#include"calc.h"
 #include<numbers>
 
 GameOver::GameOver()
@@ -122,11 +123,26 @@ GameOver::~GameOver()
 
 void GameOver::Initialize()
 {
+	isAnimeted_ = false;
 	nowSelect_ = Retry;
 
 	SetGlobalV();
 
+	//すべて透明
+	back_->SetColor({ 1,1,1,0 });
+	arrow_->SetColor({ 1,1,1,0 });
+	for (int i = 0; i < _countText; i++) {
+		GOText_[i]->SetColor({ 1,1,1,0 });
+	}
+	for (int i = 0; i < _countSelectText; i++) {
+		text_[i]->SetColor({ 1,1,1,0 });
+		backCloud_[i]->SetColor({ 1,1,1,0 });
+	}
 	Update();
+
+	count_ = 0;
+
+	
 }
 
 GameOverFlags GameOver::Update()
@@ -134,39 +150,61 @@ GameOverFlags GameOver::Update()
 
 	SetGlobalV();
 
-	
-#pragma region 入力による選択物変更処理
-	Vector2 move = input_->GetGamePadLStick();
-
-
-	if (isInputMoveActive_) {
-		//入力可能の場合の処理
-		//左向きの処理
-		if (move.x < -deadLineX_) {
-			isInputMoveActive_ = false;
-			seMove_.Play();
-			if (nowSelect_ == GoSelect) {
-				nowSelect_ = Retry;
-			}
-
-		}//右向きの処理
-		else if (move.x > deadLineX_) {
-			isInputMoveActive_ = false;
-			seMove_.Play();
-			if (nowSelect_ == Retry) {
-				nowSelect_ = GoSelect;
-			}
+	if (!isAnimeted_) {
+		float t = count_ / maxCount_;
+		
+		if (count_++ >= maxCount_) {
+			isAnimeted_ = true;
+			t = 1;
+		}
+		float alpha = Calc::Lerp(0, 1, t);
+		float ba = Calc::Lerp(0, alpha_, t);
+		
+		back_->SetColor({ backColor_.x,backColor_.y,backColor_.z,ba });
+		arrow_->SetColor({ 1,1,1,alpha });
+		for (int i = 0; i < _countText; i++) {
+			GOText_[i]->SetColor({ 1,1,1,alpha });
+		}
+		for (int i = 0; i < _countSelectText; i++) {
+			text_[i]->SetColor({ 1,1,1,alpha });
+			backCloud_[i]->SetColor({ 1,1,1,alpha });
 		}
 	}
 	else {
-		//不可能状態のときの処理
-		//デッドラインより内側デフラグオフ
-		if (move.x > -deadLineX_&& move.x < deadLineX_) {
-			isInputMoveActive_ = true;
+		back_->SetColor({ backColor_.x,backColor_.y,backColor_.z,alpha_ });
+#pragma region 入力による選択物変更処理
+		Vector2 move = input_->GetGamePadLStick();
+
+
+		if (isInputMoveActive_) {
+			//入力可能の場合の処理
+			//左向きの処理
+			if (move.x < -deadLineX_) {
+				isInputMoveActive_ = false;
+				seMove_.Play();
+				if (nowSelect_ == GoSelect) {
+					nowSelect_ = Retry;
+				}
+
+			}//右向きの処理
+			else if (move.x > deadLineX_) {
+				isInputMoveActive_ = false;
+				seMove_.Play();
+				if (nowSelect_ == Retry) {
+					nowSelect_ = GoSelect;
+				}
+			}
 		}
-		
-	}
+		else {
+			//不可能状態のときの処理
+			//デッドラインより内側デフラグオフ
+			if (move.x > -deadLineX_ && move.x < deadLineX_) {
+				isInputMoveActive_ = true;
+			}
+
+		}
 #pragma endregion
+	}
 
 #pragma region ロゴの動き処理
 	for (int i = 0; i < _countText; i++) {
@@ -201,20 +239,19 @@ GameOverFlags GameOver::Update()
 	}
 #pragma endregion
 
-
 #pragma region 矢印の更新処理
 
 	//動きの処理
 	arrowSwing_ += swingSecond_ / 60.0f;
 	arrowSwing_ = std::fmod(arrowSwing_, 2.0f * (float)std::numbers::pi);
-	arrowAnime_.x = std::sin(arrowSwing_)*swingNum_;
+	arrowAnime_.x = std::sin(arrowSwing_) * swingNum_;
 
 	//座標更新
 	arrow_->pos_ = text_[nowSelect_]->pos_ + arrowPos_ + arrowAnime_;
 #pragma endregion
 
 #pragma region 画像更新
-	back_->SetColor({ backColor_.x,backColor_.y,backColor_.z,alpha_ });
+
 	back_->Update();
 	
 	for (int i = 0; i < _countText; i++) {

@@ -125,7 +125,6 @@ private:
 	// コンボエフェクト
 	ComboEffectManager* comboEffect_ = nullptr;
 
-
 	//HUDとか
 	std::unique_ptr<InGameHUD>ingameHUD_;
 };

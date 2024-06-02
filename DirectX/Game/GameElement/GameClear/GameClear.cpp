@@ -101,6 +101,12 @@ void GameClear::SetGlobalV()
 	swingSecond_ = gvu_->GetFloatValue(anoKeys[SwingSecond]);
 	swingNum_ = gvu_->GetFloatValue(anoKeys[SwingNum]);
 	GageColor_ = gvu_->GetVector3Value(anoKeys[GageColor]);
+
+	sp_[Back]->SetColor({ color_.x,color_.y,color_.z,alpha_ });
+	sp_[Valuation_Normal]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
+	sp_[Valuation_Good]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
+	sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
+	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,1 });
 }
 
 void GameClear::InputUpdate()
@@ -171,6 +177,8 @@ GameClear::~GameClear()
 
 void GameClear::Initialize(bool nextstage)
 {
+	SetGlobalV();
+
 	isNextStage_ = nextstage;
 	if (isNextStage_) {
 		nowSelect_ = NextStage;
@@ -207,6 +215,25 @@ void GameClear::Initialize(bool nextstage)
 	else {
 		nowSelect_ = StageSelect;
 	}
+
+	isAnimed_ = false;
+	aCount_ = 0;
+	for (int i = 0; i < _countText; i++) {
+		sp_[i]->SetColor({ 1, 1, 1, 0 });
+	}
+	sp_[Back]->SetColor({ color_.x,color_.y,color_.z,alpha_ });
+	sp_[Valuation_Normal]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,0 });
+	sp_[Valuation_Good]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,0 });
+	sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,0 });
+	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,0 });
+
+	for (int i = 0; i < _countValuations; i++) {
+		baby_[i]->SetColor({ 1,1,1,0 });
+	}
+
+	for (int i = 0; i < _countPSelect; i++) {
+		selects_[i]->SetColor({ 1,1,1,0 });
+	}
 }
 
 ClearAnswer GameClear::Update(const float& delta)
@@ -214,14 +241,43 @@ ClearAnswer GameClear::Update(const float& delta)
 #ifdef _DEBUG
 	SetGlobalV();
 
-	sp_[Back]->SetColor({ color_.x,color_.y,color_.z,alpha_ });
-	sp_[Valuation_Normal]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
-	sp_[Valuation_Good]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
-	sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
-	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,1 });
+
 #endif // _DEBUG
 
-	InputUpdate();
+	if (!isAnimed_) {
+
+		float t = aCount_ / amaxC_;
+
+		if (aCount_++ >= amaxC_) {
+			isAnimed_ = true;
+			t = 1;
+		}
+
+		float a = Calc::Lerp(0, 1, t);
+		float ba = Calc::Lerp(0, alpha_, t);
+
+		for (int i = 0; i < _countText; i++) {
+			sp_[i]->SetColor({ 1, 1, 1, a });
+		}
+		sp_[Back]->SetColor({ color_.x,color_.y,color_.z,ba });
+		sp_[Valuation_Normal]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,a });
+		sp_[Valuation_Good]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,a });
+		sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,a });
+		sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,a });
+
+		for (int i = 0; i < _countValuations; i++) {
+			baby_[i]->SetColor({ 1,1,1,a });
+		}
+
+		for (int i = 0; i < _countPSelect; i++) {
+			selects_[i]->SetColor({ 1,1,1,a });
+		}
+
+	}
+	else {
+		InputUpdate();
+
+	}
 
 	ArrowUpdate();
 	// テンションゲージの更新

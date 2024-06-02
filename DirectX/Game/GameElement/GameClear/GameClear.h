@@ -53,6 +53,10 @@ private:
 	//次のステージがあるか否か
 	bool isNextStage_ = true;
 
+	bool isAnimed_ = false;
+	float aCount_ = 0;
+	float amaxC_ = 60;
+
 	// 赤ちゃん用アニメーション
 	std::unique_ptr<Animation2D> babyAnimation_;
 	// アニメーション必須変数

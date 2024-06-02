@@ -41,6 +41,13 @@ private:
 	bool isInputMoveActive_ = true;
 
 	float deadLineX_ = 0.9f;
+
+	//アニメーション処理したか
+	bool isAnimeted_ = false;
+
+	float count_  = 0;
+	float maxCount_ = 60;
+
 	//黒背景
 	std::unique_ptr<Sprite>back_;
 	Vector3 backColor_={ 0,0,0 };
