@@ -97,13 +97,16 @@ void Baby::Initialize()
 	RideInWaterInitialize();
 	preIsInWaterPlayer_ = true;
 	prePreIsInWaterPlayer_ = preIsInWaterPlayer_;
-	playerOutTime_ = 0.0f;
 	isRide_ = false;
 	//音も再生
 	se_[SEType::sNormal].Play();
 	yarn_->Update();
 	model_->Update();
 	baby_->Update();
+	inWaterCatch_.isCatch_ = false;
+	inWaterCatch_.preCatch_ = false;
+	inWaterCatch_.preRide_ = false;
+	inWaterCatch_.time_ = 0.0f;
 }
 
 void Baby::Update(float deltaTime)
@@ -117,24 +120,32 @@ void Baby::Update(float deltaTime)
 	prePosition_ = model_->transform_.translate_;
 	preIsInWater_ = isInWater_;
 
+	if (!inWaterCatch_.preRide_) {
+		inWaterCatch_.preRide_ = false;
+		if (inWaterCatch_.isCatch_) {
+			inWaterCatch_.preCatch_ = true;
+		}
+		inWaterCatch_.isCatch_ = false;
+	}
+	inWaterCatch_.preRide_ = false;
+
 	bool isRide = false;
-	if (!player_->GetPreInWater()) {
+	if (!player_->GetPreInWater() && !inWaterCatch_.preCatch_ && !inWaterCatch_.isCatch_) {
 		Vector3 pos = player_->GetPosition() - model_->transform_.translate_;
 		pos.z = 0.0f;
 		float length = pos.Length();
 		if (length <= fParas_[kNearPlayerLength]) {
 			isRide = true;
 			isRide_ = true;
-			playerOutTime_ = 0.0f;
 		}
 		else if (length <= fParas_[kNearPulledPlayerLength]) {
 			isRide = true;
-			playerOutTime_ = 0.0f;
 		}
 	}
+	
 	preIsInWaterPlayer_ = player_->GetPreInWater();
 
-	if (isRide || isRide_) {
+	if (isRide || isRide_ || inWaterCatch_.isCatch_) {
 		RideUpdate(deltaTime);
 	}
 	else if (isInWater_) {
@@ -277,7 +288,7 @@ void Baby::ClearUpdate(const float& deltaTime)
 void Baby::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::WATER) {
-		if (!isRide_ || (isRide_ && (player_->GetSpeed() < rideInWater_.rideFinishSpeed || rideInWater_.rideFinishTime > fParas_[kInWaterTime]))) {
+		if ((!isRide_ && !inWaterCatch_.isCatch_) || (isRide_ && (player_->GetSpeed() < rideInWater_.rideFinishSpeed || rideInWater_.rideFinishTime > fParas_[kInWaterTime]))) {
 			isRide_ = false;
 			combo_.num = 0;
 			if (!preIsInWater_ && isFollowWater_) {
@@ -372,7 +383,12 @@ void Baby::OnCollision(const Collider& collider)
 			}
 		}
 		else {
-			rideInWater_.isRideInWater = true;
+			if (inWaterCatch_.isCatch_) {
+				inWaterCatch_.preRide_ = true;
+			}
+			else {
+				rideInWater_.isRideInWater = true;
+			}
 		}
 
 		//水にはいいた瞬間の処理
@@ -445,6 +461,7 @@ void Baby::ApplyGlobalVariable()
 
 void Baby::OutWaterUpdate(const float& deltaTime)
 {
+	inWaterCatch_.time_ = 0.0f;
 	Vector3 vect = player_->GetPosition() - model_->transform_.translate_;
 	vect.z = 0.0f;
 
@@ -586,6 +603,9 @@ void Baby::OutWaterUpdate(const float& deltaTime)
 
 void Baby::InWaterUpdate(const float& deltaTime)
 {
+	inWaterCatch_.time_ += deltaTime;
+	inWaterCatch_.preCatch_ = false;
+
 	Vector3 vect = player_->GetPosition() - model_->transform_.translate_;
 	vect.z = 0.0f;
 
@@ -594,6 +614,33 @@ void Baby::InWaterUpdate(const float& deltaTime)
 	if (length >= fParas_[FloatParamater::kLimitePlayerLength]) {
 		// 無理やり引っ張る処理
 		PulledUpdate(vect, length);
+	}
+	else if (inWaterCatch_.time_ >= fParas_[kRideFinishTime] && length <= fParas_[kNearPulledPlayerLength]) {
+		inWaterCatch_.time_ = 0.0f;
+		if (length <= fParas_[kNearPlayerLength]) {
+			model_->transform_.translate_ = player_->GetPosition();
+			model_->transform_.rotate_.z = player_->GetRotate().z;
+			inWaterCatch_.isCatch_ = true;
+		}
+		else {
+			Vector3 pos = player_->GetPosition();
+			Vector3 v = pos - model_->transform_.translate_;
+			v.z = 0.0f;
+			v = v.Normalize();
+			float s = velocity_.Length();
+			velocity_ = v * (s + fParas_[kNearPulledPlayerGravity] * deltaTime);
+			model_->transform_.translate_ += velocity_;
+			Vector3 v2 = pos - model_->transform_.translate_;
+			v2.z = 0.0f;
+			float l = v2.Length();
+			v2 = v2.Normalize();
+
+			if (Calc::Dot(v, v2) < 0.0f || l <= fParas_[kNearPlayerLength]) {
+				model_->transform_.translate_ = player_->GetPosition();
+				model_->transform_.rotate_.z = player_->GetRotate().z;
+				inWaterCatch_.isCatch_ = true;
+			}
+		}
 	}
 	else {
 		if (isCircleWater_) {
@@ -679,6 +726,7 @@ void Baby::InitializeGlobalVariable()
 		"プレイヤーが水中にいる時の引っぱりの倍率",
 		"プレイヤーに乗って水中にいられる時間",
 		"プレイヤーに乗って水中に潜れるスピード",
+		"プレイヤーに水中内で乗れるようになるまでの時間",
 		"加速度の最大",
 		"最大速度",
 		"最低速度",
@@ -855,7 +903,11 @@ void Baby::RideInWaterInitialize()
 
 void Baby::RideUpdate(const float& deltaTime)
 {
-	if (isRide_) {
+	if (inWaterCatch_.isCatch_) {
+		model_->transform_.translate_ = player_->GetPosition();
+		model_->transform_.rotate_.z = player_->GetRotate().z;
+	}
+	else if (isRide_) {
 		RideUpdate2(deltaTime);
 	}
 	else {
@@ -873,7 +925,6 @@ void Baby::RideUpdate(const float& deltaTime)
 
 		if (Calc::Dot(v, v2) < 0.0f || l <= fParas_[kNearPlayerLength]) {
 			isRide_ = true;
-			playerOutTime_ = 0.0f;
 			RideUpdate2(deltaTime);
 		}
 	}
@@ -891,7 +942,6 @@ void Baby::RideUpdate2(const float& deltaTime)
 	else {
 		rideInWater_.rideFinishTime = 0.0f;
 	}
-	playerOutTime_ = std::clamp(playerOutTime_ + deltaTime, 0.0f, fParas_[kNearPlayerTime]);
 }
 
 void Baby::TextureUpdate() {
