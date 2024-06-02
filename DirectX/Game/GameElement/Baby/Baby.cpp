@@ -58,6 +58,16 @@ Baby::Baby(Player* player)
 
 	input = Input::GetInstance();
 	tensionEffectManager_ = BabyTensionEffectManager::GetInstance();
+
+	for (int i = 0; i < SEType::kMaxNumber; i++) {
+		se_[i].LoadMP3(sePath_[i], seText_[i]);
+	}
+}
+
+Baby::~Baby() {
+	for (int i = 0; i < SEType::kMaxNumber; i++) {
+		se_[i].Stop();
+	}
 }
 
 void Baby::Initialize()
@@ -89,6 +99,8 @@ void Baby::Initialize()
 	prePreIsInWaterPlayer_ = preIsInWaterPlayer_;
 	playerOutTime_ = 0.0f;
 	isRide_ = false;
+	//音も再生
+	se_[SEType::sNormal].Play();
 }
 
 void Baby::Update(float deltaTime)
@@ -683,6 +695,7 @@ void Baby::TensionInitialize()
 {
 	tension_.cryTime = 0.0f;
 	tension_.face = Face::kNormal;
+	tension_.oldFace = Face::kNormal;
 	tension_.flyTime = 0.0f;
 	tension_.playerInWaterTime = 0.0f;
 	tension_.inWaterTime = 0.0f;
@@ -760,8 +773,8 @@ void Baby::TensionUpdate(const float& deltaTime)
 	
 }
 
-void Baby::TensionFaceUpdate()
-{
+void Baby::TensionFaceUpdate() {
+
 	if (tension_.tension <= 0.0f) {
 		tension_.face = Face::kCry;
 	}
@@ -777,6 +790,13 @@ void Baby::TensionFaceUpdate()
 	else {
 		tension_.face = Face::kNormal;
 	}
+
+	if (tension_.face != tension_.oldFace) {
+		// 前の顔と違ったらse流す
+		se_[tension_.oldFace].Stop();
+		se_[tension_.face].Play();
+	}
+	tension_.oldFace = tension_.face;
 }
 
 void Baby::RideInWaterInitialize()

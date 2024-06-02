@@ -7,6 +7,7 @@
 #include "GameElement/Charactor/Charactor.h"
 #include "GameElement/Animation/Animation2D.h"
 #include "GameElement/Effects/EffectEnterWater.h"
+#include "Audio/Audio.h"
 
 class Player;
 class BabyTensionEffectManager;
@@ -15,6 +16,7 @@ class Baby : public Charactor
 {
 public:
 	Baby(Player* player);
+	~Baby();
 
 	void Initialize() override;
 
@@ -105,6 +107,7 @@ private:
 		float inWaterTime = 0.0f;
 		float superTime = 0.0f;
 		Face face = kNormal;
+		Face oldFace = kNormal;
 		bool isRideUp_ = false;
 	};
 	Tension tension_;
@@ -184,6 +187,34 @@ private:
 		"baby_jump_good.png",
 		"baby_jump_veryGood.png",
 		"baby_jump_anxiety.png",
+	};
+
+	// SE関連
+	enum SEType {
+		sNormal,
+		sGood,
+		sVeryGood,
+		sCry,
+		sWaterIn,
+		kMaxNumber
+	};
+
+	Audio se_[kMaxNumber];
+	SEType nowSEType_ = SEType::sNormal;
+
+	std::string sePath_[SEType::kMaxNumber] = {
+		"SE/baby/baby_.mp3",
+		"SE/baby/baby_good.mp3",
+		"SE/baby/baby_veryGood.mp3",
+		"SE/baby/baby_cry.mp3",
+		"SE/baby/baby_waterIn.mp3"
+	};
+	std::string seText_[SEType::kMaxNumber] = {
+		"baby_normal",
+		"baby_good",
+		"baby_veryGood",
+		"baby_cry",
+		"baby_waterIn"
 	};
 
 };
