@@ -2,6 +2,9 @@
 #include "GameElement/Animation/AnimationManager.h"
 
 #include<numbers>
+#include "calc.h"
+#include "Ease/Ease.h"
+
 
 GameClear::GameClear()
 {
@@ -76,11 +79,13 @@ void GameClear::SetGlobalV()
 			arrowPos_ = gvu_->GetVector2Value(spKeysP[i]);
 			sp_[i]->size_ = gvu_->GetVector2Value(spKeysS[i]);
 		}
+		else if (i == (int)Gage_Bar) {
+			kMaxGaugePos_ = gvu_->GetVector2Value(spKeysP[i]);
+			kMaxGaugeScale_ = gvu_->GetVector2Value(spKeysS[i]);
+		}
 		else {
 			sp_[i]->pos_ = gvu_->GetVector2Value(spKeysP[i]);
 			sp_[i]->size_ = gvu_->GetVector2Value(spKeysS[i]);
-
-
 		}
 
 	}
@@ -189,6 +194,10 @@ void GameClear::Initialize(bool nextstage)
 	kMaxGaugePos_ = sp_[Gage_Bar]->pos_;
 	kMaxGaugeScale_ = sp_[Gage_Bar]->size_;
 
+	kMaxTensionPercent_ = 0.0f;
+	tensionPercent_ = 0.0f;
+	nowFrame_ = 0.0f;
+
 	Update(0.0f);
 
 	isNextStage_ = nextstage;
@@ -212,11 +221,11 @@ ClearAnswer GameClear::Update(const float& delta)
 	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,1 });
 #endif // _DEBUG
 
-
-
 	InputUpdate();
 
 	ArrowUpdate();
+	// テンションゲージの更新
+	TensionUpdate(delta);
 
 	//選択物のみいろっを変える処理
 	for (int i = 0; i < _countPSelect; i++) {
@@ -293,7 +302,10 @@ void GameClear::Draw()
 
 void GameClear::SetBabyParam(const float& tension, const int& faceIndex) {
 	// ここで0 ~ 100 なのを 0 ~ 1でもらうようにしている
-	float tensionPercent = tension * 0.01f;
+	kMaxTensionPercent_ = tension * 0.01f;
+
+	// テンション0で初期化
+	tensionPercent_ = 0.0f;
 
 	/*
 	* pos,size,uvScale,uvTrans
@@ -303,9 +315,9 @@ void GameClear::SetBabyParam(const float& tension, const int& faceIndex) {
 
 	// uvを求める xのみでyはかならず固定
 	// uvScaleを求める テンション率
-	float uvScale = tensionPercent;
+	float uvScale = tensionPercent_;
 	// uv座標を求める 1.0f - テンション率
-	float uvTrans = 1.0f - tensionPercent;
+	float uvTrans = 1.0f - tensionPercent_;
 	// spriteSizeを求める 最大サイズ * uvScale
 	float spriteSize = kMaxGaugeScale_.x * uvScale;
 	// spriteの位置を求める (最大サイズ - 今のサイズ) / 2 + 定位置
@@ -353,4 +365,31 @@ ClearAnswer GameClear::ScceneChange()
 	}
 
 	return result;
+}
+
+void GameClear::TensionUpdate(const float& delta) {
+	float T = nowFrame_ / kMaxAnimationFrame_;
+	tensionPercent_ = Calc::Lerp(0.0f, kMaxTensionPercent_, T);
+	nowFrame_ += delta;
+	nowFrame_ = std::clamp(nowFrame_, 0.0f, kMaxAnimationFrame_);
+
+	// uvを求める xのみでyはかならず固定
+	// uvScaleを求める テンション率
+	float uvScale = tensionPercent_;
+	// uv座標を求める 1.0f - テンション率
+	float uvTrans = 1.0f - tensionPercent_;
+	// spriteSizeを求める 最大サイズ * uvScale
+	float spriteSize = kMaxGaugeScale_.x * uvScale;
+	// spriteの位置を求める (最大サイズ - 今のサイズ) / 2 + 定位置
+	float spritePos = (kMaxGaugeScale_.x - spriteSize) * 0.5f;
+	spritePos += kMaxGaugePos_.x;
+	spritePos = Calc::Lerp(sp_[Gage_Bar]->pos_.x, spritePos, 0.95f);
+	spriteSize = Calc::Lerp(sp_[Gage_Bar]->size_.x, spriteSize, 0.95f);
+
+	// 座標更新
+	sp_[Gage_Bar]->SetTextureTopLeft(Vector2(uvTrans, 0.0f));
+	sp_[Gage_Bar]->SetTextureSize(Vector2(uvScale, 1.0f));
+	sp_[Gage_Bar]->pos_ = Vector2(spritePos, kMaxGaugePos_.y);
+	sp_[Gage_Bar]->size_ = Vector2(spriteSize, kMaxGaugeScale_.y);
+	sp_[Gage_Bar]->Update();
 }
