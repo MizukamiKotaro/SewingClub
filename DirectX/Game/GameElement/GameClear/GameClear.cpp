@@ -316,7 +316,7 @@ ClearAnswer GameClear::Update(const float& delta)
 
 		reTex_[resultAns_]->SetColor({ 1,1,1,a });
 
-		sca = Calc::Lerp(reSize_.x, 1000, t);
+		sca = Calc::Lerp(reSize_.x, 200, t);
 
 		reTex_[resultAns_]->size_ = { sca,sca };
 
