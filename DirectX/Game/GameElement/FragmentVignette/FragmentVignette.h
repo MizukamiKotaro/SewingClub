@@ -35,4 +35,5 @@ private:
 	// 割れたときの音
 	Audio se_;
 	float preHP_;
+	bool isSe_[4];
 };

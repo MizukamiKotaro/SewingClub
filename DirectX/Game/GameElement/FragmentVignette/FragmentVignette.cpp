@@ -25,6 +25,9 @@ void FragmentVignette::Initialize()
 	vignette_->vignetteData_->scale = 50.0f;
 	isDraw_ = false;
 	preHP_ = 100.0f;
+	for (int32_t i = 0; i < 4; i++) {
+		isSe_[i] = false;
+	}
 }
 
 void FragmentVignette::Update(const float& hp)
@@ -35,8 +38,11 @@ void FragmentVignette::Update(const float& hp)
 
 	if (hp < 100.0f) {
 		if (preHP_ == 100.0f || (preHP_ > 80.0f && hp <= 80.0f) || (preHP_ > 60.0f && hp <= 60.0f) || (preHP_ > 40.0f && hp <= 40.0f) || (preHP_ > 20.0f && hp <= 20.0f) || hp <= 0.0f) {
-			se_.Play();
+			if (preHP_ != hp) {
+				se_.Play();
+			}
 		}
+		preHP_ = hp;
 
 		isDraw_ = true;
 		float t = hp * 0.01f;
