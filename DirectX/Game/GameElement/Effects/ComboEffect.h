@@ -56,7 +56,7 @@ private:
 class ComboEffectManager {
 public:
 	ComboEffectManager();
-	~ComboEffectManager();
+	~ComboEffectManager() = default;
 
 	static ComboEffectManager* GetInstance();
 
