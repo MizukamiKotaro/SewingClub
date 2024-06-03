@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "Vector3.h"
 #include "Vignette/Vignette.h"
+#include "Audio.h"
 
 class FragmentVignette
 {
@@ -31,4 +32,7 @@ private:
 	float minScale_;
 	float maxScale_;
 	bool isDraw_;
+	// 割れたときの音
+	Audio se_;
+	float preHP_;
 };
