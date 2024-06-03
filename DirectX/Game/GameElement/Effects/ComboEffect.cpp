@@ -38,7 +38,7 @@ void ComboEffectManager::Update(const float& delta) {
 	}
 }
 
-void ComboEffectManager::Create(const Vector3& playerPosition) {
+int32_t ComboEffectManager::Create(const Vector3& playerPosition) {
 	// 生成処理
 	for (auto& model : effectContiner_) {
 		// 今動いていなければ
@@ -63,9 +63,10 @@ void ComboEffectManager::Create(const Vector3& playerPosition) {
 				se_[sVeryGood].Play();
 			}
 			oldRandNumber_ = randNum;
-			return;
+			return randNum;
 		}
 	}
+	return -1;
 }
 
 void ComboEffectManager::Draw() {

@@ -832,7 +832,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 			HitStop::SetHitStop(HitStopType::kBabyComb);
 		}
 		// comboUIの生成
-		ComboEffectManager::GetInstance()->Create(baby_->transform_.GetWorldPosition());
+		babyPauseIndex_ = ComboEffectManager::GetInstance()->Create(baby_->transform_.GetWorldPosition());
 	}
 
 	tension_.tension += tension;
@@ -937,10 +937,26 @@ void Baby::RideUpdate2(const float& deltaTime)
 void Baby::TextureUpdate() {
 	uint32_t faceIndex = static_cast<uint32_t>(tension_.face);
 	if (!isInWater_ && !isFollowWater_) {
-		faceIndex += kMaxFacePattern;
+		if (faceIndex != 4u && faceIndex <= 3u) {
+			if (combo_.num > 0) {
+				switch (babyPauseIndex_) {
+				case 0: //YEAH
+					faceIndex = 10;
+					break;
+				case 1: // WOW
+					faceIndex = 2;
+					break;
+				case 2: // YAY
+					faceIndex = 9;
+					break;
+				default:
+					faceIndex += kMaxFacePattern;
+					break;
+				}
+			}
+		}
+
 	}
-	if (faceIndex == texturePath.size()) {
-		faceIndex -= kMaxFacePattern;
-	}
+
 	baby_->SetTexture(TextureManager::GetInstance()->LoadTexture(directryPath + texturePath.at(faceIndex)));
 }
