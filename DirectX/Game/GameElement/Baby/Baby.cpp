@@ -58,6 +58,8 @@ Baby::Baby(Player* player)
 
 	input = Input::GetInstance();
 	tensionEffectManager_ = BabyTensionEffectManager::GetInstance();
+
+	se_cry.LoadMP3("SE/baby/baby_cry.mp3", "baby_cry");
 }
 
 Baby::~Baby() {
@@ -882,7 +884,10 @@ void Baby::TensionFaceUpdate() {
 	}
 
 	if (tension_.face != tension_.oldFace) {
-		
+		if (tension_.face == Face::kCry) {
+			se_cry.Stop();
+			se_cry.Play();
+		}
 	}
 	tension_.oldFace = tension_.face;
 }

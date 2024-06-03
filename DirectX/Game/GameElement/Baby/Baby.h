@@ -7,6 +7,7 @@
 #include "GameElement/Charactor/Charactor.h"
 #include "GameElement/Animation/Animation2D.h"
 #include "GameElement/Effects/EffectEnterWater.h"
+#include "Audio/Audio.h"
 
 class Player;
 class BabyTensionEffectManager;
@@ -209,5 +210,7 @@ private:
 	};
 	int32_t babyPauseIndex_ = -1; // ポーズインデックス
 	float jumpAnimationFrame_ = 0.0f;
+
+	Audio se_cry;
 
 };
