@@ -15,6 +15,8 @@ FragmentVignette::FragmentVignette()
 	vignette_->PreDrawScene();
 	sprite_->Draw();
 	vignette_->PostDrawScene();
+
+	se_.LoadMP3("SE/Scene/ingame_goalOpen.mp3", "割れる音");
 }
 
 void FragmentVignette::Initialize()
@@ -22,6 +24,7 @@ void FragmentVignette::Initialize()
 	SetGlobalVariable();
 	vignette_->vignetteData_->scale = 50.0f;
 	isDraw_ = false;
+	preHP_ = 100.0f;
 }
 
 void FragmentVignette::Update(const float& hp)
@@ -31,6 +34,10 @@ void FragmentVignette::Update(const float& hp)
 #endif // _DEBUG
 
 	if (hp < 100.0f) {
+		if (preHP_ == 100.0f || (preHP_ > 80.0f && hp <= 80.0f) || (preHP_ > 60.0f && hp <= 60.0f) || (preHP_ > 40.0f && hp <= 40.0f) || (preHP_ > 20.0f && hp <= 20.0f) || hp <= 0.0f) {
+			se_.Play();
+		}
+
 		isDraw_ = true;
 		float t = hp * 0.01f;
 		float scale = (1.0f - t) * minScale_ + t * maxScale_;
