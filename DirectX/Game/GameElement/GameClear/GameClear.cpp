@@ -15,9 +15,16 @@ GameClear::GameClear()
 		sp_[i] = std::make_unique<Sprite>(paths[i]);
 	}
 
+	for (int i = 0; i < _countResults; i++) {
+		reTex_[i] = std::make_unique<Sprite>(rePaths_[i]);
+	}
+
+
 	for (int i = 0; i < _countPSelect; i++) {
 		selects_[i] = std::make_unique<Sprite>(selePath_[i]);
 	}
+
+
 
 	sp_[Back]->size_ = { 1280,720 };
 
@@ -56,7 +63,8 @@ GameClear::GameClear()
 	gvu_->AddItem(anoKeys[SwingSecond], swingSecond_);
 	gvu_->AddItem(anoKeys[SwingNum], swingNum_);
 	gvu_->AddItem(anoKeys[GageColor], GageColor_);
-
+	gvu_->AddItem(anoKeys[RePos], rePos_);
+	gvu_->AddItem(anoKeys[ReSize], reSize_);
 	SetGlobalV();
 
 	// 赤ちゃんアニメーション
@@ -101,6 +109,8 @@ void GameClear::SetGlobalV()
 	swingSecond_ = gvu_->GetFloatValue(anoKeys[SwingSecond]);
 	swingNum_ = gvu_->GetFloatValue(anoKeys[SwingNum]);
 	GageColor_ = gvu_->GetVector3Value(anoKeys[GageColor]);
+	rePos_ = gvu_->GetVector2Value(anoKeys[RePos]);
+	reSize_ = gvu_->GetVector2Value(anoKeys[ReSize]);
 
 	sp_[Back]->SetColor({ color_.x,color_.y,color_.z,alpha_ });
 	sp_[Valuation_Normal]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
@@ -308,6 +318,10 @@ ClearAnswer GameClear::Update(const float& delta)
 		baby_[valuation_]->SetTextureSize(Vector2(trans.scale_.x, trans.scale_.y));
 	}
 
+	reTex_[resultAns_]->pos_ = rePos_;
+	reTex_[resultAns_]->size_ = reSize_;
+	reTex_[resultAns_]->Update();
+
 	return ScceneChange();
 }
 
@@ -346,6 +360,8 @@ void GameClear::Draw()
 
 
 	}
+
+	reTex_[resultAns_]->Draw();
 
 	for (int i = 0; i < _countPSelect; i++) {
 		if (i == (int)NextStage && !isNextStage_) {
@@ -399,6 +415,20 @@ void GameClear::SetBabyParam(const float& tension, const int& faceIndex) {
 	// perfect
 	else if (faceIndex == 2) {
 		valuation_ = Valuations::Perfect;
+	}
+
+	//割合で値評価変更
+	if (kMaxTensionPercent_ < 0.3f) {
+		resultAns_ = kC;
+	}
+	else if (kMaxTensionPercent_ < 0.8f) {
+		resultAns_ = kB;
+	}
+	else if (kMaxTensionPercent_ < 1.0f) {
+		resultAns_ = kA;
+	}
+	else {
+		resultAns_ =kS;
 	}
 }
 

@@ -109,10 +109,31 @@ private:
 		"baby_UI_gageDown.png",
 		"baby_normal.png",		//赤ちゃん
 		"HUD_arrow.png",
-		"ingame_select_HUD.png"
+		"ingame_select_HUD.png",
+		
 	};
 
+	enum Results {
+		kS,
+		kA,
+		kB,
+		kC,
+		_countResults
+	};
 
+	Results resultAns_;
+
+	std::unique_ptr<Sprite>reTex_[_countResults];
+
+	Vector2 rePos_ = { 640,360 };
+	Vector2 reSize_ = {100,100};
+
+	std::string rePaths_[_countResults] = {
+		"gameClear_score_S.png",
+		"gameClear_score_A.png",
+		"gameClear_score_B.png",
+		"gameClear_score_C.png",
+	};
 	
 #pragma endregion
 
@@ -223,6 +244,8 @@ private:
 		SwingSecond,
 		SwingNum,
 		GageColor,
+		RePos,
+		ReSize,
 		_countAno
 	};
 
@@ -232,7 +255,9 @@ private:
 		"HUD色",
 		"動く速度",
 		"動く量",
-		"ゲージの色"
+		"ゲージの色",
+		"評価英 座標",
+		"評価英 size",
 	};
 #pragma endregion
 
