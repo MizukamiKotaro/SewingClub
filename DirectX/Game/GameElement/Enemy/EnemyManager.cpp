@@ -9,7 +9,7 @@ EnemyManager* EnemyManager::GetInstance()
 	return &instance;
 }
 
-void EnemyManager::Initialize(Player* pplayer)
+void EnemyManager::Initialize(Player* pplayer,const Camera*camera)
 {
 	if (pplayer) {
 		player_ptr = pplayer;
@@ -28,6 +28,15 @@ void EnemyManager::Initialize(Player* pplayer)
 	FollowEnemy::SetPlayerPtr(player_ptr->GetPositionPtr());
 	Clear();
 	GenerateEnemies();
+
+	guid_ = std::make_unique<UIEnemyGuidance>();
+	guid_->Initialize(camera);
+
+	//座標ポインタ取得
+	for (auto& da : enemies_) {
+		guid_->SetEnemyPos(da->GetPosition());
+	}
+	guid_->Update();
 }
 
 void EnemyManager::Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension)
@@ -48,7 +57,7 @@ void EnemyManager::Update(const float& deltaTime, Camera* camera, const uint32_t
 	}
 
 	if (initializeFrag) {
-		Initialize(nullptr);
+		Initialize(nullptr,camera);
 	}
 
 #endif // _DEBUG
@@ -57,6 +66,8 @@ void EnemyManager::Update(const float& deltaTime, Camera* camera, const uint32_t
 		(*it)->Update(deltaTime, camera, babyTension);
 		it++;
 	}
+
+	guid_->Update();
 }
 
 void EnemyManager::Draw() const
@@ -64,6 +75,8 @@ void EnemyManager::Draw() const
 	for (const std::unique_ptr<IEnemy>& enemy : enemies_) {
 		enemy->Draw();
 	}
+
+	guid_->Draw();
 }
 
 void EnemyManager::SetGlobalVariable()

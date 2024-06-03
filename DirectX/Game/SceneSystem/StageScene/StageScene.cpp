@@ -102,7 +102,7 @@ void StageScene::Initialize()
 	itemManager_->Initialize();
 	goal_->Initialize();
 	fragmentVignette_->Initialize();
-	enemyManager_->Initialize(player_.get());
+	enemyManager_->Initialize(player_.get(),camera_.get());
 
 
 	bgm_.Play(true);

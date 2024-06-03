@@ -1014,6 +1014,9 @@
     <ClCompile Include="Game\GameElement\FragmentVignette\FragmentVignette.cpp">
       <Filter>Game\GameElement\FragmentVignette</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1630,6 +1633,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameElement\FragmentVignette\FragmentVignette.h">
       <Filter>Game\GameElement\FragmentVignette</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

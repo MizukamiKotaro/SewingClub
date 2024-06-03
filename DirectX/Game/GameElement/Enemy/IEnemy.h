@@ -20,6 +20,7 @@ public:
 
 	virtual void Draw() const = 0;
 
+	Vector3& GetPosition() { return position_; }
 protected:
 	virtual void OnCollision(const Collider& collider) override = 0;
 	void SetCollider();

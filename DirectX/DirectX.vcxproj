@@ -217,6 +217,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Effects\EffectExtraJump.cpp" />
     <ClCompile Include="Game\GameElement\Effects\GetItem\GetItem.cpp" />
     <ClCompile Include="Game\GameElement\Effects\GoalDusts\GoalDusts.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\DoesNotWorkEnemy.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\FollowEnemy.cpp" />
@@ -435,6 +436,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Effects\EffectExtraJump.h" />
     <ClInclude Include="Game\GameElement\Effects\GetItem\GetItem.h" />
     <ClInclude Include="Game\GameElement\Effects\GoalDusts\GoalDusts.h" />
+    <ClInclude Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.h" />
     <ClInclude Include="Game\GameElement\Enemy\DoesNotWorkEnemy.h" />
     <ClInclude Include="Game\GameElement\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\GameElement\Enemy\FollowEnemy.h" />
