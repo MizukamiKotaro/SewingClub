@@ -82,6 +82,7 @@ private:
 	std::array<const ParticleMeshTexData*, MeshData::kMaxNum> modelData_;
 
 	std::array<ComboEffect, 10u> effectContiner_;
+	ComboEffect catchEffect_;
 	int oldRandNumber_ = 0;
 
 	// SE関連

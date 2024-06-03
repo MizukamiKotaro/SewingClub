@@ -815,6 +815,9 @@ void Baby::TensionUpdate(const float& deltaTime)
 		tension_.isRideUp_ = true;
 		tension += fParas_[FloatParamater::kUpTentionRide];
 		HitStop::SetHitStop(HitStopType::kBabyCatch);
+		// catchしたUIを出す
+
+
 	}
 	else if (!isRide_) {
 		tension_.isRideUp_ = false;
