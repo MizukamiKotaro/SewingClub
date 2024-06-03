@@ -20,12 +20,6 @@ ComboEffectManager::ComboEffectManager() {
 	}
 }
 
-ComboEffectManager::~ComboEffectManager() {
-	for (int i = 0; i < SEType::kMaxNumber; i++) {
-		se_[i].Stop();
-	}
-}
-
 ComboEffectManager* ComboEffectManager::GetInstance() {
 	static ComboEffectManager instance;
 	return &instance;
