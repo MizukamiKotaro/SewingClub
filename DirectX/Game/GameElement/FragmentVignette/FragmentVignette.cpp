@@ -16,7 +16,7 @@ FragmentVignette::FragmentVignette()
 	sprite_->Draw();
 	vignette_->PostDrawScene();
 
-	se_.LoadMP3("SE/Scene/ingame_goalOpen.mp3", "割れる音");
+	se_.LoadMP3("SE/Scene/ingame_glass_crack.mp3", "割れる音");
 }
 
 void FragmentVignette::Initialize()
