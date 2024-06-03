@@ -203,6 +203,10 @@ private:
 		"baby_jump_good.png",
 		"baby_jump_veryGood.png",
 		"baby_jump_anxiety.png",
+
+		"baby_pose_yay.png",
+		"baby_pose_yeah.png"
 	};
+	int32_t babyPauseIndex_ = -1; // ポーズインデックス
 
 };
