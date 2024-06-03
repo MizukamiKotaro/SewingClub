@@ -57,7 +57,7 @@ private:
 	void RideUpdate(const float& deltaTime);
 	void RideUpdate2(const float& deltaTime);
 
-	void TextureUpdate(); // 赤ちゃんのアニメーションテクスチャ用更新
+	void TextureUpdate(const float& deltaTime); // 赤ちゃんのアニメーションテクスチャ用更新
 
 private:
 	std::unique_ptr<Model> baby_;
@@ -208,5 +208,6 @@ private:
 		"baby_pose_yeah.png"
 	};
 	int32_t babyPauseIndex_ = -1; // ポーズインデックス
+	float jumpAnimationFrame_ = 0.0f;
 
 };
