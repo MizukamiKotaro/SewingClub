@@ -815,6 +815,8 @@ void Baby::TensionUpdate(const float& deltaTime)
 		tension_.isRideUp_ = true;
 		tension += fParas_[FloatParamater::kUpTentionRide];
 		HitStop::SetHitStop(HitStopType::kBabyCatch);
+		// catchしたUIを出す
+		ComboEffectManager::GetInstance()->CreateCatch(baby_->transform_.GetWorldPosition());
 	}
 	else if (!isRide_) {
 		tension_.isRideUp_ = false;
@@ -955,7 +957,6 @@ void Baby::TextureUpdate() {
 				}
 			}
 		}
-
 	}
 
 	baby_->SetTexture(TextureManager::GetInstance()->LoadTexture(directryPath + texturePath.at(faceIndex)));

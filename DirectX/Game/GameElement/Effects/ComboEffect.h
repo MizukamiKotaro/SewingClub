@@ -62,6 +62,7 @@ public:
 
 	void Update(const float& delta);
 	int32_t Create(const Vector3& playerPosition);
+	void CreateCatch(const Vector3& playerPosition);
 	void Draw();
 
 private:
@@ -71,17 +72,20 @@ private:
 		YEAH,
 		WOW,
 		YAY,
+		CATCH,
 		kMaxNum
 	};
 	std::array<std::string, MeshData::kMaxNum> texturePath_{
 		"ingame_baby_yeah1.png",
 		"ingame_baby_yay1.png",
 		"ingame_baby_wow1.png",
+		"ingame_baby_catch.png",
 	};
 	
 	std::array<const ParticleMeshTexData*, MeshData::kMaxNum> modelData_;
 
 	std::array<ComboEffect, 10u> effectContiner_;
+	ComboEffect catchEffect_;
 	int oldRandNumber_ = 0;
 
 	// SE関連
