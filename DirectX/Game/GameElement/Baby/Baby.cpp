@@ -885,8 +885,10 @@ void Baby::TensionFaceUpdate() {
 
 	if (tension_.face != tension_.oldFace) {
 		if (tension_.face == Face::kCry) {
-			se_cry.Stop();
 			se_cry.Play();
+		}
+		else {
+			se_cry.Stop();
 		}
 	}
 	tension_.oldFace = tension_.face;
