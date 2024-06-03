@@ -36,6 +36,7 @@ void ComboEffectManager::Update(const float& delta) {
 	for (auto& model : effectContiner_) {
 		model.Update(delta);
 	}
+	catchEffect_.Update(delta);
 }
 
 int32_t ComboEffectManager::Create(const Vector3& playerPosition) {
@@ -47,10 +48,7 @@ int32_t ComboEffectManager::Create(const Vector3& playerPosition) {
 			// 番号が前と同じならば再抽選
 			do {
 				// 乱数の生成
-				randNum = RandomGenerator::GetInstance()->RandInt(0, static_cast<int>(modelData_.size()));
-				if (randNum == 3) {
-					break;
-				}
+				randNum = RandomGenerator::GetInstance()->RandInt(0, static_cast<int>(MeshData::YAY) + 1);
 			}while (randNum == oldRandNumber_);
 
 			model.Initialize(playerPosition, randNum);
@@ -69,10 +67,15 @@ int32_t ComboEffectManager::Create(const Vector3& playerPosition) {
 	return -1;
 }
 
+void ComboEffectManager::CreateCatch(const Vector3& playerPosition) {
+	catchEffect_.Initialize(playerPosition, 0u);
+}
+
 void ComboEffectManager::Draw() {
 	for (auto& model : effectContiner_) {
 		model.Draw(instancingManager_, modelData_.at(model.GetIndex()));
 	}
+	catchEffect_.Draw(instancingManager_, modelData_.at(MeshData::CATCH));
 }
 
 void ComboEffect::Initialize(const Vector3& playerpos, const uint32_t& index) {

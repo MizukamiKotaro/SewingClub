@@ -45,7 +45,7 @@ StageScene::StageScene()
 
 	player_ = std::make_unique<Player>();
 	baby_ = std::make_unique<Baby>(player_.get());
-	cameraOffset_ = -50.0f;
+	cameraOffset_ = -45.0f;
 	camera_->transform_.translate_.z = cameraOffset_;
 	camera_->Update();
 
