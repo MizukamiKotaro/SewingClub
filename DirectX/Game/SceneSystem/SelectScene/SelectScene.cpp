@@ -140,6 +140,7 @@ void SelectScene::Initialize()
 
 	effeBSleep_->Initialize();
 
+	pickedNum_ = stageNo_;
 
 	bgm_.Play(true);
 
