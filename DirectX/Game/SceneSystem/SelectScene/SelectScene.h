@@ -128,6 +128,8 @@ private:
 		RArrow,
 		BBody,
 		Baby,
+		Icon_Pause,
+		Text_Pause,
 		_countTags
 	};
 	//画像
@@ -146,7 +148,8 @@ private:
 		"HUD_arrow.png",
 		"Baby_Sleap.png",
 		"outgame_stageSelect_baby.png",
-		
+		"controler_UI_=-.png",
+		"ingame_pose_HUD.png",
 	};
 
 	enum Stages {
@@ -211,6 +214,8 @@ private:
 		"右矢印 座標",
 		"赤ちゃん体 座標",
 		"赤ちゃん　座標",
+		"ポーズアイコン 座標",
+		"[ポーズ] 座標",
 	};
 	std::string spKeysS[_countTags] = {
 	"雲　サイズ",
@@ -224,6 +229,8 @@ private:
 	"右矢印 サイズ",
 	"赤ちゃん体 サイズ",
 	"赤ちゃん　サイズ",	
+	"ポーズアイコン size",
+	"[ポーズ] サイズ",
 	};
 
 	std::string mapKeysP[_countStages] = {
