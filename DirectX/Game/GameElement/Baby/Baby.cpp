@@ -58,6 +58,8 @@ Baby::Baby(Player* player)
 
 	input = Input::GetInstance();
 	tensionEffectManager_ = BabyTensionEffectManager::GetInstance();
+
+	se_cry.LoadMP3("SE/baby/baby_cry.mp3", "baby_cry");
 }
 
 Baby::~Baby() {
@@ -206,7 +208,7 @@ void Baby::Update(float deltaTime)
 		// modelにuvのセット
 		baby_->SetUVParam(animation_->GetUVTrans());
 	}
-	TextureUpdate();
+	TextureUpdate(deltaTime);
 
 	if (spawnWaitCount_-- <= 0) {
 		isSpawnEffect_ = true;
@@ -835,6 +837,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		}
 		// comboUIの生成
 		babyPauseIndex_ = ComboEffectManager::GetInstance()->Create(baby_->transform_.GetWorldPosition());
+		jumpAnimationFrame_ = 0.0f;
 	}
 
 	tension_.tension += tension;
@@ -881,7 +884,12 @@ void Baby::TensionFaceUpdate() {
 	}
 
 	if (tension_.face != tension_.oldFace) {
-		
+		if (tension_.face == Face::kCry) {
+			se_cry.Play();
+		}
+		else {
+			se_cry.Stop();
+		}
 	}
 	tension_.oldFace = tension_.face;
 }
@@ -936,11 +944,15 @@ void Baby::RideUpdate2(const float& deltaTime)
 	}
 }
 
-void Baby::TextureUpdate() {
+void Baby::TextureUpdate(const float& deltaTime) {
 	uint32_t faceIndex = static_cast<uint32_t>(tension_.face);
 	if (!isInWater_ && !isFollowWater_) {
 		if (faceIndex != 4u && faceIndex <= 3u) {
 			if (combo_.num > 0) {
+				jumpAnimationFrame_ += deltaTime;
+				if (jumpAnimationFrame_ > 1.0f) {
+					babyPauseIndex_ = -1;
+				}
 				switch (babyPauseIndex_) {
 				case 0: //YEAH
 					faceIndex = 10;
