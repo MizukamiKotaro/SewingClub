@@ -943,7 +943,7 @@ void Baby::TextureUpdate(const float& deltaTime) {
 		if (faceIndex != 4u && faceIndex <= 3u) {
 			if (combo_.num > 0) {
 				jumpAnimationFrame_ += deltaTime;
-				if (jumpAnimationFrame_ >= 2.5f) {
+				if (jumpAnimationFrame_ > 1.0f) {
 					babyPauseIndex_ = -1;
 				}
 				switch (babyPauseIndex_) {
