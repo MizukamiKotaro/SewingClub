@@ -48,9 +48,6 @@ int32_t ComboEffectManager::Create(const Vector3& playerPosition) {
 			do {
 				// 乱数の生成
 				randNum = RandomGenerator::GetInstance()->RandInt(0, static_cast<int>(modelData_.size()));
-				if (randNum == 3) {
-					break;
-				}
 			}while (randNum == oldRandNumber_);
 
 			model.Initialize(playerPosition, randNum);

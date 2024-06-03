@@ -955,7 +955,6 @@ void Baby::TextureUpdate() {
 				}
 			}
 		}
-
 	}
 
 	baby_->SetTexture(TextureManager::GetInstance()->LoadTexture(directryPath + texturePath.at(faceIndex)));
