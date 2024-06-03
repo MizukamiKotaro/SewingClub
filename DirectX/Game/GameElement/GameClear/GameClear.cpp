@@ -201,8 +201,8 @@ void GameClear::Initialize(int stageNum,bool nextstage)
 	sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
 	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,1 });
 
-	kMaxGaugePos_ = sp_[Gage_Bar]->pos_;
-	kMaxGaugeScale_ = sp_[Gage_Bar]->size_;
+	//sp_[Gage_Bar]->pos_ = kMaxGaugePos_;
+	//sp_[Gage_Bar]->size_ = kMaxGaugeScale_;
 
 	kMaxTensionPercent_ = 0.0f;
 	tensionPercent_ = 0.0f;
@@ -240,8 +240,9 @@ void GameClear::Initialize(int stageNum,bool nextstage)
 
 ClearAnswer GameClear::Update(const float& delta)
 {
-
+#ifdef _DEBUG
 	SetGlobalV();
+#endif // _DEBUG
 
 
 	if (!isAnimed_) {
