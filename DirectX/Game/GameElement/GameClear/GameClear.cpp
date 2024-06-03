@@ -77,6 +77,7 @@ GameClear::GameClear()
 	}
 	babyAnimation_->Play(true);
 
+	nowS_ = kFadeIn;
 }
 
 void GameClear::SetGlobalV()
@@ -117,6 +118,8 @@ void GameClear::SetGlobalV()
 	sp_[Valuation_Good]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
 	sp_[Valuation_Parfect]->SetColor({ HUDColor_.x,HUDColor_.y,HUDColor_.z,1 });
 	sp_[Gage_Bar]->SetColor({ GageColor_.x,GageColor_.y,GageColor_.z,1 });
+
+
 }
 
 void GameClear::InputUpdate()
@@ -183,6 +186,7 @@ void GameClear::ArrowUpdate()
 
 GameClear::~GameClear()
 {
+	afterimage_.clear();
 }
 
 void GameClear::Initialize(int stageNum,bool nextstage)
@@ -228,7 +232,6 @@ void GameClear::Initialize(int stageNum,bool nextstage)
 		nowSelect_ = StageSelect;
 	}
 
-	isAnimed_ = false;
 	aCount_ = 0;
 	for (int i = 0; i < _countText; i++) {
 		sp_[i]->SetColor({ 1, 1, 1, 0 });
@@ -246,6 +249,12 @@ void GameClear::Initialize(int stageNum,bool nextstage)
 	for (int i = 0; i < _countPSelect; i++) {
 		selects_[i]->SetColor({ 1,1,1,0 });
 	}
+
+	for (int i = 0; i < _countResults; i++) {
+		reTex_[i]->SetColor({1,1,1,0});
+	}
+
+	nowS_ = kFadeIn;
 }
 
 ClearAnswer GameClear::Update(const float& delta)
@@ -254,18 +263,26 @@ ClearAnswer GameClear::Update(const float& delta)
 	SetGlobalV();
 #endif // _DEBUG
 
+	reTex_[resultAns_]->pos_ = rePos_;
+	reTex_[resultAns_]->size_ = reSize_;
 
-	if (!isAnimed_) {
-
-		float t = aCount_ / amaxC_;
+	float t;
+	float a;
+	float ba;
+	float sca;
+	switch (nowS_)
+	{
+	case GameClear::kFadeIn:
+		t = aCount_ / amaxC_;
 
 		if (aCount_++ >= amaxC_) {
-			isAnimed_ = true;
+			nowS_ = kPressButton;
 			t = 1;
+			aCount_ = amaxC_;
 		}
 
-		float a = Calc::Lerp(0, 1, t);
-		float ba = Calc::Lerp(0, alpha_, t);
+		a = Calc::Lerp(0, 1, t);
+		ba = Calc::Lerp(0, alpha_, t);
 
 		for (int i = 0; i < _countText; i++) {
 			sp_[i]->SetColor({ 1, 1, 1, a });
@@ -284,11 +301,71 @@ ClearAnswer GameClear::Update(const float& delta)
 			selects_[i]->SetColor({ 1,1,1,a });
 		}
 
-	}
-	else {
-		InputUpdate();
+		
+		break;
+	case GameClear::kPressButton:
 
+		t = aCount_/amaxC_;
+
+		if (aCount_-- <= 0) {
+			t = 0;
+			nowS_ = kInput;
+		}
+
+		a = Calc::Lerp(1, 0, t);
+
+		reTex_[resultAns_]->SetColor({ 1,1,1,a });
+
+		sca = Calc::Lerp(reSize_.x, 1000, t);
+
+		reTex_[resultAns_]->size_ = { sca,sca };
+
+		if (afterICount_++ >= maxAfterC_) {
+			afterICount_ = 0;
+			AfterImage newda;
+
+			newda.sp = std::make_unique<Sprite>(rePaths_[resultAns_]);
+
+			newda.sp->pos_ = reTex_[resultAns_]->pos_;
+			newda.sp->size_ = reTex_[resultAns_]->size_;
+			newda.maxAlpha = a;
+			afterimage_.emplace_back((std::move(newda)));
+
+		}
+
+		break;
+	case GameClear::kInput:
+		InputUpdate();
+		break;
+	case GameClear::_countSceneTy:
+		break;
+	default:
+		break;
 	}
+
+	for (auto& data : afterimage_) {
+		if (data.count++ >= maxDC_) {
+			data.isDead = true;
+			continue;
+		}
+
+		float sd = data.count / maxDC_;
+
+		float alp = Calc::Lerp(data.maxAlpha,0, sd);
+
+		data.sp->SetColor({ 1,1,1,alp });
+		data.sp->Update();
+	}
+
+	afterimage_.remove_if([](auto& data) {
+		if (data.isDead) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	});
+
 
 	ArrowUpdate();
 	// テンションゲージの更新
@@ -318,8 +395,7 @@ ClearAnswer GameClear::Update(const float& delta)
 		baby_[valuation_]->SetTextureSize(Vector2(trans.scale_.x, trans.scale_.y));
 	}
 
-	reTex_[resultAns_]->pos_ = rePos_;
-	reTex_[resultAns_]->size_ = reSize_;
+
 	reTex_[resultAns_]->Update();
 
 	return ScceneChange();
@@ -359,6 +435,10 @@ void GameClear::Draw()
 		}
 
 
+	}
+
+	for (auto& data : afterimage_) {
+		data.sp->Draw();
 	}
 
 	reTex_[resultAns_]->Draw();

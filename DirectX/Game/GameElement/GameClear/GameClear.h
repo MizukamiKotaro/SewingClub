@@ -55,7 +55,16 @@ private:
 	//次のステージがあるか否か
 	bool isNextStage_ = true;
 
-	bool isAnimed_ = false;
+	
+	enum SceneTy {
+		kFadeIn,
+		kPressButton,
+		kInput,
+		_countSceneTy
+	};
+
+	SceneTy nowS_;
+
 	float aCount_ = 0;
 	float amaxC_ = 60;
 
@@ -135,6 +144,22 @@ private:
 		"gameClear_score_C.png",
 	};
 	
+	struct AfterImage
+	{
+		std::unique_ptr<Sprite>sp;
+		float count= 0;
+		float maxAlpha;
+
+		bool isDead = false;
+	};
+
+	float maxDC_ =30;
+
+	//残像
+	std::list<AfterImage>afterimage_;
+
+	float afterICount_ = 0;
+	float maxAfterC_ = 1;
 #pragma endregion
 
 
