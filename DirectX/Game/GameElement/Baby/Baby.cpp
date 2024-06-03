@@ -816,8 +816,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		tension += fParas_[FloatParamater::kUpTentionRide];
 		HitStop::SetHitStop(HitStopType::kBabyCatch);
 		// catchしたUIを出す
-
-
+		ComboEffectManager::GetInstance()->CreateCatch(baby_->transform_.GetWorldPosition());
 	}
 	else if (!isRide_) {
 		tension_.isRideUp_ = false;
