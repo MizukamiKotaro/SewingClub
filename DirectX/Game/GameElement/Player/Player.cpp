@@ -114,6 +114,8 @@ void Player::Update(float deltaTime)
 	if (deltaTime == 0.0f) {
 		return;
 	}
+	preIsHitEnemy_ = isHitEnemy_;
+	isHitEnemy_ = false;
 #ifdef _DEBUG
 	if (stageEditor_->IsChangedStage()) {
 		Initialize();
@@ -527,7 +529,7 @@ void Player::Reset()
 	memoOutWaterSpeed_ = 0.0f;
 	isHitEnemy_ = false;
 	waterGravityPos_ = {};
-
+	preIsHitEnemy_ = isHitEnemy_;
 	model_->transform_.rotate_ = { 0.0f };
 	model_->transform_.translate_ = { 0.0f };
 	SetGlobalVariable();
