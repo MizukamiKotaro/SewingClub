@@ -167,10 +167,10 @@ void TensionUI::ApplyGlobalVariable() {
 void TensionUI::GaugeColor(const float& tension) {
 	Vector4 color{};
 	if (tension >= 90.0f) {
-		color = Vector4(0.88f, 0.38f, 0.20f, 1.0f);
+		color = Vector4(0.20f, 0.89f, 0.20f, 1.0f);
 	}
 	else if (tension <= 30.0f) {
-		color = Vector4(0.20f, 0.89f, 0.20f, 1.0f);
+		color = Vector4(0.88f, 0.38f, 0.20f, 1.0f);
 	}
 	else {
 		color = Vector4(0.89f, 0.76f, 0.20f, 1.0f);
