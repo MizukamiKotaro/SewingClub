@@ -10,7 +10,7 @@ AudioOptionUI::AudioOptionUI()
 
 	seMove_.LoadMP3("SE/Scene/outgame_selectNow.mp3");
 	seSelectSE_.LoadMP3("SE/Scene/autgame_decision.mp3");
-	seSelectBGM_.LoadMP3("Music/autgame_decision.mp3");
+	seSelectBGM_.LoadMP3("Music/prevVolume.mp3");
 
 	for (int type = 0; type < _countVolumeType; type++) {
 		for (int sp = 0; sp < _countSprite; sp++) {
