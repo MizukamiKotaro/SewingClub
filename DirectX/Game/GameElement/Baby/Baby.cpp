@@ -16,7 +16,7 @@ Baby::Baby(Player* player)
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::BABY);
 	Collider::AddTargetMask(ColliderMask::WATER);
-
+	Collider::AddTargetMask(ColliderMask::ENEMY);
 	CreateGlobalVariable("Baby");
 
 	player_ = player;
@@ -101,6 +101,8 @@ void Baby::Initialize()
 	inWaterCatch_.preCatch_ = false;
 	inWaterCatch_.preRide_ = false;
 	inWaterCatch_.time_ = 0.0f;
+	isHitEnemy_ = false;
+	hitEnemyTime_ = 0.0f;
 }
 
 void Baby::Update(float deltaTime)
@@ -214,6 +216,7 @@ void Baby::Update(float deltaTime)
 		isSpawnEffect_ = true;
 	}
 	effeEnterW_->Update();
+	isHitEnemy_ = false;
 }
 
 void Baby::Draw(const Camera* camera)
@@ -398,6 +401,9 @@ void Baby::OnCollision(const Collider& collider)
 				effeEnterW_->SpawnEffect(playerV2, Vector2{ pos.x, pos.y } *spawnEffectVelo_, { player_->GetPosition().x,player_->GetPosition().y });
 			}
 		}
+	}
+	else if (collider.GetMask() == ColliderMask::WATER) {
+		isHitEnemy_ = true;
 	}
 }
 
@@ -813,6 +819,17 @@ void Baby::TensionUpdate(const float& deltaTime)
 		tension_.playerInWaterTime = 0.0f;
 	}
 
+	if (player_->GetIsHitEnemy() && isHitEnemy_) {
+		hitEnemyTime_ += deltaTime;
+		if (hitEnemyTime_ >= fParas_[FloatParamater::kPlayerInWaterTime]) {
+			tension_.tension -= fParas_[FloatParamater::kDownTensionBePlayerInWater];
+			hitEnemyTime_ = std::fmodf(hitEnemyTime_, fParas_[FloatParamater::kPlayerInWaterTime]);
+		}
+	}
+	else {
+		hitEnemyTime_ = 0.0f;
+	}
+
 	if (isRide_ && !tension_.isRideUp_) {
 		tension_.isRideUp_ = true;
 		tension += fParas_[FloatParamater::kUpTentionRide];
@@ -870,7 +887,7 @@ void Baby::TensionFaceUpdate() {
 	if (tension_.tension <= 0.0f) {
 		tension_.face = Face::kCry;
 	}
-	else if ((player_->GetPreInWater() && !rideInWater_.isRideInWater) || tension_.tension < 30.0f) {
+	else if ((player_->GetPreInWater() && !rideInWater_.isRideInWater) || tension_.tension < 30.0f || player_->GetIsHitEnemy() || isHitEnemy_) {
 		tension_.face = Face::kAnxiety;
 	}
 	else if (tension_.tension >= 90.0f) {

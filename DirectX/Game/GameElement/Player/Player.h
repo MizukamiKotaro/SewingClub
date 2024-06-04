@@ -46,7 +46,7 @@ public:
 
 	const Vector3* GetPositionPtr() const;
 
-	const bool& GetIsHitEnemy() const { return isHitEnemy_; }
+	const bool& GetIsHitEnemy() const { return preIsHitEnemy_; }
 	//void SetIsInWater(bool is) { isInWater_ = is; }
 
 	const bool& GetPreInWater() const { return preIsInWater_; }
@@ -175,6 +175,7 @@ private:
 	Vector2 goalPos_;
 	float memoOutWaterSpeed_;
 	bool isHitEnemy_;
+	bool preIsHitEnemy_;
 	bool isClear_;
 	float timeCount_;
 	float coolTimeCount_;

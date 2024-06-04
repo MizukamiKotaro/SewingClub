@@ -415,10 +415,10 @@ void StageScene::SceneChange()
 			}
 
 			//ヒットによる処理
-			if (player_->GetIsHitEnemy()) {
+			/*if (player_->GetIsHitEnemy()) {
 				nowScene = kGameOver;
 				seDead_.Play();
-			}
+			}*/
 			//テンションのHPがなくなったときの処理
 			if (baby_->GetIsGameOver()) {
 				nowScene = kGameOver;

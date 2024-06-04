@@ -75,6 +75,8 @@ private:
 	float clearTime_;
 	bool isCircleWater_;
 
+	bool isHitEnemy_;
+	float hitEnemyTime_;
 	Vector3 velocity_;
 	float speed_;
 
