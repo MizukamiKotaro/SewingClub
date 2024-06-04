@@ -1,5 +1,6 @@
 #include "GoalCamera.h"
 #include "Utils/Ease/Ease.h"
+#include "Input/Input.h"
 
 GoalCamera::GoalCamera() {
 
@@ -36,8 +37,20 @@ Vector3 GoalCamera::Update(const Vector3& playerPos, const Vector3& goalPos, con
 		count_ = 0.0f;
 	}
 	else {
-		count_ += delta;
-		delta;
+		// 入力があれば速くする
+		auto input = Input::GetInstance();
+		float magnification = 1.0f;
+		if (input->PressedGamePadButton(Input::GamePadButton::A)) {
+			isSkiped = true;
+		}
+		else if (input->PressedGamePadButton(Input::GamePadButton::B)) {
+			isSkiped = true;
+		}
+
+		if (isSkiped) {
+			magnification = 3.0f;
+		}
+		count_ += delta * magnification;
 	}
 	return result;
 }
