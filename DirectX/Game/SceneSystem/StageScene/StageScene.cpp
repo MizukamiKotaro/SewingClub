@@ -86,6 +86,8 @@ StageScene::StageScene()
 	comboEffect_ = ComboEffectManager::GetInstance();
 	fragmentVignette_ = std::make_unique<FragmentVignette>();
 	ingameHUD_ = std::make_unique<InGameHUD>();
+
+	se_babyNormal.LoadMP3("SE/baby/baby_.mp3", "baby_normal");
 }
 
 void StageScene::Initialize()
@@ -244,6 +246,8 @@ void StageScene::Update()
 				if (isCanGoal_ && countIndex == 0) {
 					isGoalTransition_ = true;
 					countIndex = 1;
+					// ばぶー
+					se_babyNormal.Play();
 				}
 
 				// 通常カメラ

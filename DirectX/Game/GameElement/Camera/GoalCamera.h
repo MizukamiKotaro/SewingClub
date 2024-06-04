@@ -27,5 +27,6 @@ private:
 	// 単位 秒:second
 	const float kMaxFrame_ = 2.0f; // イージング用最大フレームカウント
 	const float kWaitTime_ = 1.0f; // 一時停止待機時間
+	bool isSkiped = false;
 	
 };
