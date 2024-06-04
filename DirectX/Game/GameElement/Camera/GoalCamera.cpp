@@ -2,8 +2,9 @@
 #include "Utils/Ease/Ease.h"
 #include "Input/Input.h"
 
-GoalCamera::GoalCamera() {
-
+void GoalCamera::Initialize() {
+	isSkiped = false;
+	count_ = 0.0f;
 }
 
 Vector3 GoalCamera::Update(const Vector3& playerPos, const Vector3& goalPos, const float& delta) {

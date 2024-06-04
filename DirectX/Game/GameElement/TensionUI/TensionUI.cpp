@@ -22,6 +22,7 @@ TensionUI::TensionUI() {
 void TensionUI::Initialize(const float& tension, const int& faceParam) {
 	SetGlobalVariable();
 	sprites_.at(static_cast<uint32_t>(Type::Frame))->SetAnchorPoint(Vector2(0.5f, 0.56f));
+	sprites_.at(static_cast<uint32_t>(Type::Frame))->SetColor(Vector4(0.21f, 0.20f, 0.19f, 1.0f));
 
 	// ここで0 ~ 100 なのを 0 ~ 1でもらうようにしている
 	tensionPercent_ = tension * 0.01f;

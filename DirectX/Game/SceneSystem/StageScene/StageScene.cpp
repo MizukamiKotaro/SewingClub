@@ -153,6 +153,7 @@ void StageScene::Initialize()
 
 	ingameHUD_->Initialize();
 
+	goalCamera_->Initialize();
 
 	//シーンの初期状態
 	nowScene = kPlay;

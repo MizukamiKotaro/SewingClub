@@ -5,9 +5,10 @@
 
 class GoalCamera {
 public:
-	GoalCamera();
+	GoalCamera() = default;
 	~GoalCamera() = default;
 
+	void Initialize();
 	Vector3 Update(const Vector3& playerPos,const Vector3& goalPos, const float& delta);
 	bool GetFinishd();
 	uint32_t GetType() const { return static_cast<uint32_t>(type_); }
