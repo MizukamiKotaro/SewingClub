@@ -23,6 +23,7 @@
 #include "GameElement/Effects/ComboEffect.h"
 #include"GameElement/InGameHUD/InGameHUD.h"
 #include "GameElement/FragmentVignette/FragmentVignette.h"
+#include "Audio/Audio.h"
 
 class InstancingModelManager;
 class CollisionManager;
@@ -129,4 +130,6 @@ private:
 
 	//HUDとか
 	std::unique_ptr<InGameHUD>ingameHUD_;
+
+	Audio se_babyNormal;
 };
