@@ -8,6 +8,8 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif // _DEBUG
 
+#include "Resources/icon.h"
+
 LRESULT CALLBACK WindowsInfo::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 #ifdef _DEBUG
 	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
@@ -51,6 +53,9 @@ void WindowsInfo::CreateGameWindow(const std::string& windowName, int width, int
 	wndClass_.hInstance = GetModuleHandle(nullptr);
 	//カーソル
 	wndClass_.hCursor = LoadCursor(nullptr, IDC_ARROW);
+
+	//icon
+	wndClass_.hIcon = LoadIcon(wndClass_.hInstance, MAKEINTRESOURCE(IDI_ICON1));
 
 	//ウィンドウクラスを登録する
 	RegisterClass(&wndClass_);
