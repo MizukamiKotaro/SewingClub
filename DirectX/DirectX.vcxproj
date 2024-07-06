@@ -496,6 +496,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\SceneSystem\StageScene\StageScene.h" />
     <ClInclude Include="Game\SceneSystem\TitleScene\TitleScene.h" />
     <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h" />
+    <ClInclude Include="icon.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -504,6 +505,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ProjectReference Include="Externals\imgui\imgui.vcxproj">
       <Project>{4efc8c54-f477-4fc5-a6b5-d5c004b712d3}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -402,7 +402,7 @@ void Baby::OnCollision(const Collider& collider)
 			}
 		}
 	}
-	else if (collider.GetMask() == ColliderMask::WATER) {
+	else if (collider.GetMask() == ColliderMask::ENEMY) {
 		isHitEnemy_ = true;
 	}
 }
@@ -819,7 +819,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		tension_.playerInWaterTime = 0.0f;
 	}
 
-	if (player_->GetIsHitEnemy() && isHitEnemy_) {
+	if (player_->GetIsHitEnemy() || isHitEnemy_) {
 		hitEnemyTime_ += deltaTime;
 		if (hitEnemyTime_ >= fParas_[FloatParamater::kPlayerInWaterTime]) {
 			tension_.tension -= fParas_[FloatParamater::kDownTensionBePlayerInWater];
@@ -874,6 +874,12 @@ void Baby::TensionUpdate(const float& deltaTime)
 			tensionEffectManager_->CreateEffect(tension);
 		}
 		tension_.cryTime = 0.0f;
+	}
+
+	if (player_->GetIsHitEnemy() || isHitEnemy_) {
+		tension_.fragmentHP_ = 0.0f;
+		tension_.tension = 0.0f;
+		tension_.isGameOver_ = true;
 	}
 
 	TensionFaceUpdate();
