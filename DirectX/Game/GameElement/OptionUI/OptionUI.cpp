@@ -325,6 +325,20 @@ void OptionUI::TitleUpdate()
 		//入力
 		Vector2 move = input_->GetGamePadLStick();
 
+		if (input_->PressedGamePadButton(Input::GamePadButton::UP)) {
+
+			move.y = 1.0f;
+
+		}else if (input_->PressedGamePadButton(Input::GamePadButton::DOWN)) {
+			move.y = -1.0f;
+		}
+		
+		if (input_->PressedGamePadButton(Input::GamePadButton::LEFT)) {
+			move.x -= 1.0f;
+		}else if (input_->PressedGamePadButton(Input::GamePadButton::RIGHT)) {
+			move.x += 1.0f;
+		}
+		
 		if (move.y >= -0.9f && move.y <= 0.9f) {
 			isStickBack_ = true;
 		}
@@ -378,6 +392,22 @@ void OptionUI::SelectUpdate()
 	if (opScene_ == kNone) {
 		//入力
 		Vector2 move = input_->GetGamePadLStick();
+
+		if (input_->PressedGamePadButton(Input::GamePadButton::UP)) {
+
+			move.y = 1.0f;
+
+		}
+		else if (input_->PressedGamePadButton(Input::GamePadButton::DOWN)) {
+			move.y = -1.0f;
+		}
+
+		if (input_->PressedGamePadButton(Input::GamePadButton::LEFT)) {
+			move.x -= 1.0f;
+		}
+		else if (input_->PressedGamePadButton(Input::GamePadButton::RIGHT)) {
+			move.x += 1.0f;
+		}
 
 		if (move.y >= -0.9f && move.y <= 0.9f) {
 			isStickBack_ = true;
@@ -433,6 +463,22 @@ void OptionUI::StageUpdate()
 	if (opScene_ == kNone) {
 		//入力
 		Vector2 move = input_->GetGamePadLStick();
+
+		if (input_->PressedGamePadButton(Input::GamePadButton::UP)) {
+
+			move.y = 1.0f;
+
+		}
+		else if (input_->PressedGamePadButton(Input::GamePadButton::DOWN)) {
+			move.y = -1.0f;
+		}
+
+		if (input_->PressedGamePadButton(Input::GamePadButton::LEFT)) {
+			move.x -= 1.0f;
+		}
+		else if (input_->PressedGamePadButton(Input::GamePadButton::RIGHT)) {
+			move.x += 1.0f;
+		}
 
 		if (move.y >= -0.9f && move.y <= 0.9f) {
 			isStickBack_ = true;

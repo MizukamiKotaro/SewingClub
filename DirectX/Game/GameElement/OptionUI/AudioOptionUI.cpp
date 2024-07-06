@@ -99,6 +99,20 @@ bool AudioOptionUI::Update()
 #pragma region 入力による選択物変化
 	Vector2 move = input_->GetGamePadLStick();
 
+	if (input_->PressedGamePadButton(Input::GamePadButton::UP)) {
+		move.y = 1.0f;
+	}
+	else if (input_->PressedGamePadButton(Input::GamePadButton::DOWN)) {
+		move.y = -1.0f;
+	}
+
+	if (input_->PressedGamePadButton(Input::GamePadButton::LEFT)) {
+		move.x = -1.0f;
+	}
+	else if (input_->PressedGamePadButton(Input::GamePadButton::RIGHT)) {
+		move.x = 1.0f;
+	}
+
 	if (isInputActive_) {
 		//上入力
 		if (move.y > inputDline_) {
@@ -213,6 +227,20 @@ void AudioOptionUI::AudioBarUpdate()
 
 	//入力で音量変更
 	Vector2 input = input_->GetGamePadLStick();
+
+	if (input_->PressedGamePadButton(Input::GamePadButton::UP)) {
+		input.y = 1.0f;
+	}
+	else if (input_->PressedGamePadButton(Input::GamePadButton::DOWN)) {
+		input.y = -1.0f;
+	}
+
+	if (input_->PressingGamePadButton(Input::GamePadButton::LEFT)) {
+		input.x = -1.0f;
+	}
+	else if (input_->PressingGamePadButton(Input::GamePadButton::RIGHT)) {
+		input.x = 1.0f;
+	}
 
 	bool isInput = false;
 	//入力可能時操作
