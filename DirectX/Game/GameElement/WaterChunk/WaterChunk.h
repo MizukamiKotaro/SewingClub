@@ -48,13 +48,6 @@ private:
 
 	void ActiveCheck(Camera* camera);
 
-	void CreateChips();
-
-	void AddWave(const bool& isDown);
-
-	void AddWave(const WaterChunk& water, WaterWave& wave);
-
-
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
