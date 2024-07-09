@@ -113,7 +113,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Drawers\PostEffect\Dissolve\Dissolve.cpp" />
     <ClCompile Include="Engine\Drawers\PostEffect\Vignette\Vignette.cpp" />
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.cpp" />
     <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.cpp" />
     <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.cpp" />
     <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.cpp" />
@@ -295,7 +297,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Effects\particleAcceleration.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Drawers\PostEffect\Dissolve\Dissolve.h" />
     <ClInclude Include="Engine\Drawers\PostEffect\Vignette\Vignette.h" />
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.h" />
     <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.h" />
     <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.h" />
     <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h" />
