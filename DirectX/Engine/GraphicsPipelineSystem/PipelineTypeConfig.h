@@ -18,4 +18,5 @@ enum class PipelineType {
 	NOISE,
 	WATER_OUTLINE,
 	VIGNETTE,
+	DISSOLVE,
 };
