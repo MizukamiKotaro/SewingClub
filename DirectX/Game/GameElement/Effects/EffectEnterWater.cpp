@@ -5,12 +5,12 @@
 
 #include<numbers>
 
-EffectEnterWater::EffectEnterWater()
+EffectEnterWater::EffectEnterWater(const std::string  name)
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
 	modelData_ = instancingManager_->GetDrawData({ modelData,modelData->texture,BlendMode::kBlendModeNormal });
-	gVariUser = new GlobalVariableUser("Effects","EffectEnterWater");
+	gVariUser = new GlobalVariableUser("Effects",name);
 	
 	gVariUser->AddItem(keys[diffsion], diffusion_);
 	gVariUser->AddItem(keys[scale], scale_);

@@ -16,6 +16,8 @@
 #include "GraphicsPipelineSystem/GraphicsPipelines/NoiseGraphicsPipeline/NoiseGraphicsPipeline.h"
 #include "GraphicsPipelineSystem/GraphicsPipelines/WaterOutlineGraphicsPipeline/WaterOutlineGraphicsPipeline.h"
 #include "GraphicsPipelineSystem/GraphicsPipelines/CopyGraphicsPipeline/CopyGraphicsPipeline.h"
+#include "GraphicsPipelineSystem/GraphicsPipelines/VignetteGraphicsPipeline/VignetteGraphicsPipeline.h"
+#include "GraphicsPipelineSystem/GraphicsPipelines/DissolveGraphicsPipeline/DissolveGraphicsPipeline.h"
 #include "GraphicsPipelineSystem/PipelineTypeConfig.h"
 
 GraphicsPipeline* GraphicsPipelineFactory::CreateGraphicsPipeline(PipelineType pipelineType)
@@ -74,6 +76,13 @@ GraphicsPipeline* GraphicsPipelineFactory::CreateGraphicsPipeline(PipelineType p
 		break;
 	case PipelineType::WATER_OUTLINE:
 		graphicsPipeline = new WaterOutlineGraphicsPipeline();
+		break;
+	case PipelineType::VIGNETTE:
+		graphicsPipeline = new VignetteGraphicsPipeline();
+		break;
+	case PipelineType::DISSOLVE:
+		graphicsPipeline = new DissolveGraphicsPipeline();
+		break;
 	default:
 		break;
 	}

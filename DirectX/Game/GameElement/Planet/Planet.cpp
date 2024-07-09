@@ -87,7 +87,7 @@ void Planet::Draw() const
 void Planet::OnCollision(const Collider& collider)
 {
 	if (collider.GetMask() == ColliderMask::PLAYER) {
-		player_->OnCollisionPlanet(type_, clients_);
+		//player_->OnCollisionPlanet(type_, clients_);
 		for (int i = 0; i < MaxClientNum; i++) {
 			isPos[i] = false;
 		}

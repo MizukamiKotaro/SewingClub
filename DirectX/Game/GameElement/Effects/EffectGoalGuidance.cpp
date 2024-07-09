@@ -2,12 +2,12 @@
 #include"WindowsInfo/WindowsInfo.h"
 #include"Math/calc.h"
 #include<numbers>
-
+#include <algorithm>
 UIGoalGuidance::UIGoalGuidance()
 {
-	model_ = std::make_unique<Sprite>("pause_arrow.png");
+	model_ = std::make_unique<Sprite>("HUD_arrow.png");
 
-	gVUser_= new GlobalVariableUser("Effects", "UIGoalGuidance");
+	gVUser_ = new GlobalVariableUser("Effects", "UIGoalGuidance");
 
 
 	gVUser_->AddItem(keys[SpriteSize], scale_);
@@ -15,12 +15,13 @@ UIGoalGuidance::UIGoalGuidance()
 	gVUser_->AddItem(keys[BoxAreaSize], area_);
 	gVUser_->AddItem(keys[AreaType], areaType_);
 	gVUser_->AddItem(keys[DirectionGoal], goalSize_);
-	gVUser_->AddItem(keys[FadeOutUI],maxFadeoutGoalCount_);
+	gVUser_->AddItem(keys[FadeOutUI], maxFadeoutGoalCount_);
 
 	gVUser_->AddItem(keys[QuotaUIDirection], quotaDirection_);
 	gVUser_->AddItem(keys[QuotaUISize], quotaUISize_);
 	gVUser_->AddItem(keys[QuotaUIType], quotaAreaType_);
-
+	gVUser_->AddItem(keys[QuotaColor], quotaColor_);
+	gVUser_->AddItem(keys[GoalColor], goalColor_);
 
 }
 
@@ -37,7 +38,8 @@ void UIGoalGuidance::Initialize(const Vector3* playerPos, const Vector3* goalPos
 	goalPos_ = goalPos;
 
 	model_->Initialize();
-	
+
+	quota_.clear();
 	//ゴールとアイテムのUIの初期更新
 	isQuota_ = true;
 	Update();
@@ -106,7 +108,7 @@ void UIGoalGuidance::Update()
 
 		//データ削除
 		quota_.remove_if([](auto& data) {
-			if (*data.isDead_==true) {
+			if (*data.isDead_ == true) {
 				return true;
 			}
 			else {
@@ -126,33 +128,30 @@ void UIGoalGuidance::Update()
 			Vector3 spritePos = *data.position_ - (direction.Normalize() * (quotaDirection_));
 			//Vector3 spritePos = data.position_;
 
-			//領域内チェック
-			bool isGoalinScreenX = true;
-			bool isGoalinScreenY = true;
+			Vector3 PP = TransformPosition(*data.position_, cameraVPV);
 
+			//領域内チェック
+			bool isScreen = false;
 			//画面外なら寄せる
 			if (quotaAreaType_ == AreaType::Squea) {
 				spritePos = TransformPosition(spritePos, cameraVPV);
 
 				///X領域処理
 				//最大領域外チェック
-				if (spritePos.x + quotaUISize_.x > area_.x) {
-					spritePos.x = area_.x-quotaUISize_.x;
-					isGoalinScreenX = false;
+				if (spritePos.x + quotaUISize_.x >(640.0f+ area_.x/2.0f)) {
+					spritePos.x = (640.0f + area_.x / 2.0f) - quotaUISize_.x;
 				}//最小領域外チェック
-				else if (spritePos.x - quotaUISize_.x < 0) {
-					spritePos.x = quotaUISize_.x;
-					isGoalinScreenX = false;
+				else if (spritePos.x - quotaUISize_.x < (640.0f - area_.x / 2.0f)) {
+					spritePos.x = (640.0f - area_.x / 2.0f)+ quotaUISize_.x;
 				}
 
-				if (spritePos.y + quotaUISize_.y > area_.y) {
-					spritePos.y =area_.y - quotaUISize_.y;
-					isGoalinScreenY = false;
+				if (spritePos.y + quotaUISize_.y > (360.0f + area_.y / 2.0f)) {
+					spritePos.y = (360.0f + area_.y / 2.0f) - quotaUISize_.y;
 				}
-				else if (spritePos.y - quotaUISize_.y < 0) {
-					spritePos.y = quotaUISize_.y;
-					isGoalinScreenY = false;
+				else if (spritePos.y - quotaUISize_.y < (360.0f - area_.y / 2.0f)) {
+					spritePos.y = (360.0f - area_.y / 2.0f)+ quotaUISize_.y;
 				}
+
 			}
 			else if (quotaAreaType_ == AreaType::Sphere) {
 
@@ -161,16 +160,18 @@ void UIGoalGuidance::Update()
 					spritePos = (direction.Normalize() * sphereAreaSize_) + *playerPos_;
 					spritePos = TransformPosition(spritePos, cameraVPV);
 
-					isGoalinScreenX = false;
-					isGoalinScreenY = false;
+
 				}
 				else {
-					
 				}
 			}
 
+			if (PP.x > 0 && PP.x < 1280 && PP.y > 0 && PP.y < 720) {
+				isScreen = true;
+			}
+
 			//ゴールが画面内での透明処理
-			if (isGoalinScreenX && isGoalinScreenY) {
+			if (isScreen) {
 				data.quotaFadeoutGoalCount_++;
 				if (data.quotaFadeoutGoalCount_ > maxquotaFadeoutGoalCount_) {
 					data.quotaFadeoutGoalCount_ = maxquotaFadeoutGoalCount_;
@@ -187,7 +188,7 @@ void UIGoalGuidance::Update()
 
 			float alpha = Calc::Lerp(1, 0, t);
 
-			data.sprite_->SetColor(Vector4{ 1,1,1,alpha });
+			data.sprite_->SetColor(Vector4{ quotaColor_.x,quotaColor_.y,quotaColor_.z,alpha });
 
 			data.sprite_->size_ = quotaUISize_;
 
@@ -202,7 +203,7 @@ void UIGoalGuidance::Update()
 			isQuota_ = true;
 		}
 	}
-	if(isQuota_) {
+	if (isQuota_) {
 #pragma region ゴール案内のUI処理
 		//向きベクトル
 		Vector3 direction = *goalPos_ - *playerPos_;
@@ -215,47 +216,55 @@ void UIGoalGuidance::Update()
 		Matrix4x4 cameraVPV = camera_->GetViewProjection() * MakeViewPortMatrix(0, 0, windowSize.x, windowSize.y, 0, 1);
 
 		//領域内チェック
-		bool isGoalinScreenX = true;
-		bool isGoalinScreenY = true;
-
+		bool isScreen = false;
 
 		//画面外なら寄せる
 		if (areaType_ == AreaType::Squea) {
 			spritePos = TransformPosition(spritePos, cameraVPV);
 
-			if (spritePos.x + scale_.x > area_.x) {
-				spritePos.x = area_.x - scale_.x;
-				isGoalinScreenX = false;
+			if (spritePos.x + scale_.x > (640.0f + area_.x / 2.0f)) {
+				spritePos.x = (640.0f + area_.x / 2.0f) - scale_.x;
 			}
-			else if (spritePos.x - scale_.x < 0) {
-				spritePos.x = scale_.x;
-				isGoalinScreenX = false;
+			else if (spritePos.x - scale_.x < (640.0f - area_.x / 2.0f)) {
+				spritePos.x = (640.0f - area_.x / 2.0f)+ scale_.x;
 			}
 
-			if (spritePos.y + scale_.y > area_.y) {
-				spritePos.y = -scale_.y + area_.y;
-				isGoalinScreenY = false;
+			if (spritePos.y + scale_.y > (360.0f + area_.x / 2.0f)) {
+				spritePos.y = -scale_.y + (360.0f + area_.y / 2.0f);
 			}
-			else if (spritePos.y - scale_.y < 0) {
-				spritePos.y = scale_.y;
-				isGoalinScreenY = false;
+			else if (spritePos.y - scale_.y < (360.0f - area_.x / 2.0f)) {
+				spritePos.y = (360.0f - area_.y / 2.0f)+ scale_.y;
 			}
+
+
+			//if (spritePos.x + quotaUISize_.x > (640.0f + area_.x / 2.0f)) {
+			//	spritePos.x = (640.0f + area_.x / 2.0f) - quotaUISize_.x;
+			//}//最小領域外チェック
+			//else if (spritePos.x - quotaUISize_.x < (640.0f - area_.x / 2.0f)) {
+			//	spritePos.x = (640.0f - area_.x / 2.0f) + quotaUISize_.x;
+			//}
+
+			//if (spritePos.y + quotaUISize_.y > (360.0f + area_.y / 2.0f)) {
+			//	spritePos.y = (360.0f + area_.y / 2.0f) - quotaUISize_.y;
+			//}
+			//else if (spritePos.y - quotaUISize_.y < (360.0f - area_.y / 2.0f)) {
+			//	spritePos.y = (360.0f - area_.y / 2.0f) + quotaUISize_.y;
+			//}
 		}
 		else if (areaType_ == AreaType::Sphere) {
 
 			//エリアのサイズに落とし込み
 			spritePos = (direction.Normalize() * sphereAreaSize_) + *playerPos_;
 			spritePos = TransformPosition(spritePos, cameraVPV);
+		}
 
-
-			if (direction.Length() > sphereAreaSize_) {
-				isGoalinScreenX = false;
-				isGoalinScreenY = false;
-			}
+		Vector3 goalP = TransformPosition(*goalPos_, cameraVPV);
+		if (goalP.x > 0 && goalP.x < 1280 && goalP.y>0 && goalP.y < 720) {
+			isScreen = true;
 		}
 
 		//ゴールが画面内での透明処理
-		if (isGoalinScreenX && isGoalinScreenY) {
+		if (isScreen) {
 			fadeoutGoalCount_++;
 			if (fadeoutGoalCount_ > maxFadeoutGoalCount_) {
 				fadeoutGoalCount_ = maxFadeoutGoalCount_;
@@ -273,7 +282,7 @@ void UIGoalGuidance::Update()
 
 		float alpha = Calc::Lerp(1, 0, t);
 
-		model_->SetColor(Vector4{ 1,1,1,alpha });
+		model_->SetColor(Vector4{ goalColor_.x,goalColor_.y,goalColor_.z ,alpha });
 
 		model_->size_ = scale_;
 
@@ -284,8 +293,8 @@ void UIGoalGuidance::Update()
 		model_->Update();
 #pragma endregion
 	}
-	
 }
+
 
 void UIGoalGuidance::Draw(const Camera* camera)
 {
@@ -302,15 +311,15 @@ void UIGoalGuidance::Draw(const Camera* camera)
 	}
 }
 
-void UIGoalGuidance::SetQuota(const Vector3* position,const float size,const bool*isdead)
+void UIGoalGuidance::SetQuota(const Vector3* position, const float size, const bool* isdead)
 {
-	
+
 	QuotaData newdata;
 	newdata.sprite_ = std::make_unique<Sprite>("HUD_arrow.png");
 	newdata.sprite_->Initialize();
-	newdata.position_=position;
+	newdata.position_ = position;
 	newdata.size_ = size;
-	newdata.isDead_=isdead;
+	newdata.isDead_ = isdead;
 
 	quota_.emplace_back(std::move(newdata));
 
@@ -319,14 +328,17 @@ void UIGoalGuidance::SetQuota(const Vector3* position,const float size,const boo
 void UIGoalGuidance::Debug()
 {
 
-	scale_=gVUser_->GetVector2Value(keys[SpriteSize]);
+	scale_ = gVUser_->GetVector2Value(keys[SpriteSize]);
 	sphereAreaSize_ = gVUser_->GetFloatValue(keys[SphereAreaSize]);
 	area_ = gVUser_->GetVector2Value(keys[BoxAreaSize]);
 	areaType_ = gVUser_->GetIntValue(keys[AreaType]);
 	goalSize_ = gVUser_->GetFloatValue(keys[DirectionGoal]);
 	maxFadeoutGoalCount_ = gVUser_->GetIntValue(keys[FadeOutUI]);
 
-	quotaDirection_=gVUser_->GetFloatValue(keys[QuotaUIDirection]);
-	quotaUISize_= gVUser_->GetVector2Value(keys[QuotaUISize]);
-	quotaAreaType_=gVUser_->GetIntValue(keys[QuotaUIType]);
+	quotaDirection_ = gVUser_->GetFloatValue(keys[QuotaUIDirection]);
+	quotaUISize_ = gVUser_->GetVector2Value(keys[QuotaUISize]);
+	quotaAreaType_ = gVUser_->GetIntValue(keys[QuotaUIType]);
+
+	quotaColor_ = gVUser_->GetVector3Value(keys[QuotaColor]);
+	goalColor_ = gVUser_->GetVector3Value(keys[GoalColor]);
 }

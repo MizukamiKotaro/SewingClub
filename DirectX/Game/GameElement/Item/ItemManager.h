@@ -45,6 +45,7 @@ private:
 	float scale_;
 	int itemNum_;
 	float reqScale_ = 1.0f;
+	float reqScaleDiameter_ = 1.0f;
 	int reqItemNum_ = 1;
 	Vector4 color_;
 

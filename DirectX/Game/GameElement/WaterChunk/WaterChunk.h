@@ -34,6 +34,10 @@ public:
 
 	void CreateQuadrangle();
 
+	// めっちゃ面倒な処理
+	const Vector3& GetPosition() const { return position_; }
+	const float& GetScale() const { return scale_; }
+
 private:
 	void SetGlobalVariable();
 
@@ -43,6 +47,13 @@ private:
 	static void StaticApplyGlobalVariable();
 
 	void ActiveCheck(Camera* camera);
+
+	void CreateChips();
+
+	void AddWave(const bool& isDown);
+
+	void AddWave(const WaterChunk& water, WaterWave& wave);
+
 
 private:
 	void OnCollision(const Collider& collider) override;

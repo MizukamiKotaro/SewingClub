@@ -13,9 +13,15 @@ void Animation2DData::Initialize(std::string fileName, const uint32_t& hDivNum, 
 	SceneEntry();
 }
 
+void Animation2DData::Initialize(const uint32_t& hDivNum, const uint32_t& wDivNum) {
+	texParam_.divisionNumber = Vector2(static_cast<float>(wDivNum), static_cast<float>(hDivNum));
+	SceneEntry();
+}
+
 void Animation2DData::SceneEntry() {
 	uint32_t handle = static_cast<uint32_t>(texParam_.divisionNumber.x) * static_cast<uint32_t>(texParam_.divisionNumber.y);
 	sceneNumberList_.resize(handle);
+	texParam_.uvScale = Vector3(1.0f / texParam_.divisionNumber.x, 1.0f / texParam_.divisionNumber.y, 1.0f);
 	handle = 0u;
 	for (uint32_t y = 0u; y < texParam_.divisionNumber.y; y++) {
 		for (uint32_t x = 0u; x < texParam_.divisionNumber.x; x++) {
@@ -28,7 +34,6 @@ void Animation2DData::SceneEntry() {
 		}
 	}
 	// uvScaleの設定
-	texParam_.uvScale = Vector3(1.0f / texParam_.divisionNumber.x, 1.0f / texParam_.divisionNumber.y, 1.0f);
 }
 
 void Animation2DData::SetGlobalVariable() {
@@ -82,7 +87,7 @@ Animation2D::Animation2D(Animation2DData* data) {
 	data_ = data;
 }
 
-bool Animation2D::Update(std::string path) {
+bool Animation2D::Update(std::string path, const float& delta) {
 #ifdef _DEBUG
 	data_->ApplyGlobalVariable();
 #endif // _DEBUG
@@ -94,16 +99,21 @@ bool Animation2D::Update(std::string path) {
 		nowFrame_ = 0.0f;
 	}
 
-	AnimationCount();
+	bool finished = AnimationCount(delta);
 	uint32_t number = data_->keyParam_.at(nowScene_).sceneNumber;
 	// UV座標の更新
 	UpdateTrans(number);
 	oldPath_ = path;
-	return true;
+	// loopならアニメーションの終わりとか気にしなくていいから強制true
+	if (isLoop_) {
+		return true;
+	}
+	return finished;
 }
 
-void Animation2D::Play(bool flag) {
+void Animation2D::Play(bool flag, bool loop) {
 	if (isPlay_ == flag) { return; }
+	isLoop_ = loop;
 	isPlay_ = flag;
 	nowFrame_ = 0.0f;
 	nowScene_ = 0u;
@@ -114,16 +124,23 @@ Transform Animation2D::GetSceneUV(const uint32_t& scene) {
 	return transform_;
 }
 
-bool Animation2D::AnimationCount() {
-	if (data_->keyParam_.at(nowScene_).keyFrame <= nowFrame_++) {
+bool Animation2D::AnimationCount(const float& delta) {
+	if (data_->keyParam_.at(nowScene_).keyFrame <= nowFrame_) {
 		nowScene_ += 1u;
 		nowFrame_ = 0.0f;
 		// 最後まで行った&&ループするならば
-		if (nowScene_ == data_->keyParam_.size() && isLoop_) {
-			nowScene_ = 0u;
+		if (nowScene_ == data_->keyParam_.size()) {
+			if (isLoop_) {
+				nowScene_ = 0u;
+			}
+			else {
+				nowScene_ -= 1u;
+				isPlay_ = false;
+			}
+			return true;
 		}
-		return true;
 	}
+	nowFrame_ += delta * 60.0f;
 	return false;
 }
 

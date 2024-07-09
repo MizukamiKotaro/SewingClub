@@ -154,6 +154,7 @@ void Audio::Update()
 		ImGui::End();
 	}
 
+#endif // _DEBUG
 	if (IsPlaying()) {
 		float volume = volume_;
 		if (soundData_->type == AudioType::SE) {
@@ -165,7 +166,6 @@ void Audio::Update()
 
 		audioManager_->SetVolume(voiceHandle_, soundData_, volume);
 	}
-#endif // _DEBUG
 }
 
 const SoundData* Audio::GetSoundDataPtr() const

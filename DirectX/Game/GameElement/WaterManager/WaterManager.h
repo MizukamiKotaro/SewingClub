@@ -37,11 +37,20 @@ private:
 	// グローバル変数の更新
 	void ApplyGlobalVariable();
 
+
 private:
 	std::list<std::unique_ptr<WaterChunk>> fullWater_;
 	std::unordered_map<int, std::unique_ptr<WaterChunk>> stageWater_;
 	std::unique_ptr<StageEditor> stageEditor_;
 
 	int waterNum_;
+
+	struct Limit {
+		Vector3 upperLimit{};
+		Vector3 lowerLimit{};
+	};
+	Limit limit_;
+public:
+	const Limit& GetLimit() const { return limit_; }
 
 };

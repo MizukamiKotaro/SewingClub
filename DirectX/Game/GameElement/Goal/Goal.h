@@ -5,6 +5,8 @@
 #include "InstancingModelManager.h"
 #include "CollisionSystem/Collider/Collider.h"
 #include"Audio/Audio.h"
+#include "Game/GameElement/Animation/Animation2D.h"
+#include"GameElement/Effects/GoalDusts/GoalDusts.h"
 
 class Camera;
 class Wave;
@@ -16,13 +18,15 @@ public:
 
 	void Initialize();
 
-	void Update(float deltaTime);
+	bool Update(float deltaTime);
 
 	void Draw() const;
 
 	const bool IsClear() const { return isHit_; }
 
 	const Vector3& GetPosition()const { return position_; }
+
+	void SetGoal(const bool& flag) { isGoal_ = flag; }
 private:
 	void SetGlobalVariable();
 
@@ -39,6 +43,7 @@ private:
 
 	std::unique_ptr<GlobalVariableUser> globalVariable_;
 	std::unique_ptr<StageEditor> stageEditor_;
+	std::unique_ptr<Animation2D> animation_;
 
 private:
 	static float deleteTime_;
@@ -52,6 +57,12 @@ private:
 	bool isSmall_;
 	float time_;
 	Vector4 color_;
+	bool isGoal_ = false; // ゴールできるか
+
+	Audio seOpenGoal_;
 
 	Audio seGoal_;
+	bool isPlayed_ = false;
+
+	std::unique_ptr<EffectGoalDusts>edusts_;
 };

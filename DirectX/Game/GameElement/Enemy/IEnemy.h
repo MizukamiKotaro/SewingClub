@@ -5,6 +5,7 @@
 #include "ParticleManager.h"
 #include "StageEditor/StageEditor.h"
 #include "Camera.h"
+#include "GameElement/Animation/Animation2D.h"
 
 class IEnemy : public Collider
 {
@@ -15,10 +16,11 @@ public:
 
 	virtual void Initialize() = 0;
 
-	virtual void Update(const float& deltaTime, Camera* camera) = 0;
+	virtual void Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension) = 0;
 
 	virtual void Draw() const = 0;
 
+	Vector3& GetPosition() { return position_; }
 protected:
 	virtual void OnCollision(const Collider& collider) override = 0;
 	void SetCollider();
@@ -40,4 +42,6 @@ protected:
 	Vector3 position_;
 	bool isActive_;
 	Vector4 color_;
+
+	std::unique_ptr<Animation2D> animation_;
 };

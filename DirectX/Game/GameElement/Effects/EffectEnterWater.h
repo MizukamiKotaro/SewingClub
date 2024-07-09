@@ -7,7 +7,7 @@ class EffectEnterWater {
 
 public:
 
-	EffectEnterWater();
+	EffectEnterWater(const std::string  name);
 	~EffectEnterWater();
 
 
@@ -55,7 +55,6 @@ private:
 		Vector3 translate;
 		Vector3 velo;
 		float scale;
-
 		bool isDead = false;;
 
 		float startScale;

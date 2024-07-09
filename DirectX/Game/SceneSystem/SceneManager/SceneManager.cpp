@@ -46,7 +46,7 @@ int SceneManager::Run()
 	// ウィンドウの×ボタンが押されるまでループ
 	while (true) {
 		// フレームの開始
-		if (Kyoko::Engine::ProcessMessage() || (inputManager_->PressedKey(DIK_ESCAPE) && IScene::sceneNo_ == TITLE)) {
+		if (Kyoko::Engine::ProcessMessage() || (inputManager_->PressedKey(DIK_ESCAPE) && IScene::sceneNo_ == TITLE)||IScene::isBreak_) {
 			break;
 		}
 

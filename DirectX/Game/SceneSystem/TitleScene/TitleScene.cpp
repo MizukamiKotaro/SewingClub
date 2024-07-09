@@ -13,6 +13,9 @@ TitleScene::TitleScene()
 	buttonA_->pos_.y = 500.0f;
 	buttonA_->size_ = { 123.0f,123.0f };
 
+	select_ = std::make_unique<Sprite>("controler_UI_=-.png");
+	text_Option_ = std::make_unique<Sprite>("HUD/option_HUD.png");
+
 	for (int i = 0; i < 5; i++) {
 		titleLogo_[i] = std::make_unique<Sprite>("titlelogo.png");
 		titleLogo_[i]->SetTextureSize({ 128,300 });
@@ -28,20 +31,22 @@ TitleScene::TitleScene()
 		logoCenters_[i] = logos_[i] + logoPos_;
 	}
 
-	startWord_ = std::make_unique<Sprite>("title_startUI.png");
+	startWord_ = std::make_unique<Sprite>("HUD/title_satrt_HUD.png");
 	startWord_->pos_.y = 500.0f;
 	startWord_->pos_.x = 700.0f;
 
 	bg_ = std::make_unique<BackGround>();
 
 	bgm_.LoadMP3("Music/title.mp3", "TitleBGM", bgmVolume_);
+	seOpenOption_.LoadMP3("SE/Scene/autgame_poseOpen.mp3");
+	seSelect_.LoadMP3("SE/Scene/autgame_decision.mp3");
 
 	effeUIEnterW_ = std::make_unique<EffectUIEnterWater>("TitleBubbleUI");
 	waterE_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
 	
 	whiteS_ = std::make_unique<Sprite>();
 
-	optionUI_ = std::make_unique<OptionUI>();
+	optionUI_ = std::make_unique<OptionUI>(OptionUI::kTitle);
 
 
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
@@ -54,13 +59,15 @@ TitleScene::TitleScene()
 
 	gVari->AddItem(groupName_, "ロゴのランダム速度(min/max)", randVelo_);
 	gVari->AddItem(groupName_, "ロゴが移動できる範囲", logoMoveArea_);
-	
+	gVari->AddItem(groupName_, "「＝」座標", select_->pos_);
+	gVari->AddItem(groupName_, "「＝」サイズ", select_->size_);
+	gVari->AddItem(groupName_, "「option」座標", text_Option_->pos_);
+	gVari->AddItem(groupName_, "「option」サイズ", text_Option_->size_);
+
 }
 
-void TitleScene::Initialize()
+void TitleScene::SetGlovalV()
 {
-	AudioManager::GetInstance()->AllStop();
-
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
 
 	logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)");
@@ -70,6 +77,19 @@ void TitleScene::Initialize()
 	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
 	randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
 	logoMoveArea_ = gVari->GetVector2Value(groupName_, "ロゴが移動できる範囲");
+	select_->pos_ = gVari->GetVector2Value(groupName_, "「＝」座標");
+	select_->size_ = gVari->GetVector2Value(groupName_, "「＝」サイズ");
+	text_Option_->pos_ = gVari->GetVector2Value(groupName_, "「option」座標");
+	text_Option_->size_ = gVari->GetVector2Value(groupName_, "「option」サイズ");
+
+
+}
+
+void TitleScene::Initialize()
+{
+	AudioManager::GetInstance()->AllStop();
+
+	SetGlovalV();
 	
 
 
@@ -89,6 +109,8 @@ void TitleScene::Initialize()
 	}
 	startWord_->Update();
 
+	select_->Update();
+	text_Option_->Update();
 
 	bgm_.Play(true);
 
@@ -99,7 +121,7 @@ void TitleScene::Initialize()
 	whiteS_->size_ = { 1280,720 };
 	whiteS_->Update();
 
-	optionUI_->Initialize(OptionUI::kTitle);
+	optionUI_->Initialize();
 	optionUI_->Update();
 
 	//いい感じの演出になったので消します
@@ -109,16 +131,13 @@ void TitleScene::Initialize()
 void TitleScene::Update()
 {
 
+	ans_ = UpdateAnswer();
+
 	if (!isOptionActive_) {
 
-		GlobalVariables* gVari = GlobalVariables::GetInstance();
-		logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)");
-		buttonA_->pos_ = gVari->GetVector2Value(groupName_, "ボタン座標");
-		buttonA_->size_ = gVari->GetVector2Value(groupName_, "ボタンサイズ");
-		startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
-		startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
-		randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
-		logoMoveArea_ = gVari->GetVector2Value(groupName_, "ロゴが移動できる範囲");
+#ifdef _DEBUG
+		SetGlovalV();
+#endif // _DEBUG
 
 
 
@@ -130,16 +149,26 @@ void TitleScene::Update()
 
 		startWord_->Update();
 
-		SceneChange();
-
+		select_->Update();
+		text_Option_->Update();
+		
 		effeUIEnterW_->Update();
 
 		waterE_->Update(0.1f);
 
 	}
 	else {
-		isOptionActive_ = optionUI_->Update();
+		ans_ = optionUI_->Update();
+		
+		if (ans_.audioOption) {
+			bgm_.Update();
+		}
 	}
+
+	
+
+	SceneChange();
+
 }
 
 void TitleScene::Draw()
@@ -160,6 +189,8 @@ void TitleScene::Draw()
 
 	buttonA_->Draw();
 	
+	select_->Draw();
+	text_Option_->Draw();
 
 	effeUIEnterW_->Draw();
 
@@ -188,6 +219,8 @@ void TitleScene::WrightPostEffect()
 
 	waterE_->PostDrawWaterArea();
 }
+
+
 
 void TitleScene::LogoAnimation()
 {
@@ -230,15 +263,25 @@ void TitleScene::LogoAnimation()
 void TitleScene::SceneChange()
 {
 	//
-	if (input_->PressedGamePadButton(Input::GamePadButton::A)&&!isOptionActive_) {
+	if (!isOptionActive_ && input_->PressedGamePadButton(Input::GamePadButton::A) && !isOptionActive_) {
 		// シーン切り替え
 		stageNo_ = 0;
 		ChangeScene(SELECT);
 		bgm_.Stop();
+		seSelect_.Play();
 	}
-
-	if (input_->PressedGamePadButton(Input::GamePadButton::START) &&!isOptionActive_) {
+	else if (!isOptionActive_&&input_->PressedGamePadButton(Input::GamePadButton::START) &&!isOptionActive_) {
+		seOpenOption_.Play();
 		isOptionActive_ = true;
+		seSelect_.Play();
+	}
+	else if (isOptionActive_ && ans_.backOption) {
+		//処理
+		isOptionActive_ = false;
+	}
+	else if (isOptionActive_ && ans_.leaveGame) {
+		//処理
+		isBreak_ = true;
 	}
 }
 

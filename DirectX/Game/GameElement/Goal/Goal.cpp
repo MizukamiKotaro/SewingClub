@@ -5,12 +5,13 @@
 #include "CollisionSystem/CollisionManager/CollisionManager.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "SceneSystem/IScene/IScene.h"
+#include "GameElement/Animation/AnimationManager.h"
 
 Goal::Goal()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
-	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("WaterCircle");
-	const Texture* tex = TextureManager::GetInstance()->LoadTexture("goal_1.png");
+	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("plane");
+	const Texture* tex = TextureManager::GetInstance()->LoadTexture("goal_anime.png");
 	modelData_ = instancingManager_->GetDrawData({ modelData,tex,BlendMode::kBlendModeNormal });
 
 	isHit_ = false;
@@ -27,8 +28,17 @@ Goal::Goal()
 	SetGlobalVariable();
 	scale_ = maxScale_;
 
-	seGoal_.LoadWave("SE/goal.wav");
+	seOpenGoal_.LoadMP3("SE/Scene/ingame_goalOpen.mp3");
+	seGoal_.LoadMP3("SE/Scene/ingame_goalTouch.mp3");
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
+
+	// アニメーション
+	animation_ = std::make_unique<Animation2D>(AnimationManager::GetInstance()->AddAnimation("goal"));
+	// UV座標のセット
+	Transform handle = animation_->GetSceneUV(0u);
+	animation_->Play(true, false);
+	
+	edusts_ = std::make_unique<EffectGoalDusts>();
 }
 
 void Goal::Initialize()
@@ -37,9 +47,16 @@ void Goal::Initialize()
 	stageEditor_->Initialize();
 	SetGlobalVariable();
 	isHit_ = false;
+	Transform handle = animation_->GetSceneUV(0u);
+	animation_->Play(true, false);
+
+	edusts_->Initialize();
+	edusts_->SetActive(true);
+	isGoal_ = false;
+	isPlayed_ = false;
 }
 
-void Goal::Update(float deltaTime)
+bool Goal::Update(float deltaTime)
 {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
@@ -51,15 +68,27 @@ void Goal::Update(float deltaTime)
 	}
 #endif // _DEBUG
 	
-	deltaTime = deltaTime;
-
-	SetCollider();
+	bool result = false;
+	if (isGoal_) {
+		if (!isPlayed_) {
+			isPlayed_ = true;
+			seOpenGoal_.Play();
+		}
+		result = animation_->Update("goal", deltaTime);
+		SetCollider();
+	}
+	edusts_->SetActive(isGoal_);
+	edusts_->Update(position_);
+	return result;
 }
 
 void Goal::Draw() const
 {
 	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
-	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ });
+	Matrix4x4 uvMatrix = animation_->GetUVTrans().worldMat_;
+	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,uvMatrix, color_ });
+
+	edusts_->Draw();
 }
 
 void Goal::SetGlobalVariable()

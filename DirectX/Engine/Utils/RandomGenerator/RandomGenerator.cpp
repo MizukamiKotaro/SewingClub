@@ -9,25 +9,30 @@ RandomGenerator* RandomGenerator::GetInstance()
 	return &instance;
 }
 
-int RandomGenerator::RandInt(int min, int max)
+int RandomGenerator::RandInt(const int& min, const int& max)
 {
 	std::uniform_real_distribution<> distribution(min, max);
 	return static_cast<int>(distribution(randomEngine_));
 }
 
-float RandomGenerator::RandFloat(float min, float max)
+float RandomGenerator::RandFloat(const float& min, const float& max)
 {
 	std::uniform_real_distribution<float> distribution(min, max);
 	return distribution(randomEngine_);
 }
 
-Vector2 RandomGenerator::RandVector2(float min, float max)
+Vector2 RandomGenerator::RandVector2(const float& min, const float& max)
 {
 	std::uniform_real_distribution<float> distribution(min, max);
 	return Vector2{ distribution(randomEngine_),distribution(randomEngine_) };
 }
 
-Vector3 RandomGenerator::RandVector3(float min, float max)
+Vector2 RandomGenerator::RandVector2(const Vector2& min, const Vector2& max)
+{
+	return Vector2(RandFloat(min.x, max.x), RandFloat(min.y, max.y));
+}
+
+Vector3 RandomGenerator::RandVector3(const float& min, const float& max)
 {
 	std::uniform_real_distribution<float> distribution(min, max);
 	return Vector3{ distribution(randomEngine_),distribution(randomEngine_),distribution(randomEngine_) };

@@ -19,7 +19,7 @@ struct QuotaSendData {
 class RequiredObject : public Collider {
 public:
 	RequiredObject() = default;
-	RequiredObject(const int& no, const float& scale);
+	RequiredObject(const int& no, const float& scale, const float& scaleDia);
 	~RequiredObject() = default;
 
 	static void StaticInitialize();
@@ -62,10 +62,33 @@ private:
 	float scale_;
 	float rotate_;
 	Vector4 color_;
+	float scaleDiameter_;
 
 	int no_;
 	bool isActive_;
 
+
 	//コイン取得音
 	Audio seGetCoin_;
+
+#pragma region 
+	bool isHitAnime_ = false;
+	
+	Vector3 animeV_ = { 0,0,0 };
+	Vector3 stAPos_ = { 0,0,0 };
+	Vector3 edAPos_ = { 0,5,0 };
+
+
+	Vector2 stedScale_ = { 1,0 };
+	Vector2 stedRotate_ = { 0,10 };
+	Vector2 stedAlpha_ = { 1,0 };
+
+	float swingCount_ = 0;
+	float addSwingCount_ = 3.0f;
+	float arrowSwingNum_ = 0.5f;
+
+	int count_ = 0;
+	int maxCount_ = 30;
+#pragma endregion
+
 };

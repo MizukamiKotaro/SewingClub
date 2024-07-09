@@ -52,6 +52,9 @@ private:
 
 	GlobalVariableUser* gVUser_;
 
+	Vector3 quotaColor_{ 1,1,1 };
+	Vector3 goalColor_{1,1,1};
+
 	enum Key {
 		SpriteSize,
 		SphereAreaSize,
@@ -62,6 +65,8 @@ private:
 		QuotaUIDirection,
 		QuotaUISize,
 		QuotaUIType,
+		QuotaColor,
+		GoalColor,
 		_count
 	};
 
@@ -74,7 +79,9 @@ private:
 		"ゴールが消えるまでのカウント",
 		"ノルマとUIとの距離",
 		"ノルマガイドUIのサイズ",
-		"ノルマガイドUIのタイプ"
+		"ノルマガイドUIのタイプ",
+		"ノルマ案内の色",
+		"ゴール案内の色"
 	};
 
 	//画像のサイズ

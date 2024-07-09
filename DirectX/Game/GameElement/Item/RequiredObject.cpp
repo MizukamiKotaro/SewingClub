@@ -7,6 +7,10 @@
 #include "SceneSystem/IScene/IScene.h"
 #include "WindowsInfo/WindowsInfo.h"
 #include "ItemManager.h"
+#include"GameElement/Effects/GetItem/GetItem.h"
+#include"calc.h"
+
+#include<numbers>
 
 InstancingModelManager* RequiredObject::instancingManager_ = nullptr;
 const InstancingMeshTexData* RequiredObject::modelData_ = nullptr;
@@ -15,13 +19,14 @@ ItemManager* RequiredObject::itemManager_ = nullptr;
 Vector4 RequiredObject::staticColor_ = { 1.0f,1.0f,1.0f,1.0f };
 
 
-RequiredObject::RequiredObject(const int& no, const float& scale) {
+RequiredObject::RequiredObject(const int& no, const float& scale, const float& scaleDia) {
 	isHit_ = false;
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::ITEM);
 	Collider::AddTargetMask(ColliderMask::PLAYER);
 
 	position_ = { 0.0f,1.0f,-0.02f };
 	scale_ = scale;
+	scaleDiameter_ = scaleDia;
 	rotate_ = 0.0f;
 
 	no_ = no;
@@ -30,7 +35,7 @@ RequiredObject::RequiredObject(const int& no, const float& scale) {
 	color_ = staticColor_;
 	isActive_ = true;
 
-	seGetCoin_.LoadWave("SE/getCoin.wav");
+	seGetCoin_.LoadMP3("SE/Item/ingame_itemGet.mp3");
 }
 
 void RequiredObject::StaticInitialize() {
@@ -40,10 +45,13 @@ void RequiredObject::StaticInitialize() {
 	modelData_ = instancingManager_->GetDrawData({ modelData,tex,BlendMode::kBlendModeNormal });
 	itemManager_ = ItemManager::GetInstance();
 	//staticColor_ = itemManager_->GetColor();
+
 }
 
 bool RequiredObject::Update(float deltaTime, Camera* camera) {
+	
 	if (isHit_) { return true; }
+
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 	//staticColor_ = itemManager_->GetColor();
@@ -64,18 +72,44 @@ bool RequiredObject::Update(float deltaTime, Camera* camera) {
 	}
 #endif // _DEBUG
 
+	if (isHitAnime_) {
+		if (count_++ >= maxCount_) {
+			isHit_ = true;
+
+			EffectGetItem::GetInstance()->Spawn(position_+animeV_);
+		}
+		else {
+			float t = (float)count_ / (float)maxCount_;
+
+			animeV_ = Calc::Lerp(stAPos_, edAPos_, t);
+			scale_ = Calc::Lerp(stedScale_.x, stedScale_.y, t);
+			rotate_ = Calc::Lerp(stedRotate_.x, stedRotate_.y, t);
+			color_.w = Calc::Lerp(stedAlpha_.x, stedAlpha_.y, t);
+		}
+
+		
+	}
+	else {
+		//ある値を超えると0に戻す
+		swingCount_ += addSwingCount_ / 60.0f;
+		swingCount_ = std::fmod(swingCount_, 2.0f * (float)std::numbers::pi);
+		animeV_.y = std::sin(swingCount_) * arrowSwingNum_;
+	}
+
+
 	ActiveCheck(camera);
 	deltaTime;
 	if (isActive_) {
 		SetCollider();
 	}
+
 	return isHit_;
 }
 
 void RequiredObject::Draw() const {
 	if (isActive_) {
 		if (!isHit_) {
-			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
+			Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_+animeV_);
 			instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ });
 		}
 	}
@@ -103,15 +137,19 @@ void RequiredObject::ApplyGlobalVariable() {
 }
 
 void RequiredObject::OnCollision(const Collider& collider) {
-	if (collider.GetMask() == ColliderMask::PLAYER) {
-		isHit_ = true;
-		seGetCoin_.Play();
+	if (!isHitAnime_) {
+		if (collider.GetMask() == ColliderMask::PLAYER) {
+			isHitAnime_ = true;
+			seGetCoin_.Play();
+
+			EffectGetItem::GetInstance()->Spawn(position_);
+		}
 	}
 }
 
 void RequiredObject::SetCollider() {
 	if (!isHit_) {
-		Collider::SetCircle({ position_.x,position_.y }, scale_);
+		Collider::SetCircle({ position_.x,position_.y }, scale_ * scaleDiameter_);
 		collisionManager_->SetCollider(this);
 	}
 }

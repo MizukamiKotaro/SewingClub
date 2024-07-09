@@ -9,7 +9,7 @@ EnemyManager* EnemyManager::GetInstance()
 	return &instance;
 }
 
-void EnemyManager::Initialize(Player* pplayer)
+void EnemyManager::Initialize(Player* pplayer,const Camera*camera)
 {
 	if (pplayer) {
 		player_ptr = pplayer;
@@ -21,16 +21,25 @@ void EnemyManager::Initialize(Player* pplayer)
 		FollowEnemy::StaticInitialize();
 		stageEditor_ = std::make_unique<StageEditor>("敵の設置");
 	}
+	stageEditor_->Initialize();
 	doesNotWorkEnemyNum_ = 0;
 	followEnemyNum_ = 0;
-	stageEditor_->Initialize();
 	SetGlobalVariable();
 	FollowEnemy::SetPlayerPtr(player_ptr->GetPositionPtr());
 	Clear();
 	GenerateEnemies();
+
+	guid_ = std::make_unique<UIEnemyGuidance>();
+	guid_->Initialize(camera);
+
+	//座標ポインタ取得
+	for (auto& da : enemies_) {
+		guid_->SetEnemyPos(da->GetPosition());
+	}
+	guid_->Update();
 }
 
-void EnemyManager::Update(const float& deltaTime, Camera* camera)
+void EnemyManager::Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension)
 {
 #ifdef _DEBUG
 	// 前情報取得
@@ -48,15 +57,17 @@ void EnemyManager::Update(const float& deltaTime, Camera* camera)
 	}
 
 	if (initializeFrag) {
-		Initialize(nullptr);
+		Initialize(nullptr,camera);
 	}
 
 #endif // _DEBUG
 
 	for (std::list<std::unique_ptr<IEnemy>>::iterator it = enemies_.begin(); it != enemies_.end();) {
-		(*it)->Update(deltaTime, camera);
+		(*it)->Update(deltaTime, camera, babyTension);
 		it++;
 	}
+
+	guid_->Update();
 }
 
 void EnemyManager::Draw() const
@@ -64,6 +75,8 @@ void EnemyManager::Draw() const
 	for (const std::unique_ptr<IEnemy>& enemy : enemies_) {
 		enemy->Draw();
 	}
+
+	guid_->Draw();
 }
 
 void EnemyManager::SetGlobalVariable()

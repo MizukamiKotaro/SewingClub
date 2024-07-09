@@ -13,6 +13,7 @@ public:
 	~Animation2DData() = default;
 
 	void Initialize(std::string fileName, const uint32_t& hDivNum = 1u, const uint32_t& wDivNum = 1u);
+	void Initialize(const uint32_t& hDivNum, const uint32_t& wDivNum);
 
 private:
 	// アニメーションNo.の格納
@@ -49,10 +50,10 @@ public:
 	~Animation2D() = default;
 
 	/// <returns>アニメーション更新時はtrueを返す</returns>
-	bool Update(std::string path);
+	bool Update(std::string path, const float& delta);
 
 	// アニメーションの再生
-	void Play(bool flag);
+	void Play(bool flag, bool loop = true);
 
 	// 指定したSceneのUV取得
 	Transform GetSceneUV(const uint32_t& scene);
@@ -61,7 +62,7 @@ public:
 
 private:
 	// true:scene切り替え/false:scene継続
-	bool AnimationCount();
+	bool AnimationCount(const float& delta);
 
 	void UpdateTrans(const uint32_t& listNum);
 

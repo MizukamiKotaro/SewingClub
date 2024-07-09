@@ -2,6 +2,7 @@
 #include <list>
 #include <memory>
 #include "IEnemy.h"
+#include"GameElement/Effects/UIEnemyGuidance/UIEnemyGuidance.h"
 
 class Player;
 
@@ -11,9 +12,9 @@ public:
 
 	void Clear() { enemies_.clear(); }
 
-	void Initialize(Player* pplayer);
+	void Initialize(Player* pplayer, const Camera* camera);
 
-	void Update(const float& deltaTime, Camera* camera);
+	void Update(const float& deltaTime, Camera* camera, const uint32_t& babyTension);
 
 	void Draw() const;
 
@@ -38,4 +39,5 @@ private:
 
 	Player* player_ptr = nullptr; // playerのポインタ
 
+	std::unique_ptr<UIEnemyGuidance>guid_;
 };

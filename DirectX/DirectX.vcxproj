@@ -113,8 +113,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Drawers\PostEffect\Dissolve\Dissolve.cpp" />
+    <ClCompile Include="Engine\Drawers\PostEffect\Vignette\Vignette.cpp" />
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.cpp" />
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.cpp" />
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.cpp" />
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.cpp" />
     <ClCompile Include="Game\GameElement\BackGround\BackGround.cpp" />
     <ClCompile Include="Game\GameElement\BackGround\Star.cpp" />
+    <ClCompile Include="Game\GameElement\Camera\FollowCamera.cpp" />
+    <ClCompile Include="Game\GameElement\Camera\GoalCamera.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\ComboEffect.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectGoalGuidance.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectUIEnterWater.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectEnterWater.cpp" />
@@ -207,14 +217,22 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Client\ClientManager.cpp" />
     <ClCompile Include="Game\GameElement\DeadLine\DeadLine.cpp" />
     <ClCompile Include="Game\GameElement\Effects\EffectExtraJump.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\GetItem\GetItem.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\GoalDusts\GoalDusts.cpp" />
+    <ClCompile Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\DoesNotWorkEnemy.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\FollowEnemy.cpp" />
     <ClCompile Include="Game\GameElement\Enemy\IEnemy.cpp" />
+    <ClCompile Include="Game\GameElement\FragmentVignette\FragmentVignette.cpp" />
     <ClCompile Include="Game\GameElement\Game.cpp" />
+    <ClCompile Include="Game\GameElement\GameClear\GameClear.cpp" />
+    <ClCompile Include="Game\GameElement\GameOver\GameOver.cpp" />
     <ClCompile Include="Game\GameElement\Goal\Goal.cpp" />
     <ClCompile Include="Game\GameElement\GravityArea\GravityArea.cpp" />
+    <ClCompile Include="Game\GameElement\HitStop\HitStop.cpp" />
     <ClCompile Include="Game\GameElement\HitSystem\HitSystem.cpp" />
+    <ClCompile Include="Game\GameElement\InGameHUD\InGameHUD.cpp" />
     <ClCompile Include="Game\GameElement\Item\Item.cpp" />
     <ClCompile Include="Game\GameElement\Item\ItemManager.cpp" />
     <ClCompile Include="Game\GameElement\Item\RequiredObject.cpp" />
@@ -225,18 +243,21 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Live\StageLights\StageLights.cpp" />
     <ClCompile Include="Game\GameElement\Live\Stage\Stage.cpp" />
     <ClCompile Include="Game\GameElement\Notes\Notes.cpp" />
-    <ClCompile Include="Game\GameElement\OptionUI\AudioOptionUI.cpp" />
     <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp" />
+    <ClCompile Include="Game\GameElement\OptionUI\AudioOptionUI.cpp" />
     <ClCompile Include="Game\GameElement\Pause\Pause.cpp" />
     <ClCompile Include="Game\GameElement\Planet\Planet.cpp" />
     <ClCompile Include="Game\GameElement\Planet\PlanetManager.cpp" />
     <ClCompile Include="Game\GameElement\Planet\PlanetTypeColor.cpp" />
     <ClCompile Include="Game\GameElement\Player\GravityAreaSearch.cpp" />
     <ClCompile Include="Game\GameElement\Player\Player.cpp" />
+    <ClCompile Include="Game\GameElement\PopupUI\PopupUI.cpp" />
     <ClCompile Include="Game\GameElement\ScoreManager\ScoreManager.cpp" />
     <ClCompile Include="Game\GameElement\Score\Score.cpp" />
     <ClCompile Include="Game\GameElement\StageUI\StageUI.cpp" />
     <ClCompile Include="Game\GameElement\TensionUI\TensionUI.cpp" />
+    <ClCompile Include="Game\GameElement\TensionUpEffect\TensionUpEffect.cpp" />
+    <ClCompile Include="Game\GameElement\TensionUpEffect\TensionUpEffectManager.cpp" />
     <ClCompile Include="Game\GameElement\WaterChunk\WaterChunk.cpp" />
     <ClCompile Include="Game\GameElement\WaterChunk\WaterChunkChip.cpp" />
     <ClCompile Include="Game\GameElement\WaterChunk\WaterChunkQuadrangle.cpp" />
@@ -251,9 +272,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\SceneSystem\ClearScene\ClearScene.cpp" />
     <ClCompile Include="Game\SceneSystem\ISceneFactory\ISceneFactory.cpp" />
     <ClCompile Include="Game\SceneSystem\IScene\IScene.cpp" />
+    <ClCompile Include="Game\SceneSystem\SelectScene\SelectScene.cpp" />
     <ClCompile Include="Game\SceneSystem\SceneFactory\SceneFactory.cpp" />
     <ClCompile Include="Game\SceneSystem\SceneManager\SceneManager.cpp" />
-    <ClCompile Include="Game\SceneSystem\SelectScene\SelectScene.cpp" />
     <ClCompile Include="Game\SceneSystem\StageScene\StageScene.cpp" />
     <ClCompile Include="Game\SceneSystem\TitleScene\TitleScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -276,6 +297,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Effects\particleAcceleration.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Drawers\PostEffect\Dissolve\Dissolve.h" />
+    <ClInclude Include="Engine\Drawers\PostEffect\Vignette\Vignette.h" />
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.h" />
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.h" />
+    <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.h" />
+    <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h" />
+    <ClInclude Include="Game\GameElement\Camera\FollowCamera.h" />
+    <ClInclude Include="Game\GameElement\Camera\GoalCamera.h" />
+    <ClInclude Include="Game\GameElement\Effects\ComboEffect.h" />
+    <ClInclude Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.h" />
     <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h" />
     <ClInclude Include="Game\GameElement\Effects\EffectUIEnterWater.h" />
     <ClInclude Include="Game\GameElement\BackGround\BackGround.h" />
@@ -407,14 +438,22 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Client\ClientManager.h" />
     <ClInclude Include="Game\GameElement\DeadLine\DeadLine.h" />
     <ClInclude Include="Game\GameElement\Effects\EffectExtraJump.h" />
+    <ClInclude Include="Game\GameElement\Effects\GetItem\GetItem.h" />
+    <ClInclude Include="Game\GameElement\Effects\GoalDusts\GoalDusts.h" />
+    <ClInclude Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.h" />
     <ClInclude Include="Game\GameElement\Enemy\DoesNotWorkEnemy.h" />
     <ClInclude Include="Game\GameElement\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\GameElement\Enemy\FollowEnemy.h" />
     <ClInclude Include="Game\GameElement\Enemy\IEnemy.h" />
+    <ClInclude Include="Game\GameElement\FragmentVignette\FragmentVignette.h" />
     <ClInclude Include="Game\GameElement\Game.h" />
+    <ClInclude Include="Game\GameElement\GameClear\GameClear.h" />
+    <ClInclude Include="Game\GameElement\GameOver\GameOver.h" />
     <ClInclude Include="Game\GameElement\Goal\Goal.h" />
     <ClInclude Include="Game\GameElement\GravityArea\GravityArea.h" />
+    <ClInclude Include="Game\GameElement\HitStop\HitStop.h" />
     <ClInclude Include="Game\GameElement\HitSystem\HitSystem.h" />
+    <ClInclude Include="Game\GameElement\InGameHUD\InGameHUD.h" />
     <ClInclude Include="Game\GameElement\Item\Item.h" />
     <ClInclude Include="Game\GameElement\Item\ItemManager.h" />
     <ClInclude Include="Game\GameElement\Item\RequiredObject.h" />
@@ -425,8 +464,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Live\StageLights\StageLights.h" />
     <ClInclude Include="Game\GameElement\Live\Stage\Stage.h" />
     <ClInclude Include="Game\GameElement\Notes\Notes.h" />
-    <ClInclude Include="Game\GameElement\OptionUI\AudioOptionUI.h" />
     <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h" />
+    <ClInclude Include="Game\GameElement\OptionUI\AudioOptionUI.h" />
     <ClInclude Include="Game\GameElement\Pause\Pause.h" />
     <ClInclude Include="Game\GameElement\Planet\Planet.h" />
     <ClInclude Include="Game\GameElement\Planet\PlanetManager.h" />
@@ -434,10 +473,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Planet\PlanetTypeColor.h" />
     <ClInclude Include="Game\GameElement\Player\GravityAreaSearch.h" />
     <ClInclude Include="Game\GameElement\Player\Player.h" />
+    <ClInclude Include="Game\GameElement\PopupUI\PopupUI.h" />
     <ClInclude Include="Game\GameElement\ScoreManager\ScoreManager.h" />
     <ClInclude Include="Game\GameElement\Score\Score.h" />
     <ClInclude Include="Game\GameElement\StageUI\StageUI.h" />
     <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h" />
+    <ClInclude Include="Game\GameElement\TensionUpEffect\TensionUpEffect.h" />
+    <ClInclude Include="Game\GameElement\TensionUpEffect\TensionUpEffectManager.h" />
     <ClInclude Include="Game\GameElement\WaterChunk\WaterChunk.h" />
     <ClInclude Include="Game\GameElement\WaterChunk\WaterChunkChip.h" />
     <ClInclude Include="Game\GameElement\WaterChunk\WaterChunkQuadrangle.h" />
@@ -452,12 +494,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\SceneSystem\ClearScene\ClearScene.h" />
     <ClInclude Include="Game\SceneSystem\ISceneFactory\ISceneFactory.h" />
     <ClInclude Include="Game\SceneSystem\IScene\IScene.h" />
+    <ClInclude Include="Game\SceneSystem\SelectScene\SelectScene.h" />
     <ClInclude Include="Game\SceneSystem\SceneFactory\SceneFactory.h" />
     <ClInclude Include="Game\SceneSystem\SceneManager\SceneManager.h" />
-    <ClInclude Include="Game\SceneSystem\SelectScene\SelectScene.h" />
     <ClInclude Include="Game\SceneSystem\StageScene\StageScene.h" />
     <ClInclude Include="Game\SceneSystem\TitleScene\TitleScene.h" />
     <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h" />
+    <ClInclude Include="icon.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -466,6 +509,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ProjectReference Include="Externals\imgui\imgui.vcxproj">
       <Project>{4efc8c54-f477-4fc5-a6b5-d5c004b712d3}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

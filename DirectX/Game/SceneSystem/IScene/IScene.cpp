@@ -7,6 +7,8 @@ int IScene::sceneNo_ = TITLE;
 
 int IScene::stageNo_ = SHINING_STAR;
 
+bool IScene::isBreak_ = false;
+
 IScene::~IScene(){}
 
 void IScene::FirstInit()
@@ -45,7 +47,11 @@ void IScene::FromBlackInitialize()
 
 void IScene::FromBlackUpdate()
 {
-	transitionTimeCount_ += FrameInfo::GetInstance()->GetDeltaTime();
+	float delta = FrameInfo::GetInstance()->GetDeltaTime();
+	if (delta >= 0.3f) {
+		return;
+	}
+	transitionTimeCount_ += delta;
 
 	float alpha =
 		Ease::UseEase(1.0f, 0.0f, transitionTimeCount_, kTransitionTime, Ease::EaseInSine, 2);

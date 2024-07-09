@@ -448,6 +448,36 @@
     <Filter Include="Game\GameElement\TensionUI">
       <UniqueIdentifier>{e14b39a2-3ac9-4428-a444-2c7375a51ebd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameElement\GameOver">
+      <UniqueIdentifier>{27770544-64a1-4922-a60f-c100c6488402}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\Camera">
+      <UniqueIdentifier>{44684e86-00cb-4c65-be2f-24552ae6fcf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\PopupUI">
+      <UniqueIdentifier>{0435b587-5a8d-4948-a365-d2401681a1b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\TensionUpEffect">
+      <UniqueIdentifier>{de9657b3-500a-4212-bdc6-aeb7944873d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\HitStop">
+      <UniqueIdentifier>{ab208386-a49a-4734-b758-98efe0a53a21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline">
+      <UniqueIdentifier>{384aadc8-1c02-4ae6-b59f-445b1247c2a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Drawer\PostEffect\Vignette">
+      <UniqueIdentifier>{ea97fe1c-5aed-4a51-9e82-a2f85d1f62f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameElement\FragmentVignette">
+      <UniqueIdentifier>{bb440279-2c1d-4226-b903-34b438d62a12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Drawer\PostEffect\Dissolve">
+      <UniqueIdentifier>{d0586a92-2755-4306-bb19-c920b77231b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline">
+      <UniqueIdentifier>{d3518893-9ced-4f23-85c8-fddca40301c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -918,9 +948,6 @@
     <ClCompile Include="Game\GameElement\Effects\EffectGoalGuidance.cpp">
       <Filter>Game\GameElement\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameElement\OptionUI\AudioOptionUI.cpp">
-      <Filter>Game\GameElement\OptionUI</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameElement\Item\RequiredObject.cpp">
       <Filter>Game\GameElement\Item</Filter>
     </ClCompile>
@@ -929,6 +956,78 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\TensionUI\TensionUI.cpp">
       <Filter>Game\GameElement\TensionUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
+      <Filter>Game\GameElement\OptionUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Camera\FollowCamera.cpp">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Camera\GoalCamera.cpp">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\OptionUI\OptionUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\GameOver\GameOver.cpp">
+      <Filter>Game\GameElement\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\GameClear\GameClear.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\PopupUI\PopupUI.cpp">
+      <Filter>Game\GameElement\PopupUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\GoalDusts\GoalDusts.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\GetItem\GetItem.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.cpp">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.cpp">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\ComboEffect.cpp">
+      <Filter>Game\GameElement\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\InGameHUD\InGameHUD.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\OptionUI\AudioOptionUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\TensionUpEffect\TensionUpEffect.cpp">
+      <Filter>Game\GameElement\TensionUpEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\TensionUpEffect\TensionUpEffectManager.cpp">
+      <Filter>Game\GameElement\TensionUpEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\HitStop\HitStop.cpp">
+      <Filter>Game\GameElement\HitStop</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.cpp">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\PostEffect\Vignette\Vignette.cpp">
+      <Filter>Engine\Drawer\PostEffect\Vignette</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\FragmentVignette\FragmentVignette.cpp">
+      <Filter>Game\GameElement\FragmentVignette</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\PostEffect\Dissolve\Dissolve.cpp">
+      <Filter>Engine\Drawer\PostEffect\Dissolve</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.cpp">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1472,14 +1571,102 @@
     <ClInclude Include="Game\GameElement\Effects\EffectGoalGuidance.h">
       <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameElement\OptionUI\AudioOptionUI.h">
-      <Filter>Game\GameElement\OptionUI</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameElement\Item\RequiredObject.h">
       <Filter>Game\GameElement\Item</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Effects\particleAcceleration.h">
       <Filter>Game\GameElement\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
+      <Filter>Game\GameElement\OptionUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Camera\FollowCamera.h">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Camera\GoalCamera.h">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\OptionUI\OptionUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\GameOver\GameOver.h">
+      <Filter>Game\GameElement\GameOver</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\GameClear\GameClear.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\PopupUI\PopupUI.h">
+      <Filter>Game\GameElement\PopupUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\GoalDusts\GoalDusts.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\GetItem\GetItem.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.h">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h">
+      <Filter>Game\GameElement\Charactor\Baby</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUI\TensionUI.h">
+      <Filter>Game\GameElement\TensionUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\ComboEffect.h">
+      <Filter>Game\GameElement\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\InGameHUD\InGameHUD.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\OptionUI\AudioOptionUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUpEffect\TensionUpEffect.h">
+      <Filter>Game\GameElement\TensionUpEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\TensionUpEffect\TensionUpEffectManager.h">
+      <Filter>Game\GameElement\TensionUpEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\EffectBabySleep\EffectBabySleep.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\HitStop\HitStop.h">
+      <Filter>Game\GameElement\HitStop</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.h">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\PostEffect\Vignette\Vignette.h">
+      <Filter>Engine\Drawer\PostEffect\Vignette</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\FragmentVignette\FragmentVignette.h">
+      <Filter>Game\GameElement\FragmentVignette</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="icon.h">
+      <Filter>リソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\PostEffect\Dissolve\Dissolve.h">
+      <Filter>Engine\Drawer\PostEffect\Dissolve</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.h">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\icon.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

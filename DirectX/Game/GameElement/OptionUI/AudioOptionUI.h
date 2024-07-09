@@ -3,12 +3,12 @@
 #include"Sprite.h"
 #include"Audio/VolumeManager/VolumeManager.h"
 #include"GlobalVariables/GlobalVariableUser.h"
-#include<iostream>
+#include"Vector3.h"
+#include"Audio.h"
 
-//ポーズ画面の演出
-class AudioOptionUI {
+class AudioOptionUI
+{
 public:
-
 	AudioOptionUI();
 	~AudioOptionUI();
 
@@ -17,116 +17,138 @@ public:
 	bool Update();
 
 	void Draw();
-
 private:
 
 	void SetGlobalVData();
 
 	void AudioBarUpdate();
 
+	//画像更新
+	void UpdateSprite();
+
 private:
-
-	Input* input_;
+	
+	Input* input_=nullptr;
 	VolumeManager* VM_;
-	
 
-	
+	Audio seMove_;
+	Audio seSelectSE_;
+	Audio seSelectBGM_;
 
+	bool preInput_=false;
 
-#pragma region 音設定関係
+#pragma region 画像群
 
-	enum OptionItem {
-		BGMVolume,
-		SEVolume,
-		_countOption
+	//ゲージまとめの数
+	enum VolumeType
+	{
+		BGM,
+		SE,
+		Back,
+		_countVolumeType 
 	};
 
-	OptionItem nowSelect = BGMVolume;
-
-	//画像群
-	//ゲージ枠
-	std::unique_ptr<Sprite>spSoundGageFrame_[_countOption];
-	//ゲージバー
-	std::unique_ptr<Sprite>spSoundGageBar_[_countOption];
-	//ゲージの元サイズ保存
-	float gageBarMaxScale_[_countOption] = { 0 };
-	//テキスト（音量
-	std::unique_ptr<Sprite>spSoundText_[_countOption];
-	//ゲージ上の数字
-	std::unique_ptr<Sprite>spSoundGageNum_[_countOption];
-	//現在選択しているものの表示
-	std::unique_ptr<Sprite>spNowSelectOption_;
-
-
-	//＝-ボタン
-	std::unique_ptr<Sprite>pauseButton_;
-	//戻るText
-	std::unique_ptr<Sprite>backButton_;
-
+	//ゲージ一つに使っている画像の数
+	enum Sprites {
+		Frame,
+		Gage,
+		_countSprite
+	};
+	//ゲージ画像
+	std::unique_ptr<Sprite>gage_[_countVolumeType][_countSprite];
+	//矢印
+	std::unique_ptr<Sprite>arrow_;
 	
-	//音量(ここを変えてバー変更)
-	float volume_[_countOption] = { 0.5f };
+	//テキスト「音設定」
+	std::unique_ptr<Sprite>text_volume_;
+
+	std::string paths[_countVolumeType][_countSprite] = {
+		{"SoundGageBar_All_BGM.png","soundGage.png"},
+		{"SoundGageBar_Al_SE.png","soundGage.png"},
+		{"ingame_pose_back_HUD.png","ingame_pose_back_HUD.png"},
+	};
+#pragma endregion
+	//選択物
+	VolumeType nowSelect_ = BGM;
+
+	//ゲージの最大スケール保存
+	Vector2 maxGageScale_[_countVolumeType];
+
+	//矢印座標
+	Vector2 aPos_ = { 0,0 };
+	Vector2 animeA_ = { 0,0 };
+	//振幅のカウント
+	float swingCount_ = 0;
+	//矢印の振幅
+	float arrowSwingNum_ = 1.0f;
+	float addSwingCount_ = 1.0f;
+
+	//入力初期化範囲
+	float inputDline_ = 0.5f;
+	//入力可能フラグ
+	bool isInputActive_ = false;
+
+	float volume_[_countVolumeType] = { 0.5f };
 
 	//入力で変わる音量
 	float moveValue_ = 0.01f;
-#pragma endregion
 
-#pragma region ImGui関係
-	GlobalVariableUser* gVUser_;
-
-	std::string tagName_ = "OptionUI";
-
-	enum UIDatas {
-		BGMGageFramePos,
-		BGMGageFrameSize,
-		BGMGageBarPos,
-		BGMGageBarSize,
-		BGMGageTextPos,
-		BGMGageTextSize,
-		BGMGageNumPos,
-		BGMGageNumSize,
-
-		SEGageFramePos,
-		SEGageFrameSize,
-		SEGageBarPos,
-		SEGageBarSize,
-		SEGageTextPos,
-		SEGageTextSize,
-		SEGageNumPos,
-		SEGageNumSize,
-
-		PauseButtonPos,
-		PauseButtonSize,
-		backTextPos,
-		backTextSize,
-		_count
+	enum Colors
+	{
+		Text,
+		SelectFrame,
+		SelectGage,
+		NonSelectFrame,
+		NonSelectGage,
+		_countColors
 	};
 
-	std::string keys[UIDatas::_count] = {
-		"BGM ゲージフレーム座標",
-		"BGM ゲージフレームサイズ",
-		"BGM ゲージバー座標",
-		"BGM ゲージバーサイズ",
-		"BGM テキスト座標",
-		"BGM テキストサイズ",
-		"BGM ゲージ上数字座標",
-		"BGM ゲージ上数字サイズ",
+	Vector3 colors_[_countColors ];
 
-		"SE ゲージフレーム座標",
-		"SE ゲージフレームサイズ",
-		"SE ゲージバー座標",
-		"SE ゲージバーサイズ",
-		"SE テキスト座標",
-		"SE テキストサイズ",
-		"SE ゲージ上数字座標",
-		"SE ゲージ上数字サイズ",
+#pragma region ImGui
+	GlobalVariableUser* gvu_;
 
-		"一時停止ボタン座標",
-		"一時停止ボタンサイズ",
-		"「戻る」テキスト座標",
-		"「戻る」テキストサイズ"
+	std::string keysP[_countVolumeType][_countSprite] = {
+		{"BGM フレーム　座標","BGM ゲージ 座標"},
+		{"SE フレーム　座標","SE ゲージ 座標"},
+		{"戻る 座標","関係なし"}
+	};
+
+	std::string keysS[_countVolumeType][_countSprite] = {
+		{"BGM フレーム　サイズ","BGM ゲージ サイズ"},
+		{"SE フレーム　サイズ","SE ゲージ サイズ"},
+		{"戻る　サイズ","関係なし"},
+	};
+
+	enum Another {
+		ArrowPos,
+		ArrowSize,
+		SwingS,
+		SwingN,
+		TextVolumePos,
+		TextVolumeSize,
+		_countAno
+	};
+
+	std::string anoKeys[_countAno] = {
+		"矢印座標",
+		"矢印サイズ",
+		"矢印振幅速度",
+		"矢印振幅量",
+		"「音量」 座標",
+		"「音量」 サイズ",
+	};
+
+
+
+	std::string colorKey_[_countColors] = {
+		"「音量」色",
+		"選んでる フレーム 色",
+		"選んでる ゲージ 色",
+		"選んでいない フレーム 色",
+		"選んでいない ゲージ 色",
 	};
 #pragma endregion
-
 
 };
+

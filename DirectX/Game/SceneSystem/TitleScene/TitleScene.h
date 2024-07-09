@@ -18,6 +18,8 @@ public:
 	void WrightPostEffect();
 
 private:
+	void SetGlovalV();
+
 	void LogoAnimation();
 
 	//シーン変更処理
@@ -27,6 +29,9 @@ private:
 	std::string groupName_ = "title";
 
 	std::unique_ptr<Sprite> buttonA_;
+
+	std::unique_ptr<Sprite>select_;
+	std::unique_ptr<Sprite>text_Option_;
 
 #pragma region ロゴ関係
 	std::unique_ptr<Sprite>titleLogo_[5];
@@ -48,6 +53,8 @@ private:
 	std::unique_ptr<BackGround> bg_;
 
 	Audio bgm_;
+	Audio seOpenOption_;
+	Audio seSelect_;
 	float bgmVolume_ = 0.15f;
 
 	//水の玉の円
@@ -63,6 +70,7 @@ private:
 #pragma region オプション関係
 	std::unique_ptr<OptionUI>optionUI_;
 	bool isOptionActive_ = false;
+	UpdateAnswer ans_{};
 #pragma endregion
 
 };

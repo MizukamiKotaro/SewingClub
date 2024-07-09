@@ -28,8 +28,30 @@ void WaterManager::Initialize()
 	for (int i = 0; i < waterNum_; i++) {
 		stageWater_[i] = std::make_unique<WaterChunk>(i);
 	}
+	
 	for (int i = 0; i < waterNum_; i++) {
 		stageWater_[i]->CreateQuadrangle();
+		
+		// 上限Xの探索
+		float handle = stageWater_[i]->GetPosition().x + stageWater_[i]->GetScale();
+		if (handle > limit_.upperLimit.x) {
+			limit_.upperLimit.x = handle;
+		}
+		// 下限Xの探索
+		handle = stageWater_[i]->GetPosition().x - stageWater_[i]->GetScale();
+		if (handle < limit_.lowerLimit.x) {
+			limit_.lowerLimit.x = handle;
+		}
+		// 上限Yの探索
+		handle = stageWater_[i]->GetPosition().y + stageWater_[i]->GetScale();
+		if (handle > limit_.upperLimit.y) {
+			limit_.upperLimit.y = handle;
+		}
+		// 下限Yの探索
+		handle = stageWater_[i]->GetPosition().y - stageWater_[i]->GetScale();
+		if (handle < limit_.lowerLimit.y) {
+			limit_.lowerLimit.y = handle;
+		}
 	}
 }
 
@@ -62,6 +84,7 @@ void WaterManager::Update(const float& deltaTime, Camera* camera)
 			it++;
 		}
 	}
+
 
 
 }

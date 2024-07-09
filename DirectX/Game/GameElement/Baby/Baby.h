@@ -7,13 +7,16 @@
 #include "GameElement/Charactor/Charactor.h"
 #include "GameElement/Animation/Animation2D.h"
 #include "GameElement/Effects/EffectEnterWater.h"
+#include "Audio/Audio.h"
 
 class Player;
+class BabyTensionEffectManager;
 
 class Baby : public Charactor
 {
 public:
 	Baby(Player* player);
+	~Baby();
 
 	void Initialize() override;
 
@@ -26,7 +29,11 @@ public:
 	const float& GetTension() const { return tension_.tension; }
 	const bool GetIsCry() const;
 	const bool GetIsSuperSuperSmile() const;
-
+	const Vector3* GetPosPtr() const { return &model_->transform_.translate_; }
+	void ClearUpdate(const float& deltaTime);
+	const bool& GetIsClear() const { return isClear_; }
+	const bool& GetIsGameOver() const { return tension_.isGameOver_; }
+	const float& GetFragmentHP() const { return tension_.fragmentHP_; }
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
@@ -46,9 +53,17 @@ private:
 	void TensionUpdate(const float& deltaTime);
 	void TensionFaceUpdate();
 
+	void RideInWaterInitialize();
+
+	void RideUpdate(const float& deltaTime);
+	void RideUpdate2(const float& deltaTime);
+
+	void TextureUpdate(const float& deltaTime); // 赤ちゃんのアニメーションテクスチャ用更新
+
 private:
 	std::unique_ptr<Model> baby_;
 	Player* player_;
+	BabyTensionEffectManager* tensionEffectManager_;
 	std::unique_ptr<GravityAreaSearch> gravityAreaSearch_;
 
 	Vector3 prePosition_;
@@ -56,9 +71,12 @@ private:
 	bool preIsInWater_;
 	bool isInWater_;
 	bool isFollowWater_;
-
+	bool isClear_;
+	float clearTime_;
 	bool isCircleWater_;
 
+	bool isHitEnemy_;
+	float hitEnemyTime_;
 	Vector3 velocity_;
 	float speed_;
 
@@ -72,13 +90,16 @@ private:
 	float endScale_;
 	float waterRotate_;
 
+	bool preIsInWaterPlayer_;
+	bool prePreIsInWaterPlayer_;
+	bool isRide_;
+
 	enum Face {
 		kNormal,
 		kSmile,
 		kSuperSmile,
 		kAnxiety,
 		kCry,
-		kSuperSuperSmile,
 		kFaceEnd,
 	};
 
@@ -91,16 +112,53 @@ private:
 		float inWaterTime = 0.0f;
 		float superTime = 0.0f;
 		Face face = kNormal;
+		Face oldFace = kNormal;
+		bool isRideUp_ = false;
+		float fragmentHP_ = 100.0f;
+		bool isGameOver_ = false;
 	};
 	Tension tension_;
+
+	struct InWaterCatch
+	{
+		bool isCatch_;
+		bool preCatch_;
+		bool preRide_;
+		float time_;
+	};
+	InWaterCatch inWaterCatch_;
+
+	struct Combo
+	{
+		int32_t num;
+		int32_t maxNum;
+	};
+	Combo combo_;
+
+	struct RideInWater
+	{
+		bool isRideInWater;
+		float rideFinishSpeed;
+		float rideFinishTime;
+	};
+	RideInWater rideInWater_;
 
 	enum FloatParamater {
 		kMaxPlayerLength, // 加速度が最大になるときのプレイヤーとの距離
 		kLimitePlayerLength, // プレイヤーとの限界距離
+		kNearPlayerLength, // プレイヤーのジャンプに引き寄せられる距離
+		kNearPlayerTime, // プレイヤーのジャンプに引き寄せられる最大の時間
+		kPulledPower, // プレイヤーが水中にいる時の引っぱりの倍率
+		kRideFinishTime, // プレイヤーに乗って水中にいられる時間
+		kRideInWaterSpeed, // プレイヤーに乗って水中に潜れるスピード
+		kRideInWaterTime, // プレイヤーに水中内で乗れるようになるまでの時間
 		kMaxAcceleration, // 加速度の最大
 		kMaxSpeed, // 最大速度
 		kMinSpeed, // 最低速度
 		kBuoyancy, // 水の浮力
+		kGravityPlayer, // プレイヤーに対しての重力加速度
+		kNearPulledPlayerLength, // プレイヤーのジャンプに引っ張られる距離
+		kNearPulledPlayerGravity, // プレイヤーのジャンプに引っ張られる加速度
 		kGravityWater, // 重力加速度
 		kMaxSlide, // 加速度が最大の時の水の移動角度
 		kMaxSlideLength, // 加速度が最大の時の水の移動距離
@@ -116,6 +174,9 @@ private:
 		kInWaterTime, // 水から出たときのテンションアップするまでの水中の時間
 		kSuperSuperSmileTime, // テンションマックス維持の時間
 		kResetTensionFromSuper, // テンションマックスが終了したときのテンション
+		kUpTentionRide, // プレイヤーに乗ったときのテンションアップの数値
+		kFragmentCryTime, // 泣いてるときのダメージを受ける間隔
+		kFragmentCry, // 泣いてるときにダメージを受ける量
 		kFloatEnd,
 	};
 
@@ -131,4 +192,27 @@ private:
 	float spawnWaitCount_ = 0;
 	float maxSpawnWaitCount_ = 10;
 	bool isSpawnEffect_ = false;
+
+	uint32_t kMaxFacePattern = 5u; // 表情差分最大数
+	std::string directryPath = "baby/";
+	std::vector<std::string> texturePath{
+		"baby_normal.png",
+		"baby_good.png",
+		"baby_veryGood.png",
+		"baby_anxiety.png",
+		"baby_cry.png",
+
+		"baby_jump_normal.png",
+		"baby_jump_good.png",
+		"baby_jump_veryGood.png",
+		"baby_jump_anxiety.png",
+
+		"baby_pose_yay.png",
+		"baby_pose_yeah.png"
+	};
+	int32_t babyPauseIndex_ = -1; // ポーズインデックス
+	float jumpAnimationFrame_ = 0.0f;
+
+	Audio se_cry;
+
 };
