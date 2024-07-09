@@ -56,6 +56,7 @@ private:
 
 	void AddWave(const WaterChunk& water, WaterWave& wave);
 
+
 private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();

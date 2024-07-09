@@ -37,6 +37,7 @@ private:
 	// グローバル変数の更新
 	void ApplyGlobalVariable();
 
+
 private:
 	std::list<std::unique_ptr<WaterChunk>> fullWater_;
 	std::unordered_map<int, std::unique_ptr<WaterChunk>> stageWater_;

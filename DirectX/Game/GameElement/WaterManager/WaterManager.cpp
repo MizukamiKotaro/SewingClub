@@ -86,6 +86,7 @@ void WaterManager::Update(const float& deltaTime, Camera* camera)
 	}
 
 
+
 }
 
 void WaterManager::Draw(Camera* camera)
