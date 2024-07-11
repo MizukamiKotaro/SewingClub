@@ -5,6 +5,7 @@
 #include"GameElement/OptionUI/OptionUI.h"
 #include"GlobalVariables/GlobalVariableUser.h"
 #include"GameElement/Effects/EffectBabySleep/EffectBabySleep.h"
+#include"Engine/Drawers/PostEffect/Dissolve/Dissolve.h"
 
 class SelectScene :public IScene {
 public:
@@ -296,5 +297,13 @@ private:
 
 	};
 #pragma endregion
+
+	//各シーンチェンジ処理
+	bool preSceneChangeActive_ = false;
+	bool postSceneChangeActive_ = false;
+	//しー
+	float changeSecond_ = 1.0f;
+
+	std::unique_ptr<Dissolve>dissolve_;
 
 };
