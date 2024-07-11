@@ -276,7 +276,7 @@ void StageScene::Update()
 						countIndex++;
 						followCamera_->Reset();
 					}
-					camera.z = 0.0f;
+					//camera.z = 0.0f;
 				}
 
 				// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
