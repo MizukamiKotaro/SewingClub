@@ -1017,6 +1017,9 @@
     <ClCompile Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\Camera\ZoomUpCamera.cpp">
+      <Filter>Game\GameElement\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1639,6 +1642,9 @@
     </ClInclude>
     <ClInclude Include="icon.h">
       <Filter>リソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\Camera\ZoomUpCamera.h">
+      <Filter>Game\GameElement\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

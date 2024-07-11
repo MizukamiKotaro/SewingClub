@@ -15,6 +15,7 @@
 #include "GameElement/TensionUI/TensionUI.h"
 #include "GameElement/Camera/FollowCamera.h"
 #include "GameElement/Camera/GoalCamera.h"
+#include "GameElement/Camera/ZoomUpCamera.h"
 #include"GameElement/GameOver/GameOver.h"
 #include"GameElement/GameClear/GameClear.h"
 
@@ -102,6 +103,7 @@ private:
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 	std::unique_ptr<GoalCamera> goalCamera_;
+	std::unique_ptr<ZoomUpCamera> zoomUpCamera_;
 	float cameraOffset_ = -50.0f;
 
 	enum playScenes {
