@@ -277,6 +277,10 @@ private:
 		cS3,		
 		cS4,
 		
+		SceneChangeNum,
+		DissolveColor,
+		DissolveDifference,
+
 		_countAnother
 	};
 
@@ -295,6 +299,9 @@ private:
 		"雲3速度",
 		"雲4速度",
 
+		"シーン遷移速度",
+		"Dissolveの差の色",
+		"Dissolveの差の大きさ",
 	};
 #pragma endregion
 
@@ -305,5 +312,8 @@ private:
 	float changeSecond_ = 1.0f;
 
 	std::unique_ptr<Dissolve>dissolve_;
+	std::unique_ptr<Sprite>dissolveBackTex_;
+	Vector3 dissolveColor_ = { 1,1,1 };
+
 
 };

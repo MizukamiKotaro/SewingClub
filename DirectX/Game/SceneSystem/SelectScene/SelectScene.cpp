@@ -43,7 +43,9 @@ SelectScene::SelectScene()
 	dissolve_ = std::make_unique<Dissolve>();
 	const Texture* tex = TextureManager::GetInstance()->LoadTexture("noise0.png");
 	dissolve_->SetGPUDescriptorHandle(tex->handles_->gpuHandle);
-
+	dissolveBackTex_ = std::make_unique<Sprite>("white.png");
+	dissolveBackTex_->size_ = { 1280,720 };
+	dissolveBackTex_->Update();
 
 	gvu_ = new GlobalVariableUser("Scene", "Selects");
 	for (int i = 0; i < _countTags; i++) {
@@ -79,6 +81,13 @@ SelectScene::SelectScene()
 	gvu_->AddItem(anoKeys[cS3], cSwingSeconds_[Spawn3]);
 	gvu_->AddItem(anoKeys[cS4], cSwingSeconds_[None]);
 
+	gvu_->AddItem(anoKeys[SceneChangeNum], changeSecond_);
+	gvu_->AddItem(anoKeys[DissolveColor], dissolve_->dissolveData_->edgeColor);
+	gvu_->AddItem(anoKeys[DissolveDifference], dissolve_->dissolveData_->difference);
+	gvu_->AddItem("Dissolveのカラー", dissolveColor_);
+
+
+	dissolveColor_ = gvu_->GetVector3Value("Dissolveのカラー");
 }
 
 void SelectScene::SetGlobalV()
@@ -127,10 +136,19 @@ void SelectScene::SetGlobalV()
 	cSwingSeconds_[Spawn3] = gvu_->GetFloatValue(anoKeys[cS3]);
 	cSwingSeconds_[None] = gvu_->GetFloatValue(anoKeys[cS4]);
 
+	changeSecond_ = gvu_->GetFloatValue(anoKeys[SceneChangeNum]);
+	dissolve_->dissolveData_->edgeColor = gvu_->GetVector3Value(anoKeys[DissolveColor]);
+	dissolve_->dissolveData_->difference = gvu_->GetFloatValue(anoKeys[DissolveDifference]);
+
 	for (int i = 0; i < _countStages; i++) {
 		mapSprite_[i]->pos_ = mapPos_;
 		mapSprite_[i]->size_ = mapSize_;
 	}
+
+	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
+	dissolveBackTex_->SetColor(color);
+	dissolveColor_ = { color.x,color.y,color.z };
+
 }
 
 SelectScene::~SelectScene() {}
@@ -153,6 +171,8 @@ void SelectScene::Initialize()
 
 	SetGlobalV();
 
+
+
 	ArrowUpdate();
 
 	NumberUpdate();
@@ -171,7 +191,18 @@ void SelectScene::Update()
 
 	SetGlobalV();
 
+#ifdef _DEBUG
+	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
 
+	ImGui::Begin("Dissolveした所の色");
+	ImGui::ColorEdit4("色", &color.x);
+	ImGui::End();
+
+	dissolveBackTex_->SetColor(color);
+	dissolveColor_ = { color.x,color.y,color.z };
+	gvu_->SetVariable("Dissolveのカラー", dissolveColor_);
+	
+#endif // _DEBUG
 
 	camera_->Update();
 
@@ -207,7 +238,7 @@ void SelectScene::Update()
 void SelectScene::Draw()
 {
 	dissolve_->PreDrawScene();
-	bg_->Draw();
+	dissolveBackTex_->Draw();
 	dissolve_->PostDrawScene();
 
 	//必須
@@ -320,7 +351,7 @@ void SelectScene::SceneChange()
 		}
 	}
 	else if (postSceneChangeActive_) {
-		dissolve_->dissolveData_->baseLuminance -= 1.0f * deltaTime;
+		dissolve_->dissolveData_->baseLuminance -= changeSecond_ * deltaTime;
 		if (dissolve_->dissolveData_->baseLuminance <= 0) {
 			dissolve_->dissolveData_->baseLuminance = 0;
 

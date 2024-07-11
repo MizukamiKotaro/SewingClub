@@ -54,6 +54,9 @@ TitleScene::TitleScene()
 	
 	const Texture*tex= TextureManager::GetInstance()->LoadTexture("noise0.png");
 	dissolve_->SetGPUDescriptorHandle(tex->handles_->gpuHandle);
+	dissolveBackTex_ = std::make_unique<Sprite>("white.png");
+	dissolveBackTex_->size_ = { 1280,720 };
+	dissolveBackTex_->Update();
 
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
 	gVari->CreateGroup(groupName_);
@@ -72,7 +75,13 @@ TitleScene::TitleScene()
 	gVari->AddItem(groupName_, "dissolveのやつ", dissolve_->dissolveData_->baseLuminance);
 	gVari->AddItem(groupName_, "dissolveの色", dissolve_->dissolveData_->edgeColor);
 	gVari->AddItem(groupName_, "dissolveの差", dissolve_->dissolveData_->difference);
+	gVari->AddItem(groupName_, "遷移速度", changeSecond_);
+	gVari->AddItem(groupName_, "Dissolveのカラー", dissolveColor_);
 
+	SetGlovalV();
+
+	dissolveColor_ = gVari->GetVector3Value(groupName_, "Dissolveのカラー");
+	
 }
 
 void TitleScene::SetGlovalV()
@@ -91,11 +100,20 @@ void TitleScene::SetGlovalV()
 	text_Option_->pos_ = gVari->GetVector2Value(groupName_, "「option」座標");
 	text_Option_->size_ = gVari->GetVector2Value(groupName_, "「option」サイズ");
 
+	dissolve_->dissolveData_->edgeColor = gVari->GetVector3Value(groupName_, "dissolveの色");
+	dissolve_->dissolveData_->difference = gVari->GetFloatValue(groupName_, "dissolveの差");
+	changeSecond_ = gVari->GetFloatValue(groupName_, "遷移速度");
+
 	if (!postSceneChangeActive_&&preSceneChangeActive_) {
-		dissolve_->dissolveData_->baseLuminance = gVari->GetFloatValue(groupName_, "dissolveのやつ");
-		dissolve_->dissolveData_->edgeColor = gVari->GetVector3Value(groupName_, "dissolveの色");
-		dissolve_->dissolveData_->difference = gVari->GetFloatValue(groupName_, "dissolveの差");
+		dissolve_->dissolveData_->baseLuminance = gVari->GetFloatValue(groupName_, "dissolveのやつ");	
 	}
+
+	
+
+	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
+	dissolveBackTex_->SetColor(color);
+	dissolveColor_ = { color.x,color.y,color.z };
+
 
 }
 
@@ -151,6 +169,23 @@ void TitleScene::Update()
 
 	ans_ = UpdateAnswer();
 
+
+#ifdef _DEBUG
+	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
+
+	ImGui::Begin("Dissolveした所の色");
+	ImGui::ColorEdit4("色", &color.x);
+	ImGui::End();
+
+	dissolveBackTex_->SetColor(color);
+	dissolveColor_ = { color.x,color.y,color.z };
+
+	GlobalVariables* gVari = GlobalVariables::GetInstance();
+	gVari->SetVariable("GlobalVariables", groupName_, "Dissolveのカラー", dissolveColor_);
+
+#endif // _DEBUG
+
+
 	if (!isOptionActive_) {
 
 #ifdef _DEBUG
@@ -184,7 +219,6 @@ void TitleScene::Update()
 	}
 
 	
-
 	SceneChange();
 
 }
@@ -239,8 +273,7 @@ void TitleScene::WrightPostEffect()
 	waterE_->PostDrawWaterArea();
 
 	dissolve_->PreDrawScene();
-	bg_->Draw();
-
+	dissolveBackTex_->Draw();
 	dissolve_->PostDrawScene();
 }
 
@@ -290,7 +323,7 @@ void TitleScene::SceneChange()
 	float deltaTime = frameInfo_->GetDeltaTime();
 	//
 	if (!preSceneChangeActive_) {
-		dissolve_->dissolveData_->baseLuminance += 1.0f * deltaTime;
+		dissolve_->dissolveData_->baseLuminance += changeSecond_ * deltaTime;
 		if (dissolve_->dissolveData_->baseLuminance >= 1.0f) {
 			dissolve_->dissolveData_->baseLuminance = 1.0f;
 			preSceneChangeActive_ = true;
@@ -333,7 +366,7 @@ void TitleScene::SceneChange()
 	else if(postSceneChangeActive_){
 		//以下Dissolve更新と処理
 		
-		dissolve_->dissolveData_->baseLuminance -= 1.0f * deltaTime;
+		dissolve_->dissolveData_->baseLuminance -= changeSecond_ * deltaTime;
 		if (dissolve_->dissolveData_->baseLuminance <= 0) {
 			dissolve_->dissolveData_->baseLuminance = 0;
 			stageNo_ = 0;

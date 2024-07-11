@@ -74,6 +74,7 @@ private:
 	UpdateAnswer ans_{};
 #pragma endregion
 
+	std::unique_ptr<Sprite>dissolveBackTex_;
 	//各シーンチェンジ処理
 	bool preSceneChangeActive_ = false;
 	bool postSceneChangeActive_ = false;
@@ -81,5 +82,8 @@ private:
 	float changeSecond_ = 1.0f;
 
 	std::unique_ptr<Dissolve>dissolve_;
+
+	Vector3 dissolveColor_ = {1,1,1};
+
 };
 
