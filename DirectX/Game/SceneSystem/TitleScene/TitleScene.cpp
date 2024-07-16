@@ -1,6 +1,5 @@
 #include "TitleScene.h"
 #include "Kyoko.h"
-#include "ImGuiManager/ImGuiManager.h"
 #include"Audio/AudioManager/AudioManager.h"
 #include"GlobalVariables/GlobalVariables.h"
 #include"RandomGenerator/RandomGenerator.h"
@@ -45,18 +44,12 @@ TitleScene::TitleScene()
 
 	effeUIEnterW_ = std::make_unique<EffectUIEnterWater>("TitleBubbleUI");
 	waterE_ = std::make_unique<WaterEffect>(camera_->transform_.translate_);
-	
+
 	whiteS_ = std::make_unique<Sprite>();
 
 	optionUI_ = std::make_unique<OptionUI>(OptionUI::kTitle);
 
-	dissolve_ = std::make_unique<Dissolve>();
-	
-	const Texture*tex= TextureManager::GetInstance()->LoadTexture("noise0.png");
-	dissolve_->SetGPUDescriptorHandle(tex->handles_->gpuHandle);
-	dissolveBackTex_ = std::make_unique<Sprite>("white.png");
-	dissolveBackTex_->size_ = { 1280,720 };
-	dissolveBackTex_->Update();
+	sceneTransition_ = std::make_unique<SceneTransitionEffect>("Title");
 
 	GlobalVariables* gVari = GlobalVariables::GetInstance();
 	gVari->CreateGroup(groupName_);
@@ -72,16 +65,6 @@ TitleScene::TitleScene()
 	gVari->AddItem(groupName_, "「＝」サイズ", select_->size_);
 	gVari->AddItem(groupName_, "「option」座標", text_Option_->pos_);
 	gVari->AddItem(groupName_, "「option」サイズ", text_Option_->size_);
-	gVari->AddItem(groupName_, "dissolveのやつ", dissolve_->dissolveData_->baseLuminance);
-	gVari->AddItem(groupName_, "dissolveの色", dissolve_->dissolveData_->edgeColor);
-	gVari->AddItem(groupName_, "dissolveの差", dissolve_->dissolveData_->difference);
-	gVari->AddItem(groupName_, "遷移速度", changeSecond_);
-	gVari->AddItem(groupName_, "Dissolveのカラー", dissolveColor_);
-
-	SetGlovalV();
-
-	dissolveColor_ = gVari->GetVector3Value(groupName_, "Dissolveのカラー");
-	
 }
 
 void TitleScene::SetGlovalV()
@@ -100,21 +83,6 @@ void TitleScene::SetGlovalV()
 	text_Option_->pos_ = gVari->GetVector2Value(groupName_, "「option」座標");
 	text_Option_->size_ = gVari->GetVector2Value(groupName_, "「option」サイズ");
 
-	dissolve_->dissolveData_->edgeColor = gVari->GetVector3Value(groupName_, "dissolveの色");
-	dissolve_->dissolveData_->difference = gVari->GetFloatValue(groupName_, "dissolveの差");
-	changeSecond_ = gVari->GetFloatValue(groupName_, "遷移速度");
-
-	if (!postSceneChangeActive_&&preSceneChangeActive_) {
-		dissolve_->dissolveData_->baseLuminance = gVari->GetFloatValue(groupName_, "dissolveのやつ");	
-	}
-
-	
-
-	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
-	dissolveBackTex_->SetColor(color);
-	dissolveColor_ = { color.x,color.y,color.z };
-
-
 }
 
 void TitleScene::Initialize()
@@ -122,8 +90,6 @@ void TitleScene::Initialize()
 	AudioManager::GetInstance()->AllStop();
 
 	SetGlovalV();
-	
-
 
 	buttonA_->Update();
 	int i = 0;
@@ -159,9 +125,9 @@ void TitleScene::Initialize()
 	//いい感じの演出になったので消します
 	//waterE_->Initialize();
 
-	dissolve_->dissolveData_->baseLuminance = 0.0f;
-	preSceneChangeActive_ = false;
-	postSceneChangeActive_ = false;
+	sceneTransition_->Initialize();
+	isChangeScene_ = false;
+
 }
 
 void TitleScene::Update()
@@ -169,77 +135,65 @@ void TitleScene::Update()
 
 	ans_ = UpdateAnswer();
 
+	float deltaTime = frameInfo_->GetDeltaTime();
+	if (sceneTransition_->PreSceneTransition(deltaTime)) {
+
+
+		if (!isOptionActive_) {
 
 #ifdef _DEBUG
-	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
-
-	ImGui::Begin("Dissolveした所の色");
-	ImGui::ColorEdit4("色", &color.x);
-	ImGui::End();
-
-	dissolveBackTex_->SetColor(color);
-	dissolveColor_ = { color.x,color.y,color.z };
-
-	GlobalVariables* gVari = GlobalVariables::GetInstance();
-	gVari->SetVariable("GlobalVariables", groupName_, "Dissolveのカラー", dissolveColor_);
-
-#endif // _DEBUG
-
-
-	if (!isOptionActive_) {
-
-#ifdef _DEBUG
-		SetGlovalV();
+			SetGlovalV();
 #endif // _DEBUG
 
 
 
-		LogoAnimation();
+			LogoAnimation();
 
-		bg_->Update(camera_.get());
+			bg_->Update(camera_.get());
 
-		buttonA_->Update();
+			buttonA_->Update();
 
-		startWord_->Update();
+			startWord_->Update();
 
-		select_->Update();
-		text_Option_->Update();
-		
-		effeUIEnterW_->Update();
+			select_->Update();
+			text_Option_->Update();
 
-		waterE_->Update(0.1f);
+			effeUIEnterW_->Update();
 
-	}
-	else {
-		ans_ = optionUI_->Update();
-		
-		if (ans_.audioOption) {
-			bgm_.Update();
+			waterE_->Update(0.1f);
+
 		}
+		else {
+			ans_ = optionUI_->Update();
+
+			if (ans_.audioOption) {
+				bgm_.Update();
+			}
+		}
+
+
+		SceneChange();
+
 	}
-
-	
-	SceneChange();
-
 }
 
 void TitleScene::Draw()
 {
-	
+
 	WrightPostEffect();
 	Kyoko::Engine::PreDraw();
 
 	//ポストエフェ
 	waterE_->Draw();
-	
+
 	for (auto& logo : titleLogo_) {
 		logo->Draw();
 	}
-	
+
 	startWord_->Draw();
 
 	buttonA_->Draw();
-	
+
 	select_->Draw();
 	text_Option_->Draw();
 
@@ -250,10 +204,10 @@ void TitleScene::Draw()
 	}
 
 	BlackDraw();
-	dissolve_->Draw();
+	sceneTransition_->Draw();
 	Kyoko::Engine::PostDraw();
 
-	
+
 }
 
 void TitleScene::WrightPostEffect()
@@ -272,9 +226,7 @@ void TitleScene::WrightPostEffect()
 
 	waterE_->PostDrawWaterArea();
 
-	dissolve_->PreDrawScene();
-	dissolveBackTex_->Draw();
-	dissolve_->PostDrawScene();
+	sceneTransition_->DrawPE();
 }
 
 
@@ -321,22 +273,20 @@ void TitleScene::SceneChange()
 {
 
 	float deltaTime = frameInfo_->GetDeltaTime();
-	//
-	if (!preSceneChangeActive_) {
-		dissolve_->dissolveData_->baseLuminance += changeSecond_ * deltaTime;
-		if (dissolve_->dissolveData_->baseLuminance >= 1.0f) {
-			dissolve_->dissolveData_->baseLuminance = 1.0f;
-			preSceneChangeActive_ = true;
+	//シーン開始時の遷移animationが終了してから反応可能
+	if (isChangeScene_ == true) {
+		//以下Dissolve更新と処理
+		if (sceneTransition_->PostSceneTransition(deltaTime)) {
+			stageNo_ = 0;
+			ChangeScene(SELECT);
 		}
 	}
-
-
-	if (!postSceneChangeActive_&&preSceneChangeActive_) {
-
+	else {
 #ifdef _DEBUG
+		//スペースで次シーンへ
 		if (input_->PressedKey(DIK_SPACE)) {
 			// シーン切り替え
-			postSceneChangeActive_ = true;
+			isChangeScene_ = true;
 			bgm_.Stop();
 			seSelect_.Play();
 		}
@@ -345,7 +295,7 @@ void TitleScene::SceneChange()
 
 		if (!isOptionActive_ && input_->PressedGamePadButton(Input::GamePadButton::A) && !isOptionActive_) {
 			// シーン切り替え
-			postSceneChangeActive_ = true;
+			isChangeScene_ = true;
 			bgm_.Stop();
 			seSelect_.Play();
 		}
@@ -362,16 +312,7 @@ void TitleScene::SceneChange()
 			//処理
 			isBreak_ = true;
 		}
-	}
-	else if(postSceneChangeActive_){
-		//以下Dissolve更新と処理
-		
-		dissolve_->dissolveData_->baseLuminance -= changeSecond_ * deltaTime;
-		if (dissolve_->dissolveData_->baseLuminance <= 0) {
-			dissolve_->dissolveData_->baseLuminance = 0;
-			stageNo_ = 0;
-			ChangeScene(SELECT);
-		}
+
 	}
 }
 
