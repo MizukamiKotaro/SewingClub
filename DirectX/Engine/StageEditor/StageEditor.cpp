@@ -71,6 +71,36 @@ const std::string& StageEditor::GetStringValue(const std::string& key, const std
 	return global_->GetStringValue(key, tree2, tree3, tree4, tree5, tree6);
 }
 
+void StageEditor::SetVariable(const std::string& key, const int32_t& value, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	global_->SetVariable(key, value, tree2, tree3, tree4, tree5, tree6);
+}
+
+void StageEditor::SetVariable(const std::string& key, const float& value, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	global_->SetVariable(key, value, tree2, tree3, tree4, tree5, tree6);
+}
+
+void StageEditor::SetVariable(const std::string& key, const Vector2& value, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	global_->SetVariable(key, value, tree2, tree3, tree4, tree5, tree6);
+}
+
+void StageEditor::SetVariable(const std::string& key, const Vector3& value, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	global_->SetVariable(key, value, tree2, tree3, tree4, tree5, tree6);
+}
+
+void StageEditor::SetVariable(const std::string& key, const bool& value, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	global_->SetVariable(key, value, tree2, tree3, tree4, tree5, tree6);
+}
+
+void StageEditor::SetVariable(const std::string& key, const std::string& value, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
+{
+	global_->SetVariable(key, value, tree2, tree3, tree4, tree5, tree6);
+}
+
 bool StageEditor::IsTreeOpen(const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6)
 {
 	return global_->IsTreeOpen(tree2, tree3, tree4, tree5, tree6);

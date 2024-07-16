@@ -89,6 +89,40 @@ WaterChunk::WaterChunk(int no)
 	isQuadrangleActive_ = false;
 }
 
+WaterChunk::WaterChunk(const int& no, const Vector2& pos)
+{
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
+	Collider::AddTargetMask(ColliderMask::PLAYER);
+
+	gravityArea_ = std::make_unique<GravityArea>();
+
+	position_ = { pos.x,pos.y,0.0f };
+	scale_ = 1.0f;
+	maxScale_ = scale_;
+	rotate_ = 0.0f;
+
+	no_ = no;
+	isSmall_ = false;
+	stageEditor_ = std::make_unique<StageEditor>("水の配置");
+	endNo_ = no_ - 1;
+	if (endNo_ < 0) {
+		endNo_ = 0;
+	}
+	isTarget_ = false;
+	SetGlobalVariableAndSetPos();
+	scale_ = maxScale_;
+	isSmaeGravitySize_ = false;
+	isTree_ = false;
+	isActive_ = true;
+	color_ = { 1.0f,1.0f,1.0f,1.0f };
+	isPlayer_ = false;
+	preIsPlayer_ = false;
+	CreateChips();
+	isWave_ = false;
+
+	isQuadrangleActive_ = false;
+}
+
 WaterChunk::WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
@@ -279,6 +313,60 @@ void WaterChunk::CreateQuadrangle()
 	}
 }
 
+bool WaterChunk::IsHitMouse(const Vector2& mousePos) const
+{
+	if (isActive_) {
+		Vector2 pos = { position_.x - mousePos.x,position_.y - mousePos.y };
+		if (pos.x * pos.x + pos.y * pos.y <= scale_ * scale_) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void WaterChunk::SetPosition(const Vector3& pos)
+{
+	position_ = pos;
+	if (stageEditor_) {
+		std::string tree = "水" + std::to_string(no_);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
+
+		stageEditor_->SetVariable("ポジション", position_, tree1, tree);
+	}
+}
+
+void WaterChunk::SetScale(const float& scale)
+{
+	maxScale_ = scale;
+	if (stageEditor_) {
+		std::string tree = "水" + std::to_string(no_);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
+
+		stageEditor_->SetVariable("スケール", maxScale_, tree1, tree);
+	}
+}
+
+void WaterChunk::SetIsQuadrangle(const bool& is, const int& endNo)
+{
+	isTarget_ = is;
+	endNo_ = endNo;
+	if (isTarget_) {
+		CreateQuadrangle();
+	}
+	if (stageEditor_) {
+		std::string tree = "水" + std::to_string(no_);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
+		stageEditor_->SetVariable("四角形を作るか", isTarget_, tree1, tree);
+		stageEditor_->SetVariable("四角形を生成するもう一方の水のナンバー", endNo_, tree1, tree);
+	}
+}
+
 void WaterChunk::SetGlobalVariable()
 {
 	if (stageEditor_) {
@@ -306,6 +394,24 @@ void WaterChunk::ApplyGlobalVariable()
 		isTarget_ = stageEditor_->GetBoolValue("四角形を作るか", tree1, tree);
 		endNo_ = stageEditor_->GetIntValue("四角形を生成するもう一方の水のナンバー", tree1, tree);
 	}
+}
+
+void WaterChunk::SetGlobalVariableAndSetPos()
+{
+	if (stageEditor_) {
+		std::string tree = "水" + std::to_string(no_);
+		int no = no_ / 10;
+		no = no * 10;
+		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
+		stageEditor_->AddItem("ポジション", position_, tree1, tree);
+		stageEditor_->AddItem("スケール", maxScale_, tree1, tree);
+		stageEditor_->AddItem("四角形を作るか", isTarget_, tree1, tree);
+		stageEditor_->AddItem("四角形を生成するもう一方の水のナンバー", endNo_, tree1, tree);
+
+		stageEditor_->SetVariable("ポジション", position_, tree1, tree);
+		stageEditor_->SetVariable("四角形を作るか", false, tree1, tree);
+	}
+	ApplyGlobalVariable();
 }
 
 void WaterChunk::StaticSetGlobalVariable()
@@ -516,41 +622,3 @@ void WaterChunk::SetCollider()
 	Collider::SetCircle({ position_.x,position_.y }, scale_);
 	collisionManager_->SetCollider(this);
 }
-
-//void WaterChunk::HitTest(const Wave& wave)
-//{
-//	/*for (std::unique_ptr<WaterChunkChip>& chip : chips_) {
-//		const Vector3 pos = chip->GetPosition();
-//		if (IsHitCircle(pos, wave.position_, wave.radius_) && !IsHitCircle(pos, wave.position_, wave.preRadius_)) {
-//			float t = (pos - wave.position_).Length() / wave.maxRadius_;
-//			chip->AddOutPower(wave.power_ * (1.0f - t));
-//		}
-//	}*/
-//}
-
-//void WaterChunk::SetGlobalVariable()
-//{
-//	for (int i = 0; i < kFloatEnd; i++) {
-//		globalVariable_->AddItem(fNames[i], fParas_[i]);
-//	}
-//
-//	ApplyGlobalVariable();
-//}
-
-//void WaterChunk::ApplyGlobalVariable()
-//{
-//	for (int i = 0; i < kFloatEnd; i++) {
-//		fParas_[i] = globalVariable_->GetFloatValue(fNames[i]);
-//
-//		if (i == FloatParamater::kAttenuation) {
-//			fParas_[i] = std::clamp(fParas_[i], 0.0001f, 1.0f);
-//		}
-//		else {
-//			if (fParas_[i] < 0.0001f) {
-//				fParas_[i] = 0.0001f;
-//			}
-//		}
-//	}
-//
-//	scale_ = { fParas_[kScale],fParas_[kScale] ,fParas_[kScale] };
-//}
