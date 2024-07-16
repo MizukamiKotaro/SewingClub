@@ -25,6 +25,7 @@ EditorSystem::EditorSystem(Camera* camera)
 
 void EditorSystem::Update()
 {
+#ifdef _DEBUG
 	mousePos_ = input_->GetMousePosition();
 	mousePos_ = { mousePos_.x - 640.0f, 360.0f - mousePos_.y };
 	Vector2 win = WindowsInfo::GetInstance()->GetWindowSize();
@@ -115,7 +116,6 @@ void EditorSystem::Update()
 				}
 			}
 		}
-#ifdef _DEBUG
 		s = waterMap[no_]->GetScale();
 		scale = { s,s,1.0f };
 		mat = Matrix4x4::MakeAffinMatrix(scale, Vector3{}, waterMap[no_]->GetPosition());
@@ -145,7 +145,6 @@ void EditorSystem::Update()
 			break;
 		}
 
-#endif // _DEBUG
 		break;
 	case EditorSystem::State::NONE:
 		if (input_->PressedKey(DIK_LSHIFT)) {
@@ -156,7 +155,6 @@ void EditorSystem::Update()
 		break;
 	}
 
-#ifdef _DEBUG
 	ImGui::Begin("エディターの状態");
 	ImGui::Text("マウスの真ん中でエディターモードオフ");
 	ImGui::Text("マウスの右クリックでギズモ");
