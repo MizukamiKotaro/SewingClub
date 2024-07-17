@@ -478,6 +478,15 @@
     <Filter Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline">
       <UniqueIdentifier>{d3518893-9ced-4f23-85c8-fddca40301c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EditorSystem">
+      <UniqueIdentifier>{1d1c418b-02f3-4b33-9f06-139551537e3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Drawer\PostEffect\Dissolve">
+      <UniqueIdentifier>{d0586a92-2755-4306-bb19-c920b77231b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline">
+      <UniqueIdentifier>{d3518893-9ced-4f23-85c8-fddca40301c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -1022,6 +1031,18 @@
     </ClCompile>
     <ClCompile Include="Game\GameElement\Effects\UIEnemyGuidance\UIEnemyGuidance.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Drawers\PostEffect\Dissolve\Dissolve.cpp">
+      <Filter>Engine\Drawer\PostEffect\Dissolve</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.cpp">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ImGuiManager\Guizmo.cpp">
+      <Filter>Engine\ImGuiManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameElement\EditorSystem\EditorSystem.cpp">
+      <Filter>EditorSystem</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameElement\Camera\ZoomUpCamera.cpp">
       <Filter>Game\GameElement\Camera</Filter>
@@ -1654,6 +1675,18 @@
     </ClInclude>
     <ClInclude Include="icon.h">
       <Filter>リソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Drawers\PostEffect\Dissolve\Dissolve.h">
+      <Filter>Engine\Drawer\PostEffect\Dissolve</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.h">
+      <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ImGuiManager\Guizmo.h">
+      <Filter>Engine\ImGuiManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\EditorSystem\EditorSystem.h">
+      <Filter>EditorSystem</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameElement\Camera\ZoomUpCamera.h">
       <Filter>Game\GameElement\Camera</Filter>

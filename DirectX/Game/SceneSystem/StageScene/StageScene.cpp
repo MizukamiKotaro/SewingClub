@@ -89,6 +89,11 @@ StageScene::StageScene()
 	ingameHUD_ = std::make_unique<InGameHUD>();
 
 	se_babyNormal.LoadMP3("SE/baby/baby_.mp3", "baby_normal");
+
+#ifdef _DEBUG
+	editorSystem_ = std::make_unique<EditorSystem>(camera_.get());
+#endif // _DEBUG
+
 }
 
 void StageScene::Initialize()
@@ -196,6 +201,7 @@ void StageScene::Update()
 	if (input_->PressedKey(DIK_SPACE)) {
 		effeGetItem_->Spawn(player_->GetPosition());
 	}
+	editorSystem_->Update();
 #endif // _DEBUG
 
 

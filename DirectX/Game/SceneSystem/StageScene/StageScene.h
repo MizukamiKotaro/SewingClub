@@ -26,6 +26,11 @@
 #include "GameElement/FragmentVignette/FragmentVignette.h"
 #include "Audio/Audio.h"
 
+#ifdef _DEBUG
+#include "GameElement/EditorSystem/EditorSystem.h"
+#endif // _DEBUG
+
+
 class InstancingModelManager;
 class CollisionManager;
 class WaterManager;
@@ -76,6 +81,11 @@ private:
 
 	Audio seClear_;
 	Audio seOpenOption_;
+
+#ifdef _DEBUG
+	std::unique_ptr<EditorSystem> editorSystem_;
+#endif // _DEBUG
+
 
 	//ステージ最大数
 	int maxStageNo_ = 8;
