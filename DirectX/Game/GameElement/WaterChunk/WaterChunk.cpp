@@ -116,7 +116,6 @@ WaterChunk::WaterChunk(const int& no, const Vector2& pos)
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 	isPlayer_ = false;
 	preIsPlayer_ = false;
-	CreateChips();
 	isWave_ = false;
 
 	isQuadrangleActive_ = false;
