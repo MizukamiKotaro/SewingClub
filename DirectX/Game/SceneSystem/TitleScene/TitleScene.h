@@ -6,6 +6,7 @@
 #include"GameElement/OptionUI/OptionUI.h"
 #include"Engine/Drawers/PostEffect/Dissolve/Dissolve.h"
 #include"Audio.h"
+#include"GlobalVariables/GlobalVariableUser.h"
 
 class TitleScene : public IScene
 {
@@ -84,6 +85,8 @@ private:
 	std::unique_ptr<Dissolve>dissolve_;
 
 	Vector3 dissolveColor_ = {1,1,1};
+
+	std::unique_ptr<GlobalVariableUser> gVari;
 
 };
 

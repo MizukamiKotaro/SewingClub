@@ -1,7 +1,7 @@
 #include "VolumeManager.h"
 #include "Audio.h"
 #include "AudioConfig.h"
-#include "GlobalVariables/GlobalVariables.h"
+#include "GlobalVariables/GlobalVariableUser.h"
 #include <algorithm>
 
 VolumeManager* VolumeManager::GetInstance()
@@ -15,15 +15,13 @@ void VolumeManager::Initialize()
 	seVolume_ = 0.7f;
 	musicVolume_ = 0.7f;
 
-	globalVariables_ = GlobalVariables::GetInstance();
+	globalVariables_ = std::make_unique<GlobalVariableUser>("Audio", "Master");
 
-	globalVariables_->CreateGroup("Audio", "Master");
+	globalVariables_->AddItem("SE全体のボリューム", seVolume_);
+	globalVariables_->AddItem("Music全体のボリューム", musicVolume_);
 
-	globalVariables_->AddItem("Audio", "Master", "SE全体のボリューム", seVolume_);
-	globalVariables_->AddItem("Audio", "Master", "Music全体のボリューム", musicVolume_);
-
-	seVolume_ = globalVariables_->GetFloatValue("Audio", "Master", "SE全体のボリューム");
-	musicVolume_ = globalVariables_->GetFloatValue("Audio", "Master", "Music全体のボリューム");
+	seVolume_ = globalVariables_->GetFloatValue("SE全体のボリューム");
+	musicVolume_ = globalVariables_->GetFloatValue("Music全体のボリューム");
 
 	globalVariables_->AddItemDontTouchImGui("SE全体のプレイヤー設定", seVolumeStage_);
 	globalVariables_->AddItemDontTouchImGui("Music全体のプレイヤー設定", musicVolumeStage_);
@@ -46,8 +44,8 @@ void VolumeManager::SetAudio(Audio* audio)
 void VolumeManager::Update()
 {
 #ifdef _DEBUG
-	seVolume_ = globalVariables_->GetFloatValue("Audio", "Master", "SE全体のボリューム");
-	musicVolume_ = globalVariables_->GetFloatValue("Audio", "Master", "Music全体のボリューム");
+	seVolume_ = globalVariables_->GetFloatValue("SE全体のボリューム");
+	musicVolume_ = globalVariables_->GetFloatValue("Music全体のボリューム");
 
 	seVolume_ = std::clamp(seVolume_, 0.0f, 1.0f);
 	musicVolume_ = std::clamp(musicVolume_, 0.0f, 1.0f);
@@ -73,6 +71,6 @@ void VolumeManager::SaveVolumeStage(const float& seVolumeStage, const float& mus
 {
 	seVolumeStage_ = seVolumeStage;
 	musicVolumeStage_ = musicVolumeStage;
-	globalVariables_->SaveAndSetVariableDontTouchImGui("SE全体のプレイヤー設定", seVolumeStage_);
-	globalVariables_->SaveAndSetVariableDontTouchImGui("Music全体のプレイヤー設定", musicVolumeStage_);
+	globalVariables_->SaveDontTouchImGui("SE全体のプレイヤー設定", seVolumeStage_);
+	globalVariables_->SaveDontTouchImGui("Music全体のプレイヤー設定", musicVolumeStage_);
 }
