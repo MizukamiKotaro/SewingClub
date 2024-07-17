@@ -1,10 +1,11 @@
 #pragma once
 #include <stdint.h>
 #include <string>
+#include <memory>
 
 class AudioManager;
 class SoundData;
-class GlobalVariables;
+class GlobalVariableUser;
 class VolumeManager;
 
 class Audio
@@ -65,5 +66,5 @@ private:
 
 	static AudioManager* audioManager_;
 	static VolumeManager* volumeManager_;
-	static GlobalVariables* globalVariables_;
+	static std::unique_ptr<GlobalVariableUser> globalVariables_;
 };
