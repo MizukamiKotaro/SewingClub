@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "GameElement/WaterManager/WaterManager.h"
 #include "Engine/Base/WindowsInfo/WindowsInfo.h"
+#include "GlobalVariables/GlobalVariables.h"
+#include "SceneSystem/IScene/IScene.h"
 #ifdef _DEBUG
 #include "ImGuiManager/Guizmo.h"
 #include "ImGuiManager/ImGuiManager.h"
@@ -43,6 +45,17 @@ void EditorSystem::Update()
 	else if (input_->PressedMouse(Input::MouseButton::RIGHT)) {
 		state_ = State::GUIZMO;
 	}
+	if (input_->PressedKey(DIK_A)) {
+		if (guizmoType_ == GuizmoType::TRANSLATE) {
+			guizmoType_ = GuizmoType::SCALE;
+		}
+		else if (guizmoType_ == GuizmoType::SCALE) {
+			guizmoType_ = GuizmoType::TRANSLATE;
+		}
+	}
+	if (input_->PressedKey(DIK_S)) {
+		GlobalVariables::GetInstance()->SaveFile("StageEditor", "Stage" + std::to_string(IScene::stageNo_));
+	}
 	float s = 0.0f;
 	int no = 0;
 	std::unordered_map<int, std::unique_ptr<WaterChunk>>& waterMap = waterManager_->GetWater();
@@ -68,7 +81,7 @@ void EditorSystem::Update()
 		if (input_->PressedMouse(Input::MouseButton::LEFT)) {
 			waterManager_->AddWater(mousePos_);
 		}
-		if (input_->PressedKey(DIK_LSHIFT)) {
+		if (input_->PressedKey(DIK_W)) {
 			state_ = State::MAKE_QUADRANGLE;
 			isSelectQuad_ = false;
 		}
@@ -103,7 +116,7 @@ void EditorSystem::Update()
 				}
 			}
 		}
-		if (input_->PressedKey(DIK_LSHIFT)) {
+		if (input_->PressedKey(DIK_W)) {
 			state_ = State::NONE;
 		}
 		break;
@@ -147,7 +160,7 @@ void EditorSystem::Update()
 
 		break;
 	case EditorSystem::State::NONE:
-		if (input_->PressedKey(DIK_LSHIFT)) {
+		if (input_->PressedKey(DIK_W)) {
 			state_ = State::PUT;
 		}
 		break;
@@ -165,17 +178,17 @@ void EditorSystem::Update()
 	case EditorSystem::State::PUT:
 		ImGui::Text("モード ： 設置");
 		ImGui::Text("左クリックで配置");
-		ImGui::Text("LShiftでモードを四角形生成に");
+		ImGui::Text("Wキーでモードを四角形生成に");
 		break;
 	case EditorSystem::State::GUIZMO:
 		ImGui::Text("モード ： ギズモ");
 		break;
 	case EditorSystem::State::MAKE_QUADRANGLE:
 		ImGui::Text("モード ： 四角形生成");
-		ImGui::Text("LShiftでモードをオフに");
+		ImGui::Text("Wキーでモードをオフに");
 		break;
 	case EditorSystem::State::NONE:
-		ImGui::Text("LShiftでモードを設置に");
+		ImGui::Text("Wキーでモードを設置に");
 		break;
 	default:
 		break;
