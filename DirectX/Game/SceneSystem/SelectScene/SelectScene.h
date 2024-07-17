@@ -5,6 +5,7 @@
 #include"GameElement/OptionUI/OptionUI.h"
 #include"GlobalVariables/GlobalVariableUser.h"
 #include"GameElement/Effects/EffectBabySleep/EffectBabySleep.h"
+#include"Engine/Drawers/PostEffect/Dissolve/Dissolve.h"
 
 class SelectScene :public IScene {
 public:
@@ -276,6 +277,10 @@ private:
 		cS3,		
 		cS4,
 		
+		SceneChangeNum,
+		DissolveColor,
+		DissolveDifference,
+
 		_countAnother
 	};
 
@@ -294,7 +299,21 @@ private:
 		"雲3速度",
 		"雲4速度",
 
+		"シーン遷移速度",
+		"Dissolveの差の色",
+		"Dissolveの差の大きさ",
 	};
 #pragma endregion
+
+	//各シーンチェンジ処理
+	bool preSceneChangeActive_ = false;
+	bool postSceneChangeActive_ = false;
+	//しー
+	float changeSecond_ = 1.0f;
+
+	std::unique_ptr<Dissolve>dissolve_;
+	std::unique_ptr<Sprite>dissolveBackTex_;
+	Vector3 dissolveColor_ = { 1,1,1 };
+
 
 };

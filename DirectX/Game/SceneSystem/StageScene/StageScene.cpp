@@ -74,6 +74,7 @@ StageScene::StageScene()
 
 	followCamera_ = std::make_unique<FollowCamera>();
 	goalCamera_ = std::make_unique<GoalCamera>();
+	zoomUpCamera_ = std::make_unique<ZoomUpCamera>();
 
 	gameOver_ = std::make_unique<GameOver>();
 	gameClear_ = std::make_unique<GameClear>();
@@ -89,6 +90,11 @@ StageScene::StageScene()
 	ingameHUD_ = std::make_unique<InGameHUD>();
 
 	se_babyNormal.LoadMP3("SE/baby/baby_.mp3", "baby_normal");
+
+#ifdef _DEBUG
+	editorSystem_ = std::make_unique<EditorSystem>(camera_.get());
+#endif // _DEBUG
+
 }
 
 void StageScene::Initialize()
@@ -196,6 +202,7 @@ void StageScene::Update()
 	if (input_->PressedKey(DIK_SPACE)) {
 		effeGetItem_->Spawn(player_->GetPosition());
 	}
+	editorSystem_->Update();
 #endif // _DEBUG
 
 
@@ -276,7 +283,7 @@ void StageScene::Update()
 						countIndex++;
 						followCamera_->Reset();
 					}
-					camera.z = 0.0f;
+					//camera.z = 0.0f;
 				}
 
 				// 今テキトーにカメラの位置変えてるけどfollowCameraなどの処理書くところ
@@ -318,6 +325,11 @@ void StageScene::Update()
 	case StageScene::kGameToClear:
 		player_->ClearUpdate(deltaTime);
 		baby_->ClearUpdate(deltaTime);
+		
+		// クリア時のカメラ遷移
+		camera_->transform_.translate_ = zoomUpCamera_->Update(player_->GetClearTime(), deltaTime);
+		camera_->Update();
+
 		break;
 	case StageScene::_countPlayScenes:
 		break;
@@ -425,6 +437,7 @@ void StageScene::SceneChange()
 				nowScene = kGameToClear;
 				gameClear_->SetBabyParam(baby_->GetTension(), baby_->GetFace());
 				seClear_.Play();
+				zoomUpCamera_->Initialize(camera_->transform_.GetWorldPosition(), goal_->GetPosition());
 			}
 
 			//ヒットによる処理

@@ -2,6 +2,9 @@
 #include "Kyoko.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include"calc.h"
+#include "Texture.h"
+#include"DescriptorHeapManager/DescriptorHandles/DescriptorHandles.h"
+
 #include<numbers>
 SelectScene::SelectScene()
 {
@@ -14,7 +17,7 @@ SelectScene::SelectScene()
 	bg_ = std::make_unique<BackGround>();
 	bg_->Update(camera_.get());
 
-	effeBSleep_ = std::make_unique<EffectBabySleep > ();
+	effeBSleep_ = std::make_unique<EffectBabySleep >();
 
 	bgm_.LoadMP3("Music/stageSelect.mp3", "SelectBGM", bgmVolume_);
 	seOpenOption_.LoadMP3("SE/Scene/autgame_poseOpen.mp3");
@@ -37,6 +40,12 @@ SelectScene::SelectScene()
 		mapSprite_[i] = std::make_unique<Sprite>(mapPaths_[i]);
 	}
 
+	dissolve_ = std::make_unique<Dissolve>();
+	const Texture* tex = TextureManager::GetInstance()->LoadTexture("noise0.png");
+	dissolve_->SetGPUDescriptorHandle(tex->handles_->gpuHandle);
+	dissolveBackTex_ = std::make_unique<Sprite>("white.png");
+	dissolveBackTex_->size_ = { 1280,720 };
+	dissolveBackTex_->Update();
 
 	gvu_ = new GlobalVariableUser("Scene", "Selects");
 	for (int i = 0; i < _countTags; i++) {
@@ -72,6 +81,13 @@ SelectScene::SelectScene()
 	gvu_->AddItem(anoKeys[cS3], cSwingSeconds_[Spawn3]);
 	gvu_->AddItem(anoKeys[cS4], cSwingSeconds_[None]);
 
+	gvu_->AddItem(anoKeys[SceneChangeNum], changeSecond_);
+	gvu_->AddItem(anoKeys[DissolveColor], dissolve_->dissolveData_->edgeColor);
+	gvu_->AddItem(anoKeys[DissolveDifference], dissolve_->dissolveData_->difference);
+	gvu_->AddItem("Dissolveのカラー", dissolveColor_);
+
+
+	dissolveColor_ = gvu_->GetVector3Value("Dissolveのカラー");
 }
 
 void SelectScene::SetGlobalV()
@@ -120,10 +136,19 @@ void SelectScene::SetGlobalV()
 	cSwingSeconds_[Spawn3] = gvu_->GetFloatValue(anoKeys[cS3]);
 	cSwingSeconds_[None] = gvu_->GetFloatValue(anoKeys[cS4]);
 
+	changeSecond_ = gvu_->GetFloatValue(anoKeys[SceneChangeNum]);
+	dissolve_->dissolveData_->edgeColor = gvu_->GetVector3Value(anoKeys[DissolveColor]);
+	dissolve_->dissolveData_->difference = gvu_->GetFloatValue(anoKeys[DissolveDifference]);
+
 	for (int i = 0; i < _countStages; i++) {
 		mapSprite_[i]->pos_ = mapPos_;
 		mapSprite_[i]->size_ = mapSize_;
 	}
+
+	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
+	dissolveBackTex_->SetColor(color);
+	dissolveColor_ = { color.x,color.y,color.z };
+
 }
 
 SelectScene::~SelectScene() {}
@@ -146,6 +171,8 @@ void SelectScene::Initialize()
 
 	SetGlobalV();
 
+
+
 	ArrowUpdate();
 
 	NumberUpdate();
@@ -153,6 +180,10 @@ void SelectScene::Initialize()
 	CloudUpdate();
 
 	UpdateSprite();
+
+	preSceneChangeActive_ = false;
+	postSceneChangeActive_ = false;
+	dissolve_->dissolveData_->baseLuminance = 0.0f;
 }
 
 void SelectScene::Update()
@@ -160,7 +191,18 @@ void SelectScene::Update()
 
 	SetGlobalV();
 
+#ifdef _DEBUG
+	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
 
+	ImGui::Begin("Dissolveした所の色");
+	ImGui::ColorEdit4("色", &color.x);
+	ImGui::End();
+
+	dissolveBackTex_->SetColor(color);
+	dissolveColor_ = { color.x,color.y,color.z };
+	gvu_->SetVariable("Dissolveのカラー", dissolveColor_);
+	
+#endif // _DEBUG
 
 	camera_->Update();
 
@@ -195,6 +237,10 @@ void SelectScene::Update()
 
 void SelectScene::Draw()
 {
+	dissolve_->PreDrawScene();
+	dissolveBackTex_->Draw();
+	dissolve_->PostDrawScene();
+
 	//必須
 	Kyoko::Engine::PreDraw();
 
@@ -242,6 +288,7 @@ void SelectScene::Draw()
 
 	//シーン転換時のフェードインアウト
 	BlackDraw();
+	dissolve_->Draw();
 	//必須
 	Kyoko::Engine::PostDraw();
 }
@@ -250,33 +297,68 @@ void SelectScene::Draw()
 
 void SelectScene::SceneChange()
 {
-	//optionのアンサーによる処理
-	if (isOptionActive_) {
-		//optionから抜ける
-		if (ans_.backOption) {
-			isOptionActive_ = false;
-		}
-		//タイトルに戻る
-		else if (ans_.backtitle) {
-			// シーン切り替え
-			ChangeScene(TITLE);
-			bgm_.Stop();
+
+	float deltaTime = frameInfo_->GetDeltaTime();
+	//
+	if (!preSceneChangeActive_) {
+		dissolve_->dissolveData_->baseLuminance += 1.0f * deltaTime;
+		if (dissolve_->dissolveData_->baseLuminance >= 1.0f) {
+			dissolve_->dissolveData_->baseLuminance = 1.0f;
+			preSceneChangeActive_ = true;
 		}
 	}
-	else {
-		//ステージを選択する処理
-		if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
-			// シーン切り替え
+
+	if (!postSceneChangeActive_ && preSceneChangeActive_) {
+		//optionのアンサーによる処理
+		if (isOptionActive_) {
+			//optionから抜ける
+			if (ans_.backOption) {
+				isOptionActive_ = false;
+			}
+			//タイトルに戻る
+			else if (ans_.backtitle) {
+				// シーン切り替え
+				ChangeScene(TITLE);
+				bgm_.Stop();
+			}
+		}
+		else {
+
+
+#ifdef _DEBUG
+			if (input_->PressedKey(DIK_SPACE)) {
+				// シーン切り替え
+				postSceneChangeActive_ = true;
+				bgm_.Stop();
+				seSelect_.Play();
+			}
+#endif // _DEBUG
+
+
+
+			//ステージを選択する処理
+			if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
+				// シーン切り替え
+				postSceneChangeActive_ = true;
+				bgm_.Stop();
+				seSelect_.Play();
+			}//オプション開く処理
+			else if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
+				isOptionActive_ = true;
+				seOpenOption_.Play();
+			}
+
+		}
+	}
+	else if (postSceneChangeActive_) {
+		dissolve_->dissolveData_->baseLuminance -= changeSecond_ * deltaTime;
+		if (dissolve_->dissolveData_->baseLuminance <= 0) {
+			dissolve_->dissolveData_->baseLuminance = 0;
+
 			stageNo_ = pickedNum_;
 			ChangeScene(STAGE);
-			bgm_.Stop();
-			seSelect_.Play();
-		}//オプション開く処理
-		else if (input_->PressedGamePadButton(Input::GamePadButton::START)) {
-			isOptionActive_ = true;
-			seOpenOption_.Play();
-		}
 
+		}
 	}
 }
 

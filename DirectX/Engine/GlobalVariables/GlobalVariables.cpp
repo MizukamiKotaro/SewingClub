@@ -50,9 +50,9 @@ void GlobalVariables::Update() {
 
 		const std::string& chunkName = itChunk->first;
 
-		/*if (chunkName == "aaDontTouchPlayData") {
+		if (chunkName == "aaDontTouchPlayData") {
 			continue;
-		}*/
+		}
 
 		Chunk& chunk = itChunk->second;
 

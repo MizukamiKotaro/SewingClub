@@ -26,6 +26,8 @@ public:
 	std::unordered_map<int, std::unique_ptr<WaterChunk>>& GetWater() { return stageWater_; }
 	const WaterChunk* GetWater(const int& no);
 
+	void AddWater(const Vector2& pos);
+
 private:
 	WaterManager() = default;
 	~WaterManager() = default;

@@ -15,6 +15,7 @@
 #include "GameElement/TensionUI/TensionUI.h"
 #include "GameElement/Camera/FollowCamera.h"
 #include "GameElement/Camera/GoalCamera.h"
+#include "GameElement/Camera/ZoomUpCamera.h"
 #include"GameElement/GameOver/GameOver.h"
 #include"GameElement/GameClear/GameClear.h"
 
@@ -24,6 +25,11 @@
 #include"GameElement/InGameHUD/InGameHUD.h"
 #include "GameElement/FragmentVignette/FragmentVignette.h"
 #include "Audio/Audio.h"
+
+#ifdef _DEBUG
+#include "GameElement/EditorSystem/EditorSystem.h"
+#endif // _DEBUG
+
 
 class InstancingModelManager;
 class CollisionManager;
@@ -76,6 +82,11 @@ private:
 	Audio seClear_;
 	Audio seOpenOption_;
 
+#ifdef _DEBUG
+	std::unique_ptr<EditorSystem> editorSystem_;
+#endif // _DEBUG
+
+
 	//ステージ最大数
 	int maxStageNo_ = 8;
 
@@ -102,6 +113,7 @@ private:
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
 	std::unique_ptr<GoalCamera> goalCamera_;
+	std::unique_ptr<ZoomUpCamera> zoomUpCamera_;
 	float cameraOffset_ = -50.0f;
 
 	enum playScenes {

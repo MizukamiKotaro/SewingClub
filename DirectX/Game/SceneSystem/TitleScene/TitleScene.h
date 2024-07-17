@@ -4,6 +4,7 @@
 #include"GameElement/Effects/EffectUIEnterWater.h"
 #include"GameElement/WaterEffect/WaterEffect.h"
 #include"GameElement/OptionUI/OptionUI.h"
+#include"Engine/Drawers/PostEffect/Dissolve/Dissolve.h"
 #include"Audio.h"
 
 class TitleScene : public IScene
@@ -72,6 +73,17 @@ private:
 	bool isOptionActive_ = false;
 	UpdateAnswer ans_{};
 #pragma endregion
+
+	std::unique_ptr<Sprite>dissolveBackTex_;
+	//各シーンチェンジ処理
+	bool preSceneChangeActive_ = false;
+	bool postSceneChangeActive_ = false;
+	//しー
+	float changeSecond_ = 1.0f;
+
+	std::unique_ptr<Dissolve>dissolve_;
+
+	Vector3 dissolveColor_ = {1,1,1};
 
 };
 

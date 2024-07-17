@@ -15,6 +15,7 @@ public:
 
 	WaterChunk();
 	WaterChunk(int no);
+	WaterChunk(const int& no, const Vector2& pos);
 	WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall);
 
 	static void StaticInitialize();
@@ -37,11 +38,20 @@ public:
 	// めっちゃ面倒な処理
 	const Vector3& GetPosition() const { return position_; }
 	const float& GetScale() const { return scale_; }
+	const bool& GetIsTarget() const { return isTarget_; }
+	const int& GetEndNo() const { return endNo_;}
+
+	bool IsHitMouse(const Vector2& mousePos) const;
+
+	void SetPosition(const Vector3& pos);
+	void SetScale(const float& scale);
+	void SetIsQuadrangle(const bool& is, const int& endNo);
 
 private:
 	void SetGlobalVariable();
 
 	void ApplyGlobalVariable();
+	void SetGlobalVariableAndSetPos();
 
 	static void StaticSetGlobalVariable();
 	static void StaticApplyGlobalVariable();

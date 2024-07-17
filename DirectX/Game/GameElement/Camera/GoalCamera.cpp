@@ -10,23 +10,25 @@ void GoalCamera::Initialize() {
 Vector3 GoalCamera::Update(const Vector3& playerPos, const Vector3& goalPos, const float& delta) {
 	Vector3 result{};
 	bool isSwitch = false;
+	Vector3 rGoalPos = goalPos;
+	rGoalPos.z = 20.0f;
 
 	switch (type_) {
 	case GoalCamera::TYPE::ToGoal:
-		result = Ease::UseEase(playerPos, goalPos, count_, kMaxFrame_, Ease::EaseType::EaseIn);
-		if (kMaxFrame_ <= count_) {
+		result = Ease::UseEase(playerPos, rGoalPos, kMaxFrame_, kMaxFrame_, Ease::EaseType::EaseIn);
+		if (kWaitTime_ <= count_) {
 			isSwitch = true;
 		}
 		break;
 	case GoalCamera::TYPE::Wait:
-		result = goalPos;
+		result = rGoalPos;
 		if (kWaitTime_ <= count_) {
 			//isSwitch = true;
 		}
 		break;
 	case GoalCamera::TYPE::ToPlayer:
-		result = Ease::UseEase(goalPos, playerPos, count_, kMaxFrame_, Ease::EaseType::EaseIn);
-		if (kMaxFrame_ <= count_) {
+		result = Ease::UseEase(rGoalPos, playerPos, count_, kMaxFrame_, Ease::EaseType::EaseOutSine, 3);
+		if (kMaxFrame_ * 0.9f <= count_) {
 			isSwitch = true;
 		}
 		break;
