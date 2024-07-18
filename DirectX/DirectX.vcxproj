@@ -268,6 +268,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\WaterChunk\WaterWave.cpp" />
     <ClCompile Include="Game\GameElement\WaterEffect\WaterEffect.cpp" />
     <ClCompile Include="Game\GameElement\WaterManager\WaterManager.cpp" />
+    <ClCompile Include="Game\GameElement\WaterSurface\WaterSurface.cpp" />
     <ClCompile Include="Game\GameElement\WaveFloor\WaveFloor.cpp" />
     <ClCompile Include="Game\GameElement\WaveFloor\WaveFloorChip.cpp" />
     <ClCompile Include="Game\GameElement\Wave\Wave.cpp" />
@@ -494,6 +495,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\WaterChunk\WaterWave.h" />
     <ClInclude Include="Game\GameElement\WaterEffect\WaterEffect.h" />
     <ClInclude Include="Game\GameElement\WaterManager\WaterManager.h" />
+    <ClInclude Include="Game\GameElement\WaterSurface\WaterSurface.h" />
     <ClInclude Include="Game\GameElement\WaveFloor\WaveFloor.h" />
     <ClInclude Include="Game\GameElement\WaveFloor\WaveFloorChip.h" />
     <ClInclude Include="Game\GameElement\Wave\Wave.h" />

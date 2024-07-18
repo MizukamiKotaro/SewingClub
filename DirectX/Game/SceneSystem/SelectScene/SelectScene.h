@@ -7,6 +7,7 @@
 #include"GameElement/Effects/EffectBabySleep/EffectBabySleep.h"
 #include"Engine/Drawers/PostEffect/Dissolve/Dissolve.h"
 #include"GameElement/SceneTransitionEffect/SceneTransitionEffect.h"
+#include"GameElement/WaterSurface/WaterSurface.h"
 
 class SelectScene :public IScene {
 public:
@@ -310,4 +311,5 @@ private:
 	std::unique_ptr<SceneTransitionEffect>sceneTransition_;
 	bool isChangeScene_ = false;
 
+	std::unique_ptr<WaterSurface> surface_;
 };
