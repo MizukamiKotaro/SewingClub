@@ -1053,6 +1053,9 @@
     <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.cpp">
       <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameElement\SceneTransitionEffect\SceneTransitionEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Utils\Math\calc.h">
@@ -1696,6 +1699,9 @@
     </ClInclude>
     <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.h">
       <Filter>Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameElement\SceneTransitionEffect\SceneTransitionEffect.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
