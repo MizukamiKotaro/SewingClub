@@ -63,15 +63,10 @@ TitleScene::TitleScene()
 	gVari->AddItem("「＝」サイズ", select_->size_);
 	gVari->AddItem("「option」座標", text_Option_->pos_);
 	gVari->AddItem("「option」サイズ", text_Option_->size_);
-	gVari->AddItem("dissolveのやつ", dissolve_->dissolveData_->baseLuminance);
-	gVari->AddItem("dissolveの色", dissolve_->dissolveData_->edgeColor);
-	gVari->AddItem("dissolveの差", dissolve_->dissolveData_->difference);
-	gVari->AddItem("遷移速度", changeSecond_);
-	gVari->AddItem("Dissolveのカラー", dissolveColor_);
+
 
 	SetGlovalV();
 
-	dissolveColor_ = gVari->GetVector3Value("Dissolveのカラー");
 
 }
 
@@ -90,19 +85,7 @@ void TitleScene::SetGlovalV()
 	text_Option_->pos_ = gVari->GetVector2Value("「option」座標");
 	text_Option_->size_ = gVari->GetVector2Value("「option」サイズ");
 
-	dissolve_->dissolveData_->edgeColor = gVari->GetVector3Value("dissolveの色");
-	dissolve_->dissolveData_->difference = gVari->GetFloatValue("dissolveの差");
-	changeSecond_ = gVari->GetFloatValue("遷移速度");
 
-	if (!postSceneChangeActive_&&preSceneChangeActive_) {
-		dissolve_->dissolveData_->baseLuminance = gVari->GetFloatValue("dissolveのやつ");	
-	}
-
-	
-
-	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
-	dissolveBackTex_->SetColor(color);
-	dissolveColor_ = { color.x,color.y,color.z };
 
 }
 
@@ -159,19 +142,10 @@ void TitleScene::Update()
 	float deltaTime = frameInfo_->GetDeltaTime();
 	if (sceneTransition_->PreSceneTransition(deltaTime)) {
 
-
-
-	gVari->SetVariable("Dissolveのカラー", dissolveColor_);
-
-	  if (!isOptionActive_) {
-
-
+		if (!isOptionActive_) {
 #ifdef _DEBUG
 			SetGlovalV();
 #endif // _DEBUG
-
-
-
 			LogoAnimation();
 
 			bg_->Update(camera_.get());
@@ -194,7 +168,7 @@ void TitleScene::Update()
 			if (ans_.audioOption) {
 				bgm_.Update();
 			}
-		  }
+		}
 
 
 		SceneChange();
