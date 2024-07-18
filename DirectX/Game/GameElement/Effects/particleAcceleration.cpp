@@ -12,8 +12,7 @@ ParticleAcceleration::ParticleAcceleration()
 {
 	instancingManager_ = InstancingModelManager::GetInstance();
 	const ModelData* modelData = ModelDataManager::GetInstance()->LoadObj("plane");
-	modelData_ = instancingManager_->GetDrawData({ modelData,TextureManager::GetInstance()->LoadTexture("buf.png"),BlendMode::kBlendModeNormal });
-
+	modelData_ = instancingManager_->GetDrawData({ modelData,TextureManager::GetInstance()->LoadTexture("buf.png"),BlendMode::kBlendModeAdd });
 	gVUser_ = new GlobalVariableUser("Effects", "ParticleAcceleration");
 
 	gVUser_->AddItem(keys[SpawnCount], maxSpawnCount_);
