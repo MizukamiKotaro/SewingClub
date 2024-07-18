@@ -29,7 +29,7 @@ void SceneTransitionEffect::SetGlobalV()
 {
 
 	if (preSceneChangeActive_ && !postSceneChangeActive_) {
-		//dissolve_->dissolveData_->baseLuminance = gvu_->GetFloatValue(keys[kLuminance]);
+		dissolve_->dissolveData_->baseLuminance = gvu_->GetFloatValue(keys[kLuminance]);
 	}
 
 	changeSecond_ = gvu_->GetFloatValue(keys[kChangeSpd]);
@@ -67,24 +67,7 @@ void SceneTransitionEffect::Initialize()
 
 bool SceneTransitionEffect::PreSceneTransition(float delta)
 {
-	SetGlobalV();
 
-#ifdef _DEBUG
-	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
-	Vector4 eColor = { dissolve_->dissolveData_->edgeColor.x,dissolve_->dissolveData_->edgeColor.y,dissolve_->dissolveData_->edgeColor.z,1 };
-
-	ImGui::Begin("color");
-	ImGui::ColorEdit4("dissolve space", &color.x);
-	ImGui::ColorEdit4("edge space", &eColor.x);
-	ImGui::End();
-
-	dissolveBackTex_->SetColor(color);
-	dissolveColor_ = { color.x,color.y,color.z };
-	gvu_->SetVariable(keys[kDissolveColor], dissolveColor_);
-
-	dissolve_->dissolveData_->edgeColor = { eColor.x,eColor.y,eColor.z };
-	gvu_->SetVariable(keys[kEdgeColor], dissolve_->dissolveData_->edgeColor);
-#endif // _DEBUG
 
 	//だんだんマスク量減らす
 	if (!preSceneChangeActive_) {
@@ -112,6 +95,28 @@ bool SceneTransitionEffect::PostSceneTransition(float delta)
 		}
 	}
 	return postSceneChangeActive_;
+}
+
+void SceneTransitionEffect::Debug()
+{
+	SetGlobalV();
+
+#ifdef _DEBUG
+	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
+	Vector4 eColor = { dissolve_->dissolveData_->edgeColor.x,dissolve_->dissolveData_->edgeColor.y,dissolve_->dissolveData_->edgeColor.z,1 };
+
+	ImGui::Begin("color");
+	ImGui::ColorEdit4("dissolve space", &color.x);
+	ImGui::ColorEdit4("edge space", &eColor.x);
+	ImGui::End();
+
+	dissolveBackTex_->SetColor(color);
+	dissolveColor_ = { color.x,color.y,color.z };
+	gvu_->SetVariable(keys[kDissolveColor], dissolveColor_);
+
+	dissolve_->dissolveData_->edgeColor = { eColor.x,eColor.y,eColor.z };
+	gvu_->SetVariable(keys[kEdgeColor], dissolve_->dissolveData_->edgeColor);
+#endif // _DEBUG
 }
 
 void SceneTransitionEffect::Draw()

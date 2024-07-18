@@ -19,6 +19,8 @@ public:
 	//シーン終了時の遷移処理
 	bool PostSceneTransition(float delta);
 
+	void Debug();
+
 	void Draw();
 
 	void DrawPE();

@@ -145,6 +145,9 @@ void TitleScene::Update()
 		if (!isOptionActive_) {
 #ifdef _DEBUG
 			SetGlovalV();
+			if (!isChangeScene_) {
+				sceneTransition_->Debug();
+			}
 #endif // _DEBUG
 			LogoAnimation();
 
