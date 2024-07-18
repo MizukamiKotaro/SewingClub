@@ -77,7 +77,7 @@ SelectScene::SelectScene()
 	gvu_->AddItem(anoKeys[cS4], cSwingSeconds_[None]);
 
 
-
+	surface_ = std::make_unique<WaterSurface>();
 
 }
 
@@ -199,6 +199,8 @@ void SelectScene::Update()
 
 			CloudUpdate();
 
+			surface_->Update(deltaTime);
+
 			effeBSleep_->Update(1.0f);
 
 			bCount_ += bSwingSecond_ / 60.0f;
@@ -218,6 +220,29 @@ void SelectScene::Update()
 void SelectScene::Draw()
 {
 	sceneTransition_->DrawPE();
+
+	surface_->PreDraw();
+	for (int i = 0; i < _countTags; i++) {
+		if (i == Clound) {
+			sp_[i]->Draw();
+		}
+		else if (i == SmallClound1) {
+			if (isDraw_[Spawn1]) {
+				sp_[i]->Draw();
+			}
+		}
+		else if (i == SmallClound2) {
+			if (isDraw_[Spawn2]) {
+				sp_[i]->Draw();
+			}
+		}
+		else if (i == SmallClound3) {
+			if (isDraw_[Spawn3]) {
+				sp_[i]->Draw();
+			}
+		}
+	}
+	surface_->PostDraw();
 	//必須
 	Kyoko::Engine::PreDraw();
 
@@ -225,7 +250,10 @@ void SelectScene::Draw()
 
 	//描画
 	for (int i = 0; i < _countTags; i++) {
-		if (i == (int)Num10 && pickedNum_ < 9) {
+		if (i == Clound) {
+			surface_->Draw();
+		}
+		else if (i == (int)Num10 && pickedNum_ < 9) {
 
 		}
 		else if (i == LArrow && pickedNum_ == 0) {
@@ -233,22 +261,13 @@ void SelectScene::Draw()
 		else if (i == RArrow && pickedNum_ == maxStageNum_ - 1) {
 		}
 		else if (i == SmallClound1) {
-			if (isDraw_[Spawn1]) {
-
-				sp_[i]->Draw();
-			}
+			
 		}
 		else if (i == SmallClound2) {
-			if (isDraw_[Spawn2]) {
-
-				sp_[i]->Draw();
-			}
+			
 		}
 		else if (i == SmallClound3) {
-			if (isDraw_[Spawn3]) {
-
-				sp_[i]->Draw();
-			}
+			
 		}
 		else {
 			sp_[i]->Draw();
