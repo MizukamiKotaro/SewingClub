@@ -40,12 +40,7 @@ SelectScene::SelectScene()
 		mapSprite_[i] = std::make_unique<Sprite>(mapPaths_[i]);
 	}
 
-	dissolve_ = std::make_unique<Dissolve>();
-	const Texture* tex = TextureManager::GetInstance()->LoadTexture("noise0.png");
-	dissolve_->SetGPUDescriptorHandle(tex->handles_->gpuHandle);
-	dissolveBackTex_ = std::make_unique<Sprite>("white.png");
-	dissolveBackTex_->size_ = { 1280,720 };
-	dissolveBackTex_->Update();
+	sceneTransition_ = std::make_unique<SceneTransitionEffect>("select");
 
 	gvu_ = new GlobalVariableUser("Scene", "Selects");
 	for (int i = 0; i < _countTags; i++) {
@@ -81,13 +76,9 @@ SelectScene::SelectScene()
 	gvu_->AddItem(anoKeys[cS3], cSwingSeconds_[Spawn3]);
 	gvu_->AddItem(anoKeys[cS4], cSwingSeconds_[None]);
 
-	gvu_->AddItem(anoKeys[SceneChangeNum], changeSecond_);
-	gvu_->AddItem(anoKeys[DissolveColor], dissolve_->dissolveData_->edgeColor);
-	gvu_->AddItem(anoKeys[DissolveDifference], dissolve_->dissolveData_->difference);
-	gvu_->AddItem("Dissolveのカラー", dissolveColor_);
 
 
-	dissolveColor_ = gvu_->GetVector3Value("Dissolveのカラー");
+
 }
 
 void SelectScene::SetGlobalV()
@@ -136,19 +127,10 @@ void SelectScene::SetGlobalV()
 	cSwingSeconds_[Spawn3] = gvu_->GetFloatValue(anoKeys[cS3]);
 	cSwingSeconds_[None] = gvu_->GetFloatValue(anoKeys[cS4]);
 
-	changeSecond_ = gvu_->GetFloatValue(anoKeys[SceneChangeNum]);
-	dissolve_->dissolveData_->edgeColor = gvu_->GetVector3Value(anoKeys[DissolveColor]);
-	dissolve_->dissolveData_->difference = gvu_->GetFloatValue(anoKeys[DissolveDifference]);
-
 	for (int i = 0; i < _countStages; i++) {
 		mapSprite_[i]->pos_ = mapPos_;
 		mapSprite_[i]->size_ = mapSize_;
 	}
-
-	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
-	dissolveBackTex_->SetColor(color);
-	dissolveColor_ = { color.x,color.y,color.z };
-
 }
 
 SelectScene::~SelectScene() {}
@@ -181,66 +163,61 @@ void SelectScene::Initialize()
 
 	UpdateSprite();
 
-	preSceneChangeActive_ = false;
-	postSceneChangeActive_ = false;
-	dissolve_->dissolveData_->baseLuminance = 0.0f;
+	sceneTransition_->Initialize();
+	isChangeScene_ = false;
 }
 
 void SelectScene::Update()
 {
-
-	SetGlobalV();
-
-#ifdef _DEBUG
-	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
-
-	ImGui::Begin("Dissolveした所の色");
-	ImGui::ColorEdit4("色", &color.x);
-	ImGui::End();
-
-	dissolveBackTex_->SetColor(color);
-	dissolveColor_ = { color.x,color.y,color.z };
-	gvu_->SetVariable("Dissolveのカラー", dissolveColor_);
-	
-#endif // _DEBUG
-
 	camera_->Update();
 
-	if (isOptionActive_) {
-		ans_ = optionUI_->Update();
-		if (ans_.audioOption) {
-			bgm_.Update();
+	float deltaTime = frameInfo_->GetDeltaTime();
+	if (sceneTransition_->PreSceneTransition(deltaTime)) {
+
+#ifdef _DEBUG
+		SetGlobalV();
+		if (!isChangeScene_) {
+			sceneTransition_->Debug();
 		}
+#endif // _DEBUG
+
+		//オプション有効時の処理
+		if (isOptionActive_) {
+			ans_ = optionUI_->Update();
+			if (ans_.audioOption) {
+				bgm_.Update();
+			}
+		}
+		else {
+			//オプション非有効の時
+
+			InputUpdate();
+
+			ArrowUpdate();
+
+			NumberUpdate();
+
+			CloudUpdate();
+
+			effeBSleep_->Update(1.0f);
+
+			bCount_ += bSwingSecond_ / 60.0f;
+			bCount_ = std::fmod(bCount_, 2.0f * (float)std::numbers::pi);
+			bAnimeP_.y = +std::sin(bCount_) * bSwingNum_;
+			sp_[Baby]->pos_ += bAnimeP_;
+		}
+
+
+		SceneChange();
+
+		UpdateSprite();
+
 	}
-	else {
-		InputUpdate();
-
-		ArrowUpdate();
-
-		NumberUpdate();
-
-		CloudUpdate();
-
-		effeBSleep_->Update(1.0f);
-
-		bCount_ += bSwingSecond_ / 60.0f;
-		bCount_ = std::fmod(bCount_, 2.0f * (float)std::numbers::pi);
-		bAnimeP_.y = +std::sin(bCount_) * bSwingNum_;
-		sp_[Baby]->pos_ += bAnimeP_;
-	}
-
-
-	SceneChange();
-
-	UpdateSprite();
 }
 
 void SelectScene::Draw()
 {
-	dissolve_->PreDrawScene();
-	dissolveBackTex_->Draw();
-	dissolve_->PostDrawScene();
-
+	sceneTransition_->DrawPE();
 	//必須
 	Kyoko::Engine::PreDraw();
 
@@ -288,7 +265,7 @@ void SelectScene::Draw()
 
 	//シーン転換時のフェードインアウト
 	BlackDraw();
-	dissolve_->Draw();
+	sceneTransition_->Draw();
 	//必須
 	Kyoko::Engine::PostDraw();
 }
@@ -299,16 +276,26 @@ void SelectScene::SceneChange()
 {
 
 	float deltaTime = frameInfo_->GetDeltaTime();
-	//
-	if (!preSceneChangeActive_) {
-		dissolve_->dissolveData_->baseLuminance += 1.0f * deltaTime;
-		if (dissolve_->dissolveData_->baseLuminance >= 1.0f) {
-			dissolve_->dissolveData_->baseLuminance = 1.0f;
-			preSceneChangeActive_ = true;
+	//シーン開始時の遷移animationが終了してから反応可能
+	if (isChangeScene_ == true) {
+		//以下Dissolve更新と処理
+		if (sceneTransition_->PostSceneTransition(deltaTime)) {
+			stageNo_ = pickedNum_;
+			ChangeScene(STAGE);
 		}
 	}
+	else {
+		//シーン変更演出していないときの処理
 
-	if (!postSceneChangeActive_ && preSceneChangeActive_) {
+#ifdef _DEBUG
+		if (input_->PressedKey(DIK_SPACE)) {
+			// シーン切り替え
+			isChangeScene_ = true;
+			bgm_.Stop();
+			seSelect_.Play();
+		}
+#endif // _DEBUG
+
 		//optionのアンサーによる処理
 		if (isOptionActive_) {
 			//optionから抜ける
@@ -323,23 +310,10 @@ void SelectScene::SceneChange()
 			}
 		}
 		else {
-
-
-#ifdef _DEBUG
-			if (input_->PressedKey(DIK_SPACE)) {
-				// シーン切り替え
-				postSceneChangeActive_ = true;
-				bgm_.Stop();
-				seSelect_.Play();
-			}
-#endif // _DEBUG
-
-
-
 			//ステージを選択する処理
 			if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
 				// シーン切り替え
-				postSceneChangeActive_ = true;
+				isChangeScene_ = true;
 				bgm_.Stop();
 				seSelect_.Play();
 			}//オプション開く処理
@@ -347,19 +321,10 @@ void SelectScene::SceneChange()
 				isOptionActive_ = true;
 				seOpenOption_.Play();
 			}
-
 		}
-	}
-	else if (postSceneChangeActive_) {
-		dissolve_->dissolveData_->baseLuminance -= changeSecond_ * deltaTime;
-		if (dissolve_->dissolveData_->baseLuminance <= 0) {
-			dissolve_->dissolveData_->baseLuminance = 0;
 
-			stageNo_ = pickedNum_;
-			ChangeScene(STAGE);
-
-		}
 	}
+
 }
 
 void SelectScene::InputUpdate()
