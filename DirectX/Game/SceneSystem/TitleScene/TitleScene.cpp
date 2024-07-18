@@ -1,7 +1,6 @@
 #include "TitleScene.h"
 #include "Kyoko.h"
 #include"Audio/AudioManager/AudioManager.h"
-#include"GlobalVariables/GlobalVariables.h"
 #include"RandomGenerator/RandomGenerator.h"
 #include "Texture.h"
 #include"DescriptorHeapManager/DescriptorHandles/DescriptorHandles.h"
@@ -51,37 +50,59 @@ TitleScene::TitleScene()
 
 	sceneTransition_ = std::make_unique<SceneTransitionEffect>("Title");
 
-	GlobalVariables* gVari = GlobalVariables::GetInstance();
-	gVari->CreateGroup(groupName_);
-	gVari->AddItem(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)", logoPos_);
-	gVari->AddItem(groupName_, "ボタン座標", buttonA_->pos_);
-	gVari->AddItem(groupName_, "ボタンサイズ", buttonA_->size_);
-	gVari->AddItem(groupName_, "スタート文字座標", startWord_->pos_);
-	gVari->AddItem(groupName_, "スタート文字サイズ", startWord_->size_);
+	gVari = std::make_unique<GlobalVariableUser>("GlobalVariables", groupName_);
+	gVari->AddItem("タイトルロゴ座標(変更適応はシーン変更で)", logoPos_);
+	gVari->AddItem("ボタン座標", buttonA_->pos_);
+	gVari->AddItem("ボタンサイズ", buttonA_->size_);
+	gVari->AddItem("スタート文字座標", startWord_->pos_);
+	gVari->AddItem("スタート文字サイズ", startWord_->size_);
 
-	gVari->AddItem(groupName_, "ロゴのランダム速度(min/max)", randVelo_);
-	gVari->AddItem(groupName_, "ロゴが移動できる範囲", logoMoveArea_);
-	gVari->AddItem(groupName_, "「＝」座標", select_->pos_);
-	gVari->AddItem(groupName_, "「＝」サイズ", select_->size_);
-	gVari->AddItem(groupName_, "「option」座標", text_Option_->pos_);
-	gVari->AddItem(groupName_, "「option」サイズ", text_Option_->size_);
+	gVari->AddItem("ロゴのランダム速度(min/max)", randVelo_);
+	gVari->AddItem("ロゴが移動できる範囲", logoMoveArea_);
+	gVari->AddItem("「＝」座標", select_->pos_);
+	gVari->AddItem("「＝」サイズ", select_->size_);
+	gVari->AddItem("「option」座標", text_Option_->pos_);
+	gVari->AddItem("「option」サイズ", text_Option_->size_);
+	gVari->AddItem("dissolveのやつ", dissolve_->dissolveData_->baseLuminance);
+	gVari->AddItem("dissolveの色", dissolve_->dissolveData_->edgeColor);
+	gVari->AddItem("dissolveの差", dissolve_->dissolveData_->difference);
+	gVari->AddItem("遷移速度", changeSecond_);
+	gVari->AddItem("Dissolveのカラー", dissolveColor_);
+
+	SetGlovalV();
+
+	dissolveColor_ = gVari->GetVector3Value("Dissolveのカラー");
+
 }
 
 void TitleScene::SetGlovalV()
 {
-	GlobalVariables* gVari = GlobalVariables::GetInstance();
 
-	logoPos_ = gVari->GetVector2Value(groupName_, "タイトルロゴ座標(変更適応はシーン変更で)");
-	buttonA_->pos_ = gVari->GetVector2Value(groupName_, "ボタン座標");
-	buttonA_->size_ = gVari->GetVector2Value(groupName_, "ボタンサイズ");
-	startWord_->pos_ = gVari->GetVector2Value(groupName_, "スタート文字座標");
-	startWord_->size_ = gVari->GetVector2Value(groupName_, "スタート文字サイズ");
-	randVelo_ = gVari->GetVector2Value(groupName_, "ロゴのランダム速度(min/max)");
-	logoMoveArea_ = gVari->GetVector2Value(groupName_, "ロゴが移動できる範囲");
-	select_->pos_ = gVari->GetVector2Value(groupName_, "「＝」座標");
-	select_->size_ = gVari->GetVector2Value(groupName_, "「＝」サイズ");
-	text_Option_->pos_ = gVari->GetVector2Value(groupName_, "「option」座標");
-	text_Option_->size_ = gVari->GetVector2Value(groupName_, "「option」サイズ");
+	logoPos_ = gVari->GetVector2Value("タイトルロゴ座標(変更適応はシーン変更で)");
+	buttonA_->pos_ = gVari->GetVector2Value("ボタン座標");
+	buttonA_->size_ = gVari->GetVector2Value("ボタンサイズ");
+	startWord_->pos_ = gVari->GetVector2Value("スタート文字座標");
+	startWord_->size_ = gVari->GetVector2Value("スタート文字サイズ");
+	randVelo_ = gVari->GetVector2Value("ロゴのランダム速度(min/max)");
+	logoMoveArea_ = gVari->GetVector2Value("ロゴが移動できる範囲");
+	select_->pos_ = gVari->GetVector2Value("「＝」座標");
+	select_->size_ = gVari->GetVector2Value("「＝」サイズ");
+	text_Option_->pos_ = gVari->GetVector2Value("「option」座標");
+	text_Option_->size_ = gVari->GetVector2Value("「option」サイズ");
+
+	dissolve_->dissolveData_->edgeColor = gVari->GetVector3Value("dissolveの色");
+	dissolve_->dissolveData_->difference = gVari->GetFloatValue("dissolveの差");
+	changeSecond_ = gVari->GetFloatValue("遷移速度");
+
+	if (!postSceneChangeActive_&&preSceneChangeActive_) {
+		dissolve_->dissolveData_->baseLuminance = gVari->GetFloatValue("dissolveのやつ");	
+	}
+
+	
+
+	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
+	dissolveBackTex_->SetColor(color);
+	dissolveColor_ = { color.x,color.y,color.z };
 
 }
 
@@ -139,7 +160,11 @@ void TitleScene::Update()
 	if (sceneTransition_->PreSceneTransition(deltaTime)) {
 
 
-		if (!isOptionActive_) {
+
+	gVari->SetVariable("Dissolveのカラー", dissolveColor_);
+
+	  if (!isOptionActive_) {
+
 
 #ifdef _DEBUG
 			SetGlovalV();
@@ -169,7 +194,7 @@ void TitleScene::Update()
 			if (ans_.audioOption) {
 				bgm_.Update();
 			}
-		}
+		  }
 
 
 		SceneChange();

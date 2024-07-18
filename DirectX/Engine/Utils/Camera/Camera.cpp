@@ -14,11 +14,11 @@ Camera::Camera()
 
 	CreateResource();
 	
-	Matrix4x4 viewMatrix = Matrix4x4::Inverse(transform_.worldMat_);
+	viewMatrix_ = Matrix4x4::Inverse(transform_.worldMat_);
 
 	Vector2 windowSize = WindowsInfo::GetInstance()->GetWindowSize();
 	projectionMatrix_ = Matrix4x4::MakePerspectiveFovMatrix(0.45f, windowSize.x / windowSize.y, 0.1f, 1050.0f);
-	viewProjectionMatrix_ = viewMatrix * projectionMatrix_;
+	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 
 	orthographicMat_ = Matrix4x4::MakeOrthographicMatrix(0.0f, 0.0f, windowSize.x, windowSize.y, 0.0f, 1.0f);
 	viewportMat_ = Matrix4x4::MakeViewportMatrix(0.0f, 0.0f, windowSize.x, windowSize.y, 0.0f, 1.0f);
@@ -47,8 +47,8 @@ void Camera::Initialize()
 void Camera::Update()
 {
 	transform_.UpdateMatrix();
-	Matrix4x4 viewMatrix = Matrix4x4::Inverse(transform_.worldMat_);
-	viewProjectionMatrix_ = viewMatrix * projectionMatrix_;
+	viewMatrix_ = Matrix4x4::Inverse(transform_.worldMat_);
+	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 
 	cameraForGPUData_->worldPosition = transform_.GetWorldPosition();
 }

@@ -1,7 +1,7 @@
 #include "Audio.h"
 #include "AudioManager/AudioManager.h"
 #include "VolumeManager/VolumeManager.h"
-#include "GlobalVariables/GlobalVariables.h"
+#include "GlobalVariables/GlobalVariableUser.h"
 #include "AudioConfig.h"
 #include "SoundData.h"
 #include <algorithm>
@@ -9,17 +9,13 @@
 
 AudioManager* Audio::audioManager_ = nullptr;
 VolumeManager* Audio::volumeManager_ = nullptr;
-GlobalVariables* Audio::globalVariables_ = nullptr;
+std::unique_ptr<GlobalVariableUser> Audio::globalVariables_ = nullptr;
 
 void Audio::StaticInitialize()
 {
 	audioManager_ = AudioManager::GetInstance();
 	volumeManager_ = VolumeManager::GetInstance();
-	globalVariables_ = GlobalVariables::GetInstance();
-
-	globalVariables_->CreateChunk("Audio");
-	globalVariables_->CreateGroup("Audio", "SE");
-	globalVariables_->CreateGroup("Audio", "Music");
+	globalVariables_ = std::make_unique<GlobalVariableUser>("Audio", "SE");
 }
 
 void Audio::LoadWave(const std::string& filename, const std::string& itemName, float volume)
@@ -35,13 +31,13 @@ void Audio::LoadWave(const std::string& filename, const std::string& itemName, f
 	}
 
 	if (soundData_->type == AudioType::SE) {
-		globalVariables_->AddItem("Audio", "SE", itemName_ + "のボリューム", volume_);
-		volume_ = globalVariables_->GetFloatValue("Audio", "SE", itemName_ + "のボリューム");
+		globalVariables_->ResetGroupName("SE");
 	}
 	else if (soundData_->type == AudioType::MUSIC) {
-		globalVariables_->AddItem("Audio", "Music", itemName_ + "のボリューム", volume_);
-		volume_ = globalVariables_->GetFloatValue("Audio", "Music", itemName_ + "のボリューム");
+		globalVariables_->ResetGroupName("Music");
 	}
+	globalVariables_->AddItem(itemName_ + "のボリューム", volume_);
+	volume_ = globalVariables_->GetFloatValue(itemName_ + "のボリューム");
 #ifdef _DEBUG
 	volumeManager_->SetAudio(this);
 #endif // _DEBUG
@@ -60,13 +56,13 @@ void Audio::LoadMP3(const std::string& filename, const std::string& itemName, fl
 	}
 
 	if (soundData_->type == AudioType::SE) {
-		globalVariables_->AddItem("Audio", "SE", itemName_ + "のボリューム", volume_);
-		volume_ = globalVariables_->GetFloatValue("Audio", "SE", itemName_ + "のボリューム");
+		globalVariables_->ResetGroupName("SE");
 	}
 	else if (soundData_->type == AudioType::MUSIC) {
-		globalVariables_->AddItem("Audio", "Music", itemName_ + "のボリューム", volume_);
-		volume_ = globalVariables_->GetFloatValue("Audio", "Music", itemName_ + "のボリューム");
+		globalVariables_->ResetGroupName("Music");
 	}
+	globalVariables_->AddItem(itemName_ + "のボリューム", volume_);
+	volume_ = globalVariables_->GetFloatValue(itemName_ + "のボリューム");
 #ifdef _DEBUG
 	volumeManager_->SetAudio(this);
 #endif // _DEBUG
@@ -76,12 +72,12 @@ void Audio::Play(bool isLoop)
 {
 #ifdef _DEBUG
 	if (soundData_->type == AudioType::SE) {
-		volume_ = globalVariables_->GetFloatValue("Audio", "SE", itemName_ + "のボリューム");
+		globalVariables_->ResetGroupName("SE");
 	}
 	else if (soundData_->type == AudioType::MUSIC) {
-		volume_ = globalVariables_->GetFloatValue("Audio", "Music", itemName_ + "のボリューム");
+		globalVariables_->ResetGroupName("Music");
 	}
-
+	volume_ = globalVariables_->GetFloatValue(itemName_ + "のボリューム");
 	volume_ = std::clamp(volume_, 0.0f, 1.0f);
 #endif // _DEBUG
 
@@ -124,11 +120,12 @@ void Audio::Update()
 {
 #ifdef _DEBUG
 	if (soundData_->type == AudioType::SE) {
-		volume_ = globalVariables_->GetFloatValue("Audio", "SE", itemName_ + "のボリューム");
-}
-	else if (soundData_->type == AudioType::MUSIC) {
-		volume_ = globalVariables_->GetFloatValue("Audio", "Music", itemName_ + "のボリューム");
+		globalVariables_->ResetGroupName("SE");
 	}
+	else if (soundData_->type == AudioType::MUSIC) {
+		globalVariables_->ResetGroupName("Music");
+	}
+	volume_ = globalVariables_->GetFloatValue(itemName_ + "のボリューム");
 
 	volume_ = std::clamp(volume_, 0.0f, 1.0f);
 

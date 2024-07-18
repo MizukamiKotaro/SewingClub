@@ -113,6 +113,14 @@ const WaterChunk* WaterManager::GetWater(const int& no)
 	return nullptr;
 }
 
+void WaterManager::AddWater(const Vector2& pos)
+{
+	WaterChunk* chunk = new WaterChunk(waterNum_, pos);
+	stageWater_[waterNum_].reset(chunk);
+	waterNum_++;
+	stageEditor_->SetVariable("水の数", waterNum_);
+}
+
 void WaterManager::SetGlobalVariable()
 {
 	stageEditor_->AddItem("水の数", waterNum_);

@@ -8,12 +8,12 @@
 #include "DescriptorHeapManager/DescriptorHeap/DescriptorHeap.h"
 #include "Externals/imgui/imgui_impl_dx12.h"
 #include "Externals/imgui/imgui_impl_win32.h"
+#include "Externals/imgui/ImGuizmo.h"
 #endif // _DEBUG
 
 void Kyoko::ImGuiManager::Initialize()
 {
 #ifdef _DEBUG
-
 	DescriptorHeap* srvHeap = DescriptorHeapManager::GetInstance()->GetSRVDescriptorHeap();
 
 	const DescriptorHandles* handles = srvHeap->GetNewDescriptorHandles();
@@ -33,6 +33,10 @@ void Kyoko::ImGuiManager::Initialize()
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->AddFontFromFileTTF("Resources/Font/GenShinGothic-Heavy.ttf", 16.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 	io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
+	ImGuizmo::SetImGuiContext(ImGui::GetCurrentContext());
+	Vector2 size = WindowsInfo::GetInstance()->GetWindowSize();
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetRect(0, 0, size.x, size.y);
 #endif // _DEBUG
 }
 
@@ -49,11 +53,10 @@ void Kyoko::ImGuiManager::Finalize()
 void Kyoko::ImGuiManager::Begin()
 {
 #ifdef _DEBUG
-
-
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 #endif // _DEBUG
 }
 

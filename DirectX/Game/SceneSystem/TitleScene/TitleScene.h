@@ -7,6 +7,7 @@
 #include"Engine/Drawers/PostEffect/Dissolve/Dissolve.h"
 #include"GameElement/SceneTransitionEffect/SceneTransitionEffect.h"
 #include"Audio.h"
+#include"GlobalVariables/GlobalVariableUser.h"
 
 class TitleScene : public IScene
 {
@@ -75,7 +76,12 @@ private:
 	UpdateAnswer ans_{};
 #pragma endregion
 
+
+	std::unique_ptr<GlobalVariableUser> gVari;
+
+
 	std::unique_ptr<SceneTransitionEffect>sceneTransition_;
 	bool isChangeScene_=false;
+
 };
 
