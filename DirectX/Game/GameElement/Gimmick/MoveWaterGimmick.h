@@ -44,8 +44,7 @@ private:
 	float scale_;
 	float rotate_;
 
-	Vector2 moveSpeed_;
-
+	Vector2 moveSpeed_; // 移動量と向きのベクトル position - endPoint
 
 	Vector2 endPoint_;
 	Vector4 color_;
