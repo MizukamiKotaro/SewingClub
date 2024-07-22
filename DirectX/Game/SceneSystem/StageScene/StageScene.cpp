@@ -23,8 +23,7 @@ StageScene::StageScene()
 	WaterChunkChip::StaticInitialize();
 	WaterChunk::StaticInitialize();
 	GravityArea::StaticInitialize();
-	Item::StaticInitialize();
-	RequiredObject::StaticInitialize();
+	ItemManager::StaticInitialize();
 	WaterWave::StaticInitialize();
 	BackGroundObject::StaticInitialize();
 	WaterChunkQuadrangle::StaticInitialize();

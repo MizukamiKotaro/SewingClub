@@ -7,10 +7,17 @@ ItemManager* ItemManager::GetInstance()
 	return &instance;
 }
 
+void ItemManager::StaticInitialize() {
+	Item::StaticInitialize();
+	RequiredObject::StaticInitialize();
+	MoveWaterGimmick::StaticInitialize();
+}
+
 void ItemManager::Clear()
 {
 	itemMap_.clear();
 	reqItemMap_.clear();
+	moveWaterGimmick_.clear();
 }
 
 void ItemManager::InitializeGlobalVariables()
@@ -23,6 +30,7 @@ void ItemManager::InitializeGlobalVariables()
 	reqItemNum_ = 0;
 	reqScale_ = 0.8f;
 	reqScaleDiameter_ = 3.0f;
+	moveWaterGimmickNum_ = 0;
 	SetGlobalVariable();
 }
 
@@ -38,6 +46,9 @@ void ItemManager::Initialize()
 	}
 	for (int i = 0; i < reqItemNum_; i++) {
 		reqItemMap_[i] = std::make_unique<RequiredObject>(i, reqScale_, reqScaleDiameter_);
+	}
+	for (int i = 0; i < moveWaterGimmickNum_; i++) {
+		moveWaterGimmick_[i] = std::make_unique<MoveWaterGimmick>(i);
 	}
 	isCanGoal_ = false;
 }
@@ -77,6 +88,15 @@ void ItemManager::Update(float deltaTime, Camera* camera)
 		// ゴール描画
 		isCanGoal_ = true;
 	}
+
+	for (int i = 0; i < moveWaterGimmickNum_; i++) {
+#ifdef _DEBUG
+		if (moveWaterGimmick_.find(i) == moveWaterGimmick_.end()) {
+			moveWaterGimmick_[i] = std::make_unique<MoveWaterGimmick>(i);
+		}
+#endif // _DEBUG
+		moveWaterGimmick_[i]->Update(deltaTime, camera);
+	}
 }
 
 void ItemManager::Draw()
@@ -86,6 +106,9 @@ void ItemManager::Draw()
 	}
 	for (int i = 0; i < reqItemNum_; i++) {
 		reqItemMap_[i]->Draw();
+	}
+	for (int i = 0; i < moveWaterGimmick_.size(); i++) {
+		moveWaterGimmick_[i]->Draw();
 	}
 }
 
@@ -109,6 +132,7 @@ void ItemManager::SetGlobalVariable()
 	stageEditor_->AddItem("必須アイテムの数", reqItemNum_);
 	globalVariable_->AddItem("必須アイテムのスケール", reqScale_);
 	globalVariable_->AddItem("必須アイテムのコライダーの倍率", reqScaleDiameter_);
+	stageEditor_->AddItem("水移動ギミックの数", moveWaterGimmickNum_);
 
 	ApplyGlobalVariable();
 }
@@ -128,5 +152,10 @@ void ItemManager::ApplyGlobalVariable()
 	reqScaleDiameter_ = globalVariable_->GetFloatValue("必須アイテムのコライダーの倍率");
 	if (reqItemNum_ < 0) {
 		reqItemNum_ = 0;
+	}
+
+	moveWaterGimmickNum_ = stageEditor_->GetIntValue("水移動ギミックの数");
+	if (moveWaterGimmickNum_ < 0) {
+		moveWaterGimmickNum_ = 0;
 	}
 }

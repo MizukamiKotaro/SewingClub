@@ -25,6 +25,7 @@ public:
 	void Initialize();
 
 	void Update(const float& deltaTime, Camera* camera);
+	void MoveUpdate(const Vector2& vec); // 移動ベクトルをpositionに加算
 
 	void Draw(Camera* camera) const;
 

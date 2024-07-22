@@ -252,6 +252,11 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 	}
 }
 
+void WaterChunk::MoveUpdate(const Vector2& vec) {
+	position_.x += vec.x;
+	position_.y += vec.y;
+}
+
 void WaterChunk::Draw(Camera* camera) const
 {
 	if (isActive_) {
