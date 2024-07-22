@@ -41,8 +41,8 @@ private:
 
 private:
 	Vector3 position_;
-	float scale_;
-	float rotate_;
+	float scale_ = 0.0f;
+	float rotate_ = 0.0f;
 
 	Vector2 moveSpeed_; // 移動量と向きのベクトル position - endPoint
 
