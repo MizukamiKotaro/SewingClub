@@ -8,7 +8,6 @@
 #include "SceneSystem/SceneFactory/SceneFactory.h"
 #include"GameElement//SceneAcquisition/SceneAcquisition.h"
 
-
 #ifdef _DEBUG
 Vector4 color = { 1.0f,1.0f,1.0f,1.0 };
 #endif // _DEBUG
@@ -37,7 +36,7 @@ SceneManager::SceneManager()
 	inputManager_ = Input::GetInstance();
 	frameInfo_ = FrameInfo::GetInstance();
 
-
+	
 }
 
 int SceneManager::Run()

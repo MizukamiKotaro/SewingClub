@@ -429,6 +429,7 @@ void StageScene::SceneChange()
 					bgm_.Stop();
 					player_->Finalize();
 				}
+
 				if (goal_->IsClear()) {
 					nowScene = kGameToClear;
 					gameClear_->SetBabyParam(baby_->GetTension(), baby_->GetFace());

@@ -94,6 +94,8 @@ void TitleScene::SetGlovalV()
 
 void TitleScene::Initialize()
 {
+
+
 	AudioManager::GetInstance()->AllStop();
 
 	SetGlovalV();
@@ -134,6 +136,7 @@ void TitleScene::Initialize()
 
 	sceneTransition_->Initialize();
 	isChangeScene_ = false;
+
 
 }
 
@@ -190,7 +193,6 @@ void TitleScene::Draw()
 
 	sceneAcuition_->DrawScene();
 
-	buttonA_->Draw();
 
 	sceneTransition_->Draw();
 	Kyoko::Engine::PostDraw();
