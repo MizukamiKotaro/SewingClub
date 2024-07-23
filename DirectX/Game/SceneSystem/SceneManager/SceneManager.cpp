@@ -6,7 +6,7 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include "GameElement/ScoreManager/ScoreManager.h"
 #include "SceneSystem/SceneFactory/SceneFactory.h"
-
+#include"GameElement//SceneAcquisition/SceneAcquisition.h"
 
 #ifdef _DEBUG
 Vector4 color = { 1.0f,1.0f,1.0f,1.0 };
@@ -23,7 +23,7 @@ SceneManager::SceneManager()
 	sceneName_.push_back("TITLE");
 	sceneName_.push_back("SELECT");
 	sceneName_.push_back("STAGE");
-	sceneName_.push_back("CLEAR");
+	sceneName_.push_back("OPTION");
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 
@@ -36,12 +36,14 @@ SceneManager::SceneManager()
 	inputManager_ = Input::GetInstance();
 	frameInfo_ = FrameInfo::GetInstance();
 
-
+	
 }
 
 int SceneManager::Run()
 {
 	scene_->Initialize();
+
+	SceneAcquisition::GetInstance()->Initialize();
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (true) {
@@ -70,6 +72,7 @@ int SceneManager::Run()
 		frameInfo_->End();
 	}
 
+	SceneAcquisition::GetInstance()->Finalize();
 	scene_.reset();
 	sceneFactory_.reset();
 
