@@ -50,6 +50,9 @@ TitleScene::TitleScene()
 
 	sceneTransition_ = std::make_unique<SceneTransitionEffect>("Title");
 
+	sceneAcuition_ = SceneAcquisition::GetInstance();
+
+
 	gVari = std::make_unique<GlobalVariableUser>("GlobalVariables", groupName_);
 	gVari->AddItem("タイトルロゴ座標(変更適応はシーン変更で)", logoPos_);
 	gVari->AddItem("ボタン座標", buttonA_->pos_);
@@ -185,27 +188,10 @@ void TitleScene::Draw()
 	WrightPostEffect();
 	Kyoko::Engine::PreDraw();
 
-	//ポストエフェ
-	waterE_->Draw();
-
-	for (auto& logo : titleLogo_) {
-		logo->Draw();
-	}
-
-	startWord_->Draw();
+	sceneAcuition_->DrawScene();
 
 	buttonA_->Draw();
 
-	select_->Draw();
-	text_Option_->Draw();
-
-	effeUIEnterW_->Draw();
-
-	if (isOptionActive_) {
-		optionUI_->Draw();
-	}
-
-	BlackDraw();
 	sceneTransition_->Draw();
 	Kyoko::Engine::PostDraw();
 
@@ -229,6 +215,35 @@ void TitleScene::WrightPostEffect()
 	waterE_->PostDrawWaterArea();
 
 	sceneTransition_->DrawPE();
+
+
+	sceneAcuition_->PreDraw();
+
+	//ポストエフェ
+	waterE_->Draw();
+
+	for (auto& logo : titleLogo_) {
+		logo->Draw();
+	}
+
+	startWord_->Draw();
+
+	buttonA_->Draw();
+
+	select_->Draw();
+	text_Option_->Draw();
+
+	effeUIEnterW_->Draw();
+
+	if (isOptionActive_) {
+		optionUI_->Draw();
+	}
+
+
+	BlackDraw();
+
+	sceneAcuition_->PostDraw();
+
 }
 
 
@@ -316,5 +331,7 @@ void TitleScene::SceneChange()
 		}
 
 	}
+
+	sceneAcuition_->PreSceneName_ = OptionUI::kTitle;
 }
 

@@ -425,7 +425,7 @@ void StageScene::SceneChange()
 			if (!isOptionOpen_) {
 				if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
 					// シーン切り替え
-					ChangeScene(CLEAR);
+					//ChangeScene(CLEAR);
 					bgm_.Stop();
 					player_->Finalize();
 				}
