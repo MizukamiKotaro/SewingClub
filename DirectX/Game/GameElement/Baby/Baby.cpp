@@ -9,6 +9,7 @@
 #include "GameElement/BabyTensionEffect/BabyTensionEffectManager.h"
 #include "GameElement/Effects/ComboEffect.h"
 #include "GameElement/HitStop/HitStop.h"
+#include "ImGuiManager/ImGuiManager.h"
 
 Input* input = nullptr;
 
@@ -60,6 +61,7 @@ Baby::Baby(Player* player)
 	tensionEffectManager_ = BabyTensionEffectManager::GetInstance();
 
 	se_cry.LoadMP3("SE/baby/baby_cry.mp3", "baby_cry");
+	isDebug_ = false;
 }
 
 Baby::~Baby() {
@@ -118,6 +120,12 @@ void Baby::Update(float deltaTime)
 	}
 #ifdef _DEBUG
 	ApplyGlobalVariable();
+	if (Input::GetInstance()->PressedKey(DIK_TAB)) {
+		isDebug_ = !isDebug_;
+	}
+	ImGui::Begin("エディターの状態");
+	ImGui::Checkbox("テンションを止めるか", &isDebug_);
+	ImGui::End();
 #endif // _DEBUG
 	prePosition_ = model_->transform_.translate_;
 	preIsInWater_ = isInWater_;
@@ -208,7 +216,9 @@ void Baby::Update(float deltaTime)
 	model_->Update();
 	baby_->Update();
 	SetCollider();
-	TensionUpdate(deltaTime);
+	if (!isDebug_) {
+		TensionUpdate(deltaTime);
+	}
 	rideInWater_.isRideInWater = false;
 	gravityAreaSearch_->Update(model_->transform_.translate_, velocity_);
 	prePreIsInWaterPlayer_ = preIsInWaterPlayer_;
