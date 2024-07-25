@@ -1,13 +1,13 @@
 #include "WaterSurface.h"
 
-WaterSurface::WaterSurface()
+WaterSurface::WaterSurface(const std::string& name)
 {
 	noise_ = std::make_unique<Noise>();
 	noise_->noiseData_->type = Noise::NoiseType::WATER_SURFACE;
 	noise_->noiseData_->correctionUV = { -0.09f,-0.09f };
 	noise_->noiseData_->density = 4.0f;
 	add_ = 0.1f;
-	global_ = std::make_unique<GlobalVariableUser>("Surface", "Surface");
+	global_ = std::make_unique<GlobalVariableUser>("Surface", "Surface", name);
 	SetGlobalVariable();
 }
 
