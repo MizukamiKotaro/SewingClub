@@ -6,6 +6,7 @@
 #include "StageEditor/StageEditor.h"
 #include "WaterWave.h"
 #include "WaterChunkQuadrangle.h"
+#include "GameElement/Gimmick/MoveWaterGimmick.h"
 
 class Camera;
 class Player;
@@ -17,6 +18,7 @@ public:
 
 	WaterChunk();
 	WaterChunk(int no);
+	WaterChunk(const int& no, const MoveWaterGimmick::GimmickWaterParam& param);
 	WaterChunk(const int& no, const Vector2& pos);
 	WaterChunk(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall);
 
@@ -24,8 +26,8 @@ public:
 
 	void Initialize();
 
-	void Update(const float& deltaTime, Camera* camera);
-	void MoveUpdate(const Vector2& vec); // 移動ベクトルをpositionに加算
+	void Update(const float& deltaTime, Camera* camera, const bool& globalUse = true);
+	void MoveUpdate(); // 移動ベクトルをpositionに加算
 
 	void Draw(Camera* camera) const;
 
@@ -115,4 +117,6 @@ private:
 	bool isTarget_;
 	bool isQuadrangleActive_;
 	int endNo_;
+
+	MoveWaterGimmick::GimmickWaterParam moveWaterGimmickParam_;
 };

@@ -89,6 +89,38 @@ WaterChunk::WaterChunk(int no)
 	isQuadrangleActive_ = false;
 }
 
+WaterChunk::WaterChunk(const int& no, const MoveWaterGimmick::GimmickWaterParam& param) {
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
+	Collider::AddTargetMask(ColliderMask::PLAYER);
+
+	gravityArea_ = std::make_unique<GravityArea>();
+
+	moveWaterGimmickParam_ = param;
+	position_ = Vector3(moveWaterGimmickParam_.respawnPoint.x, moveWaterGimmickParam_.respawnPoint.y, 0.0f);
+	scale_ = 1.0f;
+	maxScale_ = scale_;
+	rotate_ = 0.0f;
+
+	no_ = no;
+	isSmall_ = false;
+	endNo_ = no_ - 1;
+	if (endNo_ < 0) {
+		endNo_ = 0;
+	}
+	isTarget_ = false;
+	scale_ = maxScale_;
+	isSmaeGravitySize_ = false;
+	isTree_ = false;
+	isActive_ = true;
+	color_ = { 1.0f,1.0f,1.0f,1.0f };
+	isPlayer_ = false;
+	preIsPlayer_ = false;
+	CreateChips();
+	isWave_ = false;
+
+	isQuadrangleActive_ = false;
+}
+
 WaterChunk::WaterChunk(const int& no, const Vector2& pos)
 {
 	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
@@ -166,10 +198,12 @@ void WaterChunk::Initialize()
 
 }
 
-void WaterChunk::Update(const float& deltaTime, Camera* camera)
+void WaterChunk::Update(const float& deltaTime, Camera* camera, const bool& globalUse)
 {
 #ifdef _DEBUG
-	ApplyGlobalVariable();
+	if (globalUse) {
+		ApplyGlobalVariable();
+	}
 	CreateQuadrangle();
 	if (!isSmall_) {
 		if (scale_ != maxScale_ || position_ != chips_.front()->GetCenter()) {
@@ -252,9 +286,9 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 	}
 }
 
-void WaterChunk::MoveUpdate(const Vector2& vec) {
-	position_.x += vec.x;
-	position_.y += vec.y;
+void WaterChunk::MoveUpdate() {
+	position_.x += moveWaterGimmickParam_.moveVector.x;
+	position_.y += moveWaterGimmickParam_.moveVector.y;
 }
 
 void WaterChunk::Draw(Camera* camera) const

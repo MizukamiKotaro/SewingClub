@@ -11,6 +11,7 @@ void WaterManager::Clear()
 {
 	fullWater_.clear();
 	stageWater_.clear();
+	gimmickWater_.clear();
 }
 
 void WaterManager::InitializeGlobalVariables()
@@ -85,8 +86,16 @@ void WaterManager::Update(const float& deltaTime, Camera* camera)
 		}
 	}
 
-
-
+	for (uint8_t index = 0u; index < gimmickWater_.size(); index++) {
+		auto& water = gimmickWater_.at(index);
+		// ステージ制限チェック
+		if (LimitCheck(water->GetPosition(), water->GetScale())) {
+			gimmickWater_.erase(gimmickWater_.begin() + index);
+			continue;
+		}
+		water->MoveUpdate();
+		water->Update(deltaTime, camera, false);
+	}
 }
 
 void WaterManager::Draw(Camera* camera)
@@ -97,11 +106,23 @@ void WaterManager::Draw(Camera* camera)
 	for (int i = 0; i < waterNum_; i++) {
 		stageWater_[i]->Draw(camera);
 	}
+	for (auto& water : gimmickWater_) {
+		water->Draw(camera);
+	}
 }
 
 void WaterManager::CreateWater(const Vector2& pos, const Vector2& radius, bool isSame, const float& rotate, bool isSmall)
 {
 	fullWater_.push_back(std::make_unique<WaterChunk>(pos, radius, isSame, rotate, isSmall));
+}
+
+void WaterManager::CreateGimmickWater(std::list<MoveWaterGimmick::GimmickWaterParam> list) {
+	// 早期リターン
+	if (list.empty()) { return; }
+
+	for (auto& water : list) {
+		gimmickWater_.emplace_back(std::make_unique<WaterChunk>(static_cast<int>(gimmickWater_.size()), water));
+	}
 }
 
 const WaterChunk* WaterManager::GetWater(const int& no)
@@ -133,4 +154,25 @@ void WaterManager::ApplyGlobalVariable()
 	if (waterNum_ <= 0) {
 		waterNum_ = 1;
 	}
+}
+
+bool WaterManager::LimitCheck(const Vector3& position, const float& scale) const {
+	// カメラのオフセット分足す。ステージ制限よりかはカメラ範囲外のイメージが近い
+	const float offset = 20.0f;
+
+	// 左右
+	if (limit_.upperLimit.x + offset < position.x + scale) {
+		return true;
+	}
+	else if (limit_.lowerLimit.x - offset > position.x - scale) {
+		return true;
+	}
+	// 上下
+	else if (limit_.upperLimit.y + offset < position.y + scale) {
+		return true;
+	}
+	else if (limit_.lowerLimit.y - offset > position.y - scale) {
+		return true;
+	}
+	return false;
 }

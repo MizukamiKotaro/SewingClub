@@ -23,8 +23,11 @@ MoveWaterGimmick::MoveWaterGimmick(int no) {
 	rotate_ = 0.0f;
 
 	no_ = no;
-	stageEditor_ = std::make_unique<StageEditor>("アイテムの配置");
+	stageEditor_ = std::make_unique<StageEditor>("ギミックの配置");
 	SetGlobalVariable();
+	waterParam_.moveVector = endPoint_ - Vector2(position_.x,position_.y);
+	waterParam_.moveVector = waterParam_.moveVector.Normalize() * 2.0f;
+	waterParam_.respawnPoint = Vector2(position_.x, position_.y);
 	scale_ = 10.0f;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 	isActive_ = true;
@@ -39,15 +42,15 @@ void MoveWaterGimmick::StaticInitialize() {
 
 }
 
-void MoveWaterGimmick::Update(const float& delta, Camera* camera) {
+bool MoveWaterGimmick::Update(const float& delta, Camera* camera) {
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 	Vector4 staticColor = itemManager_->GetColor();
 	if (stageEditor_) {
-		std::string tree = "アイテム" + std::to_string(no_);
+		std::string tree = "ギミック" + std::to_string(no_);
 		int no = no_ / 10;
 		no = no * 10;
-		std::string tree1 = "アイテム" + std::to_string(no) + "～" + std::to_string(no + 9);
+		std::string tree1 = "移動する水" + std::to_string(no) + "～" + std::to_string(no + 9);
 		if (stageEditor_->IsTreeOpen(tree1, tree)) {
 			color_ = { 1.0f,0.3f,0.3f,1.0f };
 		}
@@ -59,12 +62,13 @@ void MoveWaterGimmick::Update(const float& delta, Camera* camera) {
 		}
 	}
 #endif // _DEBUG
-
+	bool flag = false;
 	ActiveCheck(camera);
-	delta;
+	flag = CreateCount(delta);
 	if (isActive_) {
 		SetCollider();
 	}
+	return flag;
 }
 
 void MoveWaterGimmick::Draw() const {
@@ -125,4 +129,13 @@ void MoveWaterGimmick::ActiveCheck(Camera* camera)
 	else {
 		isActive_ = true;
 	}
+}
+
+bool MoveWaterGimmick::CreateCount(const float& delta) {
+	if (kMaxFrame_ < nowFrame_) {
+		nowFrame_ = 0.0f;
+		return true;
+	}
+	nowFrame_ += delta /** 60.0f*/;
+	return false;
 }

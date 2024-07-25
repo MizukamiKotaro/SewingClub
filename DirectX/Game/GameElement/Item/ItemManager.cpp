@@ -55,6 +55,7 @@ void ItemManager::Initialize()
 
 void ItemManager::Update(float deltaTime, Camera* camera)
 {
+	waterGimmickList_.clear();
 #ifdef _DEBUG
 	ApplyGlobalVariable();
 
@@ -95,7 +96,9 @@ void ItemManager::Update(float deltaTime, Camera* camera)
 			moveWaterGimmick_[i] = std::make_unique<MoveWaterGimmick>(i);
 		}
 #endif // _DEBUG
-		moveWaterGimmick_[i]->Update(deltaTime, camera);
+		if (moveWaterGimmick_[i]->Update(deltaTime, camera)) {
+			waterGimmickList_.push_back(moveWaterGimmick_[i]->GetParam());
+		}
 	}
 }
 

@@ -19,8 +19,21 @@ public:
 
 	static void StaticInitialize();
 
-	void Update(const float& delta, Camera* camera);
+	// return true:水を生成する / false:待機中
+	bool Update(const float& delta, Camera* camera);
 	void Draw() const;
+
+	struct GimmickWaterParam {
+		Vector2 moveVector; // 移動ベクトル
+		Vector2 respawnPoint; // 初期地点
+		void operator=(GimmickWaterParam param) {
+			moveVector = param.moveVector;
+			respawnPoint = param.respawnPoint;
+		}
+	};
+	GimmickWaterParam waterParam_;
+
+	GimmickWaterParam GetParam() const { return waterParam_; }
 
 private:
 	void SetGlobalVariable();
@@ -29,6 +42,7 @@ private:
 	void OnCollision(const Collider& collider) override;
 	void SetCollider();
 	void ActiveCheck(Camera* camera);
+	bool CreateCount(const float& delta);
 
 private:
 	static InstancingModelManager* instancingManager_;
@@ -51,4 +65,8 @@ private:
 
 	int no_ = 0;
 	bool isActive_ = true;
+
+	float nowFrame_ = 0.0f;
+	const float kMaxFrame_ = 10.0f;
+
 };
