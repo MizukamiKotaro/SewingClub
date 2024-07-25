@@ -100,7 +100,7 @@ private:
 		_countState
 	};
 	bool isStateChange_ = true;
-	CloudState state_ =FadeOut;
+	CloudState state_ = FadeOut;
 
 	bool isDraw_[_countState] = { false };
 	float alpha_[_countState] = { 0 };

@@ -23,7 +23,9 @@ SceneManager::SceneManager()
 	sceneName_.push_back("TITLE");
 	sceneName_.push_back("SELECT");
 	sceneName_.push_back("STAGE");
-	sceneName_.push_back("OPTION");
+	sceneName_.push_back("CLEAAR");
+	sceneName_.push_back("GAMEOVER");
+
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 

@@ -3,12 +3,12 @@
 #include"GameElement/SceneAcquisition/SceneAcquisition.h"
 
 
-class ClearScene : public IScene {
+class GameOverScene : public IScene {
 
 public:
 
-	ClearScene();
-	~ClearScene();
+	GameOverScene();
+	~GameOverScene();
 
 	void Initialize() override;
 	void Update() override;

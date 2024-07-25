@@ -12,7 +12,7 @@
 #include "FrameInfo/FrameInfo.h"
 #include "DebugCamera/DebugCamera.h"
 
-enum SCENE { TITLE, SELECT, STAGE, OPTION,_SceneCount };
+enum SCENE { TITLE, SELECT, STAGE, CLEAR,GAMEOVER,_SceneCount };
 
 enum STAGE { SHINING_STAR, COUNT_STAGE };
 

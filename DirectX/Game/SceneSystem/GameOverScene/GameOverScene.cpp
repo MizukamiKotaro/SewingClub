@@ -1,27 +1,27 @@
-#include "ClearScene.h"
+#include "GameOverScene.h"
 #include "Kyoko.h"
 
 
-ClearScene::ClearScene()
+GameOverScene::GameOverScene()
 {
 	FirstInit();
 
 	sceneAcuition_ = SceneAcquisition::GetInstance();
 }
 
-ClearScene::~ClearScene()
+GameOverScene::~GameOverScene()
 {
 }
 
-void ClearScene::Initialize()
+void GameOverScene::Initialize()
 {
 }
 
-void ClearScene::Update()
+void GameOverScene::Update()
 {
 }
 
-void ClearScene::Draw()
+void GameOverScene::Draw()
 {
 	Kyoko::Engine::PreDraw();
 

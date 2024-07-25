@@ -276,6 +276,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameElement\Yarn\Yarn.cpp" />
     <ClCompile Include="Game\GameElement\Yarn\YarnLimit.cpp" />
     <ClCompile Include="Game\SceneSystem\ClearScene\ClearScene.cpp" />
+    <ClCompile Include="Game\SceneSystem\GameOverScene\GameOverScene.cpp" />
     <ClCompile Include="Game\SceneSystem\ISceneFactory\ISceneFactory.cpp" />
     <ClCompile Include="Game\SceneSystem\IScene\IScene.cpp" />
     <ClCompile Include="Game\SceneSystem\OptionScene\OptionScene.cpp" />
@@ -505,6 +506,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameElement\Yarn\Yarn.h" />
     <ClInclude Include="Game\GameElement\Yarn\YarnLimit.h" />
     <ClInclude Include="Game\SceneSystem\ClearScene\ClearScene.h" />
+    <ClInclude Include="Game\SceneSystem\GameOverScene\GameOverScene.h" />
     <ClInclude Include="Game\SceneSystem\ISceneFactory\ISceneFactory.h" />
     <ClInclude Include="Game\SceneSystem\IScene\IScene.h" />
     <ClInclude Include="Game\SceneSystem\OptionScene\OptionScene.h" />

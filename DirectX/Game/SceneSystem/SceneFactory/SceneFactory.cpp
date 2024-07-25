@@ -3,8 +3,8 @@
 #include "SceneSystem/TitleScene/TitleScene.h"
 #include "SceneSystem/StageScene/StageScene.h"
 #include "SceneSystem/SelectScene/SelectScene.h"
-#include"SceneSystem/OptionScene/OptionScene.h"
-#include "SceneSystem/ClearScene/ClearScene.h"
+#include"SceneSystem/ClearScene/ClearScene.h"
+#include"SceneSystem/GameOverScene/GameOverScene.h"
 
 IScene* SceneFactory::CreateScene(int sceneNo)
 {
@@ -19,9 +19,11 @@ IScene* SceneFactory::CreateScene(int sceneNo)
 	else if (sceneNo == STAGE) {
 		newScene = new StageScene();
 	}
-	else if (sceneNo == OPTION) {
-		newScene = new OptionScene();
+	else if (sceneNo == CLEAR) {
+		newScene = new ClearScene();
 	}
-
+	else if (sceneNo == GAMEOVER) {
+		newScene = new GameOverScene();
+	}
 	return newScene;
 }
