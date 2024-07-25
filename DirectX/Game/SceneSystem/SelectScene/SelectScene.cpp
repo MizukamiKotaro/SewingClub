@@ -137,6 +137,9 @@ SelectScene::~SelectScene() {}
 
 void SelectScene::Initialize()
 {
+
+	SetGlobalV();
+
 	//カメラ初期化
 	camera_->Initialize();
 
@@ -151,8 +154,7 @@ void SelectScene::Initialize()
 
 	bgm_.Play(true);
 
-	SetGlobalV();
-
+	
 
 
 	ArrowUpdate();
@@ -165,6 +167,7 @@ void SelectScene::Initialize()
 
 	sceneTransition_->Initialize();
 	isChangeScene_ = false;
+
 }
 
 void SelectScene::Update()
@@ -174,12 +177,15 @@ void SelectScene::Update()
 	float deltaTime = frameInfo_->GetDeltaTime();
 	if (sceneTransition_->PreSceneTransition(deltaTime)) {
 
-#ifdef _DEBUG
+
 		SetGlobalV();
+#ifdef _DEBUG	
 		if (!isChangeScene_) {
 			sceneTransition_->Debug();
 		}
 #endif // _DEBUG
+
+		
 
 		//オプション有効時の処理
 		if (isOptionActive_) {
