@@ -6,7 +6,7 @@
 class WaterSurface {
 public:
 	
-	WaterSurface();
+	WaterSurface(const std::string& name);
 
 	void Initialize();
 

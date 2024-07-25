@@ -77,8 +77,8 @@ SelectScene::SelectScene()
 	gvu_->AddItem(anoKeys[cS4], cSwingSeconds_[None]);
 
 
-	surface_ = std::make_unique<WaterSurface>();
-
+	surface_ = std::make_unique<WaterSurface>("セレクトの雲");
+	surface2_ = std::make_unique<WaterSurface>("セレクトのステージイメージ");
 }
 
 void SelectScene::SetGlobalV()
@@ -200,6 +200,7 @@ void SelectScene::Update()
 			CloudUpdate();
 
 			surface_->Update(deltaTime);
+			surface2_->Update(deltaTime);
 
 			effeBSleep_->Update(1.0f);
 
@@ -243,6 +244,9 @@ void SelectScene::Draw()
 		}
 	}
 	surface_->PostDraw();
+	surface2_->PreDraw();
+	mapSprite_[pickedNum_]->Draw();
+	surface2_->PostDraw();
 	//必須
 	Kyoko::Engine::PreDraw();
 
@@ -273,8 +277,7 @@ void SelectScene::Draw()
 			sp_[i]->Draw();
 		}
 	}
-
-	mapSprite_[pickedNum_]->Draw();
+	surface2_->Draw();
 
 	effeBSleep_->Draw();
 
