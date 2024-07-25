@@ -28,7 +28,6 @@ MoveWaterGimmick::MoveWaterGimmick(int no) {
 	waterParam_.moveVector = endPoint_ - Vector2(position_.x,position_.y);
 	waterParam_.moveVector = waterParam_.moveVector.Normalize() * waterParam_.waterSpeed_;
 	waterParam_.respawnPoint = Vector2(position_.x, position_.y);
-	scale_ = 10.0f;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 	isActive_ = true;
 }
