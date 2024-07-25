@@ -11,7 +11,7 @@ public:
 	SceneTransitionEffect(const std::string&sceneName);
 	~SceneTransitionEffect();
 
-	void Initialize();
+	void Initialize(float value=0.0f);
 
 	//シーン開始時の遷移処理
 	bool PreSceneTransition(float delta);
@@ -43,8 +43,8 @@ private:
 
 	std::unique_ptr<Dissolve>dissolve_;
 
-	Vector3 dissolveColor_ = { 1,1,1 };
-
+	Vector4 dissolveColor_ = { 1,1,1,1 };
+	Vector4 edgeColor = { 1,1,1,1 };
 
 	enum Tags {
 		kLuminance,

@@ -20,25 +20,28 @@ SceneTransitionEffect::SceneTransitionEffect(const std::string& sceneName)
 	gvu_ = new GlobalVariableUser("Scene", "SceneTransition",sceneName);
 	gvu_->AddItem(keys[kLuminance], dissolve_->dissolveData_->baseLuminance);
 	gvu_->AddItem(keys[kChangeSpd], changeSecond_);
-	gvu_->AddItem(keys[kDissolveColor], dissolveColor_);
+	gvu_->AddItemColor(keys[kDissolveColor], dissolveColor_);
 	gvu_->AddItem(keys[kDifference], dissolve_->dissolveData_->difference);
-	gvu_->AddItem(keys[kEdgeColor], dissolve_->dissolveData_->edgeColor);
+	gvu_->AddItemColor(keys[kEdgeColor], edgeColor);
+	
 }
 
 void SceneTransitionEffect::SetGlobalV()
 {
-
+#ifdef _DEBUG
 	if (preSceneChangeActive_ && !postSceneChangeActive_) {
 		dissolve_->dissolveData_->baseLuminance = gvu_->GetFloatValue(keys[kLuminance]);
 	}
+#endif // _DEBUG
 
 	changeSecond_ = gvu_->GetFloatValue(keys[kChangeSpd]);
-	dissolveColor_ = gvu_->GetVector3Value(keys[kDissolveColor]);
+	dissolveColor_ = gvu_->GetColor(keys[kDissolveColor]);
 	dissolve_->dissolveData_->difference = gvu_->GetFloatValue(keys[kDifference]);
-	dissolve_->dissolveData_->edgeColor = gvu_->GetVector3Value(keys[kEdgeColor]);
+	edgeColor = gvu_->GetColor(keys[kEdgeColor]);
+	dissolve_->dissolveData_->edgeColor = { edgeColor.x,edgeColor.y,edgeColor.z };
 
-
-
+	dissolveBackTex_->SetColor(dissolveColor_);
+	
 }
 
 SceneTransitionEffect::~SceneTransitionEffect()
@@ -46,7 +49,7 @@ SceneTransitionEffect::~SceneTransitionEffect()
 
 }
 
-void SceneTransitionEffect::Initialize()
+void SceneTransitionEffect::Initialize(float value)
 {
 	SetGlobalV();
 
@@ -60,15 +63,13 @@ void SceneTransitionEffect::Initialize()
 	dissolve_->dissolveData_->edgeColor = { eColor.x,eColor.y,eColor.z };
 	gvu_->SetVariable(keys[kEdgeColor], dissolve_->dissolveData_->edgeColor);
 
-	dissolve_->dissolveData_->baseLuminance = 0.0f;
+	dissolve_->dissolveData_->baseLuminance = value;
 	preSceneChangeActive_ = false;
 	postSceneChangeActive_ = false;
 }
 
 bool SceneTransitionEffect::PreSceneTransition(float delta)
 {
-
-
 	//だんだんマスク量減らす
 	if (!preSceneChangeActive_) {
 		dissolve_->dissolveData_->baseLuminance += changeSecond_ * delta;
@@ -80,9 +81,6 @@ bool SceneTransitionEffect::PreSceneTransition(float delta)
 
 	return preSceneChangeActive_;
 }
-
-
-
 
 bool SceneTransitionEffect::PostSceneTransition(float delta)
 {
@@ -102,20 +100,7 @@ void SceneTransitionEffect::Debug()
 	SetGlobalV();
 
 #ifdef _DEBUG
-	Vector4 color = { dissolveColor_.x,dissolveColor_.y,dissolveColor_.z,1 };
-	Vector4 eColor = { dissolve_->dissolveData_->edgeColor.x,dissolve_->dissolveData_->edgeColor.y,dissolve_->dissolveData_->edgeColor.z,1 };
-
-	ImGui::Begin("color");
-	ImGui::ColorEdit4("dissolve space", &color.x);
-	ImGui::ColorEdit4("edge space", &eColor.x);
-	ImGui::End();
-
-	dissolveBackTex_->SetColor(color);
-	dissolveColor_ = { color.x,color.y,color.z };
-	gvu_->SetVariable(keys[kDissolveColor], dissolveColor_);
-
-	dissolve_->dissolveData_->edgeColor = { eColor.x,eColor.y,eColor.z };
-	gvu_->SetVariable(keys[kEdgeColor], dissolve_->dissolveData_->edgeColor);
+	
 #endif // _DEBUG
 }
 

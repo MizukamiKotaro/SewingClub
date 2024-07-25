@@ -8,6 +8,7 @@
 #include"GameElement/SceneTransitionEffect/SceneTransitionEffect.h"
 #include"Audio.h"
 #include"GlobalVariables/GlobalVariableUser.h"
+#include"GameElement/SceneAcquisition/SceneAcquisition.h"
 
 class TitleScene : public IScene
 {
@@ -83,5 +84,6 @@ private:
 	std::unique_ptr<SceneTransitionEffect>sceneTransition_;
 	bool isChangeScene_=false;
 
+	SceneAcquisition* sceneAcuition_;
 };
 

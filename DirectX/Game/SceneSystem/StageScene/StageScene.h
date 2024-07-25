@@ -25,6 +25,8 @@
 #include"GameElement/InGameHUD/InGameHUD.h"
 #include "GameElement/FragmentVignette/FragmentVignette.h"
 #include "Audio/Audio.h"
+#include"GameElement/SceneTransitionEffect/SceneTransitionEffect.h"
+
 
 #ifdef _DEBUG
 #include "GameElement/EditorSystem/EditorSystem.h"
@@ -144,4 +146,8 @@ private:
 	std::unique_ptr<InGameHUD>ingameHUD_;
 
 	Audio se_babyNormal;
+
+	//各シーンチェンジ処理
+	std::unique_ptr<SceneTransitionEffect>sceneTransition_;
+	bool isChangeScene_ = false;
 };

@@ -291,6 +291,11 @@ bool GlobalVariableUser::IsTreeOpen(const int32_t& treeNo)
 	return global_->IsTreeOpen(chunkName_, groupName_, tree);
 }
 
+bool GlobalVariableUser::IsTreeOpen() const
+{
+	return global_->IsTreeOpen(chunkName_, groupName_, tree_);
+}
+
 std::vector<std::string> GlobalVariableUser::CreateTree(const std::string& tree1, const std::string& tree2, const std::string& tree3, const std::string& tree4, const std::string& tree5, const std::string& tree6) const
 {
 	std::vector<std::string> treeNames = tree_;

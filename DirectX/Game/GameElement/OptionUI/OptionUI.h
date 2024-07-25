@@ -19,7 +19,8 @@ public:
 	enum SceneType {
 		kTitle,
 		kSelect,
-		kStage
+		kStage,
+		_countOfType
 	};
 
 	OptionUI(SceneType type);

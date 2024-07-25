@@ -69,7 +69,11 @@ WaterChunk::WaterChunk(int no)
 
 	no_ = no;
 	isSmall_ = false;
-	stageEditor_ = std::make_unique<StageEditor>("水の配置");
+	std::string tree = "水" + std::to_string(no_);
+	int num = no_ / 10;
+	num = num * 10;
+	std::string tree1 = "水" + std::to_string(num) + "～" + std::to_string(num + 9);
+	stageEditor_ = std::make_unique<StageEditor>("水の配置", tree1, tree);
 	endNo_ = no_ - 1;
 	if (endNo_ < 0) {
 		endNo_ = 0;
@@ -83,6 +87,38 @@ WaterChunk::WaterChunk(int no)
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 	isPlayer_ = false;
 	preIsPlayer_ = false;
+	isWave_ = false;
+
+	isQuadrangleActive_ = false;
+}
+
+WaterChunk::WaterChunk(const int& no, const MoveWaterGimmick::GimmickWaterParam& param) {
+	Collider::CreateCollider(ColliderShape::CIRCLE, ColliderType::COLLIDER, ColliderMask::WATER);
+	Collider::AddTargetMask(ColliderMask::PLAYER);
+
+	gravityArea_ = std::make_unique<GravityArea>();
+
+	moveWaterGimmickParam_ = param;
+	position_ = Vector3(moveWaterGimmickParam_.respawnPoint.x, moveWaterGimmickParam_.respawnPoint.y, 0.0f);
+	scale_ = moveWaterGimmickParam_.waterScale;
+	maxScale_ = scale_;
+	rotate_ = 0.0f;
+
+	no_ = no;
+	isSmall_ = false;
+	endNo_ = no_ - 1;
+	if (endNo_ < 0) {
+		endNo_ = 0;
+	}
+	isTarget_ = false;
+	scale_ = maxScale_;
+	isSmaeGravitySize_ = false;
+	isTree_ = false;
+	isActive_ = true;
+	color_ = { 1.0f,1.0f,1.0f,1.0f };
+	isPlayer_ = false;
+	preIsPlayer_ = false;
+	CreateChips();
 	isWave_ = false;
 
 	isQuadrangleActive_ = false;
@@ -102,7 +138,11 @@ WaterChunk::WaterChunk(const int& no, const Vector2& pos)
 
 	no_ = no;
 	isSmall_ = false;
-	stageEditor_ = std::make_unique<StageEditor>("水の配置");
+	std::string tree = "水" + std::to_string(no_);
+	int num = no_ / 10;
+	num = num * 10;
+	std::string tree1 = "水" + std::to_string(num) + "～" + std::to_string(num + 9);
+	stageEditor_ = std::make_unique<StageEditor>("水の配置", tree1, tree);
 	endNo_ = no_ - 1;
 	if (endNo_ < 0) {
 		endNo_ = 0;
@@ -164,10 +204,15 @@ void WaterChunk::Initialize()
 
 }
 
-void WaterChunk::Update(const float& deltaTime, Camera* camera)
+void WaterChunk::Update(const float& deltaTime, Camera* camera, const bool& globalUse)
 {
+	globalUse;
 #ifdef _DEBUG
-	ApplyGlobalVariable();
+	if (globalUse) {
+		if (stageEditor_ && stageEditor_->IsTreeOpen()) {
+			ApplyGlobalVariable();
+		}
+	}
 	CreateQuadrangle();
 	if (!isSmall_) {
 		if (scale_ != maxScale_) {
@@ -195,6 +240,11 @@ void WaterChunk::Update(const float& deltaTime, Camera* camera)
 	if (isQuadrangleActive_) {
 		quadrangle_->Update(deltaTime, camera);
 	}
+}
+
+void WaterChunk::MoveUpdate() {
+	position_.x += moveWaterGimmickParam_.moveVector.x;
+	position_.y += moveWaterGimmickParam_.moveVector.y;
 }
 
 void WaterChunk::Draw(Camera* camera) const
@@ -264,12 +314,7 @@ void WaterChunk::SetPosition(const Vector3& pos)
 {
 	position_ = pos;
 	if (stageEditor_) {
-		std::string tree = "水" + std::to_string(no_);
-		int no = no_ / 10;
-		no = no * 10;
-		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
-
-		stageEditor_->SetVariable("ポジション", position_, tree1, tree);
+		stageEditor_->SetVariable("ポジション", position_);
 	}
 }
 
@@ -277,12 +322,7 @@ void WaterChunk::SetScale(const float& scale)
 {
 	maxScale_ = scale;
 	if (stageEditor_) {
-		std::string tree = "水" + std::to_string(no_);
-		int no = no_ / 10;
-		no = no * 10;
-		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
-
-		stageEditor_->SetVariable("スケール", maxScale_, tree1, tree);
+		stageEditor_->SetVariable("スケール", maxScale_);
 	}
 }
 
@@ -294,26 +334,18 @@ void WaterChunk::SetIsQuadrangle(const bool& is, const int& endNo)
 		CreateQuadrangle();
 	}
 	if (stageEditor_) {
-		std::string tree = "水" + std::to_string(no_);
-		int no = no_ / 10;
-		no = no * 10;
-		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
-		stageEditor_->SetVariable("四角形を作るか", isTarget_, tree1, tree);
-		stageEditor_->SetVariable("四角形を生成するもう一方の水のナンバー", endNo_, tree1, tree);
+		stageEditor_->SetVariable("四角形を作るか", isTarget_);
+		stageEditor_->SetVariable("四角形を生成するもう一方の水のナンバー", endNo_);
 	}
 }
 
 void WaterChunk::SetGlobalVariable()
 {
 	if (stageEditor_) {
-		std::string tree = "水" + std::to_string(no_);
-		int no = no_ / 10;
-		no = no * 10;
-		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
-		stageEditor_->AddItem("ポジション", position_, tree1, tree);
-		stageEditor_->AddItem("スケール", maxScale_, tree1, tree);
-		stageEditor_->AddItem("四角形を作るか", isTarget_, tree1, tree);
-		stageEditor_->AddItem("四角形を生成するもう一方の水のナンバー", endNo_, tree1, tree);
+		stageEditor_->AddItem("ポジション", position_);
+		stageEditor_->AddItem("スケール", maxScale_);
+		stageEditor_->AddItem("四角形を作るか", isTarget_);
+		stageEditor_->AddItem("四角形を生成するもう一方の水のナンバー", endNo_);
 	}
 	ApplyGlobalVariable();
 }
@@ -321,31 +353,23 @@ void WaterChunk::SetGlobalVariable()
 void WaterChunk::ApplyGlobalVariable()
 {
 	if (stageEditor_) {
-		std::string tree = "水" + std::to_string(no_);
-		int no = no_ / 10;
-		no = no * 10;
-		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
-		position_ = stageEditor_->GetVector3Value("ポジション", tree1, tree);
-		maxScale_ = stageEditor_->GetFloatValue("スケール", tree1, tree);
-		isTarget_ = stageEditor_->GetBoolValue("四角形を作るか", tree1, tree);
-		endNo_ = stageEditor_->GetIntValue("四角形を生成するもう一方の水のナンバー", tree1, tree);
+		position_ = stageEditor_->GetVector3Value("ポジション");
+		maxScale_ = stageEditor_->GetFloatValue("スケール");
+		isTarget_ = stageEditor_->GetBoolValue("四角形を作るか");
+		endNo_ = stageEditor_->GetIntValue("四角形を生成するもう一方の水のナンバー");
 	}
 }
 
 void WaterChunk::SetGlobalVariableAndSetPos()
 {
 	if (stageEditor_) {
-		std::string tree = "水" + std::to_string(no_);
-		int no = no_ / 10;
-		no = no * 10;
-		std::string tree1 = "水" + std::to_string(no) + "～" + std::to_string(no + 9);
-		stageEditor_->AddItem("ポジション", position_, tree1, tree);
-		stageEditor_->AddItem("スケール", maxScale_, tree1, tree);
-		stageEditor_->AddItem("四角形を作るか", isTarget_, tree1, tree);
-		stageEditor_->AddItem("四角形を生成するもう一方の水のナンバー", endNo_, tree1, tree);
+		stageEditor_->AddItem("ポジション", position_);
+		stageEditor_->AddItem("スケール", maxScale_);
+		stageEditor_->AddItem("四角形を作るか", isTarget_);
+		stageEditor_->AddItem("四角形を生成するもう一方の水のナンバー", endNo_);
 
-		stageEditor_->SetVariable("ポジション", position_, tree1, tree);
-		stageEditor_->SetVariable("四角形を作るか", false, tree1, tree);
+		stageEditor_->SetVariable("ポジション", position_);
+		stageEditor_->SetVariable("四角形を作るか", false);
 	}
 	ApplyGlobalVariable();
 }

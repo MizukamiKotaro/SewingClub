@@ -24,8 +24,7 @@ StageScene::StageScene()
 	WaterChunkChip::StaticInitialize();
 	WaterChunk::StaticInitialize();
 	GravityArea::StaticInitialize();
-	Item::StaticInitialize();
-	RequiredObject::StaticInitialize();
+	ItemManager::StaticInitialize();
 	WaterWave::StaticInitialize();
 	BackGroundObject::StaticInitialize();
 	WaterChunkQuadrangle::StaticInitialize();
@@ -94,6 +93,7 @@ StageScene::StageScene()
 #ifdef _DEBUG
 	editorSystem_ = std::make_unique<EditorSystem>(camera_.get());
 #endif // _DEBUG
+	sceneTransition_ = std::make_unique<SceneTransitionEffect>("stage");
 
 }
 
@@ -161,6 +161,9 @@ void StageScene::Initialize()
 	ingameHUD_->Initialize();
 
 	goalCamera_->Initialize();
+
+	sceneTransition_->Initialize(1.0f);
+	isChangeScene_ = false;
 
 	//シーンの初期状態
 	nowScene = kPlay;
@@ -234,9 +237,11 @@ void StageScene::Update()
 				tensionEffectManager_->Update(deltaTime);
 				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
 			}
-			waterManager_->Update(deltaTime, camera_.get());
-
 			itemManager_->Update(deltaTime, camera_.get());
+
+			waterManager_->CreateGimmickWater(itemManager_->GetWaterList());
+
+			waterManager_->Update(deltaTime, camera_.get());
 
 			isCanGoal_ = itemManager_->GetIsCanGoal();
 
@@ -414,118 +419,129 @@ void StageScene::Draw()
 #ifdef _DEBUG
 	AnimationManager::GetInstance()->Draw(camera_.get());
 #endif // アニメーションエディター用描画
-
+	sceneTransition_->Draw();
 	// フレームの終了
 	Kyoko::Engine::PostDraw();
 }
 
 void StageScene::SceneChange()
 {
+	if (!isChangeScene_) {
+		switch (nowScene)
+		{
+		case StageScene::kPlay:
+			//optionが開かれていないとき
+			if (!isOptionOpen_) {
+				if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
+					// シーン切り替え
+					//ChangeScene(CLEAR);
+					bgm_.Stop();
+					player_->Finalize();
+				}
 
-	switch (nowScene)
-	{
-	case StageScene::kPlay:
-		//optionが開かれていないとき
-		if (!isOptionOpen_) {
-			if (input_->PressedKey(DIK_LSHIFT) && input_->PressedKey(DIK_SPACE)) {
-				// シーン切り替え
-				ChangeScene(CLEAR);
-				bgm_.Stop();
-				player_->Finalize();
-			}
-			if (goal_->IsClear()) {
-				nowScene = kGameToClear;
-				gameClear_->SetBabyParam(baby_->GetTension(), baby_->GetFace());
-				seClear_.Play();
-				zoomUpCamera_->Initialize(camera_->transform_.GetWorldPosition(), goal_->GetPosition());
-			}
+				if (goal_->IsClear()) {
+					nowScene = kGameToClear;
+					gameClear_->SetBabyParam(baby_->GetTension(), baby_->GetFace());
+					seClear_.Play();
+					zoomUpCamera_->Initialize(camera_->transform_.GetWorldPosition(), goal_->GetPosition());
+				}
 
-			//ヒットによる処理
-			/*if (player_->GetIsHitEnemy()) {
-				nowScene = kGameOver;
-				seDead_.Play();
-			}*/
-			//テンションのHPがなくなったときの処理
-			if (baby_->GetIsGameOver()) {
-				nowScene = kGameOver;
-			}
+				//ヒットによる処理
+				/*if (player_->GetIsHitEnemy()) {
+					nowScene = kGameOver;
+					seDead_.Play();
+				}*/
+				//テンションのHPがなくなったときの処理
+				if (baby_->GetIsGameOver()) {
+					nowScene = kGameOver;
+				}
 
-			//optionを開く
-			if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
-				isOptionOpen_ = true;
-				seOpenOption_.Play();
-			}
-		}
-		else {
-			if (ans_.backOption) {
-				isOptionOpen_ = false;
-			}
-			else if (ans_.backSelect) {
-				ChangeScene(SELECT);
-				bgm_.Stop();
-				player_->Finalize();
-			}
-			else if (ans_.backtitle) {
-				ChangeScene(TITLE);
-				bgm_.Stop();
-				player_->Finalize();
-			}
-		}
-		break;
-	case StageScene::kGameOver:
-		//ゲームオーバー時画面
-
-		if (gameOverFlags_.restart) {
-			ChangeScene(STAGE);
-			bgm_.Stop();
-			player_->Finalize();
-		}
-
-		if (gameOverFlags_.goSelect) {
-			ChangeScene(SELECT);
-			bgm_.Stop();
-			player_->Finalize();
-		}
-
-		break;
-	case StageScene::kGameClear:
-		if (gameClearFlags_.goNeext) {
-
-			// シーン切り替え
-			if (stageNo_ + 1 == maxStageNo_) {
-				ChangeScene(SELECT);
+				//optionを開く
+				if (input_->PressedGamePadButton(Input::GamePadButton::START) && !isOptionOpen_) {
+					isOptionOpen_ = true;
+					seOpenOption_.Play();
+				}
 			}
 			else {
-				stageNo_++;
-				ChangeScene(STAGE);
+				if (ans_.backOption) {
+					isOptionOpen_ = false;
+				}
+				else if (ans_.backSelect) {
+					ChangeScene(SELECT);
+					bgm_.Stop();
+					player_->Finalize();
+				}
+				else if (ans_.backtitle) {
+					ChangeScene(TITLE);
+					bgm_.Stop();
+					player_->Finalize();
+				}
 			}
-			bgm_.Stop();
-			player_->Finalize();
+			break;
+		case StageScene::kGameOver:
+			//ゲームオーバー時画面
 
-		}else if (gameClearFlags_.reTry) {
-			ChangeScene(STAGE);
-			bgm_.Stop();
-			player_->Finalize();
-		}else if (gameClearFlags_.goSelect) {
-			ChangeScene(SELECT);
-			bgm_.Stop();
-			player_->Finalize();
+			if (gameOverFlags_.restart) {
+				ChangeScene(STAGE);
+				bgm_.Stop();
+				player_->Finalize();
+			}
+
+			if (gameOverFlags_.goSelect) {
+				isChangeScene_ = true;
+				bgm_.Stop();
+				player_->Finalize();
+			}
+
+			break;
+		case StageScene::kGameClear:
+			if (gameClearFlags_.goNeext) {
+
+				// シーン切り替え
+				if (stageNo_ + 1 == maxStageNo_) {
+					ChangeScene(SELECT);
+				}
+				else {
+					stageNo_++;
+					ChangeScene(STAGE);
+				}
+				bgm_.Stop();
+				player_->Finalize();
+
+			}
+			else if (gameClearFlags_.reTry) {
+				ChangeScene(STAGE);
+				bgm_.Stop();
+				player_->Finalize();
+			}
+			else if (gameClearFlags_.goSelect) {
+				isChangeScene_ = true;
+				bgm_.Stop();
+				player_->Finalize();
+			}
+
+			break;
+		case StageScene::kGameToClear:
+			if (player_->GetIsClear() && baby_->GetIsClear()) {
+				nowScene = kGameClear;
+			}
+			break;
+		case StageScene::_countPlayScenes:
+			break;
+		default:
+			break;
 		}
-
-		break;
-	case StageScene::kGameToClear:
-		if (player_->GetIsClear() && baby_->GetIsClear()) {
-			nowScene = kGameClear;
-		}
-		break;
-	case StageScene::_countPlayScenes:
-		break;
-	default:
-		break;
-	}
-
 	
-
+	}
+	else {
+		float deltaTime = frameInfo_->GetDeltaTime();
+		//以下Dissolve更新と処理
+		if (sceneTransition_->PostSceneTransition(deltaTime)) {
+			ChangeScene(SELECT);
+		}
+	
+	}
+	
 	
 	
 }
@@ -558,5 +574,7 @@ void StageScene::MakePostEffect()
 
 	instancingmodelManager_->Clear();
 	particleManager_->Clear();
+
+	sceneTransition_->DrawPE();
 }
 

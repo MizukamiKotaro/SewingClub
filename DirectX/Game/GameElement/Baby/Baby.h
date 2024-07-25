@@ -214,5 +214,5 @@ private:
 	float jumpAnimationFrame_ = 0.0f;
 
 	Audio se_cry;
-
+	bool isDebug_;
 };
