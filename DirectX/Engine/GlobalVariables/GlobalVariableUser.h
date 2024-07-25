@@ -72,6 +72,7 @@ public:
 
 	bool IsTreeOpen(const std::string& tree1, const std::string& tree2 = "_", const std::string& tree3 = "_", const std::string& tree4 = "_", const std::string& tree5 = "_", const std::string& tree6 = "_");
 	bool IsTreeOpen(const int32_t& treeNo);
+	bool IsTreeOpen() const;
 
 	const std::string& GetChunkName() const { return chunkName_; }
 
