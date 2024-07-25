@@ -200,6 +200,7 @@ void WaterChunk::Initialize()
 
 void WaterChunk::Update(const float& deltaTime, Camera* camera, const bool& globalUse)
 {
+	globalUse;
 #ifdef _DEBUG
 	if (globalUse) {
 		ApplyGlobalVariable();

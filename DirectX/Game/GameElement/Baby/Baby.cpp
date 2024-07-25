@@ -103,6 +103,12 @@ void Baby::Initialize()
 	inWaterCatch_.time_ = 0.0f;
 	isHitEnemy_ = false;
 	hitEnemyTime_ = 0.0f;
+
+	// UV座標のセット
+	Transform handle = animation_->GetSceneUV(0u);
+	baby_->SetUVParam(handle);
+	baby_->SetTexture(TextureManager::GetInstance()->LoadTexture("baby_normal.png"));
+	animation_->Play(true);
 }
 
 void Baby::Update(float deltaTime)
