@@ -12,6 +12,7 @@ GlobalVariables* GlobalVariables::GetInstance() {
 
 void GlobalVariables::Initialize()
 {
+	isDraw_ = true;
 	kTreeName_.resize(6);
 	for (int i = 0; i < 6; i++) {
 		kTreeName_[i] = "Tree" + std::to_string(i + 1);
@@ -36,21 +37,35 @@ void GlobalVariables::Finalize()
 
 void GlobalVariables::Update() {
 #ifdef _DEBUG
-	for (std::map<std::string, Chunk>::iterator itChunk = isTreeOpen_.begin(); itChunk != isTreeOpen_.end(); itChunk++) {
-		Chunk& chunk = itChunk->second;
-		for (std::map<std::string, Group>::iterator itGroup = chunk.begin(); itGroup != chunk.end(); ++itGroup) {
-			Group& group = itGroup->second;
-			for (std::map<std::string, Item>::iterator itItem = group.begin(); itItem != group.end(); ++itItem) {
-				itItem->second = false;
+	for (std::pair<const std::string, Chunk> chunk : isTreeOpen_) {
+		for (std::pair<const std::string, Group>& group : chunk.second) {
+			for (std::pair<const std::string, Item>& item : group.second) {
+				item.second = false;
 			}
 		}
+	}
+	ImGui::Begin("ImGuiManager");
+	ImGui::Checkbox("グローバル変数を描画するか", &isDraw_);
+	if (ImGui::TreeNode("タイトルバー名")) {
+		int columnCount = 4;
+		ImGui::Columns(columnCount, nullptr, false);
+		for (std::pair<const std::string, bool>& name : isDrawTitle_) {
+			ImGui::Checkbox(name.first.c_str(), &name.second);
+			ImGui::NextColumn();
+		}
+		ImGui::Columns(1);
+		ImGui::TreePop();
+	}
+	ImGui::End();
+	if (!isDraw_) {
+		return;
 	}
 
 	for (std::map<std::string, Chunk>::iterator itChunk = datas_.begin();
 		itChunk != datas_.end(); ++itChunk) {
 		const std::string& chunkName = itChunk->first;
 
-		if (chunkName == "aaDontTouchPlayData") {
+		if (chunkName == "aaDontTouchPlayData" || !isDrawTitle_[chunkName]) {
 			continue;
 		}
 
@@ -106,11 +121,17 @@ void GlobalVariables::Update() {
 void GlobalVariables::CreateChunk(const std::string& chunkName)
 {
 	datas_[chunkName];
+	if (isDrawTitle_.find(chunkName) == isDrawTitle_.end()) {
+		isDrawTitle_[chunkName] = true;
+	}
 }
 
 void GlobalVariables::CreateGroup(const std::string& chunkName, const std::string& groupName)
 {
 	datas_[chunkName][groupName];
+	if (isDrawTitle_.find(chunkName) == isDrawTitle_.end()) {
+		isDrawTitle_[chunkName] = true;
+	}
 }
 
 void GlobalVariables::AddItemColor(const std::string& chunkName, const std::string& groupName, const std::string& key, const Vector4& value, const std::vector<std::string>& tree)

@@ -23,8 +23,7 @@ StageScene::StageScene()
 	WaterChunkChip::StaticInitialize();
 	WaterChunk::StaticInitialize();
 	GravityArea::StaticInitialize();
-	Item::StaticInitialize();
-	RequiredObject::StaticInitialize();
+	ItemManager::StaticInitialize();
 	WaterWave::StaticInitialize();
 	BackGroundObject::StaticInitialize();
 	WaterChunkQuadrangle::StaticInitialize();
@@ -237,9 +236,11 @@ void StageScene::Update()
 				tensionEffectManager_->Update(deltaTime);
 				enemyManager_->Update(deltaTime, camera_.get(), baby_->GetFace());
 			}
-			waterManager_->Update(deltaTime, camera_.get());
-
 			itemManager_->Update(deltaTime, camera_.get());
+
+			waterManager_->CreateGimmickWater(itemManager_->GetWaterList());
+
+			waterManager_->Update(deltaTime, camera_.get());
 
 			isCanGoal_ = itemManager_->GetIsCanGoal();
 

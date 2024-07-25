@@ -112,7 +112,8 @@ private:
 
 	std::map<std::string, Chunk> datas_;
 	std::map<std::string, Chunk> isTreeOpen_;
-
+	std::map<std::string, bool> isDrawTitle_;
+	bool isDraw_;
 	const std::string kDirectoryPath = "Resources/GlobalVariables/";
 	std::vector<std::string> kTreeName_;
 	const std::string kColorName = "COLOR";

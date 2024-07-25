@@ -4,12 +4,15 @@
 #include "Item.h"
 #include "RequiredObject.h"
 #include "StageEditor/StageEditor.h"
+#include "GameElement/Gimmick/MoveWaterGimmick.h"
 
 class Camera;
 
 class ItemManager {
 public:
 	static ItemManager* GetInstance();
+
+	static void StaticInitialize();
 
 	void Clear();
 
@@ -25,6 +28,7 @@ public:
 	const bool& GetIsCanGoal() const { return isCanGoal_; }
 
 	std::list<QuotaSendData>GetQuotaData();
+	std::list<MoveWaterGimmick::GimmickWaterParam> GetWaterList() { return waterGimmickList_; }
 private:
 	ItemManager() = default;
 	~ItemManager() = default;
@@ -40,7 +44,9 @@ private:
 	std::unique_ptr<StageEditor> stageEditor_;
 	std::unordered_map<int, std::unique_ptr<Item>> itemMap_;
 	std::unordered_map<int, std::unique_ptr<RequiredObject>> reqItemMap_;
+	std::unordered_map<int, std::unique_ptr<MoveWaterGimmick>> moveWaterGimmick_;
 	std::unique_ptr<GlobalVariableUser> globalVariable_;
+	std::list<MoveWaterGimmick::GimmickWaterParam> waterGimmickList_;
 
 	float scale_;
 	int itemNum_;
@@ -48,6 +54,8 @@ private:
 	float reqScaleDiameter_ = 1.0f;
 	int reqItemNum_ = 1;
 	Vector4 color_;
+
+	int moveWaterGimmickNum_ = 0;
 
 	bool isCanGoal_ = false;
 };

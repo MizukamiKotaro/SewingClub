@@ -63,7 +63,7 @@ void EditorSystem::Update()
 	Vector3 scale = {};
 	Vector3 v3 = {};
 	Matrix4x4 mat = {};
-
+	int id = 0;
 	switch (state_)
 	{
 	case EditorSystem::State::SLECT:
@@ -121,17 +121,7 @@ void EditorSystem::Update()
 		}
 		break;
 	case EditorSystem::State::GUIZMO:
-		if (input_->PressedMouse(Input::MouseButton::RIGHT)) {
-			for (std::pair<const int, std::unique_ptr<WaterChunk>>& water : waterMap) {
-				if (water.second->IsHitMouse(mousePos_)) {
-					no_ = water.first;
-					break;
-				}
-			}
-		}
-		s = waterMap[no_]->GetScale();
-		scale = { s,s,1.0f };
-		mat = Matrix4x4::MakeAffinMatrix(scale, Vector3{}, waterMap[no_]->GetPosition());
+		
 		switch (guizmoType_)
 		{
 		case EditorSystem::GuizmoType::TRANSLATE:
@@ -143,19 +133,23 @@ void EditorSystem::Update()
 		default:
 			break;
 		}
-
-		v3 = Guizmo::ShowTransformGizmo(type, camera_->GetViewMatrix(), camera_->GetProjection(), mat);
-
-		switch (guizmoType_)
-		{
-		case EditorSystem::GuizmoType::TRANSLATE:
-			waterMap[no_]->SetPosition(v3);
-			break;
-		case EditorSystem::GuizmoType::SCALE:
-			waterMap[no_]->SetScale(v3.x);
-			break;
-		default:
-			break;
+		for (std::pair<const int, std::unique_ptr<WaterChunk>>& water : waterMap) {
+			s = water.second->GetScale();
+			scale = { s,s,1.0f };
+			mat = Matrix4x4::MakeAffinMatrix(scale, Vector3{}, water.second->GetPosition());
+			v3 = Guizmo::ShowTransformGizmo(type, camera_->GetViewMatrix(), camera_->GetProjection(), mat, id);
+			switch (guizmoType_)
+			{
+			case EditorSystem::GuizmoType::TRANSLATE:
+				water.second->SetPosition(v3);
+				break;
+			case EditorSystem::GuizmoType::SCALE:
+				water.second->SetScale(v3.x);
+				break;
+			default:
+				break;
+			}
+			id++;
 		}
 
 		break;

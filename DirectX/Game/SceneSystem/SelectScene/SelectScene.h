@@ -312,4 +312,5 @@ private:
 	bool isChangeScene_ = false;
 
 	std::unique_ptr<WaterSurface> surface_;
+	std::unique_ptr<WaterSurface> surface2_;
 };
