@@ -23,10 +23,10 @@ MoveWaterGimmick::MoveWaterGimmick(int no) {
 	rotate_ = 0.0f;
 
 	no_ = no;
-	stageEditor_ = std::make_unique<StageEditor>("ギミックの配置");
+	stageEditor_ = std::make_unique<StageEditor>("アイテムの配置");
 	SetGlobalVariable();
 	waterParam_.moveVector = endPoint_ - Vector2(position_.x,position_.y);
-	waterParam_.moveVector = waterParam_.moveVector.Normalize() * 2.0f;
+	waterParam_.moveVector = waterParam_.moveVector.Normalize() * waterParam_.waterSpeed_;
 	waterParam_.respawnPoint = Vector2(position_.x, position_.y);
 	scale_ = 10.0f;
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
@@ -76,6 +76,10 @@ void MoveWaterGimmick::Draw() const {
 		Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, position_);
 		instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ });
 	}
+#ifdef _DEBUG
+	Matrix4x4 matrix = Matrix4x4::MakeAffinMatrix(Vector3{ scale_,scale_,1.0f }, Vector3{ 0.0f,0.0f,rotate_ }, Vector3(endPoint_.x, endPoint_.y, 0.0f));
+	instancingManager_->AddBox(modelData_, InstancingModelData{ matrix,Matrix4x4::MakeIdentity4x4(), color_ });
+#endif // _DEBUG
 }
 
 void MoveWaterGimmick::SetGlobalVariable() {
@@ -84,8 +88,13 @@ void MoveWaterGimmick::SetGlobalVariable() {
 		int no = no_ / 10;
 		no = no * 10;
 		std::string tree1 = "水の生成ギミック" + std::to_string(no) + "～" + std::to_string(no + 9);
-		stageEditor_->AddItem("ポジション", position_, tree1, tree);
+		stageEditor_->AddItem("始点座標", position_, tree1, tree);
+		stageEditor_->AddItem("終点座標", endPoint_, tree1, tree);
 		stageEditor_->AddItem("スケール", scale_, tree1, tree);
+		stageEditor_->AddItem("生成間隔", createInterval_, tree1, tree);
+		stageEditor_->AddItem("生成する水の大きさ", waterParam_.waterScale, tree1, tree);
+		stageEditor_->AddItem("水の速さ", waterParam_.waterSpeed_, tree1, tree);
+
 	}
 	ApplyGlobalVariable();
 }
@@ -96,8 +105,15 @@ void MoveWaterGimmick::ApplyGlobalVariable() {
 		int no = no_ / 10;
 		no = no * 10;
 		std::string tree1 = "水の生成ギミック" + std::to_string(no) + "～" + std::to_string(no + 9);
-		position_ = stageEditor_->GetVector3Value("ポジション", tree1, tree);
+		position_ = stageEditor_->GetVector3Value("始点座標", tree1, tree);
+		endPoint_ = stageEditor_->GetVector2Value("終点座標", tree1, tree);
 		scale_ = stageEditor_->GetFloatValue("スケール", tree1, tree);
+		createInterval_ = stageEditor_->GetFloatValue("生成間隔", tree1, tree);
+		waterParam_.waterScale = stageEditor_->GetFloatValue("生成する水の大きさ", tree1, tree);
+		waterParam_.waterSpeed_ = stageEditor_->GetFloatValue("水の速さ", tree1, tree);
+
+		waterParam_.moveVector = endPoint_ - Vector2(position_.x, position_.y);
+		waterParam_.moveVector = waterParam_.moveVector.Normalize() * waterParam_.waterSpeed_;
 	}
 }
 
@@ -132,7 +148,7 @@ void MoveWaterGimmick::ActiveCheck(Camera* camera)
 }
 
 bool MoveWaterGimmick::CreateCount(const float& delta) {
-	if (kMaxFrame_ < nowFrame_) {
+	if (createInterval_ < nowFrame_) {
 		nowFrame_ = 0.0f;
 		return true;
 	}

@@ -161,17 +161,17 @@ bool WaterManager::LimitCheck(const Vector3& position, const float& scale) const
 	const float offset = 20.0f;
 
 	// 左右
-	if (limit_.upperLimit.x + offset < position.x + scale) {
+	if (limit_.upperLimit.x + offset < position.x - scale) {
 		return true;
 	}
-	else if (limit_.lowerLimit.x - offset > position.x - scale) {
+	else if (limit_.lowerLimit.x - offset > position.x + scale) {
 		return true;
 	}
 	// 上下
-	else if (limit_.upperLimit.y + offset < position.y + scale) {
+	else if (limit_.upperLimit.y + offset < position.y - scale) {
 		return true;
 	}
-	else if (limit_.lowerLimit.y - offset > position.y - scale) {
+	else if (limit_.lowerLimit.y - offset > position.y + scale) {
 		return true;
 	}
 	return false;

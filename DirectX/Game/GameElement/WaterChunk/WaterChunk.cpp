@@ -97,7 +97,7 @@ WaterChunk::WaterChunk(const int& no, const MoveWaterGimmick::GimmickWaterParam&
 
 	moveWaterGimmickParam_ = param;
 	position_ = Vector3(moveWaterGimmickParam_.respawnPoint.x, moveWaterGimmickParam_.respawnPoint.y, 0.0f);
-	scale_ = 1.0f;
+	scale_ = moveWaterGimmickParam_.waterScale;
 	maxScale_ = scale_;
 	rotate_ = 0.0f;
 

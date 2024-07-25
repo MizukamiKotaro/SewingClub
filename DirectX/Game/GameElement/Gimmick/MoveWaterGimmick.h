@@ -26,9 +26,12 @@ public:
 	struct GimmickWaterParam {
 		Vector2 moveVector; // 移動ベクトル
 		Vector2 respawnPoint; // 初期地点
+		float waterScale = 1.0f; // 生成する水の大きさ
+		float waterSpeed_ = 0.5f;
 		void operator=(GimmickWaterParam param) {
 			moveVector = param.moveVector;
 			respawnPoint = param.respawnPoint;
+			waterScale = param.waterScale;
 		}
 	};
 	GimmickWaterParam waterParam_;
@@ -58,15 +61,15 @@ private:
 	float scale_ = 0.0f;
 	float rotate_ = 0.0f;
 
-	Vector2 moveSpeed_; // 移動量と向きのベクトル position - endPoint
+	Vector2 moveSpeed_; // 移動量と向きのベクトル endPoint - position
 
-	Vector2 endPoint_;
+	Vector2 endPoint_; // 終点座標
 	Vector4 color_;
 
 	int no_ = 0;
 	bool isActive_ = true;
 
 	float nowFrame_ = 0.0f;
-	const float kMaxFrame_ = 10.0f;
+	float createInterval_ = 10.0f; // 生成間隔second
 
 };
