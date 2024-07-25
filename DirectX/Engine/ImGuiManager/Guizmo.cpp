@@ -4,7 +4,7 @@
 #include "Externals/imgui/imgui.h"
 
 namespace Guizmo {
-    Vector3 ShowTransformGizmo(const Guizmo::Type& type, const Matrix4x4& viewMatrix, const Matrix4x4& projectionMatrix, Matrix4x4& objectMatrix)
+    Vector3 ShowTransformGizmo(const Guizmo::Type& type, const Matrix4x4& viewMatrix, const Matrix4x4& projectionMatrix, Matrix4x4& objectMatrix, const int& no)
     {
         static ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
         switch (type)
@@ -18,7 +18,7 @@ namespace Guizmo {
         default:
             break;
         }
-
+        ImGuizmo::SetID(no);
         ImGuizmo::Manipulate(&viewMatrix.m[0][0], &projectionMatrix.m[0][0], currentOperation, ImGuizmo::WORLD, &objectMatrix.m[0][0]);
 
         switch (type)
