@@ -142,6 +142,9 @@ void SelectScene::Initialize()
 
 	//カメラ初期化
 	camera_->Initialize();
+	camera_->transform_.scale_ = Vector3(0.6f, 1.0f, 1.0f);
+	camera_->transform_.translate_ = Vector3(0.0f, 0.0f, -4.3f);
+	camera_->Update();
 
 	//option初期化
 	optionUI_->Initialize();
@@ -172,6 +175,16 @@ void SelectScene::Initialize()
 
 void SelectScene::Update()
 {
+#ifdef _DEBUG
+	ImGui::Begin("SelectCamera");
+	ImGui::DragFloat3("scale", &camera_->transform_.scale_.x, 0.1f);
+	ImGui::DragFloat3("translate", &camera_->transform_.translate_.x, 0.1f);
+	ImGui::End();
+
+
+#endif // _DEBUG
+
+
 	camera_->Update();
 
 	float deltaTime = frameInfo_->GetDeltaTime();
@@ -231,27 +244,28 @@ void SelectScene::Draw()
 	surface_->PreDraw();
 	for (int i = 0; i < _countTags; i++) {
 		if (i == Clound) {
+			sp_[i]->Draw(*camera_);
 			sp_[i]->Draw();
 		}
 		else if (i == SmallClound1) {
 			if (isDraw_[Spawn1]) {
-				sp_[i]->Draw();
+				sp_[i]->Draw(*camera_);
 			}
 		}
 		else if (i == SmallClound2) {
 			if (isDraw_[Spawn2]) {
-				sp_[i]->Draw();
+				sp_[i]->Draw(*camera_);
 			}
 		}
 		else if (i == SmallClound3) {
 			if (isDraw_[Spawn3]) {
-				sp_[i]->Draw();
+				sp_[i]->Draw(*camera_);
 			}
 		}
 	}
 	surface_->PostDraw();
 	surface2_->PreDraw();
-	mapSprite_[pickedNum_]->Draw();
+	mapSprite_[pickedNum_]->Draw(*camera_);
 	surface2_->PostDraw();
 	//必須
 	Kyoko::Engine::PreDraw();
@@ -280,7 +294,7 @@ void SelectScene::Draw()
 			
 		}
 		else {
-			sp_[i]->Draw();
+			sp_[i]->Draw(*camera_);
 		}
 	}
 	surface2_->Draw();

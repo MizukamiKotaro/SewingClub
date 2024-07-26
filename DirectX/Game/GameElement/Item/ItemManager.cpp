@@ -110,7 +110,7 @@ void ItemManager::Draw()
 	for (int i = 0; i < reqItemNum_; i++) {
 		reqItemMap_[i]->Draw();
 	}
-	for (int i = 0; i < moveWaterGimmick_.size(); i++) {
+	for (int i = 0; i < moveWaterGimmickNum_; i++) {
 		moveWaterGimmick_[i]->Draw();
 	}
 }
