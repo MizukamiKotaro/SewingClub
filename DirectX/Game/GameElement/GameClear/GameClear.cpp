@@ -5,6 +5,9 @@
 #include "calc.h"
 #include "Ease/Ease.h"
 
+float GameClear::tension_ = 0;
+
+int GameClear::faceIndex_ = 0;
 
 GameClear::GameClear()
 {
@@ -453,9 +456,11 @@ void GameClear::Draw()
 	}
 }
 
-void GameClear::SetBabyParam(const float& tension, const int& faceIndex) {
+
+
+void GameClear::SetBabyParam() {
 	// ここで0 ~ 100 なのを 0 ~ 1でもらうようにしている
-	kMaxTensionPercent_ = tension * 0.01f;
+	kMaxTensionPercent_ = tension_ * 0.01f;
 
 	// テンション0で初期化
 	tensionPercent_ = 0.0f;
@@ -485,15 +490,15 @@ void GameClear::SetBabyParam(const float& tension, const int& faceIndex) {
 	sp_[Gage_Bar]->Update();
 
 	// Normal評価
-	if (faceIndex == 3 || faceIndex == 4) {
+	if (faceIndex_ == 3 || faceIndex_ == 4) {
 		valuation_ = Valuations::Normal;
 	}
 	// good
-	else if (faceIndex == 1 || faceIndex == 0) {
+	else if (faceIndex_ == 1 || faceIndex_ == 0) {
 		valuation_ = Valuations::Good;
 	}
 	// perfect
-	else if (faceIndex == 2) {
+	else if (faceIndex_ == 2) {
 		valuation_ = Valuations::Perfect;
 	}
 

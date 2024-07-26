@@ -57,24 +57,43 @@ void GameOverScene::Draw()
 	Kyoko::Engine::PostDraw();
 }
 
-void GameOverScene::SceneChange()
+void GameOverScene::FromBlackInitialize()
 {
-	//遷移時
-	if (isChangeScene_) {
-		float deltaTime = frameInfo_->GetDeltaTime();
-		if (sceneTransition_->PostSceneTransition(deltaTime)) {
-			ChangeScene(SELECT);
-		}
-	}//遷移前処理
-	else {
-		//リスタート処理
-		if (gameOverFlags_.restart) {
-			ChangeScene(STAGE);
-		}
-		//セレクト処理
-		if (gameOverFlags_.goSelect) {
-			isChangeScene_ = true;
+	transitionRequest_ = Transition::kOperation;
+}
 
+void GameOverScene::FromBlackUpdate()
+{
+}
+
+void GameOverScene::ToBlackInitialize()
+{
+	sceneTransition_->Initialize(1.0f);
+}
+
+void GameOverScene::ToBlackUpdate()
+{
+	float deltaTime = frameInfo_->GetDeltaTime();
+	if (sceneTransition_->PostSceneTransition(deltaTime)) {
+		transitionRequest_ = Transition::kFromBlack;
+
+		if (sceneNo_ != nextScene_) {
+			sceneNo_ = nextScene_;
 		}
 	}
+}
+
+void GameOverScene::SceneChange()
+{
+
+	//リスタート処理
+	if (gameOverFlags_.restart) {
+		ChangeScene(STAGE);
+	}
+	//セレクト処理
+	if (gameOverFlags_.goSelect) {
+		ChangeScene(SELECT);
+
+	}
+
 }

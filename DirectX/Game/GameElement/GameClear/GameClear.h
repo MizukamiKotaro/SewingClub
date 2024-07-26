@@ -24,9 +24,15 @@ public:
 	ClearAnswer Update(const float& delta);
 
 	void Draw();
-	void SetBabyParam(const float& tension, const int& faceIndex);
+	
+	static float  tension_;
+	static int faceIndex_;
+
+	void SetBabyParam();
 
 private:
+
+	
 
 	void SetGlobalV();
 

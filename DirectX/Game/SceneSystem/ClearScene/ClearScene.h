@@ -15,7 +15,12 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	void FromBlackInitialize()override;
+	void FromBlackUpdate()override;
 
+	//シーン終了時遷移
+	void ToBlackInitialize()override;
+	void ToBlackUpdate()override;
 private:
 
 	void SceneChange();
@@ -31,5 +36,5 @@ private:
 
 	//遷移関係
 	std::unique_ptr<SceneTransitionEffect>sceneTransition_;
-	bool isChangeScene_ = false;
+	bool isDossolve_ = false;
 };

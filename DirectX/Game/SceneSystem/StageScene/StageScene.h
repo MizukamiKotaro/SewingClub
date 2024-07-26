@@ -25,8 +25,7 @@
 #include"GameElement/InGameHUD/InGameHUD.h"
 #include "GameElement/FragmentVignette/FragmentVignette.h"
 #include "Audio/Audio.h"
-#include"GameElement/SceneTransitionEffect/SceneTransitionEffect.h"
-
+#include"GameElement/SceneAcquisition/SceneAcquisition.h"
 
 #ifdef _DEBUG
 #include "GameElement/EditorSystem/EditorSystem.h"
@@ -120,21 +119,11 @@ private:
 
 	enum playScenes {
 		kPlay,
-		kGameOver,
-		kGameClear,
 		kGameToClear,
 		_countPlayScenes
 	};
 
 	playScenes nowScene = kPlay;
-
-	//ゲームオーバー関係
-	std::unique_ptr<GameOver>gameOver_;
-	GameOverFlags gameOverFlags_;
-
-	//クリア関係
-	std::unique_ptr<GameClear>gameClear_;
-	ClearAnswer gameClearFlags_;
 
 	//演出のシングルトン
 	EffectGetItem* effeGetItem_=nullptr;
@@ -147,7 +136,6 @@ private:
 
 	Audio se_babyNormal;
 
-	//各シーンチェンジ処理
-	std::unique_ptr<SceneTransitionEffect>sceneTransition_;
-	bool isChangeScene_ = false;
+	//シーン全体の保存
+	SceneAcquisition* sceneAcuition_;
 };

@@ -74,8 +74,6 @@ StageScene::StageScene()
 	goalCamera_ = std::make_unique<GoalCamera>();
 	zoomUpCamera_ = std::make_unique<ZoomUpCamera>();
 
-	gameOver_ = std::make_unique<GameOver>();
-	gameClear_ = std::make_unique<GameClear>();
 
 	effeGetItem_ = EffectGetItem::GetInstance();
 	effeGetItem_->ModelLoad();
@@ -92,8 +90,8 @@ StageScene::StageScene()
 #ifdef _DEBUG
 	editorSystem_ = std::make_unique<EditorSystem>(camera_.get());
 #endif // _DEBUG
-	sceneTransition_ = std::make_unique<SceneTransitionEffect>("stage");
 
+	sceneAcuition_ = SceneAcquisition::GetInstance();
 }
 
 void StageScene::Initialize()
@@ -133,14 +131,7 @@ void StageScene::Initialize()
 	camera_->transform_.translate_.z = followCamera_->Update().z + cameraOffset_;
 	camera_->Update();
 
-	gameOver_->Initialize();
 
-	if (stageNo_ + 1 == maxStageNo_) {
-		gameClear_->Initialize(stageNo_,false);
-	}
-	else {
-		gameClear_->Initialize(stageNo_,true);
-	}
 	countIndex = 0;
 	isGoalTransition_ = false;
 
@@ -161,8 +152,7 @@ void StageScene::Initialize()
 
 	goalCamera_->Initialize();
 
-	sceneTransition_->Initialize(1.0f);
-	isChangeScene_ = false;
+	sceneAcuition_->Initialize();
 
 	//シーンの初期状態
 	nowScene = kPlay;
@@ -320,12 +310,7 @@ void StageScene::Update()
 		}
 
 		break;
-	case StageScene::kGameOver:
-		gameOverFlags_ = gameOver_->Update();
-		break;
-	case StageScene::kGameClear:
-		gameClearFlags_ = gameClear_->Update(deltaTime);
-		break;
+
 	case StageScene::kGameToClear:
 		player_->ClearUpdate(deltaTime);
 		baby_->ClearUpdate(deltaTime);
@@ -360,65 +345,26 @@ void StageScene::Draw()
 
 	Kyoko::Engine::PreDraw();
 
-	waterEffect_->Draw();
-
-	player_->Draw(camera_.get());
-	baby_->Draw(camera_.get());
-	waterEffect_->WaterAreaDraw();
-
-	//waveFloor_->Draw();
-	tensionEffectManager_->Draw();
-	itemManager_->Draw();
-
-	goal_->Draw();
-
-	enemyManager_->Draw();
-
-	effeGetItem_->Draw();
-
-	comboEffect_->Draw();
-	//インスタンシング関係のすべてを描画
-	instancingmodelManager_->Draw(*camera_.get());
-	particleManager_->Draw(*camera_.get());
-
-	
-	///いかUI
-	fragmentVignette_->Draw();
-	effeGoalGuid_->Draw(camera_.get());
-	
-	player_->DrawUI();
-
-	tensionUI_->Draw();
-
-	popupUI_->Draw();
-
-	ingameHUD_->Draw();
+	//他シーンで映すすべてを描画
+	sceneAcuition_->DrawScene();
 
 	//option描画
 	if (isOptionOpen_) {
 		optionUI_->Draw();
 	}
 
-	if (nowScene == kGameOver) {
-		gameOver_->Draw();
-	}
-	else if (nowScene == kGameClear) {
-		gameClear_->Draw();
-	}
-
-	BlackDraw();
+	//BlackDraw();
 
 #ifdef _DEBUG
 	AnimationManager::GetInstance()->Draw(camera_.get());
 #endif // アニメーションエディター用描画
-	sceneTransition_->Draw();
 	// フレームの終了
 	Kyoko::Engine::PostDraw();
 }
 
 void StageScene::SceneChange()
 {
-	if (!isChangeScene_) {
+	
 		switch (nowScene)
 		{
 		case StageScene::kPlay:
@@ -433,7 +379,9 @@ void StageScene::SceneChange()
 
 				if (goal_->IsClear()) {
 					nowScene = kGameToClear;
-					gameClear_->SetBabyParam(baby_->GetTension(), baby_->GetFace());
+					GameClear::tension_ = baby_->GetTension();
+					GameClear::faceIndex_ = baby_->GetFace();
+
 					seClear_.Play();
 					zoomUpCamera_->Initialize(camera_->transform_.GetWorldPosition(), goal_->GetPosition());
 				}
@@ -445,7 +393,9 @@ void StageScene::SceneChange()
 				}*/
 				//テンションのHPがなくなったときの処理
 				if (baby_->GetIsGameOver()) {
-					nowScene = kGameOver;
+					//nowScene = kGameOver;
+					ChangeScene(GAMEOVER);
+					seDead_.Play();
 				}
 
 				//optionを開く
@@ -470,71 +420,20 @@ void StageScene::SceneChange()
 				}
 			}
 			break;
-		case StageScene::kGameOver:
-			//ゲームオーバー時画面
-
-			if (gameOverFlags_.restart) {
-				ChangeScene(STAGE);
-				bgm_.Stop();
-				player_->Finalize();
-			}
-
-			if (gameOverFlags_.goSelect) {
-				isChangeScene_ = true;
-				bgm_.Stop();
-				player_->Finalize();
-			}
-
-			break;
-		case StageScene::kGameClear:
-			if (gameClearFlags_.goNeext) {
-
-				// シーン切り替え
-				if (stageNo_ + 1 == maxStageNo_) {
-					ChangeScene(SELECT);
-				}
-				else {
-					stageNo_++;
-					ChangeScene(STAGE);
-				}
-				bgm_.Stop();
-				player_->Finalize();
-
-			}
-			else if (gameClearFlags_.reTry) {
-				ChangeScene(STAGE);
-				bgm_.Stop();
-				player_->Finalize();
-			}
-			else if (gameClearFlags_.goSelect) {
-				isChangeScene_ = true;
-				bgm_.Stop();
-				player_->Finalize();
-			}
-
-			break;
+		
 		case StageScene::kGameToClear:
 			if (player_->GetIsClear() && baby_->GetIsClear()) {
-				nowScene = kGameClear;
+				//nowScene = kGameClear;
+				ChangeScene(CLEAR);
+				bgm_.Stop();
+				player_->Finalize();
 			}
 			break;
 		case StageScene::_countPlayScenes:
 			break;
 		default:
 			break;
-		}
-	
-	}
-	else {
-		float deltaTime = frameInfo_->GetDeltaTime();
-		//以下Dissolve更新と処理
-		if (sceneTransition_->PostSceneTransition(deltaTime)) {
-			ChangeScene(SELECT);
-		}
-	
-	}
-	
-	
+		}	
 	
 }
 
@@ -567,6 +466,44 @@ void StageScene::MakePostEffect()
 	instancingmodelManager_->Clear();
 	particleManager_->Clear();
 
-	sceneTransition_->DrawPE();
+	sceneAcuition_->PreDraw();
+
+	waterEffect_->Draw();
+
+	player_->Draw(camera_.get());
+	baby_->Draw(camera_.get());
+	waterEffect_->WaterAreaDraw();
+
+	//waveFloor_->Draw();
+	tensionEffectManager_->Draw();
+	itemManager_->Draw();
+
+	goal_->Draw();
+
+	enemyManager_->Draw();
+
+	effeGetItem_->Draw();
+
+	comboEffect_->Draw();
+	//インスタンシング関係のすべてを描画
+	instancingmodelManager_->Draw(*camera_.get());
+	particleManager_->Draw(*camera_.get());
+
+
+	///いかUI
+	fragmentVignette_->Draw();
+	effeGoalGuid_->Draw(camera_.get());
+
+	player_->DrawUI();
+
+	tensionUI_->Draw();
+
+	popupUI_->Draw();
+
+	ingameHUD_->Draw();
+
+
+	sceneAcuition_->PostDraw();
+
 }
 

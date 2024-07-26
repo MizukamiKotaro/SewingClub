@@ -74,16 +74,17 @@ protected:
 
 	Transition transition_ = Transition::kFromBlack;
 
-private:
-
 	int nextScene_ = 0;
 
 	float transitionTimeCount_ = 0.0f;
-
 	std::unique_ptr<Sprite> black_;
+
 	const float kTransitionTime = 0.5f;
 
 	bool sameScene_ = false;
+private:
+
+
 
 };
 
