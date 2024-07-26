@@ -124,7 +124,10 @@ void SceneManager::DebugWindow()
 	ImGui::ColorEdit4("カラーの数値確認", &color.x);
 	ImGui::Text("R : %f G : %f B : %f", color.x, color.y, color.z);
 	ImGui::End();
-	IScene::sceneNo_ = num;
+
+	if (num != IScene::sceneNo_) {
+		scene_->ChangeScene(num);
+	}
 #endif // _DEBUG
 
 }
