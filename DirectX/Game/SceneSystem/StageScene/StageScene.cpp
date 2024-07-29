@@ -15,6 +15,7 @@
 #include"Audio/AudioManager/AudioManager.h"
 #include "GameElement/BabyTensionEffect/BabyTensionEffectManager.h"
 #include "GameElement/HitStop/HitStop.h"
+#include"Ease/Ease.h"
 
 StageScene::StageScene()
 {
@@ -92,6 +93,7 @@ StageScene::StageScene()
 #endif // _DEBUG
 
 	sceneAcuition_ = SceneAcquisition::GetInstance();
+	sceneTransition_ = std::make_unique<SceneTransitionEffect>("stage");
 }
 
 void StageScene::Initialize()
@@ -153,6 +155,10 @@ void StageScene::Initialize()
 	goalCamera_->Initialize();
 
 	sceneAcuition_->Initialize();
+	sceneTransition_->Initialize(1.0f);
+	isBlackOut_ = false;
+	isDossolve_ = false;
+	transitionRequest_ = Transition::kFromBlack;
 
 	//シーンの初期状態
 	nowScene = kPlay;
@@ -353,13 +359,92 @@ void StageScene::Draw()
 		optionUI_->Draw();
 	}
 
-	//BlackDraw();
+	BlackDraw();
 
 #ifdef _DEBUG
 	AnimationManager::GetInstance()->Draw(camera_.get());
 #endif // アニメーションエディター用描画
 	// フレームの終了
 	Kyoko::Engine::PostDraw();
+}
+
+void StageScene::FromBlackInitialize()
+{
+	if (sameScene_) {
+		sameScene_ = false;
+		Initialize();
+	}
+
+	transitionTimeCount_ = 0.0f;
+	black_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+}
+
+void StageScene::FromBlackUpdate()
+{
+	float delta = FrameInfo::GetInstance()->GetDeltaTime();
+	if (delta >= 0.3f) {
+		return;
+	}
+	transitionTimeCount_ += delta;
+
+	float alpha =
+		Ease::UseEase(1.0f, 0.0f, transitionTimeCount_, kTransitionTime, Ease::EaseInSine, 2);
+	black_->SetColor({ 0.0f, 0.0f, 0.0f, alpha });
+
+	if (transitionTimeCount_ >= kTransitionTime) {
+		black_->SetColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+		transitionRequest_ = Transition::kOperation;
+	}
+}
+
+void StageScene::ToBlackInitialize()
+{
+	transitionTimeCount_ = 0.0f;
+	black_->SetColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+	sceneTransition_->Initialize(1.0f);
+}
+
+void StageScene::ToBlackUpdate()
+{
+	if (isDossolve_) {
+		float deltaTime = frameInfo_->GetDeltaTime();
+		if (sceneTransition_->PostSceneTransition(deltaTime)) {
+			transitionRequest_ = Transition::kFromBlack;
+
+			if (sceneNo_ != nextScene_) {
+				sceneNo_ = nextScene_;
+			}
+
+		}
+	}
+	else {
+
+		if (isBlackOut_) {
+			transitionTimeCount_ = 10.0f;
+		}
+
+		transitionTimeCount_ += FrameInfo::GetInstance()->GetDeltaTime();
+
+		float alpha =
+			Ease::UseEase(0.0f, 1.0f, transitionTimeCount_, kTransitionTime, Ease::EaseInSine, 2);
+		black_->SetColor({ 0.0f, 0.0f, 0.0f, alpha });
+
+		if (transitionTimeCount_ >= kTransitionTime) {
+			transitionRequest_ = Transition::kFromBlack;
+			if (isBlackOut_) {
+				black_->SetColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+			}
+			else {
+				black_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+			}
+			if (sceneNo_ == nextScene_) {
+				sameScene_ = true;
+			}
+			else {
+				sceneNo_ = nextScene_;
+			}
+		}
+	}
 }
 
 void StageScene::SceneChange()
@@ -381,8 +466,10 @@ void StageScene::SceneChange()
 					nowScene = kGameToClear;
 					GameClear::tension_ = baby_->GetTension();
 					GameClear::faceIndex_ = baby_->GetFace();
-
+					//bgm_.Stop();
+					player_->Finalize();
 					seClear_.Play();
+					isBlackOut_ = true;
 					zoomUpCamera_->Initialize(camera_->transform_.GetWorldPosition(), goal_->GetPosition());
 				}
 
@@ -395,7 +482,10 @@ void StageScene::SceneChange()
 				if (baby_->GetIsGameOver()) {
 					//nowScene = kGameOver;
 					ChangeScene(GAMEOVER);
+					//bgm_.Stop();
+					player_->Finalize();
 					seDead_.Play();
+					isBlackOut_ = true;
 				}
 
 				//optionを開く
@@ -412,11 +502,13 @@ void StageScene::SceneChange()
 					ChangeScene(SELECT);
 					bgm_.Stop();
 					player_->Finalize();
+					isDossolve_ = true;
 				}
 				else if (ans_.backtitle) {
 					ChangeScene(TITLE);
 					bgm_.Stop();
 					player_->Finalize();
+					isDossolve_ = true;
 				}
 			}
 			break;
@@ -425,7 +517,7 @@ void StageScene::SceneChange()
 			if (player_->GetIsClear() && baby_->GetIsClear()) {
 				//nowScene = kGameClear;
 				ChangeScene(CLEAR);
-				bgm_.Stop();
+				//bgm_.Stop();
 				player_->Finalize();
 			}
 			break;

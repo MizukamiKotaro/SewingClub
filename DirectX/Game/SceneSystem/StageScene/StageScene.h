@@ -26,6 +26,7 @@
 #include "GameElement/FragmentVignette/FragmentVignette.h"
 #include "Audio/Audio.h"
 #include"GameElement/SceneAcquisition/SceneAcquisition.h"
+#include"GameElement/SceneTransitionEffect/SceneTransitionEffect.h"
 
 #ifdef _DEBUG
 #include "GameElement/EditorSystem/EditorSystem.h"
@@ -51,6 +52,13 @@ public:
 	void Update() override;
 	void Draw() override;
 
+
+	void FromBlackInitialize()override;
+	void FromBlackUpdate()override;
+
+	//シーン終了時遷移
+	void ToBlackInitialize()override;
+	void ToBlackUpdate()override;
 private:
 
 	void MakePostEffect();
@@ -138,4 +146,9 @@ private:
 
 	//シーン全体の保存
 	SceneAcquisition* sceneAcuition_;
+
+	//遷移
+	std::unique_ptr<SceneTransitionEffect>sceneTransition_;
+	bool isDossolve_ = false;
+	bool isBlackOut_ = false;
 };

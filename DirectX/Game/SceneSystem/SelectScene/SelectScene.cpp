@@ -4,6 +4,7 @@
 #include"calc.h"
 #include "Texture.h"
 #include"DescriptorHeapManager/DescriptorHandles/DescriptorHandles.h"
+#include"AudioManager/AudioManager.h"
 
 #include<numbers>
 SelectScene::SelectScene()
@@ -138,6 +139,7 @@ SelectScene::~SelectScene() {}
 void SelectScene::Initialize()
 {
 
+	AudioManager::GetInstance()->AllStop();
 	SetGlobalV();
 
 	//カメラ初期化
