@@ -94,8 +94,10 @@ void ClearScene::FromBlackUpdate()
 
 void ClearScene::ToBlackInitialize()
 {
+	transitionTimeCount_ = 0;
 	black_->SetColor({ 0.0f, 0.0f, 0.0f, 0.0f });
 	sceneTransition_->Initialize(1.0f);
+
 }
 
 void ClearScene::ToBlackUpdate()
