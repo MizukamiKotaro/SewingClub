@@ -35,5 +35,5 @@ private:
 
 	//遷移関係
 	std::unique_ptr<SceneTransitionEffect>sceneTransition_;
-
+	bool isDossolve_ = false;
 };
