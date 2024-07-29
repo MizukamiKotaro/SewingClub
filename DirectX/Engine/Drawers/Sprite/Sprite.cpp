@@ -153,7 +153,7 @@ void Sprite::Draw(const Camera& camera, BlendMode blendMode)
 
 	PreDraw();
 
-	transformData_->WVP = worldMat_ * camera.GetOrthographicMat();
+	transformData_->WVP = worldMat_ * camera.GetOrthographicMat() * camera.GetViewProjection();
 	materialData_->uvTransform = Matrix4x4::MakeAffinMatrix({ uvScale_.x,uvScale_.y,0.0f }, Vector3{ 0.0f,0.0f,uvRotate_ }, { uvTranslate_.x,uvTranslate_.y,0.0f });
 
 	psoManager_->SetBlendMode(pipelineType_, blendMode);
