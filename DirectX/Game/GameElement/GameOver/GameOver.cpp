@@ -277,17 +277,37 @@ void GameOver::Draw()
 {
 
 	back_->Draw();
-	//
+	
 	for (auto& sp : GOText_) {
 		sp->Draw();
 	}
 	//雲
+	int spNum = 0;
 	for (auto& sp : backCloud_) {
-		sp->Draw();
+
+		//今選んでいる枠のみ描画
+		if (nowSelect_ == spNum) {
+			
+			sp->Draw();
+		}
+
+		spNum++;
 	}
 	//テキスト
+	spNum = 0;
 	for (auto& sp : text_) {
+
+		//今選んでいる物を黒色に
+		if (nowSelect_ == spNum) {
+			sp->SetColor({ 0.0f,0.0f,0.0f,1.0f });
+		}
+		else {
+			sp->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		}
+
 		sp->Draw();
+
+		spNum++;
 	}
 
 	arrow_->Draw();
