@@ -3,6 +3,7 @@
 #include"GameElement/OptionUI/AudioOptionUI.h"
 #include"GlobalVariables/GlobalVariableUser.h"
 #include"Audio.h"
+#include"GameElement/WaterSurface/WaterSurface.h"
 
 struct UpdateAnswer {
 	bool backOption = false;	//optionをやめるフラグ
@@ -31,7 +32,7 @@ public:
 	UpdateAnswer Update();
 
 	void Draw();
-
+	void DrawHuyohuyo();
 private:
 	//シーン転換やONOFFの処理
 	void SceneChange();
@@ -170,6 +171,6 @@ private:
 		"テキスト　ポーズ　サイズ",
 	};
 #pragma endregion
-
+	std::unique_ptr<WaterSurface> surface_;
 
 };

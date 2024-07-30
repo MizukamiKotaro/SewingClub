@@ -243,6 +243,7 @@ void SelectScene::Update()
 
 void SelectScene::Draw()
 {
+	optionUI_->DrawHuyohuyo();
 	sceneTransition_->DrawPE();
 
 	surface_->PreDraw();

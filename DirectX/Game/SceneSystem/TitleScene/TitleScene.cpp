@@ -190,7 +190,7 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-
+	optionUI_->DrawHuyohuyo();
 	WrightPostEffect();
 	Kyoko::Engine::PreDraw();
 
