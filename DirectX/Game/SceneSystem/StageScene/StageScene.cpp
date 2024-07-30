@@ -347,6 +347,7 @@ void StageScene::Update()
 
 void StageScene::Draw()
 {
+	optionUI_->DrawHuyohuyo();
 	instancingmodelManager_->Clear();
 	particleManager_->Clear();
 

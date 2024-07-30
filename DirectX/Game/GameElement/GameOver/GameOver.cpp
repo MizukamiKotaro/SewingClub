@@ -2,6 +2,7 @@
 #include"RandomGenerator/RandomGenerator.h"
 #include"calc.h"
 #include<numbers>
+#include "FrameInfo/FrameInfo.h"
 
 GameOver::GameOver()
 {
@@ -72,7 +73,7 @@ GameOver::GameOver()
 	gVU_->AddItem(anoKeys[RotateNum], rotateNUm_);
 	gVU_->AddItem(anoKeys[MaxRotateNum], maxRotate_);
 
-
+	surface_ = std::make_unique<WaterSurface>("ゲームオーバーの雲");
 }
 
 void GameOver::SetGlobalV()
@@ -267,7 +268,7 @@ GameOverFlags GameOver::Update()
 	}
 
 	arrow_->Update();
-
+	surface_->Update(FrameInfo::GetInstance()->GetDeltaTime());
 #pragma endregion
 
 	return SceneChange();
@@ -283,16 +284,7 @@ void GameOver::Draw()
 	}
 	//雲
 	int spNum = 0;
-	for (auto& sp : backCloud_) {
-
-		//今選んでいる枠のみ描画
-		if (nowSelect_ == spNum) {
-			
-			sp->Draw();
-		}
-
-		spNum++;
-	}
+	surface_->Draw();
 	//テキスト
 	spNum = 0;
 	for (auto& sp : text_) {
@@ -311,6 +303,13 @@ void GameOver::Draw()
 	}
 
 	arrow_->Draw();
+}
+
+void GameOver::DrawHuyohuyo()
+{
+	surface_->PreDraw();
+	backCloud_[nowSelect_]->Draw();
+	surface_->PostDraw();
 }
 
 

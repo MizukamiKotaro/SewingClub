@@ -57,6 +57,7 @@ void GameOverScene::Draw()
 {
 	//Dissolve描画前処理
 	sceneTransition_->DrawPE();
+	gameOver_->DrawHuyohuyo();
 
 	//エンジン描画前処理
 	Kyoko::Engine::PreDraw();

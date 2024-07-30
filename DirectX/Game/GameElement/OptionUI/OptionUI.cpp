@@ -1,5 +1,6 @@
 #include "OptionUI.h"
 #include<numbers>
+#include"FrameInfo/FrameInfo.h"
 
 OptionUI::OptionUI(SceneType type)
 {
@@ -66,7 +67,7 @@ OptionUI::OptionUI(SceneType type)
 	gVUser_->AddItem(keys[BlackScreenAlpha], backalpha_);
 	gVUser_->AddItem(keys[TextPause], textPause_->pos_);
 	gVUser_->AddItem(keys[TextPauseSize], textPause_->size_);
-
+	surface_ = std::make_unique<WaterSurface>("オプションの雲");
 }
 
 OptionUI::~OptionUI()
@@ -165,7 +166,7 @@ UpdateAnswer OptionUI::Update()
 	textBackTitle_->Update();
 	textSoundEdit_->Update();
 	textLeaveGame_->Update();
-
+	surface_->Update(FrameInfo::GetInstance()->GetDeltaTime());
 	SceneChange();
 
 	return ans_;
@@ -175,7 +176,7 @@ void OptionUI::Draw()
 {
 	//黒背景など描画
 	backSprite_->Draw();
-	blackFrame_->Draw();
+	surface_->Draw();
 
 	switch (type_)
 	{
@@ -192,6 +193,13 @@ void OptionUI::Draw()
 		break;
 	}
 
+}
+
+void OptionUI::DrawHuyohuyo()
+{
+	surface_->PreDraw();
+	blackFrame_->Draw();
+	surface_->PostDraw();
 }
 
 void OptionUI::SceneChange()
