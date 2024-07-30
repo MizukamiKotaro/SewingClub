@@ -249,7 +249,6 @@ void SelectScene::Draw()
 	for (int i = 0; i < _countTags; i++) {
 		if (i == Clound) {
 			sp_[i]->Draw(*camera_);
-			sp_[i]->Draw();
 		}
 		else if (i == SmallClound1) {
 			if (isDraw_[Spawn1]) {
@@ -296,6 +295,9 @@ void SelectScene::Draw()
 		}
 		else if (i == SmallClound3) {
 			
+		}
+		else if (i == Icon_Pause || i == Text_Pause) {
+			sp_[i]->Draw();
 		}
 		else {
 			sp_[i]->Draw(*camera_);
@@ -364,21 +366,41 @@ void SelectScene::ToBlackUpdate()
 		}
 	}
 	else {
-		transitionTimeCount_ += FrameInfo::GetInstance()->GetDeltaTime();
 
-		float alpha =
-			Ease::UseEase(0.0f, 1.0f, transitionTimeCount_, kTransitionTime, Ease::EaseInSine, 2);
-		black_->SetColor({ 0.0f, 0.0f, 0.0f, alpha });
+		float deltaTime = FrameInfo::GetInstance()->GetDeltaTime();
+		//シーン開始時の遷移animationが終了してから反応可能
+		bool startDissolve = false;
 
-		if (transitionTimeCount_ >= kTransitionTime) {
-			transitionRequest_ = Transition::kFromBlack;
-			black_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+		// カメラ移動処理
+		const float kMaxEaseFrame_ = 2.0f;
+		nowFrame_ = std::clamp(nowFrame_ += deltaTime, 0.0f, kMaxEaseFrame_);
+		float T = Ease::MakeEaseT(nowFrame_, kMaxEaseFrame_, Ease::EaseType::EaseIn, 4);
+		T = std::clamp(T, 0.0f, 1.0f);
+		camera_->transform_.translate_ = Ease::UseEase(Vector3(0.0f, 0.0f, -4.3f), Vector3(0.0f, 0.1f, -0.4f), T);
+		camera_->Update();
+		if (nowFrame_ >= kMaxEaseFrame_ * 0.5f) {
+			startDissolve = true;
+		}
 
-			if (sceneNo_ == nextScene_) {
-				sameScene_ = true;
-			}
-			else {
-				sceneNo_ = nextScene_;
+		// カメラ移動がおわったらflagが立つ
+		if (startDissolve) {
+			//以下Dissolve更新と処理
+			transitionTimeCount_ += FrameInfo::GetInstance()->GetDeltaTime();
+
+			float alpha =
+				Ease::UseEase(0.0f, 1.0f, transitionTimeCount_, kTransitionTime, Ease::EaseInSine, 2);
+			black_->SetColor({ 0.0f, 0.0f, 0.0f, alpha });
+
+			if (transitionTimeCount_ >= kTransitionTime) {
+				transitionRequest_ = Transition::kFromBlack;
+				black_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+
+				if (sceneNo_ == nextScene_) {
+					sameScene_ = true;
+				}
+				else {
+					sceneNo_ = nextScene_;
+				}
 			}
 		}
 	}
