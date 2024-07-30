@@ -39,6 +39,11 @@ void ClearScene::Initialize()
 
 void ClearScene::Update()
 {
+
+#ifdef _DEBUG
+	sceneTransition_->Debug();
+#endif // _DEBUG
+
 	float deltaTime = frameInfo_->GetDeltaTime();
 	gameClearFlags_ = gameClear_->Update(deltaTime);
 

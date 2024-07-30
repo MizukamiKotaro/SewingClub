@@ -15,7 +15,7 @@ GameOverScene::GameOverScene()
 
 	gameOver_ = std::make_unique<GameOver>();
 
-	sceneTransition_ = std::make_unique<SceneTransitionEffect>("gameover");
+	sceneTransition_ = std::make_unique<SceneTransitionEffect>("over");
 }
 
 GameOverScene::~GameOverScene()
@@ -56,7 +56,7 @@ void GameOverScene::Update()
 void GameOverScene::Draw()
 {
 	//Dissolve描画前処理
-	//sceneTransition_->DrawPE();
+	sceneTransition_->DrawPE();
 
 	//エンジン描画前処理
 	Kyoko::Engine::PreDraw();

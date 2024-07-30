@@ -29,9 +29,7 @@ SceneTransitionEffect::SceneTransitionEffect(const std::string& sceneName)
 void SceneTransitionEffect::SetGlobalV()
 {
 #ifdef _DEBUG
-	if (preSceneChangeActive_ && !postSceneChangeActive_) {
-		dissolve_->dissolveData_->baseLuminance = gvu_->GetFloatValue(keys[kLuminance]);
-	}
+	dissolve_->dissolveData_->baseLuminance = gvu_->GetFloatValue(keys[kLuminance]);
 #endif // _DEBUG
 
 	changeSecond_ = gvu_->GetFloatValue(keys[kChangeSpd]);
