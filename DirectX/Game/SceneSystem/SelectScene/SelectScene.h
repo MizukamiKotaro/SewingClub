@@ -18,7 +18,12 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	void FromBlackInitialize()override;
+	void FromBlackUpdate()override;
 
+	//シーン終了時遷移
+	void ToBlackInitialize()override;
+	void ToBlackUpdate()override;
 private:
 
 	void SetGlobalV();
@@ -310,7 +315,7 @@ private:
 
 	//各シーンチェンジ処理
 	std::unique_ptr<SceneTransitionEffect>sceneTransition_;
-	bool isChangeScene_ = false;
+	bool isdissolve_ = false;
 
 	std::unique_ptr<WaterSurface> surface_;
 	std::unique_ptr<WaterSurface> surface2_;

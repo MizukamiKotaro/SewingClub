@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include"DescriptorHeapManager/DescriptorHandles/DescriptorHandles.h"
 #include"AudioManager/AudioManager.h"
+#include"Ease/Ease.h"
 
 #include<numbers>
 SelectScene::SelectScene()
@@ -42,6 +43,7 @@ SelectScene::SelectScene()
 	}
 
 	sceneTransition_ = std::make_unique<SceneTransitionEffect>("select");
+	sceneTransition_->Initialize();
 
 	gvu_ = new GlobalVariableUser("Scene", "Selects");
 	for (int i = 0; i < _countTags; i++) {
@@ -171,8 +173,9 @@ void SelectScene::Initialize()
 	UpdateSprite();
 
 	sceneTransition_->Initialize();
-	isChangeScene_ = false;
+	isdissolve_ = false;
 
+	transition_ = Transition::kFromBlack;
 }
 
 void SelectScene::Update()
@@ -190,14 +193,13 @@ void SelectScene::Update()
 	camera_->Update();
 
 	float deltaTime = frameInfo_->GetDeltaTime();
-	if (sceneTransition_->PreSceneTransition(deltaTime)) {
 
 
 		SetGlobalV();
 #ifdef _DEBUG	
-		if (!isChangeScene_) {
-			sceneTransition_->Debug();
-		}
+		
+		sceneTransition_->Debug();
+		
 #endif // _DEBUG
 
 		
@@ -236,7 +238,7 @@ void SelectScene::Update()
 
 		UpdateSprite();
 
-	}
+	
 }
 
 void SelectScene::Draw()
@@ -308,10 +310,78 @@ void SelectScene::Draw()
 	}
 
 	//シーン転換時のフェードインアウト
-	BlackDraw();
+	if (transition_ == Transition::kToBlack) {
+		BlackDraw();
+	}
 	sceneTransition_->Draw();
 	//必須
 	Kyoko::Engine::PostDraw();
+}
+
+void SelectScene::FromBlackInitialize()
+{
+	if (sameScene_) {
+		sameScene_ = false;
+		Initialize();
+	}
+	sceneTransition_->Initialize();
+	black_->SetColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+}
+
+void SelectScene::FromBlackUpdate()
+{
+
+	float deltaTime = frameInfo_->GetDeltaTime();
+	if (deltaTime >= 0.3f) {
+		return;
+	}
+
+	if (sceneTransition_->PreSceneTransition(deltaTime)) {
+		transitionRequest_ = Transition::kOperation;
+	}
+}
+
+void SelectScene::ToBlackInitialize()
+{
+	transitionTimeCount_ = 0.0f;
+	black_->SetColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+}
+
+void SelectScene::ToBlackUpdate()
+{
+	if (isdissolve_) {
+		float deltaTime = frameInfo_->GetDeltaTime();
+		if (sceneTransition_->PostSceneTransition(deltaTime)) {
+			transitionRequest_ = Transition::kFromBlack;
+			black_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+
+			if (sceneNo_ == nextScene_) {
+				sameScene_ = true;
+			}
+			else {
+				sceneNo_ = nextScene_;
+			}
+		}
+	}
+	else {
+		transitionTimeCount_ += FrameInfo::GetInstance()->GetDeltaTime();
+
+		float alpha =
+			Ease::UseEase(0.0f, 1.0f, transitionTimeCount_, kTransitionTime, Ease::EaseInSine, 2);
+		black_->SetColor({ 0.0f, 0.0f, 0.0f, alpha });
+
+		if (transitionTimeCount_ >= kTransitionTime) {
+			transitionRequest_ = Transition::kFromBlack;
+			black_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+
+			if (sceneNo_ == nextScene_) {
+				sameScene_ = true;
+			}
+			else {
+				sceneNo_ = nextScene_;
+			}
+		}
+	}
 }
 
 
@@ -319,22 +389,16 @@ void SelectScene::Draw()
 void SelectScene::SceneChange()
 {
 
-	float deltaTime = frameInfo_->GetDeltaTime();
-	//シーン開始時の遷移animationが終了してから反応可能
-	if (isChangeScene_ == true) {
-		//以下Dissolve更新と処理
-		if (sceneTransition_->PostSceneTransition(deltaTime)) {
-			stageNo_ = pickedNum_;
-			ChangeScene(STAGE);
-		}
-	}
-	else {
+
+	
+	
 		//シーン変更演出していないときの処理
 
 #ifdef _DEBUG
 		if (input_->PressedKey(DIK_SPACE)) {
 			// シーン切り替え
-			isChangeScene_ = true;
+			stageNo_ = pickedNum_;
+			ChangeScene(STAGE);
 			bgm_.Stop();
 			seSelect_.Play();
 		}
@@ -351,13 +415,15 @@ void SelectScene::SceneChange()
 				// シーン切り替え
 				ChangeScene(TITLE);
 				bgm_.Stop();
+				isdissolve_ = true;
 			}
 		}
 		else {
 			//ステージを選択する処理
 			if (input_->PressedGamePadButton(Input::GamePadButton::A)) {
 				// シーン切り替え
-				isChangeScene_ = true;
+				stageNo_ = pickedNum_;
+				ChangeScene(STAGE);
 				bgm_.Stop();
 				seSelect_.Play();
 			}//オプション開く処理
@@ -367,7 +433,7 @@ void SelectScene::SceneChange()
 			}
 		}
 
-	}
+	
 
 }
 

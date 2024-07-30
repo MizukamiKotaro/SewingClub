@@ -365,6 +365,8 @@ void StageScene::Draw()
 
 	BlackDraw();
 
+	sceneTransition_->Draw();
+
 #ifdef _DEBUG
 	AnimationManager::GetInstance()->Draw(camera_.get());
 #endif // アニメーションエディター用描画
@@ -600,6 +602,8 @@ void StageScene::MakePostEffect()
 
 
 	sceneAcuition_->PostDraw();
+
+	sceneTransition_->DrawPE();
 
 }
 
