@@ -54,7 +54,7 @@ void ClearScene::Update()
 
 void ClearScene::Draw()
 {
-
+	gameClear_->DrawHuyohuyo();
 	sceneTransition_->DrawPE();
 
 	Kyoko::Engine::PreDraw();
