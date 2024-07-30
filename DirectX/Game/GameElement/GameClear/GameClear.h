@@ -6,6 +6,7 @@
 #include<iostream>
 #include "GameElement/Animation/Animation2D.h"
 #include"Audio.h"
+#include"GameElement/WaterSurface/WaterSurface.h"
 
 struct ClearAnswer {
 	bool goSelect = false;
@@ -29,6 +30,8 @@ public:
 	static int faceIndex_;
 
 	void SetBabyParam();
+	// PreDraw、PostDrawの外に書く
+	void DrawHuyohuyo();
 
 private:
 
@@ -293,5 +296,5 @@ private:
 #pragma endregion
 
 #pragma endregion
-
+	std::unique_ptr<WaterSurface> surface_;
 };

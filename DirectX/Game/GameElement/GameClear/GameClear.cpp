@@ -81,6 +81,7 @@ GameClear::GameClear()
 	babyAnimation_->Play(true);
 
 	nowS_ = kFadeIn;
+	surface_ = std::make_unique<WaterSurface>("クリアの雲");
 }
 
 void GameClear::SetGlobalV()
@@ -401,6 +402,8 @@ ClearAnswer GameClear::Update(const float& delta)
 
 	reTex_[resultAns_]->Update();
 
+	surface_->Update(delta);
+
 	return ScceneChange();
 }
 
@@ -408,7 +411,13 @@ void GameClear::Draw()
 {
 	//描画
 	for (int i = 0; i < _countText; i++) {
-
+		if (i == StageBackCloud) {
+			surface_->Draw();
+			continue;
+		}
+		else if (i == Arrow_Frame) {
+			continue;
+		}
 		//ノーマル評価画像で評価同じなら描画
 		if (i == (int)Valuation_Normal){
 			if (valuation_ == Normal) {
@@ -431,7 +440,6 @@ void GameClear::Draw()
 			baby_[valuation_]->Update();
 			baby_[valuation_]->Draw();
 		}
-
 		else {
 			//それ以外のごみ
 			sp_[i]->Draw();
@@ -515,6 +523,14 @@ void GameClear::SetBabyParam() {
 	else {
 		resultAns_ =kS;
 	}
+}
+
+void GameClear::DrawHuyohuyo()
+{
+	surface_->PreDraw();
+	sp_[StageBackCloud]->Draw();
+	sp_[Arrow_Frame]->Draw();
+	surface_->PostDraw();
 }
 
 
