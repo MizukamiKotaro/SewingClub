@@ -15,7 +15,7 @@ GameOverScene::GameOverScene()
 
 	gameOver_ = std::make_unique<GameOver>();
 
-	sceneTransition_ = std::make_unique<SceneTransitionEffect>("gameOver");
+	sceneTransition_ = std::make_unique<SceneTransitionEffect>("gameover");
 }
 
 GameOverScene::~GameOverScene()
@@ -37,6 +37,12 @@ void GameOverScene::Initialize()
 
 void GameOverScene::Update()
 {
+
+#ifdef _DEBUG
+	sceneTransition_->Debug();
+#endif // _DEBUG
+
+
 	//ゲームオーバー更新処理
 	gameOverFlags_ = gameOver_->Update();
 
