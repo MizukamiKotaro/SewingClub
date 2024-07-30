@@ -4,7 +4,12 @@
 
 GameOverScene::GameOverScene()
 {
-	FirstInit();
+	if (!isIniialize_) {
+		FirstInit();
+		isIniialize_ = true;
+	}
+	black_->SetColor(Vector4{ 0.0f,0.0f,0.0f,0.0f });
+
 
 	sceneAcuition_ = SceneAcquisition::GetInstance();
 
@@ -19,16 +24,24 @@ GameOverScene::~GameOverScene()
 
 void GameOverScene::Initialize()
 {
+	black_->SetColor(Vector4{ 0.0f,0.0f,0.0f,0.0f });
+
+
 	//初期化
 	gameOver_->Initialize();
 	sceneTransition_->Initialize(1.0f);
 	isDossolve_ =false;
+
+
 }
 
 void GameOverScene::Update()
 {
 	//ゲームオーバー更新処理
 	gameOverFlags_ = gameOver_->Update();
+
+	black_->Update();
+
 
 	//シーン変更処理
 	SceneChange();
@@ -37,7 +50,7 @@ void GameOverScene::Update()
 void GameOverScene::Draw()
 {
 	//Dissolve描画前処理
-	sceneTransition_->DrawPE();
+	//sceneTransition_->DrawPE();
 
 	//エンジン描画前処理
 	Kyoko::Engine::PreDraw();
@@ -49,8 +62,9 @@ void GameOverScene::Draw()
 	gameOver_->Draw();
 
 	//遷移描画
-	BlackDraw();
-
+	if (transition_ == Transition::kToBlack) {
+		BlackDraw();
+	}
 	//Dissolve描画
 	sceneTransition_->Draw();
 

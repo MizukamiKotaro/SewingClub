@@ -56,7 +56,7 @@ public:
 
 	void ChangeScene(int sceneNo);
 
-	virtual void BlackDraw() { black_->Draw(*camera_.get()); }
+	virtual void BlackDraw() { black_->Draw(); }
 
 protected:
 
@@ -82,6 +82,8 @@ protected:
 	const float kTransitionTime = 0.5f;
 
 	bool sameScene_ = false;
+
+	bool isIniialize_ = false;
 private:
 
 

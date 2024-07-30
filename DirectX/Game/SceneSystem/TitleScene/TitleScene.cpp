@@ -7,7 +7,10 @@
 
 TitleScene::TitleScene()
 {
-	FirstInit();
+	if (!isIniialize_) {
+		FirstInit();
+		isIniialize_ = true;
+	}
 
 	buttonA_ = std::make_unique<Sprite>("controler_UI_A1.png");
 	buttonA_->pos_.y = 500.0f;
@@ -242,7 +245,7 @@ void TitleScene::WrightPostEffect()
 	}
 
 
-	BlackDraw();
+	//BlackDraw();
 
 	sceneAcuition_->PostDraw();
 

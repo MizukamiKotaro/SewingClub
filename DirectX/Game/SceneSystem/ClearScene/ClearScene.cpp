@@ -4,13 +4,27 @@
 
 ClearScene::ClearScene()
 {
-	FirstInit();
+	if (!isIniialize_) {
+		FirstInit();
+		isIniialize_ = true;
+	}
 
 	sceneAcuition_ = SceneAcquisition::GetInstance();
 
 	gameClear_ = std::make_unique<GameClear>();
 
 	sceneTransition_ = std::make_unique<SceneTransitionEffect>("clear");
+
+
+}
+
+ClearScene::~ClearScene()
+{
+}
+
+void ClearScene::Initialize()
+{
+	black_->SetColor(Vector4{ 0.0f,0.0f,0.0f,0.0f });
 
 	if (stageNo_ + 1 == maxStageNo_) {
 		gameClear_->Initialize(stageNo_, false);
@@ -23,19 +37,12 @@ ClearScene::ClearScene()
 	isDossolve_ = false;
 }
 
-ClearScene::~ClearScene()
-{
-}
-
-void ClearScene::Initialize()
-{
-
-}
-
 void ClearScene::Update()
 {
 	float deltaTime = frameInfo_->GetDeltaTime();
 	gameClearFlags_ = gameClear_->Update(deltaTime);
+
+	black_->Update();
 
 	SceneChange();
 }
@@ -51,7 +58,9 @@ void ClearScene::Draw()
 
 	gameClear_->Draw();
 
-	BlackDraw();
+	if (transition_ == Transition::kToBlack) {
+		BlackDraw();
+	}
 
 	sceneTransition_->Draw();
 
