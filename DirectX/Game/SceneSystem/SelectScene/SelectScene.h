@@ -313,4 +313,8 @@ private:
 
 	std::unique_ptr<WaterSurface> surface_;
 	std::unique_ptr<WaterSurface> surface2_;
+
+	// カウント用フレーム
+	float nowFrame_ = 0.0f;
+
 };
