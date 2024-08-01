@@ -111,6 +111,9 @@ void Baby::Initialize()
 	baby_->SetUVParam(handle);
 	baby_->SetTexture(TextureManager::GetInstance()->LoadTexture("baby_normal.png"));
 	animation_->Play(true);
+	baby_->Update();
+
+	tensionEffectManager_->Initialize();
 }
 
 void Baby::Update(float deltaTime)

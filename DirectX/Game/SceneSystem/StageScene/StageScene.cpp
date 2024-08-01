@@ -158,6 +158,8 @@ void StageScene::Initialize()
 
 	goalCamera_->Initialize();
 
+	comboEffect_->Initialize();
+
 	sceneAcuition_->Initialize();
 	sceneTransition_->Initialize(1.0f);
 	isBlackOut_ = false;

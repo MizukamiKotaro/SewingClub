@@ -25,6 +25,13 @@ ComboEffectManager* ComboEffectManager::GetInstance() {
 	return &instance;
 }
 
+void ComboEffectManager::Initialize() {
+	for (auto& effect : effectContiner_) {
+		effect.Initialize();
+	}
+	catchEffect_.Initialize();
+}
+
 void ComboEffectManager::Update(const float& delta) {
 	// 更新処理
 	for (auto& model : effectContiner_) {
@@ -70,6 +77,10 @@ void ComboEffectManager::Draw() {
 		model.Draw(instancingManager_, modelData_.at(model.GetIndex()));
 	}
 	catchEffect_.Draw(instancingManager_, modelData_.at(MeshData::CATCH));
+}
+
+void ComboEffect::Initialize() {
+	isActive_ = false;
 }
 
 void ComboEffect::Initialize(const Vector3& playerpos, const uint32_t& index) {

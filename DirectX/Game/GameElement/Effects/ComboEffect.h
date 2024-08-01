@@ -10,6 +10,7 @@ public:
 	ComboEffect() = default;
 	~ComboEffect() = default;
 
+	void Initialize();
 	void Initialize(const Vector3& playerpos, const uint32_t& index);
 	void Update(const float& delta);
 	void Draw(ParticleManager* instancingManager, const ParticleMeshTexData* data) const;
@@ -59,7 +60,7 @@ public:
 	~ComboEffectManager() = default;
 
 	static ComboEffectManager* GetInstance();
-
+	void Initialize();
 	void Update(const float& delta);
 	int32_t Create(const Vector3& playerPosition);
 	void CreateCatch(const Vector3& playerPosition);
