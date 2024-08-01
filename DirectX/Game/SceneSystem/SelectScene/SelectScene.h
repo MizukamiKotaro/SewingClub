@@ -322,5 +322,6 @@ private:
 
 	// カウント用フレーム
 	float nowFrame_ = 0.0f;
-
+	// 赤ちゃんの固定座標
+	Vector2 kBabyPosition_;
 };
