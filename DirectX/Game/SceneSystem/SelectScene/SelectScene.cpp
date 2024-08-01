@@ -78,8 +78,7 @@ SelectScene::SelectScene()
 	gvu_->AddItem(anoKeys[cS2], cSwingSeconds_[Spawn2]);
 	gvu_->AddItem(anoKeys[cS3], cSwingSeconds_[Spawn3]);
 	gvu_->AddItem(anoKeys[cS4], cSwingSeconds_[None]);
-
-
+	
 	surface_ = std::make_unique<WaterSurface>("セレクトの雲");
 	surface2_ = std::make_unique<WaterSurface>("セレクトのステージイメージ");
 }

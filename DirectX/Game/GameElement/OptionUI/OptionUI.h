@@ -148,6 +148,8 @@ private:
 		BlackScreenAlpha,
 		TextPause,
 		TextPauseSize,
+		FramePos,
+		FrameSize,
 		_countTags
 	};
 
@@ -169,6 +171,8 @@ private:
 		"黒背景の透明度",
 		"テキスト　ポーズ　座標",
 		"テキスト　ポーズ　サイズ",
+		"フレーム　座標",
+		"フレーム　サイズ"
 	};
 #pragma endregion
 	std::unique_ptr<WaterSurface> surface_;

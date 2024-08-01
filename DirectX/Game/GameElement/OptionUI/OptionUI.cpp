@@ -67,6 +67,9 @@ OptionUI::OptionUI(SceneType type)
 	gVUser_->AddItem(keys[BlackScreenAlpha], backalpha_);
 	gVUser_->AddItem(keys[TextPause], textPause_->pos_);
 	gVUser_->AddItem(keys[TextPauseSize], textPause_->size_);
+	gVUser_->AddItem(keys[FramePos], blackFrame_->pos_);
+	gVUser_->AddItem(keys[FrameSize], blackFrame_->size_);
+
 	surface_ = std::make_unique<WaterSurface>("オプションの雲");
 }
 
@@ -84,6 +87,8 @@ void OptionUI::Initialize()
 
 	SetGrobalV();
 
+	backSprite_->Update();
+	blackFrame_->Update();
 	textBackGame_->Update();
 	textBackSelect_->Update();
 	textBackTitle_->Update();
@@ -113,6 +118,9 @@ void OptionUI::SetGrobalV()
 
 	textPause_->pos_ = gVUser_->GetVector2Value(keys[TextPause]);
 	textPause_->size_ = gVUser_->GetVector2Value(keys[TextPauseSize]);
+
+	blackFrame_->pos_ = gVUser_->GetVector2Value(keys[FramePos]);
+	blackFrame_->size_ = gVUser_->GetVector2Value(keys[FrameSize]);
 
 
 	backSprite_->SetColor({ 0, 0, 0, backalpha_ });
