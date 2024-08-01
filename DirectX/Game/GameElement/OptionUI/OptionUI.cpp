@@ -89,12 +89,14 @@ void OptionUI::Initialize()
 
 	backSprite_->Update();
 	blackFrame_->Update();
+	textPause_->Update();
 	textBackGame_->Update();
 	textBackSelect_->Update();
 	textBackTitle_->Update();
 	textSoundEdit_->Update();
 	textLeaveGame_->Update();
 	selectArrow_->Update();
+
 }
 
 void OptionUI::SetGrobalV()
