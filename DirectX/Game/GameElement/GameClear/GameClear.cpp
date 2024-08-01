@@ -130,6 +130,21 @@ void GameClear::InputUpdate()
 {
 
 	Vector2 move = input_->GetGamePadLStick();
+	if (input_->PressedGamePadButton(Input::GamePadButton::UP)) {
+		move.y = 1.0f;
+	}
+	else if (input_->PressedGamePadButton(Input::GamePadButton::DOWN)) {
+		move.y = -1.0f;
+	}
+
+	if (input_->PressedGamePadButton(Input::GamePadButton::LEFT)) {
+		move.x -= 1.0f;
+	}
+	else if (input_->PressedGamePadButton(Input::GamePadButton::RIGHT)) {
+		move.x += 1.0f;
+	}
+
+
 	if (inputActive_) {
 		//右入力
 		if (move.x > stickD_) {

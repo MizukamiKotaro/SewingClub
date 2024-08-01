@@ -175,6 +175,19 @@ GameOverFlags GameOver::Update()
 #pragma region 入力による選択物変更処理
 		Vector2 move = input_->GetGamePadLStick();
 
+		if (input_->PressedGamePadButton(Input::GamePadButton::UP)) {
+			move.y = 1.0f;
+		}
+		else if (input_->PressedGamePadButton(Input::GamePadButton::DOWN)) {
+			move.y = -1.0f;
+		}
+		if (input_->PressedGamePadButton(Input::GamePadButton::LEFT)) {
+			move.x -= 1.0f;
+		}
+		else if (input_->PressedGamePadButton(Input::GamePadButton::RIGHT)) {
+			move.x += 1.0f;
+		}
+
 
 		if (isInputMoveActive_) {
 			//入力可能の場合の処理

@@ -94,6 +94,7 @@ void OptionUI::Initialize()
 	textBackTitle_->Update();
 	textSoundEdit_->Update();
 	textLeaveGame_->Update();
+	selectArrow_->Update();
 }
 
 void OptionUI::SetGrobalV()
@@ -216,7 +217,7 @@ void OptionUI::SceneChange()
 	if (!isBacked_) {
 
 		//ゲームに戻る処理
-		if ((nowSelect_ == BackGame && input_->PressedGamePadButton(Input::GamePadButton::A)) || input_->PressedGamePadButton(Input::GamePadButton::START)) {
+		if ((nowSelect_ == BackGame && input_->PressedGamePadButton(Input::GamePadButton::A)) || input_->PressedGamePadButton(Input::GamePadButton::START)|| (opScene_!=kSound&&input_->PressedGamePadButton(Input::GamePadButton::B))) {
 			ans_.backOption = true;
 			seSelect_.Play();
 		}

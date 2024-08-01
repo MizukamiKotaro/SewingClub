@@ -185,7 +185,7 @@ bool AudioOptionUI::Update()
 	seSelectBGM_.Update();
 
 
-	if (input_->PressedGamePadButton(Input::GamePadButton::START) ||
+	if (input_->PressedGamePadButton(Input::GamePadButton::START)|| input_->PressedGamePadButton(Input::GamePadButton::B) ||
 		(nowSelect_ == Back && input_->PressedGamePadButton(Input::GamePadButton::A))) {
 
 		return false;
