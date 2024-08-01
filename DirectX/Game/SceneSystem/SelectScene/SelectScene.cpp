@@ -105,6 +105,9 @@ void SelectScene::SetGlobalV()
 		else if (i == Clound) {
 			cPos_[None] = gvu_->GetVector2Value(spKeysP[i]);
 		}
+		else if (i == Baby) {
+			kBabyPosition_ = gvu_->GetVector2Value(spKeysP[i]);
+		}
 		else {
 			sp_[i]->pos_ = gvu_->GetVector2Value(spKeysP[i]);
 		}
@@ -160,7 +163,7 @@ void SelectScene::Initialize()
 
 	bgm_.Play(true);
 
-	
+	sp_[Baby]->pos_ = kBabyPosition_;
 
 
 	ArrowUpdate();
@@ -194,48 +197,49 @@ void SelectScene::Update()
 	float deltaTime = frameInfo_->GetDeltaTime();
 
 
-		SetGlobalV();
-#ifdef _DEBUG	
+#ifdef _DEBUG
+	SetGlobalV();
 		
-		sceneTransition_->Debug();
+	sceneTransition_->Debug();
 		
 #endif // _DEBUG
 
-		
+	
 
-		//オプション有効時の処理
-		if (isOptionActive_) {
-			ans_ = optionUI_->Update();
-			if (ans_.audioOption) {
-				bgm_.Update();
-			}
+	//オプション有効時の処理
+	if (isOptionActive_) {
+		ans_ = optionUI_->Update();
+		if (ans_.audioOption) {
+			bgm_.Update();
 		}
-		else {
-			//オプション非有効の時
+		NumberUpdate();
+	}
+	else {
+		//オプション非有効の時
 
-			InputUpdate();
+		InputUpdate();
 
-			ArrowUpdate();
+		ArrowUpdate();
 
-			NumberUpdate();
+		NumberUpdate();
 
-			CloudUpdate();
+		CloudUpdate();
 
-			surface_->Update(deltaTime);
-			surface2_->Update(deltaTime);
+		surface_->Update(deltaTime);
+		surface2_->Update(deltaTime);
 
-			effeBSleep_->Update(1.0f);
+		effeBSleep_->Update(1.0f);
 
-			bCount_ += bSwingSecond_ / 60.0f;
-			bCount_ = std::fmod(bCount_, 2.0f * (float)std::numbers::pi);
-			bAnimeP_.y = +std::sin(bCount_) * bSwingNum_;
-			sp_[Baby]->pos_ += bAnimeP_;
-		}
+		bCount_ += bSwingSecond_ / 60.0f;
+		bCount_ = std::fmod(bCount_, 2.0f * std::numbers::pi_v<float>);
+		bAnimeP_.y = +std::sin(bCount_) * bSwingNum_;
+		sp_[Baby]->pos_ = kBabyPosition_ + bAnimeP_;
+	}
 
 
-		SceneChange();
+	SceneChange();
 
-		UpdateSprite();
+	UpdateSprite();
 
 	
 }
@@ -298,6 +302,9 @@ void SelectScene::Draw()
 		}
 		else if (i == Icon_Pause || i == Text_Pause) {
 			sp_[i]->Draw();
+		}
+		else if (i == Num1) {
+			sp_[i]->Draw(*camera_);
 		}
 		else {
 			sp_[i]->Draw(*camera_);
