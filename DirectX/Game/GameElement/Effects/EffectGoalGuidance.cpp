@@ -219,21 +219,23 @@ void UIGoalGuidance::Update()
 		bool isScreen = false;
 
 		//画面外なら寄せる
-		if (areaType_ == AreaType::Squea) {
+		if (quotaAreaType_ == AreaType::Squea) {
 			spritePos = TransformPosition(spritePos, cameraVPV);
 
+			///X領域処理
+			//最大領域外チェック
 			if (spritePos.x + scale_.x > (640.0f + area_.x / 2.0f)) {
 				spritePos.x = (640.0f + area_.x / 2.0f) - scale_.x;
-			}
+			}//最小領域外チェック
 			else if (spritePos.x - scale_.x < (640.0f - area_.x / 2.0f)) {
-				spritePos.x = (640.0f - area_.x / 2.0f)+ scale_.x;
+				spritePos.x = (640.0f - area_.x / 2.0f) + scale_.x;
 			}
 
-			if (spritePos.y + scale_.y > (360.0f + area_.x / 2.0f)) {
-				spritePos.y = -scale_.y + (360.0f + area_.y / 2.0f);
+			if (spritePos.y + scale_.y > (360.0f + area_.y / 2.0f)) {
+				spritePos.y = (360.0f + area_.y / 2.0f) - scale_.y;
 			}
-			else if (spritePos.y - scale_.y < (360.0f - area_.x / 2.0f)) {
-				spritePos.y = (360.0f - area_.y / 2.0f)+ scale_.y;
+			else if (spritePos.y - scale_.y < (360.0f - area_.y / 2.0f)) {
+				spritePos.y = (360.0f - area_.y / 2.0f) + scale_.y;
 			}
 
 		}
