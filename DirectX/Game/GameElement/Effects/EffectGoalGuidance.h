@@ -30,7 +30,7 @@ public:
 	/// 描画
 	/// </summary>
 	/// <param name="camera"></param>
-	void Draw(const Camera* camera);
+	void Draw();
 
 
 	//ノルマの設定

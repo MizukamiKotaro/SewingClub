@@ -236,20 +236,6 @@ void UIGoalGuidance::Update()
 				spritePos.y = (360.0f - area_.y / 2.0f)+ scale_.y;
 			}
 
-
-			//if (spritePos.x + quotaUISize_.x > (640.0f + area_.x / 2.0f)) {
-			//	spritePos.x = (640.0f + area_.x / 2.0f) - quotaUISize_.x;
-			//}//最小領域外チェック
-			//else if (spritePos.x - quotaUISize_.x < (640.0f - area_.x / 2.0f)) {
-			//	spritePos.x = (640.0f - area_.x / 2.0f) + quotaUISize_.x;
-			//}
-
-			//if (spritePos.y + quotaUISize_.y > (360.0f + area_.y / 2.0f)) {
-			//	spritePos.y = (360.0f + area_.y / 2.0f) - quotaUISize_.y;
-			//}
-			//else if (spritePos.y - quotaUISize_.y < (360.0f - area_.y / 2.0f)) {
-			//	spritePos.y = (360.0f - area_.y / 2.0f) + quotaUISize_.y;
-			//}
 		}
 		else if (areaType_ == AreaType::Sphere) {
 
@@ -296,7 +282,7 @@ void UIGoalGuidance::Update()
 }
 
 
-void UIGoalGuidance::Draw(const Camera* camera)
+void UIGoalGuidance::Draw()
 {
 	//ノルマ未達成ならノルマまでのガイド描画
 	if (!isQuota_) {
@@ -306,7 +292,7 @@ void UIGoalGuidance::Draw(const Camera* camera)
 	}
 	else {
 		if (isDraw_) {
-			model_->Draw(*camera);
+			model_->Draw();
 		}
 	}
 }

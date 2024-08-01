@@ -591,7 +591,7 @@ void StageScene::MakePostEffect()
 
 	///いかUI
 	fragmentVignette_->Draw();
-	effeGoalGuid_->Draw(camera_.get());
+	effeGoalGuid_->Draw();
 
 	player_->DrawUI();
 

@@ -141,21 +141,23 @@ UpdateAnswer OptionUI::Update()
 	backSprite_->Update();
 	blackFrame_->Update();
 	textPause_->Update();
-	switch (type_)
-	{
-	case OptionUI::kTitle:
-		TitleUpdate();
-		break;
-	case OptionUI::kSelect:
-		SelectUpdate();
-		break;
-	case OptionUI::kStage:
-		StageUpdate();
-		break;
-	default:
-		break;
-	}
 
+	if (opScene_ == kNone) {
+		switch (type_)
+		{
+		case OptionUI::kTitle:
+			TitleUpdate();
+			break;
+		case OptionUI::kSelect:
+			SelectUpdate();
+			break;
+		case OptionUI::kStage:
+			StageUpdate();
+			break;
+		default:
+			break;
+		}
+	}
 	ArrowUpdate();
 
 
@@ -338,7 +340,7 @@ void OptionUI::TitleUpdate()
 #pragma region 入力による現在選択しているもの変更
 
 	//初期画面の場合の処理
-	if (opScene_ == kNone) {
+
 		//入力
 		Vector2 move = input_->GetGamePadLStick();
 
@@ -395,7 +397,7 @@ void OptionUI::TitleUpdate()
 				}
 			}
 		}
-	}
+	
 
 #pragma endregion
 
