@@ -4,7 +4,7 @@
 #include"Input.h"
 #include"Vector3.h"
 #include"Audio.h"
-
+#include"GameElement/WaterSurface/WaterSurface.h"
 #include<iostream>
 
 struct GameOverFlags {
@@ -23,6 +23,7 @@ public:
 	GameOverFlags Update();
 
 	void Draw();
+	void DrawHuyohuyo();
 
 private:
 
@@ -184,5 +185,5 @@ private:
 	};
 
 #pragma endregion
-
+	std::unique_ptr<WaterSurface> surface_;
 };
