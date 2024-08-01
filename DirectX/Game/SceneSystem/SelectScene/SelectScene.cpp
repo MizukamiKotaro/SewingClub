@@ -312,7 +312,7 @@ void SelectScene::Draw()
 	}
 	surface2_->Draw();
 
-	effeBSleep_->Draw();
+	effeBSleep_->Draw(*camera_);
 
 	if (isOptionActive_) {
 		optionUI_->Draw();

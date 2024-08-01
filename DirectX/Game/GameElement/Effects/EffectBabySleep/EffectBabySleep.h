@@ -14,7 +14,7 @@ public:
 
 	void Update(float delta);
 
-	void Draw();
+	void Draw(const Camera& camera);
 
 	void SetSpawnPos(const Vector2& pos);
 

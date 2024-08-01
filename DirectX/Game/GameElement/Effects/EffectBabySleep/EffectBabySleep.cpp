@@ -122,10 +122,10 @@ void EffectBabySleep::Update(float delta)
 
 }
 
-void EffectBabySleep::Draw()
+void EffectBabySleep::Draw(const Camera& camera)
 {
 	for (auto& data : datas_) {
-		data.sp->Draw();
+		data.sp->Draw(camera);
 	}
 }
 
