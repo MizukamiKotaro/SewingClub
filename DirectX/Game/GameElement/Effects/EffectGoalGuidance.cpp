@@ -1,8 +1,11 @@
 #include "EffectGoalGuidance.h"
 #include"WindowsInfo/WindowsInfo.h"
 #include"Math/calc.h"
+#include"GameElement/2DHitBox/2DHitBox.h"
 #include<numbers>
 #include <algorithm>
+
+
 UIGoalGuidance::UIGoalGuidance()
 {
 	model_ = std::make_unique<Sprite>("HUD_arrow.png");
@@ -100,9 +103,28 @@ float GetYRotate(const Vector2& v) {
 
 }
 
+
+
+
 void UIGoalGuidance::Update()
 {
 	Debug();
+
+	//各データ取得
+	Vector2 windowSize = WindowsInfo::GetInstance()->GetWindowSize();
+	Matrix4x4 cameraVPV = camera_->GetViewProjection() * MakeViewPortMatrix(0, 0, windowSize.x, windowSize.y, 0, 1);
+
+	//ガイドUIの制限範囲取得
+	Vector2 min = { 640 - area_.x / 2.0f,360.0f - area_.y / 2.0f };
+	Vector2 max = { 640 + area_.x / 2.0f,360.0f + area_.y / 2.0f };
+
+	//各辺のデータ
+	std::vector<Edge>edge{
+		{{min.x,max.y},{max.x,max.y}},//上辺
+		{{max.x,max.y},{max.x,min.y}},//右辺
+		{{min.x,min.y},{max.x,min.y}},//下辺
+		{{min.x,max.y},{min.x,min.y}} //左辺
+	};
 
 	if (!isQuota_) {
 
@@ -116,8 +138,8 @@ void UIGoalGuidance::Update()
 			}
 			});
 
-		Vector2 windowSize = WindowsInfo::GetInstance()->GetWindowSize();
-		Matrix4x4 cameraVPV = camera_->GetViewProjection() * MakeViewPortMatrix(0, 0, windowSize.x, windowSize.y, 0, 1);
+
+
 
 
 		//残ったものの更新処理
@@ -128,29 +150,61 @@ void UIGoalGuidance::Update()
 			Vector3 spritePos = *data.position_ - (direction.Normalize() * (quotaDirection_));
 			//Vector3 spritePos = data.position_;
 
+			//アイテムのスクリーン座標系取得(透過処理用
 			Vector3 PP = TransformPosition(*data.position_, cameraVPV);
+
+			//アイテムのスクリーン座標系取得
+			spritePos = TransformPosition(spritePos, cameraVPV);
 
 			//領域内チェック
 			bool isScreen = false;
 			//画面外なら寄せる
 			if (quotaAreaType_ == AreaType::Squea) {
-				spritePos = TransformPosition(spritePos, cameraVPV);
 
-				///X領域処理
-				//最大領域外チェック
-				if (spritePos.x + quotaUISize_.x >(640.0f+ area_.x/2.0f)) {
-					spritePos.x = (640.0f + area_.x / 2.0f) - quotaUISize_.x;
-				}//最小領域外チェック
-				else if (spritePos.x - quotaUISize_.x < (640.0f - area_.x / 2.0f)) {
-					spritePos.x = (640.0f - area_.x / 2.0f)+ quotaUISize_.x;
+				
+
+				//線
+				Lineee line{
+					.start{640,360},//プレイヤーが画面中央固定という油断処理
+					.end{spritePos.x,spritePos.y}
+				};
+
+				//辺の接点量取得
+				std::vector<Vector2>result = FindIntersectionPoints(edge,line);
+
+				//サイズが0の場合（矢印稼働領域内
+				if (result.size() == 0) {
+					//スクリーン座標に変換しているので特になし
+				}
+				else {
+					//アイテムとプレイヤーとの距離が一番近い点を座標にする
+
+					bool first = true;
+					float length = 0;
+					Vector2 it = { 0,0 };
+
+					for (auto& re : result) {
+						float leng = Vector2(re - Vector2{ 640,360 }).Length();
+
+						//初回ループの場合
+						if (first) {
+							first = false;
+							length=leng;
+							it = re;
+						}
+						else {
+							//現在の値より小さい場合その値に設定して座標も変更
+							if (length > leng) {
+								length = leng;
+								it = re;
+							}
+						}
+					}
+					//処理で最短の接点を矢印の座標に
+					spritePos.x=it.x;
+					spritePos.y = it.y;
 				}
 
-				if (spritePos.y + quotaUISize_.y > (360.0f + area_.y / 2.0f)) {
-					spritePos.y = (360.0f + area_.y / 2.0f) - quotaUISize_.y;
-				}
-				else if (spritePos.y - quotaUISize_.y < (360.0f - area_.y / 2.0f)) {
-					spritePos.y = (360.0f - area_.y / 2.0f)+ quotaUISize_.y;
-				}
 
 			}
 			else if (quotaAreaType_ == AreaType::Sphere) {
@@ -166,6 +220,7 @@ void UIGoalGuidance::Update()
 				}
 			}
 
+			//メガホン自体が画面に映っているなら透過
 			if (PP.x > 0 && PP.x < 1280 && PP.y > 0 && PP.y < 720) {
 				isScreen = true;
 			}
@@ -212,8 +267,6 @@ void UIGoalGuidance::Update()
 		Vector3 spritePos = *goalPos_ - (direction.Normalize() * goalSize_);
 
 
-		Vector2 windowSize = WindowsInfo::GetInstance()->GetWindowSize();
-		Matrix4x4 cameraVPV = camera_->GetViewProjection() * MakeViewPortMatrix(0, 0, windowSize.x, windowSize.y, 0, 1);
 
 		//領域内チェック
 		bool isScreen = false;
@@ -222,20 +275,46 @@ void UIGoalGuidance::Update()
 		if (quotaAreaType_ == AreaType::Squea) {
 			spritePos = TransformPosition(spritePos, cameraVPV);
 
-			///X領域処理
-			//最大領域外チェック
-			if (spritePos.x + scale_.x > (640.0f + area_.x / 2.0f)) {
-				spritePos.x = (640.0f + area_.x / 2.0f) - scale_.x;
-			}//最小領域外チェック
-			else if (spritePos.x - scale_.x < (640.0f - area_.x / 2.0f)) {
-				spritePos.x = (640.0f - area_.x / 2.0f) + scale_.x;
-			}
+			//線
+			Lineee line{
+				.start{640,360},//プレイヤーが画面中央固定という油断処理
+				.end{spritePos.x,spritePos.y}
+			};
 
-			if (spritePos.y + scale_.y > (360.0f + area_.y / 2.0f)) {
-				spritePos.y = (360.0f + area_.y / 2.0f) - scale_.y;
+			//辺の接点量取得
+			std::vector<Vector2>result = FindIntersectionPoints(edge, line);
+
+			//サイズが0の場合（矢印稼働領域内
+			if (result.size() == 0) {
+				//スクリーン座標に変換しているので特になし
 			}
-			else if (spritePos.y - scale_.y < (360.0f - area_.y / 2.0f)) {
-				spritePos.y = (360.0f - area_.y / 2.0f) + scale_.y;
+			else {
+				//アイテムとプレイヤーとの距離が一番近い点を座標にする
+
+				bool first = true;
+				float length = 0;
+				Vector2 it = { 0,0 };
+
+				for (auto& re : result) {
+					float leng = Vector2(re - Vector2{ 640,360 }).Length();
+
+					//初回ループの場合
+					if (first) {
+						first = false;
+						length = leng;
+						it = re;
+					}
+					else {
+						//現在の値より小さい場合その値に設定して座標も変更
+						if (length > leng) {
+							length = leng;
+							it = re;
+						}
+					}
+				}
+				//処理で最短の接点を矢印の座標に
+				spritePos.x = it.x;
+				spritePos.y = it.y;
 			}
 
 		}

@@ -118,6 +118,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.cpp" />
     <ClCompile Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.cpp" />
     <ClCompile Include="Engine\ImGuiManager\Guizmo.cpp" />
+    <ClCompile Include="Game\GameElement\2DHitBox\2DHitBox.cpp" />
     <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.cpp" />
     <ClCompile Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.cpp" />
     <ClCompile Include="Game\GameElement\BackGround\BackGround.cpp" />
@@ -311,6 +312,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\DissolveGraphicsPipeline\DissolveGraphicsPipeline.h" />
     <ClInclude Include="Engine\GraphicsPipelineSystem\GraphicsPipelines\VignetteGraphicsPipeline\VignetteGraphicsPipeline.h" />
     <ClInclude Include="Engine\ImGuiManager\Guizmo.h" />
+    <ClInclude Include="Game\GameElement\2DHitBox\2DHitBox.h" />
     <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffect.h" />
     <ClInclude Include="Game\GameElement\BabyTensionEffect\BabyTensionEffectManager.h" />
     <ClInclude Include="Game\GameElement\Camera\FollowCamera.h" />
