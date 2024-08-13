@@ -16,6 +16,7 @@ Vector3 ZoomUpCamera::Update(const float& frameMaxTime, const float& delta) {
 	count_ += delta;
 	if (kMaxFrame <= count_) {
 		count_ = kMaxFrame;
+		isFinished_ = true;
 	}
 
 	return result;

@@ -128,10 +128,12 @@ private:
 	enum playScenes {
 		kPlay,
 		kGameToClear,
+		kGameToOver,
 		_countPlayScenes
 	};
 
 	playScenes nowScene = kPlay;
+	bool isGameOverChange_ = false;
 
 	//演出のシングルトン
 	EffectGetItem* effeGetItem_=nullptr;

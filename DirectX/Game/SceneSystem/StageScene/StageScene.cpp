@@ -16,6 +16,7 @@
 #include "GameElement/BabyTensionEffect/BabyTensionEffectManager.h"
 #include "GameElement/HitStop/HitStop.h"
 #include"Ease/Ease.h"
+#include "RandomGenerator/RandomGenerator.h"
 
 StageScene::StageScene()
 {
@@ -332,6 +333,19 @@ void StageScene::Update()
 		camera_->Update();
 
 		break;
+	case StageScene::kGameToOver:
+		camera_->transform_.translate_ = zoomUpCamera_->Update(0.8f, deltaTime);
+		camera_->Update();
+
+		if (!isGameOverChange_) {
+			isGameOverChange_ = zoomUpCamera_->GetFinish();
+			Vector3 randnum = RandomGenerator::GetInstance()->RandVector3(Vector3(-0.1f, -0.1f, 0.0f), Vector3(0.1f, 0.1f, 0.1f));
+			randnum.z = 0.0f;
+			camera_->transform_.translate_ += randnum;
+			camera_->Update();
+		}
+		
+		break;
 	case StageScene::_countPlayScenes:
 		break;
 	default:
@@ -489,12 +503,8 @@ void StageScene::SceneChange()
 				}*/
 				//テンションのHPがなくなったときの処理
 				if (baby_->GetIsGameOver()) {
-					//nowScene = kGameOver;
-					ChangeScene(GAMEOVER);
-					//bgm_.Stop();
-					player_->Finalize();
-					seDead_.Play();
-					isBlackOut_ = true;
+					zoomUpCamera_->Initialize(camera_->transform_.GetWorldPosition(), *baby_->GetPosPtr());
+					nowScene = kGameToOver;
 				}
 
 				//optionを開く
@@ -528,6 +538,14 @@ void StageScene::SceneChange()
 				ChangeScene(CLEAR);
 				//bgm_.Stop();
 				player_->Finalize();
+			}
+			break;
+		case StageScene::kGameToOver:
+			if (isGameOverChange_) {
+				ChangeScene(GAMEOVER);
+				player_->Finalize();
+				seDead_.Play();
+				isBlackOut_ = true;
 			}
 			break;
 		case StageScene::_countPlayScenes:
