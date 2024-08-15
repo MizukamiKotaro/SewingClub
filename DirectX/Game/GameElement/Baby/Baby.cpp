@@ -810,6 +810,7 @@ void Baby::TensionInitialize()
 	tension_.tension = 50.0f;
 	tension_.superTime = 0.0f;
 	tension_.isGameOver_ = false;
+	tension_.isDead_ = false;
 	tension_.fragmentHP_ = 100.0f;
 }
 
@@ -899,6 +900,7 @@ void Baby::TensionUpdate(const float& deltaTime)
 		tension_.fragmentHP_ = 0.0f;
 		tension_.tension = 0.0f;
 		tension_.isGameOver_ = true;
+		tension_.isDead_ = true;
 	}
 
 	TensionFaceUpdate();

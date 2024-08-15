@@ -33,6 +33,7 @@ public:
 	void ClearUpdate(const float& deltaTime);
 	const bool& GetIsClear() const { return isClear_; }
 	const bool& GetIsGameOver() const { return tension_.isGameOver_; }
+	const bool& GetIsDead() const { return tension_.isDead_; }
 	const float& GetFragmentHP() const { return tension_.fragmentHP_; }
 private:
 	void OnCollision(const Collider& collider) override;
@@ -116,6 +117,7 @@ private:
 		bool isRideUp_ = false;
 		float fragmentHP_ = 100.0f;
 		bool isGameOver_ = false;
+		bool isDead_ = false;
 	};
 	Tension tension_;
 

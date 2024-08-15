@@ -503,7 +503,13 @@ void StageScene::SceneChange()
 				}*/
 				//テンションのHPがなくなったときの処理
 				if (baby_->GetIsGameOver()) {
-					zoomUpCamera_->Initialize(camera_->transform_.GetWorldPosition(), *baby_->GetPosPtr());
+					// 敵に衝突して終わった場合
+					if (baby_->GetIsDead()) {
+						zoomUpCamera_->Initialize(camera_->transform_.GetWorldPosition(), player_->GetPosition());
+					}
+					else {
+						zoomUpCamera_->Initialize(camera_->transform_.GetWorldPosition(), *baby_->GetPosPtr());
+					}
 					nowScene = kGameToOver;
 				}
 
